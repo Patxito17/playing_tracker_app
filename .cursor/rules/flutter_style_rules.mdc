@@ -1,0 +1,197 @@
+---
+description: Guía de estilo, convenciones y directrices para el proyecto Flutter “Playing Tracker”
+globs:
+  - "**/*.dart"
+alwaysApply: true
+---
+
+# 🎯 Guía de estilo y convenciones para “Playing Tracker”
+
+Estas reglas se aplican a todo el código Dart del proyecto y sirven como contexto para que Cursor genere código alineado con tus estándares.
+
+---
+
+## 🔑 Principios Generales
+
+- Escribe código técnico, conciso y claro.
+- Prefiere **composición** sobre herencia.
+- Usa nombres descriptivos con verbos auxiliares: `isLoading`, `hasError`, `canSubmit`.
+- Aplica programación declarativa/funcional donde tenga sentido.
+
+---
+
+## 🐦 Convenciones de Flutter / Dart
+
+- Usa `const` siempre que sea posible en widgets inmutables.
+- Usa **Freezed** o **sealed class** para clases de estado inmutables y uniones (Dart 3+).
+- Aprovecha **record types** cuando sea apropiado para retornar múltiples valores: `(String, int)`.
+- Para funciones simples, usa la sintaxis flecha (`=>`).
+- Getters/setters simples deben usar cuerpos de expresión.
+- Usa comas finales para que el formateo con `dart format` quede bien estructurado.
+- Usa pattern matching cuando trabajes con sealed classes o registros.
+
+---
+
+## 🎨 Material Design 3
+
+- Usa `useMaterial3: true` en el ThemeData de la app.
+- Genera paletas de colores con `ColorScheme.fromSeed(seedColor: Colors.blue)` para coherencia visual.
+- Usa los nuevos componentes M3: `FilledButton`, `FilledButton.tonal`, `OutlinedButton`, `TextButton`.
+- Aplica elevación mediante `surfaceTintColor` en lugar de sombras fuertes.
+- Usa tokens de diseño del tema: `Theme.of(context).colorScheme.primary`, `.secondary`, `.surface`, etc.
+- Para formularios, usa `InputDecoration` con `filled: true` y bordes redondeados.
+- Aprovecha los nuevos estilos de tipografía M3: `displayLarge`, `headlineMedium`, `bodyLarge`, etc.
+- Usa `ColorScheme.fromSeed()` con diferentes brightness para modo claro/oscuro.
+
+---
+
+## 🏗️ Arquitectura
+
+- Organiza el código por **features** (feature-first), no por tipos técnicos.
+- Separa en capas dentro de cada feature: `presentation`, `domain`, `data` (Clean Architecture simplificada).
+- Widgets pequeños y reutilizables (máximo 300 líneas por archivo).
+- Usa **extension methods** para añadir funcionalidad específica a tipos: `extension StringX on String`.
+- Implementa dependency injection manual o con paquetes como `get_it`.
+- Mantén un solo sistema de gestión de estado por proyecto (preferentemente Bloc/Cubit).
+
+---
+
+## 🧩 Bloc / State Management
+
+- **Opciones principales:** Bloc/Cubit (recomendado), Riverpod.
+- **Cuándo usar qué:**
+  - **Cubit:** Para estado simple sin eventos complejos.
+  - **Bloc:** Cuando necesites historial de eventos y lógica basada en eventos.
+  - **Riverpod/Provider:** Solo para casos muy simples o inyección de dependencias.
+- Mantén **un solo sistema** de gestión de estado por proyecto para consistencia.
+- Todos los estados deben definirse con **Freezed** o **sealed class** (inmutabilidad).
+- Los nombres de los eventos deben ser significativos y en pasado: `SessionStarted`, `SessionPaused`.
+- En widgets, usa `context.read<BlocType>()` para acciones y `context.watch<BlocType>()` para escuchar cambios.
+- Usa `BlocBuilder`, `BlocListener` y `BlocConsumer` según necesites rebuilds, side effects o ambos.
+
+---
+
+## ⚠️ Manejo de errores / validaciones
+
+- Las vistas deben mostrar errores con `SelectableText.rich`, no con SnackBars.
+- Usa colores distintivos (rojo) para errores visibles.
+- Gestiona estados vacíos (sin datos) dentro de la pantalla correspondiente.
+- La lógica de carga / error debe estar dentro de los estados del Cubit/Bloc.
+
+---
+
+## 🔥 Firebase / Backend
+
+- Utiliza Firebase Authentication para registro, login y gestión de contraseña.
+- Usa Firestore para almacenamiento estructurado de datos.
+- Usa Firebase Storage para archivos (PDF, attachments), con manejo de errores robusto.
+- Captura excepciones de Firebase y muestra mensajes claros.
+- Asegura reglas de Firestore/Storage según roles (docente / alumno).
+
+---
+
+## ⚡ Optimización
+
+- Usa widgets `const` siempre que sea posible para optimizar reconstrucciones.
+- Usa `ListView.builder` u otros widgets optimizados para listas largas.
+- Para imágenes:
+  - `AssetImage` para recursos locales.
+  - `cached_network_image` para imágenes remotas con cache.
+- En Firestore, usa índices y límites para consultas eficientes.
+
+---
+
+## 📚 Modelos / JSON / Base de datos
+
+- En documentos de Firestore, incluye campos comunes como `createdAt`, `updatedAt`, `isDeleted`.
+- Usa `@JsonSerializable(fieldRename: FieldRename.snake)` para modelos Dart.
+- Para campos de solo lectura, usa `@JsonKey(includeFromJson: true, includeToJson: false)`.
+
+---
+
+## 🧱 Widgets y UI
+
+- **Evita métodos `_buildSomething(...)`** — crea widgets privados pequeños (`_MyWidget`) en su lugar.
+- Si un widget supera ~100 líneas, muévelo a su propio archivo.
+- Usa `const` constructores siempre que sea posible para optimizar reconstrucciones.
+- Preferiblemente usa extension methods: `context.theme` en lugar de `Theme.of(context)` (M3).
+- Usa `RefreshIndicator` para funcionalidad de pull-to-refresh.
+- En `TextField`, siempre configura: `textCapitalization`, `keyboardType`, `textInputAction`.
+- Siempre incluye `errorBuilder` y `loadingBuilder` en `Image.network`.
+- Usa `Semantics` para mejorar accesibilidad en widgets personalizados.
+- Divide pantallas grandes en widgets pequeños y componibles.
+
+---
+
+## 🧰 Utilidades y extras
+
+- Para depuración, usa `log()` de `dart:developer` en lugar de `print()`.
+- Configura un `BlocObserver` para monitorear las transiciones en desarrollo.
+- Mantén las líneas por debajo de ~80 caracteres (configurable en `analysis_options.yaml`).
+- Usa `@JsonValue(int)` para enums que se persisten en la base de datos.
+- Código generado con `build_runner`:
+  ```bash
+  dart run build_runner build --delete-conflicting-outputs
+  ```
+- Usa `flutter analyze` para verificar problemas antes de commit.
+- Configura shortcuts de teclado en el IDE para formateo automático con `dart format`.
+
+---
+
+## 🧪 Testing
+
+- Escribe **unit tests** para toda la lógica de negocio (Cubits/Blocs, funciones puras, utilidades).
+- Usa **widget tests** para componentes críticos de UI y flujos de interacción.
+- Implementa **golden tests** para validación visual de componentes complejos.
+- Mock dependencias con **mocktail** (no mockito, ya que mocktail no requiere generación de código).
+- Organiza tests en la misma estructura de carpetas que `/lib`:
+  ```
+  /test
+    /features
+      /auth
+        /presentation
+          login_cubit_test.dart
+        /domain
+          user_model_test.dart
+  ```
+- Usa `setUp()` y `tearDown()` para inicializar y limpiar estados entre tests.
+- Nombre de tests descriptivos: `'should emit [Loading, Success] when login is successful'`.
+- Mantén cobertura de tests >80% en lógica de negocio.
+
+---
+
+## ♿ Accesibilidad
+
+- Usa `Semantics` widgets para elementos interactivos personalizados.
+- Asegura **contraste mínimo de 4.5:1** en textos normales y 3:1 en textos grandes.
+- Proporciona **labels semánticos** descriptivos a todos los botones, inputs y elementos interactivos.
+- Prueba la navegación con **TalkBack** (Android) y **VoiceOver** (iOS) regularmente.
+- Usa `excludeSemantics: true` solo cuando sea estrictamente necesario.
+- Asegura que todos los elementos interactivos tengan un área de toque mínima de 48x48 dp.
+- Configura `textScaleFactor` para que los textos sean legibles al escalar.
+- Usa `Tooltip` para proporcionar información adicional en iconos.
+
+---
+
+## 🧾 Documentación y claridad
+
+- Documenta lógica compleja o decisiones no triviales con comentarios en español.
+- Usa **dartdoc comments** (`///`) para documentar APIs públicas.
+- Incluye ejemplos de uso en comentarios de funciones/clases complejas.
+- Sigue las guías oficiales de Flutter, Bloc y Firebase como referencia.
+- Siempre que Cursor genere código, debe alinearse con estas reglas.
+- Mantén un `CHANGELOG.md` actualizado con cambios significativos por sprint.
+
+---
+
+## 📚 Referencias Útiles
+
+- [Flutter Documentation](https://docs.flutter.dev)
+- [Material Design 3](https://m3.material.io/)
+- [Bloc Library Documentation](https://bloclibrary.dev)
+- [Effective Dart](https://dart.dev/guides/language/effective-dart)
+- [Flutter Architecture Guide](https://docs.flutter.dev/app-architecture/guide)
+
+---
+
+> Este archivo debe guardarse bajo `.cursor/rules/` (por ejemplo `.cursor/rules/flutter_style_rules.mdc`) para que Cursor lo aplique automáticamente al contexto del proyecto.
