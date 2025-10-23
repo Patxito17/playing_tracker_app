@@ -46,11 +46,11 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Herramientas:** DevTools, Flutter Widget Inspector ✅
 
 ### Gestión de Estado
-- **flutter_bloc** ✅ - Biblioteca para gestión de estado
-- **Cubit** ✅ - Implementación para autenticación (más simple que Bloc)
-- **Equatable** ✅ - Para comparación de estados
-- **BlocProvider** ✅ - Inyección de dependencias
-- **BlocBuilder/BlocConsumer** ✅ - Para reactividad en UI
+- **flutter_bloc** 📅 - Biblioteca para gestión de estado
+- **Cubit** 📅 - Sistema principal de gestión de estado (más simple que Bloc)
+- **Equatable** 📅 - Para comparación de estados
+- **BlocProvider** 📅 - Inyección de dependencias
+- **BlocBuilder/BlocConsumer** 📅 - Para reactividad en UI
 
 ### Diseño y Tema (Material Design 3)
 La aplicación implementa **Material Design 3** completamente:
@@ -536,14 +536,14 @@ service cloud.firestore {
 **Objetivos:**
 - 🔐 **Firebase Authentication** integrado
 - 👥 **Gestión de perfiles** (Teacher/Student)
-- 🔄 **Gestión de estado** con Cubit
+- 🔄 **Gestión de estado** con Cubit (sistema principal)
 - 🧭 **Navegación condicional** por rol
 - ✅ **Validaciones completas** en español
 
 **Entregables:**
 - 🔐 Sistema de autenticación funcional
 - 👥 CRUD de usuarios en Firestore
-- 🔄 Gestión de estado con flutter_bloc
+- 🔄 Gestión de estado con Cubit (flutter_bloc)
 - 🧭 Navegación por roles
 - ✅ Validaciones y manejo de errores
 
@@ -679,7 +679,7 @@ Progreso Total: ░░░░░░░░░░░░░░░░░░░░   0
 
 ### 📅 Herramientas de Testing (Por Configurar)
 - 📅 **flutter_test** - Framework de testing de Flutter
-- 📅 **bloc_test** - Testing específico para Bloc/Cubit
+- 📅 **bloc_test** - Testing específico para Cubit
 - 📅 **mocktail** - Mocking para dependencias
 - 📅 **golden_toolkit** - Golden tests para UI
 - 📅 **integration_test** - Testing de integración
@@ -758,7 +758,7 @@ dependencies:
   firebase_storage: ^12.3.2    # 📅 Almacenamiento de archivos
 
   # State Management
-  flutter_bloc: ^8.1.6         # 📅 Gestión de estado
+  flutter_bloc: ^8.1.6         # 📅 Gestión de estado con Cubit
   equatable: ^2.0.7            # 📅 Comparación de objetos
 
   # UI y Utilidades
