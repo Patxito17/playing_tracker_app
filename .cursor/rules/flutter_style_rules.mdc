@@ -56,18 +56,33 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 
 ---
 
-## 🧩 Bloc / State Management
+## 🧩 Cubit / State Management
 
-- **Opciones principales:** Bloc/Cubit (recomendado), Riverpod.
-- **Cuándo usar qué:**
-  - **Cubit:** Para estado simple sin eventos complejos.
-  - **Bloc:** Cuando necesites historial de eventos y lógica basada en eventos.
-  - **Riverpod/Provider:** Solo para casos muy simples o inyección de dependencias.
-- Mantén **un solo sistema** de gestión de estado por proyecto para consistencia.
+- **Sistema principal:** **Cubit** (recomendado para este proyecto).
+- **Cuándo usar Cubit:**
+  - **Cubit:** Para estado simple y directo (ideal para la mayoría de casos de uso).
+  - **Bloc:** Solo cuando necesites historial de eventos y lógica basada en eventos complejos.
+- Mantén **Cubit como sistema principal** de gestión de estado para consistencia.
 - Todos los estados deben definirse con **Freezed** o **sealed class** (inmutabilidad).
-- Los nombres de los eventos deben ser significativos y en pasado: `SessionStarted`, `SessionPaused`.
-- En widgets, usa `context.read<BlocType>()` para acciones y `context.watch<BlocType>()` para escuchar cambios.
+- Los nombres de los métodos del Cubit deben ser descriptivos: `loginUser()`, `createTask()`, `startSession()`.
+- En widgets, usa `context.read<CubitType>()` para acciones y `context.watch<CubitType>()` para escuchar cambios.
 - Usa `BlocBuilder`, `BlocListener` y `BlocConsumer` según necesites rebuilds, side effects o ambos.
+- **Estructura recomendada para Cubit:**
+  ```dart
+  class AuthCubit extends Cubit<AuthState> {
+    AuthCubit() : super(AuthInitial());
+
+    Future<void> loginUser(String email, String password) async {
+      emit(AuthLoading());
+      try {
+        final user = await _authService.login(email, password);
+        emit(AuthSuccess(user));
+      } catch (e) {
+        emit(AuthError(e.toString()));
+      }
+    }
+  }
+  ```
 
 ---
 
@@ -126,7 +141,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 ## 🧰 Utilidades y extras
 
 - Para depuración, usa `log()` de `dart:developer` en lugar de `print()`.
-- Configura un `BlocObserver` para monitorear las transiciones en desarrollo.
+- Configura un `BlocObserver` para monitorear las transiciones de Cubit en desarrollo.
 - Mantén las líneas por debajo de ~80 caracteres (configurable en `analysis_options.yaml`).
 - Usa `@JsonValue(int)` para enums que se persisten en la base de datos.
 - Código generado con `build_runner`:
@@ -140,7 +155,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 
 ## 🧪 Testing
 
-- Escribe **unit tests** para toda la lógica de negocio (Cubits/Blocs, funciones puras, utilidades).
+- Escribe **unit tests** para toda la lógica de negocio (Cubits, funciones puras, utilidades).
 - Usa **widget tests** para componentes críticos de UI y flujos de interacción.
 - Implementa **golden tests** para validación visual de componentes complejos.
 - Mock dependencias con **mocktail** (no mockito, ya que mocktail no requiere generación de código).
@@ -150,12 +165,38 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
     /features
       /auth
         /presentation
-          login_cubit_test.dart
+          auth_cubit_test.dart
         /domain
           user_model_test.dart
   ```
 - Usa `setUp()` y `tearDown()` para inicializar y limpiar estados entre tests.
 - Nombre de tests descriptivos: `'should emit [Loading, Success] when login is successful'`.
+- **Testing específico de Cubit:**
+  ```dart
+  group('AuthCubit', () {
+    late AuthCubit authCubit;
+    late MockAuthService mockAuthService;
+
+    setUp(() {
+      mockAuthService = MockAuthService();
+      authCubit = AuthCubit(mockAuthService);
+    });
+
+    test('should emit [Loading, Success] when login is successful', () async {
+      // Arrange
+      when(() => mockAuthService.login('test@test.com', 'password'))
+          .thenAnswer((_) async => User(id: '1', email: 'test@test.com'));
+
+      // Act & Assert
+      expectLater(
+        authCubit.stream,
+        emitsInOrder([AuthLoading(), AuthSuccess(any())]),
+      );
+
+      await authCubit.loginUser('test@test.com', 'password');
+    });
+  });
+  ```
 - Mantén cobertura de tests >80% en lógica de negocio.
 
 ---
@@ -178,7 +219,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Documenta lógica compleja o decisiones no triviales con comentarios en español.
 - Usa **dartdoc comments** (`///`) para documentar APIs públicas.
 - Incluye ejemplos de uso en comentarios de funciones/clases complejas.
-- Sigue las guías oficiales de Flutter, Bloc y Firebase como referencia.
+- Sigue las guías oficiales de Flutter, Cubit y Firebase como referencia.
 - Siempre que Cursor genere código, debe alinearse con estas reglas.
 - Mantén un `CHANGELOG.md` actualizado con cambios significativos por sprint.
 
@@ -188,7 +229,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 
 - [Flutter Documentation](https://docs.flutter.dev)
 - [Material Design 3](https://m3.material.io/)
-- [Bloc Library Documentation](https://bloclibrary.dev)
+- [Cubit Documentation](https://bloclibrary.dev/docs/cubit)
 - [Effective Dart](https://dart.dev/guides/language/effective-dart)
 - [Flutter Architecture Guide](https://docs.flutter.dev/app-architecture/guide)
 
