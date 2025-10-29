@@ -6,51 +6,49 @@
 
 ---
 
-## 1. 📋 Documento de Análisis de Requisitos
 
-### 1.1 Descripción del Proyecto
+## 1. Documento de análisis de requisitos
 
-**Playing Tracker** es una aplicación móvil multiplataforma desarrollada en Flutter que digitaliza y objetiva el seguimiento del estudio instrumental fuera del aula. Permite a los docentes asignar tareas específicas y a los alumnos registrar el tiempo dedicado a cada una de ellas, generando estadísticas de progreso.
+### 1.1	Descripción del proyecto
+Playing Tracker es una aplicación móvil multiplataforma desarrollada en Flutter que digitaliza y objetiva el seguimiento del estudio instrumental fuera del aula. Permite a los docentes asignar tareas específicas y a los alumnos registrar el tiempo dedicado a cada una de ellas, generando estadísticas de progreso.
 
-### 1.2 Requisitos Funcionales
+### 1.2	Requisitos funcionales
+El sistema Playing Tracker debe proporcionar un conjunto completo de funcionalidades que permitan a los docentes gestionar sus clases y tareas, mientras que los alumnos puedan registrar y seguir su progreso de estudio de manera objetiva y motivadora.
+1.	Gestión de usuarios y autenticación (RF-001). El sistema usa Firebase Authentication para registrar usuarios como docentes o alumnos. Los docentes gestionan clases, mientras que los alumnos se unen con códigos únicos. Incluye recuperación de contraseñas y gestión de perfiles, garantizando seguridad y privacidad.
+2.	Gestión de clases y membresías (RF-002). Los docentes crean clases con nombres descriptivos y códigos de acceso únicos de 6 caracteres alfanuméricos, generados automáticamente. Los alumnos se unen con el código, permitiendo a los docentes gestionar su grupo de estudiantes.
+3.	Gestión de tareas y asignaciones (RF-003). Los docentes crean tareas detalladas con título, descripción, tiempo sugerido de estudio (minutos) y archivos adjuntos opcionales (PDFs, audio, enlaces). Pueden asignar tareas a clases o alumnos específicos. El sistema crea automáticamente asignaciones individuales para clases completas.
+4.	Cronómetro y registro de sesiones (RF-004). Los alumnos usan un cronómetro persistente para registrar sesiones de estudio (iniciar, pausar, reiniciar, finalizar). El sistema registra automáticamente duración, pausas y notas opcionales. Funciona en segundo plano, incluso al cambiar de app o recibir llamadas.
+5.	Estadísticas y reportes (RF-005). El sistema genera estadísticas y visualizaciones del progreso de estudio para docentes y alumnos. Los docentes acceden a dashboards con filtros por fecha, tarea o clase. Los alumnos ven su progreso personal con gráficos.
 
-El sistema Playing Tracker debe proporcionar un conjunto completo de funcionalidades que permitan a los docentes gestionar eficientemente sus clases y tareas, mientras que los alumnos puedan registrar y seguir su progreso de estudio de manera objetiva y motivadora.
+### 1.3	Requisitos no funcionales
+Los requisitos no funcionales establecen las características de calidad, rendimiento y restricciones técnicas que el sistema debe cumplir para garantizar una experiencia de usuario óptima y un funcionamiento seguro en entornos educativos reales.
+1.	Rendimiento y eficiencia (RNF-001). El sistema garantiza tiempos de respuesta inferiores a 2 segundos para todas las operaciones CRUD, soportando 1000 usuarios concurrentes sin degradación. Implementa índices compuestos en Firestore, cache inteligente y paginación para listas extensas. El cronómetro mantiene precisión de milisegundos y actualiza la interfaz cada segundo sin afectar el rendimiento.
+2.	Seguridad y privacidad (RNF-002). Dado que maneja datos de menores, la seguridad es crítica. Todas las operaciones requieren autenticación con reglas de seguridad granulares. Los datos se cifran en tránsito (HTTPS/TLS) y en reposo (Firestore). Cumple con RGPD y LOPDGDD, incluyendo consentimiento explícito, derecho al olvido y portabilidad de datos. Contraseñas almacenadas con hash seguro y autenticación de dos factores opcional.
+3.	Usabilidad y accesibilidad (RNF-003). La interfaz de usuario, basada en Material Design 3, ofrece una experiencia moderna e intuitiva para usuarios jóvenes y adultos. Soporta temas claro y oscuro con transiciones suaves. La accesibilidad es prioritaria: contraste mínimo de 4.5:1 para textos normales y 3:1 para grandes, soporte para TalkBack (Android) y VoiceOver (iOS), y áreas de toque de 48x48 dp. La navegación es fluida con animaciones de 300ms y feedback táctil.
+4.	Escalabilidad y mantenibilidad (RNF-004). La arquitectura NoSQL evita hotspots con distribución inteligente de datos y claves compuestas. Un mecanismo de fan-out eficiente asigna tareas a clases de hasta 100 alumnos sin degradación del rendimiento. La escalabilidad horizontal en Firebase permite el crecimiento orgánico, y la arquitectura modular facilita el mantenimiento y la adición de funcionalidades sin afectar el código existente.
 
-**Gestión de Usuarios y Autenticación (RF-001):** El sistema implementará un sistema de autenticación robusto basado en Firebase Authentication que permitirá el registro de usuarios con dos roles diferenciados: Docente y Alumno. Los docentes podrán crear y gestionar múltiples clases, mientras que los alumnos se unirán a las clases mediante códigos de acceso únicos. El sistema incluirá funcionalidades de recuperación de contraseñas y gestión completa de perfiles de usuario, garantizando la seguridad y privacidad de los datos personales.
+### 1.4	Planificación del proyecto
+El proyecto Playing Tracker se desarrollará con Scrum adaptado y “diseño primero”, priorizando la experiencia de usuario. Tendrá 8 sprints de 2 semanas, 16 semanas en total, con un desarrollador full-stack especializado en Flutter y Firebase.
 
-**Gestión de Clases y Membresías (RF-002):** Los docentes tendrán la capacidad de crear clases virtuales con nombres descriptivos y códigos de acceso únicos de 6 caracteres alfanuméricos. El sistema generará automáticamente estos códigos asegurando su unicidad. Los alumnos podrán unirse a las clases introduciendo el código correspondiente, estableciendo así una relación de membresía que permitirá al docente gestionar su grupo de estudiantes de manera eficiente.
+#### 1.4.1	Metodología y enfoque
+La metodología combina Scrum con un enfoque centrado en el diseño. Las dos primeras semanas se dedican a crear prototipos de alta fidelidad e implementar Material Design 3. Así, se toman todas las decisiones de UX/UI antes de la implementación de la lógica de negocio, reduciendo el rework y mejorando la calidad.
 
-**Gestión de Tareas y Asignaciones (RF-003):** El núcleo del sistema radica en la capacidad de los docentes para crear tareas detalladas que incluyan título, descripción completa, tiempo sugerido de estudio en minutos, y archivos adjuntos opcionales (PDFs, archivos de audio, o enlaces externos). Las tareas podrán ser asignadas tanto a clases completas como a alumnos específicos, permitiendo una personalización del aprendizaje. El sistema implementará un mecanismo de fan-out optimizado para crear automáticamente las asignaciones individuales cuando se asigna una tarea a una clase completa.
+#### 1.4.2	Cronograma detallado
+El Sprint 0 configurará el proyecto, implementará Material Design 3, prototipará todas las pantallas y desarrollará componentes base reutilizables. El Sprint 1 abordará la arquitectura de datos con 7 colecciones de Firestore, modelos de dominio, reglas de seguridad e índices optimizados. Los Sprints 2-4 cubrirán la funcionalidad core: autenticación, sistema de clases y membresías, y gestión de tareas. Los Sprints 5-6 implementarán funcionalidades avanzadas: cronómetro persistente y sistema de estadísticas. El Sprint 7 se dedicará a testing, optimización de rendimiento, auditoría de seguridad y preparación para producción.
 
-**Cronómetro y Registro de Sesiones (RF-004):** Los alumnos dispondrán de un cronómetro funcional y persistente que les permitirá registrar su tiempo de estudio con controles completos: iniciar, pausar, reiniciar y finalizar sesiones. El sistema registrará automáticamente cada sesión de estudio, incluyendo la duración total, tiempo en pausa, y notas opcionales del alumno. La persistencia en segundo plano garantizará que el cronómetro continúe funcionando incluso si el usuario cambia de aplicación o recibe una llamada telefónica.
+#### 1.4.3	Estimación de costes
+El coste total del proyecto se estima en 32,000€, calculado sobre la base de 16 semanas de desarrollo a 40 horas semanales con una tarifa de 50€/hora para un desarrollador senior especializado en Flutter. Esta estimación incluye el desarrollo completo de la aplicación, pero excluye costes de infraestructura (Firebase ofrece un tier gratuito generoso) y herramientas de desarrollo (Flutter, Android Studio, VS Code son gratuitas). El presupuesto es competitivo para una aplicación de esta complejidad y alcance, especialmente considerando la calidad y escalabilidad de la solución propuesta.
 
-**Estadísticas y Reportes (RF-005):** El sistema generará estadísticas detalladas y visualizaciones atractivas del progreso de estudio, tanto para docentes como para alumnos. Los docentes podrán acceder a dashboards que muestren el progreso de todos sus alumnos, con filtros por fecha, tarea específica, o clase. Los alumnos tendrán acceso a su progreso personal con gráficos que muestren su evolución temporal. El sistema incluirá funcionalidades de exportación de datos en formatos CSV y PDF para análisis externos o reportes institucionales.
-
-### 1.3 Requisitos No Funcionales
-
-Los requisitos no funcionales establecen las características de calidad, rendimiento y restricciones técnicas que el sistema debe cumplir para garantizar una experiencia de usuario óptima y un funcionamiento robusto en entornos educativos reales.
-
-**Rendimiento y Eficiencia (RNF-001):** El sistema debe garantizar tiempos de respuesta inferiores a 2 segundos para todas las operaciones CRUD (crear, leer, actualizar, eliminar), asegurando una experiencia fluida para los usuarios. La arquitectura debe soportar un mínimo de 1000 usuarios concurrentes sin degradación del rendimiento, implementando optimizaciones como índices compuestos en Firestore, cache inteligente de datos frecuentemente accedidos, y técnicas de paginación para listas extensas. El cronómetro debe mantener una precisión de milisegundos y actualizar la interfaz de usuario cada segundo sin afectar el rendimiento general de la aplicación.
-
-**Seguridad y Privacidad (RNF-002):** La seguridad del sistema es crítica dado que maneja datos de menores de edad. Todas las operaciones requerirán autenticación obligatoria, implementando reglas de seguridad granulares que restringen el acceso a datos según el rol del usuario. Los datos se cifrarán tanto en tránsito (HTTPS/TLS) como en reposo (cifrado de Firestore), y el sistema cumplirá estrictamente con el RGPD y la LOPDGDD, incluyendo funcionalidades de consentimiento explícito, derecho al olvido, y portabilidad de datos. Las contraseñas se almacenarán con hash seguro y se implementará autenticación de dos factores como opción adicional.
-
-**Usabilidad y Accesibilidad (RNF-003):** La interfaz de usuario seguirá los principios de Material Design 3, proporcionando una experiencia moderna e intuitiva que se adapte tanto a usuarios jóvenes como adultos. El sistema incluirá soporte completo para temas claro y oscuro, con transiciones suaves entre modos. La accesibilidad será una prioridad, garantizando un contraste mínimo de 4.5:1 para textos normales y 3:1 para textos grandes, soporte completo para TalkBack (Android) y VoiceOver (iOS), y áreas de toque mínimas de 48x48 dp para todos los elementos interactivos. La navegación será fluida con animaciones de 300ms y feedback táctil apropiado.
-
-**Escalabilidad y Mantenibilidad (RNF-004):** La arquitectura NoSQL estará optimizada para evitar hotspots mediante la distribución inteligente de datos y el uso de claves compuestas. El sistema implementará un mecanismo de fan-out eficiente que permita asignar tareas a clases de hasta 100 alumnos simultáneamente sin degradación del rendimiento. La escalabilidad horizontal en Firebase permitirá el crecimiento orgánico del sistema, y la arquitectura modular facilitará el mantenimiento y la adición de nuevas funcionalidades sin afectar el código existente.
-
-### 1.4 Planificación del Proyecto
-
-El proyecto Playing Tracker se desarrollará siguiendo una metodología Scrum adaptada con un enfoque de "diseño primero", priorizando la experiencia de usuario desde las primeras fases del desarrollo. El alcance del proyecto abarca 8 sprints de 2 semanas cada uno, totalizando 16 semanas de desarrollo intensivo con un equipo de un desarrollador full-stack especializado en Flutter y Firebase.
-
-**Metodología y Enfoque:** La metodología adoptada combina los principios ágiles de Scrum con un enfoque centrado en el diseño, donde las primeras dos semanas se dedicarán exclusivamente a la creación de prototipos de alta fidelidad y la implementación del sistema de diseño Material Design 3. Este enfoque garantiza que todas las decisiones de UX/UI estén tomadas antes de comenzar la implementación de la lógica de negocio, reduciendo significativamente los riesgos de rework y mejorando la calidad final del producto.
-
-**Cronograma Detallado:** El Sprint 0 se centrará en la configuración del proyecto, implementación del sistema de diseño Material Design 3, prototipado completo de todas las pantallas, y desarrollo de los componentes base reutilizables. El Sprint 1 abordará la arquitectura de datos, implementando las 7 colecciones de Firestore, modelos de dominio, reglas de seguridad, e índices optimizados. Los Sprints 2-4 cubrirán la funcionalidad core: autenticación, sistema de clases y membresías, y gestión completa de tareas. Los Sprints 5-6 implementarán las funcionalidades avanzadas: cronómetro persistente y sistema de estadísticas. El Sprint 7 se dedicará al testing exhaustivo, optimización de rendimiento, auditoría de seguridad, y preparación para producción.
-
-**Estimación de Costes:** El coste total del proyecto se estima en 32,000€, calculado sobre la base de 16 semanas de desarrollo a 40 horas semanales con una tarifa de 50€/hora para un desarrollador senior especializado en Flutter. Esta estimación incluye el desarrollo completo de la aplicación, pero excluye costes de infraestructura (Firebase ofrece un tier gratuito generoso) y herramientas de desarrollo (Flutter, Android Studio, VS Code son gratuitas). El presupuesto es competitivo para una aplicación de esta complejidad y alcance, especialmente considerando la calidad y escalabilidad de la solución propuesta.
+#### 1.4.4	Metodología de seguimiento
+Los sprints tienen entregables específicos y medibles, revisados semanalmente para asegurar el cumplimiento de objetivos. El diagrama de la Ilustración 1 muestra las dependencias entre tareas para una gestión eficiente de recursos y detección temprana de retrasos. Las actividades permiten testing continuo y feedback iterativo para garantizar la calidad del producto.
 
 ### 1.5 Cronograma de Desarrollo (Diagrama de Gantt)
 
 El siguiente diagrama de Gantt muestra la planificación detallada del proyecto Playing Tracker, organizando las actividades por sprints con sus respectivos entregables y dependencias:
+
+Ilustración 1. Diagrama de Gantt - Cronograma de desarrollo
+
+La imagen se encuentra guardada en /docs/images/Diagrama Gantt.png
 
 ```mermaid
 sequenceDiagram
@@ -88,61 +86,61 @@ sequenceDiagram
     Note over Prod: Testing y Optimización<br/>Auditoría y Producción
 ```
 
-**Metodología de Seguimiento:** Cada sprint incluye entregables específicos y medibles, con revisiones semanales para asegurar el cumplimiento de los objetivos. El diagrama muestra las dependencias entre tareas, permitiendo una gestión eficiente de recursos y la identificación temprana de posibles retrasos. Las actividades están distribuidas de manera que permitan testing continuo y feedback iterativo, garantizando la calidad del producto final.
+---
+
+## 2	Necesidades hardware, software y de personal necesarias para la aplicación. Presupuesto
+
+### 2.1	Infraestructura hardware
+•	Equipamiento de desarrollo: se utilizará un MacBook Pro M2 con 16 GB de RAM y 512 GB de SSD para el desarrollo de Flutter.
+•	Dispositivos de prueba: se utilizarán un iPhone 15 Pro (para iOS) y un Realme 6s (para Android) para pruebas multiplataforma.
+
+### 2.2	Software necesario
+#### 2.2.1	Software de desarrollo gratuito
+Playing Tracker usa herramientas de código abierto y gratuitas. Flutter SDK 3.x es el framework principal para desarrollo multiplataforma nativo. Android Studio es el IDE principal para Android, y VS Code con extensiones Flutter ofrece un entorno ligero y personalizable. Firebase CLI gestiona los servicios de Firebase, Git el control de versiones, y Dart SDK es el lenguaje de programación. Esta selección minimiza costes de licencias y ofrece herramientas de clase empresarial.
+
+#### 2.2.2	Software de pago opcional
+Para un diseño y desarrollo eficientes, puede utilizarse Figma Pro (20€/mes) para prototipos de alta fidelidad y colaboración. Firebase Blaze Plan, con un modelo pay-as-you-go, es ideal para producción y se adapta al crecimiento del usuario. Estos costes son opcionales en desarrollo, pero recomendados para un producto profesional.
+
+### 2.3	Personal necesario
+#### 2.3.1	Perfil del desarrollador
+Se cuenta con un desarrollador full-stack junior con experiencia en Flutter, desarrollo móvil e integración con Firebase. Responsable del desarrollo completo de la app, incluyendo UI/UX (Material Design 3), integración Firebase (Auth, Firestore, Storage) y testing en múltiples dispositivos. Tiene conocimientos en arquitectura móvil, gestión de estado con Cubit y optimización de rendimiento.
+
+### 2.4	Recursos de interconexión y hosting
+#### 2.4.1	Infraestructura en la nube
+Firebase ofrece la infraestructura backend completa para Playing Tracker, con servicios gratuitos generosos para las necesidades iniciales. Firebase Authentication es gratuito, Firestore ofrece 1GB gratis, Firebase Storage incluye 1GB gratis y Firebase Hosting es gratuito. Esta arquitectura serverless elimina la gestión de servidores y escala automáticamente.
+
+#### 2.4.2	Estimación de costes operativos
+Los costes anuales de infraestructura oscilan entre 0 y 100€, según el crecimiento de usuarios, más 15€ por el dominio de la aplicación. Firebase, con su modelo de pago por uso, se adapta al crecimiento orgánico del proyecto, permitiendo empezar con costes mínimos y escalar según la demanda.
+
+### 2.5	Alternativas técnicas consideradas
+#### 2.5.1	Análisis de alternativas
+En la fase de planificación, se han evaluado varias alternativas tecnológicas. React Native + Node.js tenía un ecosistema maduro, pero menor rendimiento y mayor complejidad. Flutter + Supabase era una solución open source atractiva, pero menos madura y con mayor configuración inicial. Flutter + AWS ofrecía máxima escalabilidad, pero mayor complejidad y costes operativos.
+
+#### 2.5.2	Justificación de la elección
+La combinación Flutter + Firebase se ha seleccionado por ofrecer el mejor balance entre velocidad de desarrollo, coste controlado, y escalabilidad para un MVP. Material Design 3 garantiza consistencia visual y accesibilidad nativa, mientras que la arquitectura NoSQL de Firestore proporciona la flexibilidad necesaria para evolucionar el esquema de datos según las necesidades del proyecto. Esta elección minimiza los riesgos técnicos y acelera el time-to-market.
+
+### 2.6	Presupuesto detallado y financiación
+#### 2.6.1	Desglose de costes
+El presupuesto total del proyecto asciende a 36,340€, distribuido en hardware (4,000€ si no se posee), software (340€/año), y personal (32,000€). El coste de desarrollo representa el 88% del presupuesto, lo cual es típico para proyectos de software donde el valor principal reside en el conocimiento y la experiencia del desarrollador. Los costes de hardware y software son una inversión única o recurrente mínima comparada con el valor generado.
+
+#### 2.6.2	Estrategia de financiación
+El proyecto se autofinanciará inicialmente para mantener el control sobre el desarrollo y la propiedad intelectual. Para marketing y expansión se usará crowdfunding dirigido a la comunidad educativa musical y se buscarán subvenciones de programas de innovación educativa que valoren su potencial pedagógico. Esta estrategia diversificada minimiza riesgos y permite un crecimiento sostenible.
 
 ---
 
-## 2. 💻 Necesidades Hardware, Software y Personal
+## 3	Diseño del diagrama de casos de uso
 
-### 2.1 Infraestructura Hardware
-
-**Equipamiento de Desarrollo:** Para el desarrollo eficiente de Playing Tracker se requiere un ordenador de desarrollo de alta gama, específicamente un MacBook Pro M2 con 16GB de RAM y 512GB de SSD. Esta elección se justifica por la necesidad de compatibilidad nativa con iOS y Android, ya que Flutter requiere acceso a los SDKs de ambas plataformas. El chip M2 proporciona el rendimiento necesario para compilaciones rápidas y simulaciones fluidas, mientras que los 16GB de RAM permiten ejecutar múltiples emuladores simultáneamente para testing cross-platform. El coste estimado es de 2,500€ si no se posee el equipo.
-
-**Dispositivos de Testing:** Para garantizar la calidad y compatibilidad de la aplicación, se necesitan dispositivos físicos de testing que representen los casos de uso más comunes. Se recomienda un iPhone 14 Pro para testing en iOS y un Samsung Galaxy S23 para testing en Android, cubriendo así las dos plataformas principales y diferentes tamaños de pantalla. Estos dispositivos permitirán testing de funcionalidades específicas como el cronómetro en segundo plano, notificaciones push, y optimizaciones de rendimiento. El coste total de los dispositivos de testing es de 1,500€.
-
-### 2.2 Software Necesario
-
-**Software de Desarrollo Gratuito:** El stack tecnológico de Playing Tracker se basa principalmente en herramientas de código abierto y gratuitas. Flutter SDK 3.x servirá como framework principal, proporcionando desarrollo multiplataforma nativo. Android Studio será el IDE principal para desarrollo Android, mientras que VS Code con extensiones Flutter ofrecerá un entorno de desarrollo ligero y personalizable. Firebase CLI facilitará la gestión de servicios de Firebase, Git proporcionará control de versiones robusto, y Dart SDK será el lenguaje de programación. Esta selección minimiza los costes de licencias mientras proporciona herramientas de clase empresarial.
-
-**Software de Pago Opcional:** Para optimizar el proceso de diseño y desarrollo, se recomienda Figma Pro (20€/mes) para la creación de prototipos de alta fidelidad y colaboración en el diseño. Firebase Blaze Plan será necesario para producción, operando bajo un modelo pay-as-you-go que se adapta al crecimiento del usuario. Estos costes son opcionales durante la fase de desarrollo pero recomendados para un producto de calidad profesional.
-
-### 2.3 Personal Necesario
-
-**Perfil del Desarrollador:** El proyecto requiere un desarrollador full-stack senior especializado en Flutter con un mínimo de 3 años de experiencia en desarrollo móvil y integración con Firebase. Este profesional será responsable del desarrollo completo de la aplicación, incluyendo la implementación de UI/UX según las especificaciones de Material Design 3, la integración completa con Firebase (Authentication, Firestore, Storage), y el testing exhaustivo en múltiples dispositivos. El desarrollador debe poseer conocimientos profundos en arquitectura de aplicaciones móviles, gestión de estado con Cubit, y optimización de rendimiento. El coste total del desarrollo se estima en 32,000€ (640 horas × 50€/hora), representando el 88% del presupuesto total del proyecto.
-
-### 2.4 Recursos de Interconexión y Hosting
-
-**Infraestructura en la Nube:** Firebase proporcionará la infraestructura completa de backend para Playing Tracker, ofreciendo servicios gratuitos generosos que cubren las necesidades iniciales del proyecto. Firebase Authentication será completamente gratuito, Firestore proporciona 1GB de almacenamiento gratuito (luego $0.18/GB), Firebase Storage incluye 1GB gratuito (luego $0.026/GB), y Firebase Hosting es completamente gratuito. Esta arquitectura serverless elimina la necesidad de gestión de servidores y proporciona escalabilidad automática.
-
-**Estimación de Costes Operativos:** Los costes anuales de infraestructura se estiman entre 0-100€ dependiendo del crecimiento de usuarios, más 15€/año para el dominio de la aplicación. El modelo de pago por uso de Firebase se adapta perfectamente al crecimiento orgánico del proyecto, permitiendo comenzar con costes mínimos y escalar según la demanda real. El total anual estimado de 115€ representa menos del 0.5% del presupuesto total del proyecto.
-
-### 2.5 Alternativas Técnicas Consideradas
-
-**Análisis de Alternativas:** Durante la fase de planificación se evaluaron múltiples alternativas tecnológicas. React Native + Node.js ofrecía un ecosistema más maduro pero con menor rendimiento y mayor complejidad de desarrollo. Flutter + Supabase proporcionaba una solución open source atractiva pero con menor madurez y mayor configuración inicial. Flutter + AWS ofrecía máxima escalabilidad pero con mayor complejidad y costes operativos significativos.
-
-**Justificación de la Elección:** La combinación Flutter + Firebase se seleccionó por ofrecer el mejor balance entre velocidad de desarrollo, coste controlado, y escalabilidad para un MVP. Material Design 3 garantiza consistencia visual y accesibilidad nativa, mientras que la arquitectura NoSQL de Firestore proporciona la flexibilidad necesaria para evolucionar el esquema de datos según las necesidades del proyecto. Esta elección minimiza los riesgos técnicos y acelera el time-to-market.
-
-### 2.6 Presupuesto Detallado y Financiación
-
-**Desglose de Costes:** El presupuesto total del proyecto asciende a 36,340€, distribuido en hardware (4,000€ si no se posee), software (340€/año), y personal (32,000€). El coste de desarrollo representa el 88% del presupuesto, lo cual es típico para proyectos de software donde el valor principal reside en el conocimiento y la experiencia del desarrollador. Los costes de hardware y software son una inversión única o recurrente mínima comparada con el valor generado.
-
-**Estrategia de Financiación:** El proyecto se financiará inicialmente mediante autofinanciación, permitiendo control total sobre el desarrollo y la propiedad intelectual. Para fases posteriores de marketing y expansión se considerará crowdfunding dirigido a la comunidad educativa musical. Adicionalmente, se explorarán subvenciones de programas de innovación educativa que reconozcan el valor pedagógico de la aplicación. Esta estrategia diversificada minimiza los riesgos financieros y permite un crecimiento sostenible del proyecto.
-
----
-
-## 3. 🎯 Diagrama de Casos de Uso
-
-### 3.1 Actores del Sistema
-
+### 3.1	Actores del sistema
 El sistema Playing Tracker interactúa con tres tipos de actores principales que representan los diferentes roles y entidades involucradas en el proceso educativo musical:
+•	Docente. Representa al profesor de música que utiliza la aplicación para gestionar sus clases, crear tareas, asignar actividades a sus alumnos, y supervisar el progreso de estudio. El docente tiene permisos administrativos completos sobre las clases que crea y puede acceder a estadísticas detalladas de todos sus alumnos. Este actor es responsable de la configuración inicial del entorno educativo y la definición de los objetivos de aprendizaje.
+•	Alumno. Representa al estudiante de música que utiliza la aplicación para acceder a sus tareas asignadas, registrar sesiones de estudio mediante el cronómetro, y consultar su progreso personal. El alumno tiene permisos limitados a sus propios datos y tareas asignadas, garantizando la privacidad y seguridad de la información. Este actor es el usuario final que se beneficia directamente de las funcionalidades de seguimiento y motivación.
+•	Sistema. Representa la aplicación Playing Tracker y sus componentes internos que procesan automáticamente los datos, generan estadísticas, envían notificaciones, y mantienen la sincronización entre dispositivos. El sistema actúa como intermediario entre docentes y alumnos, facilitando la comunicación y el seguimiento del progreso educativo.
 
-**Docente:** Representa al profesor de música que utiliza la aplicación para gestionar sus clases, crear tareas, asignar actividades a sus alumnos, y supervisar el progreso de estudio. El docente tiene permisos administrativos completos sobre las clases que crea y puede acceder a estadísticas detalladas de todos sus alumnos. Este actor es responsable de la configuración inicial del entorno educativo y la definición de los objetivos de aprendizaje.
+### 3.2	Diagrama de casos de uso
 
-**Alumno:** Representa al estudiante de música que utiliza la aplicación para acceder a sus tareas asignadas, registrar sesiones de estudio mediante el cronómetro, y consultar su progreso personal. El alumno tiene permisos limitados a sus propios datos y tareas asignadas, garantizando la privacidad y seguridad de la información. Este actor es el usuario final que se beneficia directamente de las funcionalidades de seguimiento y motivación.
+Ilustración 2. Diagrama de casos de uso
 
-**Sistema:** Representa la aplicación Playing Tracker y sus componentes internos que procesan automáticamente los datos, generan estadísticas, envían notificaciones, y mantienen la sincronización entre dispositivos. El sistema actúa como intermediario entre docentes y alumnos, facilitando la comunicación y el seguimiento del progreso educativo.
-
-### 3.2 Diagrama de Casos de Uso
+La imagen se encuentra guardada en /docs/images/Diagrama Casos de uso.png
 
 ```mermaid
 flowchart LR
@@ -193,9 +191,9 @@ flowchart LR
     class UC1 comun
 ```
 
-### 3.3 Casos de Uso Principales
+### 3.3	Casos de uso principales
 
-#### UC-001: Autenticación de Usuario
+#### 3.3.1	UC-001. Autenticación de usuario
 
 | Campo | Descripción |
 |-------|-------------|
@@ -205,7 +203,7 @@ flowchart LR
 | **Postcondiciones** | El usuario está autenticado en el sistema con su sesión activa. Se ha cargado su perfil completo con nombre, apellidos, email y rol. El usuario puede acceder a todas las funcionalidades permitidas según su rol. |
 | **Excepciones** | Si las credenciales son incorrectas, el sistema muestra un mensaje de error específico. Si el usuario no existe, se ofrece la opción de registro. Si hay problemas de conectividad, se muestra un mensaje de error de red. Si el usuario está desactivado, se informa del estado de la cuenta. |
 
-#### UC-002: Crear Clase (Docente)
+#### 3.3.2	UC-002. Crear clase (docente)
 
 | Campo | Descripción |
 |-------|-------------|
@@ -215,7 +213,7 @@ flowchart LR
 | **Postcondiciones** | Se ha creado una nueva clase en el sistema con un identificador único. La clase tiene un código de acceso único generado automáticamente. El docente puede ver la clase en su lista de clases. La clase está activa y lista para que los alumnos se unan. |
 | **Excepciones** | Si el nombre de la clase ya existe para el mismo docente, se muestra un mensaje de error pidiendo un nombre diferente. Si hay problemas de conectividad, se informa del error y se sugiere reintentar. Si el formulario está incompleto, se resaltan los campos obligatorios. Si hay un error interno del sistema, se muestra un mensaje genérico de error. |
 
-#### UC-003: Unirse a Clase (Alumno)
+#### 3.3.3	UC-003. Unirse a clase (alumno)
 
 | Campo | Descripción |
 |-------|-------------|
@@ -225,7 +223,7 @@ flowchart LR
 | **Postcondiciones** | El alumno se ha unido exitosamente a la clase. Se ha creado una relación de membresía en el sistema. El alumno puede ver la clase en su lista de clases. El alumno puede acceder a las tareas asignadas a esa clase. El docente puede ver al alumno en la lista de miembros de la clase. |
 | **Excepciones** | Si el código introducido no existe, se muestra un mensaje de error indicando que el código es inválido. Si la clase está desactivada, se informa que la clase no está disponible. Si el alumno ya está unido a la clase, se muestra un mensaje informativo. Si hay problemas de conectividad, se sugiere verificar la conexión e intentar nuevamente. |
 
-#### UC-004: Crear Tarea (Docente)
+#### 3.3.4	UC-004. Crear tarea (docente)
 
 | Campo | Descripción |
 |-------|-------------|
@@ -235,7 +233,7 @@ flowchart LR
 | **Postcondiciones** | Se ha creado una nueva tarea en el sistema con identificador único. La tarea ha sido asignada a todos los destinatarios seleccionados. Cada alumno destinatario tiene una asignación individual creada. Los alumnos pueden ver la nueva tarea en su lista de tareas pendientes. El docente puede gestionar la tarea desde su panel de control. |
 | **Excepciones** | Si algún campo obligatorio está vacío, se resaltan los campos faltantes. Si el tiempo sugerido está fuera del rango permitido, se muestra un mensaje de error específico. Si hay problemas durante el fan-out, se informa del error y se sugiere reintentar. Si los archivos adjuntos exceden el tamaño permitido, se informa del límite. Si no hay destinatarios disponibles, se sugiere crear una clase o agregar alumnos. |
 
-#### UC-005: Iniciar Sesión de Estudio (Alumno)
+#### 3.3.5	UC-005. Iniciar sesión de estudio (alumno)
 
 | Campo | Descripción |
 |-------|-------------|
@@ -245,7 +243,7 @@ flowchart LR
 | **Postcondiciones** | Se ha iniciado una sesión de estudio activa para la tarea seleccionada. El cronómetro está funcionando y registrando el tiempo transcurrido. El estado de la asignación se ha actualizado a "in_progress". El sistema está preparado para persistir la sesión en segundo plano. El alumno puede ver el tiempo transcurrido en tiempo real. |
 | **Excepciones** | Si la tarea no está disponible, se muestra un mensaje explicativo. Si ya hay una sesión activa, se informa y se ofrece la opción de finalizarla primero. Si hay problemas de conectividad, se inicia la sesión en modo offline. Si la tarea ha expirado, se informa del estado y se sugiere contactar al docente. |
 
-#### UC-006: Finalizar Sesión de Estudio (Alumno)
+#### 3.3.6	UC-006. Finalizar sesión de estudio (alumno)
 
 | Campo | Descripción |
 |-------|-------------|
@@ -255,7 +253,7 @@ flowchart LR
 | **Postcondiciones** | La sesión de estudio ha sido registrada exitosamente en la base de datos. Las estadísticas del alumno se han actualizado con la nueva sesión. El progreso de la tarea se ha actualizado con el tiempo adicional registrado. El cronómetro se ha detenido y la sesión ya no está activa. El alumno puede ver la sesión en su historial personal. |
 | **Excepciones** | Si el tiempo registrado es menor a 1 minuto, se sugiere continuar estudiando. Si hay problemas de conectividad, se guarda localmente y se sincroniza cuando se recupere la conexión. Si hay errores al guardar, se informa del problema y se sugiere reintentar. Si la sesión ya fue finalizada, se muestra un mensaje informativo. |
 
-#### UC-007: Consultar Estadísticas de Progreso (Docente/Alumno)
+#### 3.3.7	UC-007. Consultar estadísticas de progreso (docente/alumno)
 
 | Campo | Descripción |
 |-------|-------------|
