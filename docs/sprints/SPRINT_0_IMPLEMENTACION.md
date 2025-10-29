@@ -3,8 +3,9 @@
 **Proyecto:** Playing Tracker - Sistema de Seguimiento de Estudio Musical
 **Sprint:** 0 - Configuración Inicial y Diseño UI/UX
 **Duración:** Octubre 2025 (2 semanas)
-**Estado:** 📅 En desarrollo
-**Versión del documento:** 1.0
+**Estado:** 📅 En desarrollo - Fase 1 completada ✅
+**Versión del documento:** 1.1
+**Última actualización:** 29 de Octubre 2025
 
 ---
 
@@ -481,25 +482,25 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
 
 ## 🎯 Tareas Detalladas
 
-### Fase 1: Setup Inicial (Días 1-2)
+### Fase 1: Setup Inicial (Días 1-2) ✅ COMPLETADA
 
-- [ ] Verificar Flutter SDK 3.x instalado y funcionando
-- [ ] Configurar proyecto base si no existe
-- [ ] Añadir dependencias al `pubspec.yaml`
-- [ ] Ejecutar `flutter pub get`
-- [ ] Verificar que el proyecto compila
-- [ ] Configurar `analysis_options.yaml` si necesita ajustes
-- [ ] Crear estructura de carpetas Feature-First completa
+- [x] Verificar Flutter SDK 3.x instalado y funcionando (Flutter 3.35.6, Dart 3.9.2)
+- [x] Configurar proyecto base si no existe (ya existía)
+- [x] Añadir dependencias al `pubspec.yaml` (google_fonts, go_router, flutter_bloc, equatable, intl)
+- [x] Ejecutar `flutter pub get` (todas las dependencias descargadas correctamente)
+- [x] Verificar que el proyecto compila (verificación exitosa)
+- [x] Configurar `analysis_options.yaml` si necesita ajustes (no requiere cambios)
+- [x] Crear estructura de carpetas Feature-First completa (29 carpetas creadas)
 
-### Fase 2: Sistema de Tema (Días 3-4)
+### Fase 2: Sistema de Tema (Días 3-4) 📅 PRÓXIMA FASE
 
-- [ ] Crear `lib/config/theme/app_theme.dart`
+- [ ] Crear `lib/config/theme/app_theme.dart` (archivo placeholder ya existe ✅)
 - [ ] Implementar ThemeData con `useMaterial3: true`
 - [ ] Configurar paleta de colores con `ColorScheme.fromSeed`
 - [ ] Implementar tema claro
 - [ ] Implementar tema oscuro
-- [ ] Añadir Google Fonts
-- [ ] Crear extension methods: `context.theme`, `context.colorScheme`
+- [ ] Añadir Google Fonts (dependencia ya añadida ✅)
+- [ ] Crear extension methods: `context.theme`, `context.colorScheme` (archivo placeholder ya existe ✅)
 - [ ] Integrar tema en `main.dart`
 - [ ] Crear toggle temporal para cambiar tema
 - [ ] Probar tema en ambas variantes
@@ -725,10 +726,16 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-- [ ] Todas las tareas de las 10 fases completadas
-- [ ] Proyecto compila sin errores
-- [ ] `dart format .` ejecutado
-- [ ] `flutter analyze` sin errores
+**Progreso General: 10% (1/10 fases completadas)**
+
+### Fase 1: Setup Inicial ✅
+- [x] Todas las tareas de la Fase 1 completadas
+- [x] Proyecto compila sin errores
+- [x] `dart format .` ejecutado (7 archivos formateados)
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Estructura Feature-First creada (29 carpetas, 5 archivos placeholder)
+
+### Pendiente (Fases 2-10)
 - [ ] Tema claro y oscuro funcionando
 - [ ] Todos los componentes base implementados
 - [ ] Todas las pantallas creadas y navegables
@@ -741,7 +748,26 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ---
 
-**Última actualización:** Octubre 2025
-**Estado:** En desarrollo
+## 📝 Historial de Cambios
+
+### Versión 1.1 - 29 de Octubre 2025
+- ✅ **Fase 1 completada:** Setup inicial y estructura Feature-First
+- ✅ Dependencias añadidas: google_fonts, go_router, flutter_bloc, equatable, intl
+- ✅ 29 carpetas creadas siguiendo arquitectura Feature-First
+- ✅ 5 archivos placeholder con documentación en español
+- ✅ 7 archivos .gitkeep para mantener estructura en git
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
+
+### Versión 1.0 - 29 de Octubre 2025
+- Documento inicial creado con planificación completa del Sprint 0
+- 10 fases definidas con tareas detalladas
+- Criterios de aceptación y DoD establecidos
+
+---
+
+**Última actualización:** 29 de Octubre 2025
+**Estado:** En desarrollo - Fase 1 completada ✅
+**Progreso:** 10% (1/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
 
