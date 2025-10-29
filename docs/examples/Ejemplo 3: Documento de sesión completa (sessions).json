@@ -1,0 +1,14 @@
+{
+  "id": "5Qw9mNx2pR7kH4vT8cL3",
+  "studentId": "3Hn8pLm4qW7aVxC2kR9j",
+  "taskId": "9Lp4mKx7nW2qV5cR8jH1",
+  "teacherId": "7Kx9mPqR2aW4vNcT5eH8",
+  "startTime": "2025-10-20T14:00:00.000Z",
+  "endTime": "2025-10-20T15:30:00.000Z",
+  "totalDuration": 5400,
+  "pausedDuration": 300,
+  "dateLogged": "2025-10-20T00:00:00.000Z",
+  "monthBucket": "2025-10",
+  "notes": "Estudio de escalas mayores con metrónomo a 80 bpm",
+  "createdAt": "2025-10-20T15:30:00.000Z"
+}
