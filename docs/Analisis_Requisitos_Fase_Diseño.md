@@ -316,408 +316,560 @@ Home (según rol)
 
 ---
 
-## 5. 🗄️ Diseño de la Base de Datos
+## 5	Diseño de la base de datos
 
-### 5.1 Modelo de Datos NoSQL (Firestore)
+### 5.1	Modelo de datos conceptual
 
-#### Tipo de Base de Datos
-- **Tipo:** Document-store (Firestore)
-- **Justificación:** Escalabilidad, flexibilidad, integración con Firebase
+#### 5.1.1	Tipo de base de datos NoSQL utilizada
+Playing Tracker utiliza **Cloud Firestore**, una base de datos NoSQL de tipo **document-store** (almacén de documentos) proporcionada por Firebase. Este tipo de base de datos organiza los datos en colecciones de documentos, donde cada documento es un conjunto de pares clave-valor que pueden contener tipos de datos primitivos, arrays, objetos anidados y referencias a otros documentos.
 
-#### Entidades Principales
+**Justificación de la elección:**
+•	**Escalabilidad automática**: Firestore escala horizontalmente de forma automática sin requerir configuración manual de sharding o particionamiento.
+•	**Tiempo real**: Soporte nativo para sincronización de datos en tiempo real mediante listeners, ideal para actualizar estadísticas y cronómetros sin recargar la aplicación.
+•	**Integración nativa con Firebase**: Perfecta integración con Firebase Authentication, Storage y Cloud Functions, simplificando la arquitectura del sistema.
+•	**Modelo flexible**: El esquema flexible permite evolucionar la estructura de datos sin migraciones complejas, adaptándose a cambios en los requisitos.
+•	**Consultas eficientes**: Soporte para índices compuestos y consultas complejas con filtros múltiples, ordenamiento y paginación.
+•	**Seguridad granular**: Sistema de reglas de seguridad declarativas que permiten controlar el acceso a nivel de documento y campo.
 
-##### 1. Teachers (Docentes)
+#### 5.1.2	Arquitectura de colecciones (7 colecciones top-level)
+La arquitectura adoptada utiliza **colecciones desanidadas de primer nivel** que modelan relaciones N:M mediante documentos intermedios. Esta estrategia está optimizada para **rendimiento en lectura** y **escalabilidad anti-hotspot**, evitando los problemas de contención que pueden surgir con documentos muy solicitados.
+
+| Colección | Propósito | Justificación Técnica |
+|-----------|-----------|----------------------|
+| `teachers` | Perfiles de docentes | Colección top-level con UID de Firebase Auth como ID para acceso directo O(1) |
+| `students` | Perfiles de alumnos con agregados | Incluye contadores denormalizados (totalSessionsCount, totalDurationLogged) para consultas rápidas sin agregación en tiempo real |
+| `classes` | Definiciones de clases/grupos | IDs globales únicos permiten consultas eficientes sin necesidad de conocer el propietario |
+| `memberships` | Relación Alumno ↔ Clase (N:M) | Evita arrays grandes en documentos de clases que podrían causar hotspots de escritura con alta concurrencia |
+| `tasks` | Definición maestra de tareas | Top-level permite reutilización de tareas entre múltiples clases sin duplicación |
+| `assignments` | Progreso individual tarea-alumno | Estado 1:1 con clave compuesta `${taskId}_${studentId}` garantiza idempotencia y acceso directo |
+| `sessions` | Registros atómicos de estudio | Top-level permite collection group queries para estadísticas agregadas eficientes |
+
+#### 5.1.3	Descripción de entidades principales
+
+##### Colección: `teachers` (Docentes)
+Almacena los perfiles de los profesores de música que gestionan clases y tareas en la aplicación.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | UID de Firebase Authentication. Clave primaria que permite acceso directo O(1) |
+| `firstName` | string | ✅ Sí | Nombre del docente (mínimo 3 caracteres, solo letras y espacios) |
+| `lastName` | string | ✅ Sí | Apellidos del docente (mínimo 3 caracteres, solo letras y espacios) |
+| `email` | string | ✅ Sí | Correo electrónico único del docente. Gestionado por Firebase Auth |
+| `createdAt` | timestamp | ✅ Sí | Fecha y hora de creación del perfil (ISO 8601) |
+| `updatedAt` | timestamp | ✅ Sí | Fecha y hora de última actualización del perfil (ISO 8601) |
+| `isActive` | boolean | ✅ Sí | Estado de la cuenta (true = activa, false = desactivada). Default: true |
+
+##### Colección: `students` (Alumnos)
+Almacena los perfiles de los estudiantes con contadores denormalizados para optimizar consultas de estadísticas.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | UID de Firebase Authentication. Clave primaria |
+| `firstName` | string | ✅ Sí | Nombre del alumno (mínimo 3 caracteres, solo letras y espacios) |
+| `lastName` | string | ✅ Sí | Apellidos del alumno (mínimo 3 caracteres, solo letras y espacios) |
+| `email` | string | ✅ Sí | Correo electrónico único del alumno. Gestionado por Firebase Auth |
+| `createdAt` | timestamp | ✅ Sí | Fecha y hora de creación del perfil (ISO 8601) |
+| `updatedAt` | timestamp | ✅ Sí | Fecha y hora de última actualización del perfil (ISO 8601) |
+| `isActive` | boolean | ✅ Sí | Estado de la cuenta. Default: true |
+| `totalSessionsCount` | number | ✅ Sí | Total de sesiones de estudio completadas. Default: 0. Actualizado mediante transacciones |
+| `totalDurationLogged` | number | ✅ Sí | Segundos totales de estudio registrados. Default: 0. Actualizado mediante transacciones |
+| `lastSessionDate` | timestamp | ❌ No | Fecha de la última sesión de estudio completada. Null si no hay sesiones |
+
+##### Colección: `classes` (Clases)
+Representa las clases o grupos virtuales creados por los docentes.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | Identificador único global generado por Firestore |
+| `name` | string | ✅ Sí | Nombre descriptivo de la clase (mínimo 3 caracteres, máximo 50) |
+| `description` | string | ❌ No | Descripción opcional de la clase (máximo 500 caracteres) |
+| `ownerTeacherId` | string | ✅ Sí | ID del docente propietario (referencia a `teachers/{teacherId}`) |
+| `accessCode` | string | ✅ Sí | Código de acceso único de 6 caracteres alfanuméricos (mayúsculas y números) para unirse a la clase |
+| `createdAt` | timestamp | ✅ Sí | Fecha y hora de creación de la clase (ISO 8601) |
+| `updatedAt` | timestamp | ✅ Sí | Fecha y hora de última actualización (ISO 8601) |
+| `isActive` | boolean | ✅ Sí | Estado de la clase (true = activa, false = archivada). Default: true |
+
+##### Colección: `memberships` (Membresías)
+Modela la relación N:M entre alumnos y clases, evitando arrays grandes en documentos.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | Identificador único de la membresía generado por Firestore |
+| `classId` | string | ✅ Sí | ID de la clase (referencia a `classes/{classId}`) |
+| `studentId` | string | ✅ Sí | ID del alumno (referencia a `students/{studentId}`) |
+| `teacherId` | string | ✅ Sí | ID del docente propietario (denormalizado para consultas eficientes) |
+| `className` | string | ✅ Sí | Nombre de la clase (denormalizado para mostrar sin JOIN) |
+| `joinedAt` | timestamp | ✅ Sí | Fecha y hora en que el alumno se unió a la clase (ISO 8601) |
+| `isActive` | boolean | ✅ Sí | Estado de la membresía (true = activa, false = abandonada). Default: true |
+
+##### Colección: `tasks` (Tareas)
+Define las tareas de estudio creadas por los docentes. Almacenamiento centralizado que evita duplicación.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | Identificador único global generado por Firestore |
+| `title` | string | ✅ Sí | Título de la tarea (mínimo 5 caracteres, máximo 100) |
+| `description` | string | ✅ Sí | Descripción detallada de la tarea (mínimo 10 caracteres, máximo 2000) |
+| `createdBy` | string | ✅ Sí | ID del docente creador (referencia a `teachers/{teacherId}`) |
+| `durationSuggested` | number | ✅ Sí | Tiempo sugerido de estudio en minutos (rango: 5-480) |
+| `attachments` | array | ❌ No | Array de objetos con archivos adjuntos: `{name: string, url: string, type: string}`. Tipos: "pdf", "audio", "link" |
+| `createdAt` | timestamp | ✅ Sí | Fecha y hora de creación de la tarea (ISO 8601) |
+| `updatedAt` | timestamp | ✅ Sí | Fecha y hora de última actualización (ISO 8601) |
+| `dueDate` | timestamp | ❌ No | Fecha límite opcional para completar la tarea (ISO 8601) |
+| `isActive` | boolean | ✅ Sí | Estado de la tarea (true = activa, false = eliminada). Default: true |
+
+##### Colección: `assignments` (Asignaciones)
+Representa el progreso individual de cada alumno en cada tarea asignada. Relación 1:1 entre tarea y alumno.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | Clave compuesta: `${taskId}_${studentId}`. Garantiza idempotencia y acceso directo |
+| `taskId` | string | ✅ Sí | ID de la tarea (referencia a `tasks/{taskId}`) |
+| `studentId` | string | ✅ Sí | ID del alumno (referencia a `students/{studentId}`) |
+| `teacherId` | string | ✅ Sí | ID del docente (denormalizado para consultas eficientes) |
+| `status` | string | ✅ Sí | Estado de la asignación: "pending" (pendiente), "in_progress" (en progreso), "completed" (completada) |
+| `assignedAt` | timestamp | ✅ Sí | Fecha y hora de asignación de la tarea (ISO 8601) |
+| `completedAt` | timestamp | ❌ No | Fecha y hora de finalización de la tarea (ISO 8601). Null si no está completada |
+| `sessionsCount` | number | ✅ Sí | Número de sesiones de estudio realizadas para esta tarea. Default: 0 |
+| `totalDurationLogged` | number | ✅ Sí | Segundos totales registrados para esta tarea. Default: 0 |
+| `lastSessionDate` | timestamp | ❌ No | Fecha de la última sesión registrada. Null si no hay sesiones |
+
+##### Colección: `sessions` (Sesiones)
+Registros atómicos e inmutables de cada sesión de estudio realizada por un alumno.
+
+| Campo | Tipo de Dato | Obligatorio | Descripción |
+|-------|--------------|-------------|-------------|
+| `id` | string | ✅ Sí | Identificador único de la sesión generado por Firestore |
+| `studentId` | string | ✅ Sí | ID del alumno (referencia a `students/{studentId}`) |
+| `taskId` | string | ✅ Sí | ID de la tarea estudiada (referencia a `tasks/{taskId}`) |
+| `teacherId` | string | ✅ Sí | ID del docente propietario (denormalizado para consultas de estadísticas) |
+| `startTime` | timestamp | ✅ Sí | Fecha y hora exacta de inicio de la sesión (ISO 8601) |
+| `endTime` | timestamp | ✅ Sí | Fecha y hora exacta de finalización de la sesión (ISO 8601) |
+| `totalDuration` | number | ✅ Sí | Duración total de la sesión en segundos (tiempo activo) |
+| `pausedDuration` | number | ✅ Sí | Tiempo total en pausa en segundos. Default: 0 |
+| `dateLogged` | timestamp | ✅ Sí | Fecha de la sesión para consultas por fecha (ISO 8601) |
+| `monthBucket` | string | ✅ Sí | Mes de la sesión en formato "YYYY-MM" para consultas agregadas eficientes |
+| `notes` | string | ❌ No | Notas opcionales del alumno sobre la sesión (máximo 500 caracteres) |
+| `createdAt` | timestamp | ✅ Sí | Fecha y hora de creación del registro (ISO 8601) |
+
+### 5.2	Ejemplos de documentos/datos
+
+#### Ejemplo 1: Documento de docente (teachers)
 ```json
 {
-  "id": "string (UID)",
-  "firstName": "string (obligatorio)",
-  "lastName": "string (obligatorio)",
-  "email": "string (obligatorio, único)",
-  "createdAt": "timestamp (obligatorio)",
-  "updatedAt": "timestamp (obligatorio)",
-  "isActive": "boolean (obligatorio, default: true)"
-}
-```
-
-##### 2. Students (Alumnos)
-```json
-{
-  "id": "string (UID)",
-  "firstName": "string (obligatorio)",
-  "lastName": "string (obligatorio)",
-  "email": "string (obligatorio, único)",
-  "createdAt": "timestamp (obligatorio)",
-  "updatedAt": "timestamp (obligatorio)",
-  "isActive": "boolean (obligatorio, default: true)",
-  "totalSessionsCount": "number (obligatorio, default: 0)",
-  "totalDurationLogged": "number (obligatorio, default: 0)",
-  "lastSessionDate": "timestamp (opcional)"
-}
-```
-
-##### 3. Classes (Clases)
-```json
-{
-  "id": "string (obligatorio, único)",
-  "name": "string (obligatorio)",
-  "description": "string (opcional)",
-  "ownerTeacherId": "string (obligatorio)",
-  "accessCode": "string (obligatorio, único, 6 caracteres)",
-  "createdAt": "timestamp (obligatorio)",
-  "updatedAt": "timestamp (obligatorio)",
-  "isActive": "boolean (obligatorio, default: true)"
-}
-```
-
-##### 4. Memberships (Membresías)
-```json
-{
-  "id": "string (obligatorio, único)",
-  "classId": "string (obligatorio)",
-  "studentId": "string (obligatorio)",
-  "teacherId": "string (obligatorio)",
-  "className": "string (obligatorio)",
-  "joinedAt": "timestamp (obligatorio)",
-  "isActive": "boolean (obligatorio, default: true)"
-}
-```
-
-##### 5. Tasks (Tareas)
-```json
-{
-  "id": "string (obligatorio, único)",
-  "title": "string (obligatorio)",
-  "description": "string (obligatorio)",
-  "createdBy": "string (obligatorio)",
-  "durationSuggested": "number (obligatorio, minutos)",
-  "attachments": "array (opcional)",
-  "createdAt": "timestamp (obligatorio)",
-  "updatedAt": "timestamp (obligatorio)",
-  "dueDate": "timestamp (opcional)",
-  "isActive": "boolean (obligatorio, default: true)"
-}
-```
-
-##### 6. Assignments (Asignaciones)
-```json
-{
-  "id": "string (obligatorio, formato: taskId_studentId)",
-  "taskId": "string (obligatorio)",
-  "studentId": "string (obligatorio)",
-  "teacherId": "string (obligatorio)",
-  "status": "string (obligatorio, enum: pending|in_progress|completed)",
-  "assignedAt": "timestamp (obligatorio)",
-  "completedAt": "timestamp (opcional)",
-  "sessionsCount": "number (obligatorio, default: 0)",
-  "totalDurationLogged": "number (obligatorio, default: 0)",
-  "lastSessionDate": "timestamp (opcional)"
-}
-```
-
-##### 7. Sessions (Sesiones)
-```json
-{
-  "id": "string (obligatorio, único)",
-  "studentId": "string (obligatorio)",
-  "taskId": "string (obligatorio)",
-  "teacherId": "string (obligatorio)",
-  "startTime": "timestamp (obligatorio)",
-  "endTime": "timestamp (obligatorio)",
-  "totalDuration": "number (obligatorio, segundos)",
-  "pausedDuration": "number (obligatorio, default: 0)",
-  "dateLogged": "timestamp (obligatorio)",
-  "monthBucket": "string (obligatorio, formato: YYYY-MM)",
-  "notes": "string (opcional)",
-  "createdAt": "timestamp (obligatorio)"
-}
-```
-
-### 5.2 Ejemplos de Documentos
-
-#### Ejemplo 1: Teacher
-```json
-{
-  "id": "teacher_123",
+  "id": "7Kx9mPqR2aW4vNcT5eH8",
   "firstName": "María",
   "lastName": "García López",
   "email": "maria.garcia@conservatorio.com",
-  "createdAt": "2025-10-15T10:30:00Z",
-  "updatedAt": "2025-10-15T10:30:00Z",
+  "createdAt": "2025-10-15T10:30:00.000Z",
+  "updatedAt": "2025-10-15T10:30:00.000Z",
   "isActive": true
 }
 ```
 
-#### Ejemplo 2: Student con Agregados
+**Descripción del ejemplo:**
+Este documento representa el perfil de una docente de música llamada María García López registrada en el sistema. El campo `id` coincide con su UID de Firebase Authentication, permitiendo acceso directo y seguro a sus datos. El campo `isActive` con valor `true` indica que su cuenta está activa y puede utilizar todas las funcionalidades de la aplicación.
+
+#### Ejemplo 2: Documento de alumno con agregados (students)
 ```json
 {
-  "id": "student_456",
+  "id": "3Hn8pLm4qW7aVxC2kR9j",
   "firstName": "Carlos",
   "lastName": "Rodríguez Martín",
   "email": "carlos.rodriguez@estudiante.com",
-  "createdAt": "2025-10-15T11:00:00Z",
-  "updatedAt": "2025-10-20T15:30:00Z",
+  "createdAt": "2025-10-15T11:00:00.000Z",
+  "updatedAt": "2025-10-20T15:30:00.000Z",
   "isActive": true,
   "totalSessionsCount": 15,
-  "totalDurationLogged": 4500,
-  "lastSessionDate": "2025-10-20T15:30:00Z"
+  "totalDurationLogged": 27000,
+  "lastSessionDate": "2025-10-20T15:30:00.000Z"
 }
 ```
 
-#### Ejemplo 3: Session Completa
+**Descripción del ejemplo:**
+Este documento muestra el perfil de un alumno activo con historial de estudio. Los campos denormalizados `totalSessionsCount` (15 sesiones), `totalDurationLogged` (27,000 segundos = 7.5 horas) y `lastSessionDate` permiten mostrar estadísticas rápidas sin necesidad de consultar la colección `sessions`. Estos contadores se actualizan mediante transacciones cada vez que el alumno completa una sesión de estudio.
+
+#### Ejemplo 3: Documento de sesión completa (sessions)
 ```json
 {
-  "id": "session_789",
-  "studentId": "student_456",
-  "taskId": "task_101",
-  "teacherId": "teacher_123",
-  "startTime": "2025-10-20T14:00:00Z",
-  "endTime": "2025-10-20T15:30:00Z",
+  "id": "5Qw9mNx2pR7kH4vT8cL3",
+  "studentId": "3Hn8pLm4qW7aVxC2kR9j",
+  "taskId": "9Lp4mKx7nW2qV5cR8jH1",
+  "teacherId": "7Kx9mPqR2aW4vNcT5eH8",
+  "startTime": "2025-10-20T14:00:00.000Z",
+  "endTime": "2025-10-20T15:30:00.000Z",
   "totalDuration": 5400,
   "pausedDuration": 300,
-  "dateLogged": "2025-10-20T14:00:00Z",
+  "dateLogged": "2025-10-20T00:00:00.000Z",
   "monthBucket": "2025-10",
-  "notes": "Estudio de escalas mayores",
-  "createdAt": "2025-10-20T15:30:00Z"
+  "notes": "Estudio de escalas mayores con metrónomo a 80 bpm",
+  "createdAt": "2025-10-20T15:30:00.000Z"
 }
 ```
 
-### 5.3 Scripts de Configuración
+**Descripción del ejemplo:**
+Este documento registra una sesión de estudio completada por el alumno Carlos. La sesión comenzó a las 14:00 y finalizó a las 15:30, con una duración total de 5,400 segundos (90 minutos) y 300 segundos (5 minutos) en pausa. El campo `monthBucket` con valor "2025-10" permite consultas eficientes de estadísticas mensuales sin necesidad de procesar rangos de fechas complejos. Las `notes` opcionales permiten al alumno documentar aspectos específicos de su práctica.
 
-#### Reglas de Seguridad Firestore
+### 5.3	Scripts de creación/configuración y datos iniciales
+
+#### 5.3.1	Reglas de seguridad de Firestore
+Las reglas de seguridad de Firestore controlan el acceso a los datos a nivel de documento y colección. Este script debe configurarse en la consola de Firebase (Firestore → Rules) o desplegarse mediante Firebase CLI.
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isAuth() { return request.auth != null; }
 
+    // Función auxiliar: verifica si el usuario está autenticado
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Función auxiliar: verifica si el usuario es el propietario del documento
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // Colección: teachers
+    // Solo el docente propietario puede leer y escribir su propio perfil
     match /teachers/{teacherId} {
-      allow read, write: if isAuth() && request.auth.uid == teacherId;
+      allow read, write: if isOwner(teacherId);
     }
 
+    // Colección: students
+    // Solo el alumno propietario puede leer y escribir su propio perfil
     match /students/{studentId} {
-      allow read, write: if isAuth() && request.auth.uid == studentId;
+      allow read, write: if isOwner(studentId);
     }
 
+    // Colección: classes
+    // Lectura: cualquier usuario autenticado
+    // Escritura: solo el docente propietario
     match /classes/{classId} {
+      allow read: if isAuth();
       allow write: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
-      allow read: if isAuth();
     }
 
+    // Colección: memberships
+    // Lectura: alumno o docente involucrado
+    // Escritura: solo el docente propietario
     match /memberships/{membershipId} {
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
       allow write: if isAuth() && request.resource.data.teacherId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
     }
 
+    // Colección: tasks
+    // Lectura: cualquier usuario autenticado
+    // Escritura: solo el docente creador
     match /tasks/{taskId} {
-      allow write: if isAuth() && resource.data.createdBy == request.auth.uid;
       allow read: if isAuth();
+      allow write: if isAuth() && resource.data.createdBy == request.auth.uid;
     }
 
+    // Colección: assignments
+    // Lectura: alumno asignado o docente propietario
+    // Escritura: docente propietario o alumno para actualizar progreso
     match /assignments/{assignmentId} {
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
-      allow write: if isAuth() && (resource.data.teacherId == request.auth.uid
-                                  || request.resource.data.studentId == request.auth.uid);
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
+      allow write: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        request.resource.data.studentId == request.auth.uid
+      );
     }
 
+    // Colección: sessions
+    // Creación: solo el alumno propietario
+    // Lectura: alumno propietario o docente asociado
+    // Actualización/Eliminación: no permitida (inmutabilidad)
     match /sessions/{sessionId} {
       allow create: if isAuth() && request.resource.data.studentId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
       allow update, delete: if false;
     }
   }
 }
 ```
 
-#### Datos Iniciales de Prueba
+**Descripción del script:**
+Este conjunto de reglas implementa un modelo de seguridad granular que garantiza que cada usuario solo pueda acceder y modificar los datos para los que tiene permisos. Las reglas incluyen funciones auxiliares (`isAuth`, `isOwner`) que mejoran la legibilidad y mantenibilidad del código. La inmutabilidad de la colección `sessions` (no se permite `update` ni `delete`) garantiza la integridad de los datos históricos de estudio.
+
+#### 5.3.2	Índices compuestos recomendados
+Firestore requiere índices compuestos para consultas con múltiples filtros y ordenamiento. Este script debe ejecutarse mediante Firebase CLI o configurarse en la consola de Firebase (Firestore → Indexes).
+
 ```json
 {
-  "teachers": [
+  "indexes": [
     {
-      "id": "teacher_001",
-      "firstName": "Ana",
-      "lastName": "Martínez",
-      "email": "ana.martinez@conservatorio.com",
-      "createdAt": "2025-10-01T09:00:00Z",
-      "updatedAt": "2025-10-01T09:00:00Z",
-      "isActive": true
-    }
-  ],
-  "students": [
+      "collectionGroup": "memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "studentId", "order": "ASCENDING" },
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "joinedAt", "order": "DESCENDING" }
+      ]
+    },
     {
-      "id": "student_001",
-      "firstName": "Luis",
-      "lastName": "González",
-      "email": "luis.gonzalez@estudiante.com",
-      "createdAt": "2025-10-01T10:00:00Z",
-      "updatedAt": "2025-10-01T10:00:00Z",
-      "isActive": true,
-      "totalSessionsCount": 0,
-      "totalDurationLogged": 0
-    }
-  ],
-  "classes": [
+      "collectionGroup": "memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "teacherId", "order": "ASCENDING" },
+        { "fieldPath": "classId", "order": "ASCENDING" },
+        { "fieldPath": "isActive", "order": "ASCENDING" }
+      ]
+    },
     {
-      "id": "class_001",
-      "name": "Piano Nivel 1",
-      "description": "Clase de piano para principiantes",
-      "ownerTeacherId": "teacher_001",
-      "accessCode": "ABC123",
-      "createdAt": "2025-10-01T09:30:00Z",
-      "updatedAt": "2025-10-01T09:30:00Z",
-      "isActive": true
+      "collectionGroup": "assignments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "studentId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "assignedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "assignments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "teacherId", "order": "ASCENDING" },
+        { "fieldPath": "taskId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "studentId", "order": "ASCENDING" },
+        { "fieldPath": "dateLogged", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "teacherId", "order": "ASCENDING" },
+        { "fieldPath": "monthBucket", "order": "ASCENDING" },
+        { "fieldPath": "dateLogged", "order": "DESCENDING" }
+      ]
     }
   ]
 }
 ```
 
----
+**Descripción de los índices:**
+Estos índices compuestos optimizan las consultas más frecuentes del sistema: listar clases de un alumno, obtener tareas asignadas por estado, consultar sesiones de estudio por fecha, y generar estadísticas mensuales. Sin estos índices, Firestore rechazaría estas consultas compuestas.
 
-## 6. 🏗️ Diagrama de Clases
+#### 5.3.3	Archivo de datos iniciales de prueba
+Este archivo JSON contiene datos de prueba que pueden cargarse manualmente en Firestore o mediante un script de inicialización para facilitar el desarrollo y testing. Los datos representan un escenario real con un docente, dos alumnos, una clase y tareas asignadas.
 
-### 6.1 Clases Principales del Sistema
-
-#### AuthCubit
-```dart
-class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository _authRepository;
-
-  AuthCubit(this._authRepository) : super(AuthInitial());
-
-  Future<void> loginUser(String email, String password);
-  Future<void> registerUser(UserModel user);
-  Future<void> logout();
-  Future<void> resetPassword(String email);
+```json
+{
+  "teachers": [
+    {
+      "id": "teacher_001_test",
+      "firstName": "Ana",
+      "lastName": "Martínez Sánchez",
+      "email": "ana.martinez@conservatorio.com",
+      "createdAt": "2025-10-01T09:00:00.000Z",
+      "updatedAt": "2025-10-01T09:00:00.000Z",
+      "isActive": true
+    }
+  ],
+  "students": [
+    {
+      "id": "student_001_test",
+      "firstName": "Luis",
+      "lastName": "González Pérez",
+      "email": "luis.gonzalez@estudiante.com",
+      "createdAt": "2025-10-01T10:00:00.000Z",
+      "updatedAt": "2025-10-05T14:30:00.000Z",
+      "isActive": true,
+      "totalSessionsCount": 5,
+      "totalDurationLogged": 9000,
+      "lastSessionDate": "2025-10-05T14:30:00.000Z"
+    },
+    {
+      "id": "student_002_test",
+      "firstName": "Elena",
+      "lastName": "Fernández Ruiz",
+      "email": "elena.fernandez@estudiante.com",
+      "createdAt": "2025-10-01T10:30:00.000Z",
+      "updatedAt": "2025-10-01T10:30:00.000Z",
+      "isActive": true,
+      "totalSessionsCount": 0,
+      "totalDurationLogged": 0,
+      "lastSessionDate": null
+    }
+  ],
+  "classes": [
+    {
+      "id": "class_001_test",
+      "name": "Piano Nivel 1",
+      "description": "Clase de piano para estudiantes principiantes. Fundamentos de técnica y lectura musical.",
+      "ownerTeacherId": "teacher_001_test",
+      "accessCode": "PIANO1",
+      "createdAt": "2025-10-01T09:30:00.000Z",
+      "updatedAt": "2025-10-01T09:30:00.000Z",
+      "isActive": true
+    }
+  ],
+  "memberships": [
+    {
+      "id": "membership_001_test",
+      "classId": "class_001_test",
+      "studentId": "student_001_test",
+      "teacherId": "teacher_001_test",
+      "className": "Piano Nivel 1",
+      "joinedAt": "2025-10-01T11:00:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "membership_002_test",
+      "classId": "class_001_test",
+      "studentId": "student_002_test",
+      "teacherId": "teacher_001_test",
+      "className": "Piano Nivel 1",
+      "joinedAt": "2025-10-01T11:15:00.000Z",
+      "isActive": true
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_001_test",
+      "title": "Escalas mayores (Do, Sol, Re)",
+      "description": "Practicar escalas mayores de Do, Sol y Re en dos octavas. Prestar atención a la digitación correcta y al sonido uniforme. Usar metrónomo comenzando a 60 bpm.",
+      "createdBy": "teacher_001_test",
+      "durationSuggested": 30,
+      "attachments": [
+        {
+          "name": "Digitación de escalas",
+          "url": "https://storage.googleapis.com/playing-tracker/attachments/escalas-digitacion.pdf",
+          "type": "pdf"
+        }
+      ],
+      "createdAt": "2025-10-02T10:00:00.000Z",
+      "updatedAt": "2025-10-02T10:00:00.000Z",
+      "dueDate": "2025-10-15T23:59:59.000Z",
+      "isActive": true
+    },
+    {
+      "id": "task_002_test",
+      "title": "Ejercicios de Hanon (Nº 1-5)",
+      "description": "Estudiar los primeros cinco ejercicios de Hanon para desarrollar independencia y fortaleza de los dedos. Practicar lentamente primero y aumentar gradualmente la velocidad.",
+      "createdBy": "teacher_001_test",
+      "durationSuggested": 45,
+      "attachments": [],
+      "createdAt": "2025-10-02T10:30:00.000Z",
+      "updatedAt": "2025-10-02T10:30:00.000Z",
+      "dueDate": null,
+      "isActive": true
+    }
+  ],
+  "assignments": [
+    {
+      "id": "task_001_test_student_001_test",
+      "taskId": "task_001_test",
+      "studentId": "student_001_test",
+      "teacherId": "teacher_001_test",
+      "status": "in_progress",
+      "assignedAt": "2025-10-02T10:00:00.000Z",
+      "completedAt": null,
+      "sessionsCount": 3,
+      "totalDurationLogged": 5400,
+      "lastSessionDate": "2025-10-05T14:30:00.000Z"
+    },
+    {
+      "id": "task_001_test_student_002_test",
+      "taskId": "task_001_test",
+      "studentId": "student_002_test",
+      "teacherId": "teacher_001_test",
+      "status": "pending",
+      "assignedAt": "2025-10-02T10:00:00.000Z",
+      "completedAt": null,
+      "sessionsCount": 0,
+      "totalDurationLogged": 0,
+      "lastSessionDate": null
+    },
+    {
+      "id": "task_002_test_student_001_test",
+      "taskId": "task_002_test",
+      "studentId": "student_001_test",
+      "teacherId": "teacher_001_test",
+      "status": "in_progress",
+      "assignedAt": "2025-10-02T10:30:00.000Z",
+      "completedAt": null,
+      "sessionsCount": 2,
+      "totalDurationLogged": 3600,
+      "lastSessionDate": "2025-10-04T16:00:00.000Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session_001_test",
+      "studentId": "student_001_test",
+      "taskId": "task_001_test",
+      "teacherId": "teacher_001_test",
+      "startTime": "2025-10-03T15:00:00.000Z",
+      "endTime": "2025-10-03T16:00:00.000Z",
+      "totalDuration": 3600,
+      "pausedDuration": 0,
+      "dateLogged": "2025-10-03T00:00:00.000Z",
+      "monthBucket": "2025-10",
+      "notes": "Primera sesión de práctica. Me cuesta la escala de Re.",
+      "createdAt": "2025-10-03T16:00:00.000Z"
+    },
+    {
+      "id": "session_002_test",
+      "studentId": "student_001_test",
+      "taskId": "task_002_test",
+      "teacherId": "teacher_001_test",
+      "startTime": "2025-10-04T15:00:00.000Z",
+      "endTime": "2025-10-04T16:00:00.000Z",
+      "totalDuration": 3600,
+      "pausedDuration": 300,
+      "dateLogged": "2025-10-04T00:00:00.000Z",
+      "monthBucket": "2025-10",
+      "notes": "Ejercicios 1-3 completados. Pausé 5 minutos para descansar.",
+      "createdAt": "2025-10-04T16:00:00.000Z"
+    },
+    {
+      "id": "session_003_test",
+      "studentId": "student_001_test",
+      "taskId": "task_001_test",
+      "teacherId": "teacher_001_test",
+      "startTime": "2025-10-05T14:00:00.000Z",
+      "endTime": "2025-10-05T14:30:00.000Z",
+      "totalDuration": 1800,
+      "pausedDuration": 0,
+      "dateLogged": "2025-10-05T00:00:00.000Z",
+      "monthBucket": "2025-10",
+      "notes": "Sesión corta de repaso. Mejora notable en la escala de Re.",
+      "createdAt": "2025-10-05T14:30:00.000Z"
+    }
+  ]
 }
 ```
 
-#### TaskCubit
-```dart
-class TaskCubit extends Cubit<TaskState> {
-  final TaskRepository _taskRepository;
+**Descripción de los datos iniciales:**
+Este conjunto de datos de prueba representa un escenario educativo completo y realista:
+•	**1 docente** (Ana Martínez) que imparte Piano Nivel 1
+•	**2 alumnos** (Luis González con historial de estudio, y Elena Fernández recién registrada sin sesiones)
+•	**1 clase** (Piano Nivel 1) con código de acceso "PIANO1"
+•	**2 membresías** activas (ambos alumnos unidos a la clase)
+•	**2 tareas** asignadas (Escalas mayores y Ejercicios de Hanon) con diferentes características (una con archivo adjunto y fecha límite, otra sin ellos)
+•	**3 asignaciones** que muestran diferentes estados (in_progress para Luis, pending para Elena)
+•	**3 sesiones** de estudio completadas por Luis con diferentes duraciones, pausas y notas
 
-  TaskCubit(this._taskRepository) : super(TaskInitial());
-
-  Future<void> createTask(TaskModel task);
-  Future<void> assignTask(String taskId, List<String> studentIds);
-  Future<void> updateTaskStatus(String taskId, TaskStatus status);
-  Future<void> getTasksByClass(String classId);
-}
-```
-
-#### SessionCubit
-```dart
-class SessionCubit extends Cubit<SessionState> {
-  final SessionRepository _sessionRepository;
-
-  SessionCubit(this._sessionRepository) : super(SessionInitial());
-
-  Future<void> startSession(String taskId);
-  Future<void> pauseSession();
-  Future<void> resumeSession();
-  Future<void> endSession();
-  Future<void> getSessionHistory(String studentId);
-}
-```
-
-### 6.2 Modelos de Dominio
-
-#### UserModel
-```dart
-@freezed
-class UserModel with _$UserModel {
-  const factory UserModel({
-    required String id,
-    required String firstName,
-    required String lastName,
-    required String email,
-    required UserRole role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    @Default(true) bool isActive,
-  }) = _UserModel;
-
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
-}
-```
-
-#### TaskModel
-```dart
-@freezed
-class TaskModel with _$TaskModel {
-  const factory TaskModel({
-    required String id,
-    required String title,
-    required String description,
-    required String createdBy,
-    required int durationSuggested,
-    List<Attachment>? attachments,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    DateTime? dueDate,
-    @Default(true) bool isActive,
-  }) = _TaskModel;
-
-  factory TaskModel.fromJson(Map<String, dynamic> json) => _$TaskModelFromJson(json);
-}
-```
-
-#### SessionModel
-```dart
-@freezed
-class SessionModel with _$SessionModel {
-  const factory SessionModel({
-    required String id,
-    required String studentId,
-    required String taskId,
-    required String teacherId,
-    required DateTime startTime,
-    required DateTime endTime,
-    required int totalDuration,
-    @Default(0) int pausedDuration,
-    required DateTime dateLogged,
-    required String monthBucket,
-    String? notes,
-    required DateTime createdAt,
-  }) = _SessionModel;
-
-  factory SessionModel.fromJson(Map<String, dynamic> json) => _$SessionModelFromJson(json);
-}
-```
-
-### 6.3 Diagrama de Objetos
-
-```
-AuthCubit
-├── AuthRepository
-│   ├── AuthService
-│   └── FirestoreService
-└── AuthState
-    ├── AuthInitial
-    ├── AuthLoading
-    ├── AuthSuccess
-    └── AuthError
-
-TaskCubit
-├── TaskRepository
-│   └── TaskService
-└── TaskState
-    ├── TaskInitial
-    ├── TaskLoading
-    ├── TaskSuccess
-    └── TaskError
-
-SessionCubit
-├── SessionRepository
-│   └── SessionService
-└── SessionState
-    ├── SessionInitial
-    ├── SessionRunning
-    ├── SessionPaused
-    └── SessionCompleted
-```
+Este conjunto de datos permite probar todas las funcionalidades principales de la aplicación: creación de clases, asignación de tareas, registro de sesiones, y visualización de estadísticas.
 
 ---
 
