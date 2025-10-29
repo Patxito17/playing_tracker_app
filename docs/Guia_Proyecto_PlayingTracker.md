@@ -492,6 +492,8 @@ service cloud.firestore {
 **Duración:** Octubre 2025
 **Estado:** 📅 En desarrollo - Prioridad máxima
 
+📄 **Documentación detallada:** [SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md)
+
 **Objetivos:**
 - 🎨 **Diseño completo de la aplicación** con Material Design 3
 - 🏗️ **Configuración de arquitectura** y estructura de carpetas
@@ -808,26 +810,27 @@ dev_dependencies:
 - 📄 [docs/FIRESTORE_SCHEMA.md](docs/FIRESTORE_SCHEMA.md) - Esquema de base de datos (por crear)
 - 📄 [docs/DEVTOOLS_SETUP.md](docs/DEVTOOLS_SETUP.md) - Configuración de herramientas (por crear)
 
-### Resúmenes de Sprints (Por Crear)
-- 📄 [docs/SPRINT_0_COMPLETADO.md](docs/SPRINT_0_COMPLETADO.md) - Diseño UI/UX (por crear)
-- 📄 [docs/SPRINT_1_COMPLETADO.md](docs/SPRINT_1_COMPLETADO.md) - Modelos y Arquitectura (por crear)
-- 📄 [docs/SPRINT_2_COMPLETADO.md](docs/SPRINT_2_COMPLETADO.md) - Autenticación (por crear)
+### Documentación de Sprints
+- ✅ [docs/sprints/SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX e Implementación detallada (Sprint 0)
+- 📄 [docs/sprints/SPRINT_1_COMPLETADO.md](sprints/SPRINT_1_COMPLETADO.md) - Modelos y Arquitectura (por crear)
+- 📄 [docs/sprints/SPRINT_2_COMPLETADO.md](sprints/SPRINT_2_COMPLETADO.md) - Autenticación (por crear)
 
 ### Reglas de Desarrollo
 - 📄 [.cursor/rules/flutter_style_rules.mdc](.cursor/rules/) - Convenciones de código (por crear)
 - 📄 [analysis_options.yaml](analysis_options.yaml) - Reglas de linting (por crear)
 
-### Estructura de Documentación a Crear
+### Estructura de Documentación
 ```
 docs/
-├── FIRESTORE_SCHEMA.md           # Esquema de base de datos
-├── DEVTOOLS_SETUP.md             # Configuración de herramientas
-├── SPRINT_0_COMPLETADO.md        # Resumen Sprint 0
-├── SPRINT_1_COMPLETADO.md        # Resumen Sprint 1
-├── SPRINT_2_COMPLETADO.md        # Resumen Sprint 2
-├── ARCHITECTURE.md               # Arquitectura del proyecto
-├── API_DOCUMENTATION.md          # Documentación de APIs
-└── DEPLOYMENT.md                 # Guía de despliegue
+├── sprints/
+│   ├── SPRINT_0_IMPLEMENTACION.md  ✅ # Implementación detallada Sprint 0
+│   ├── SPRINT_1_COMPLETADO.md      📅 # Resumen Sprint 1 (por crear)
+│   └── SPRINT_2_COMPLETADO.md      📅 # Resumen Sprint 2 (por crear)
+├── FIRESTORE_SCHEMA.md           📅 # Esquema de base de datos
+├── DEVTOOLS_SETUP.md             📅 # Configuración de herramientas
+├── ARCHITECTURE.md               📅 # Arquitectura del proyecto
+├── API_DOCUMENTATION.md          📅 # Documentación de APIs
+└── DEPLOYMENT.md                 📅 # Guía de despliegue
 ```
 
 ---
