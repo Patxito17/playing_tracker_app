@@ -492,18 +492,18 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Configurar `analysis_options.yaml` si necesita ajustes (no requiere cambios)
 - [x] Crear estructura de carpetas Feature-First completa (29 carpetas creadas)
 
-### Fase 2: Sistema de Tema (Días 3-4) 📅 PRÓXIMA FASE
+### Fase 2: Sistema de Tema (Días 3-4) ✅ COMPLETADA
 
-- [ ] Crear `lib/config/theme/app_theme.dart` (archivo placeholder ya existe ✅)
-- [ ] Implementar ThemeData con `useMaterial3: true`
-- [ ] Configurar paleta de colores con `ColorScheme.fromSeed`
-- [ ] Implementar tema claro
-- [ ] Implementar tema oscuro
-- [ ] Añadir Google Fonts (dependencia ya añadida ✅)
-- [ ] Crear extension methods: `context.theme`, `context.colorScheme` (archivo placeholder ya existe ✅)
-- [ ] Integrar tema en `main.dart`
-- [ ] Crear toggle temporal para cambiar tema
-- [ ] Probar tema en ambas variantes
+- [x] Crear `lib/config/theme/app_theme.dart` (archivo placeholder ya existe ✅)
+- [x] Implementar ThemeData con `useMaterial3: true`
+- [x] Configurar paleta de colores con `ColorScheme.fromSeed`
+- [x] Implementar tema claro
+- [x] Implementar tema oscuro
+- [x] Añadir Google Fonts (dependencia ya añadida ✅)
+- [x] Crear extension methods: `context.theme`, `context.colorScheme` (archivo placeholder ya existe ✅)
+- [x] Integrar tema en `main.dart`
+- [x] Crear toggle temporal para cambiar tema
+- [x] Probar tema en ambas variantes
 
 ### Fase 3: Componentes Base (Días 5-6)
 
@@ -726,7 +726,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 10% (1/10 fases completadas)**
+**Progreso General: 20% (2/10 fases completadas)**
 
 ### Fase 1: Setup Inicial ✅
 - [x] Todas las tareas de la Fase 1 completadas
@@ -735,8 +735,17 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores (0 issues)
 - [x] Estructura Feature-First creada (29 carpetas, 5 archivos placeholder)
 
-### Pendiente (Fases 2-10)
-- [ ] Tema claro y oscuro funcionando
+### Fase 2: Sistema de Tema ✅
+- [x] Tema claro y oscuro funcionando
+- [x] Constantes de diseño implementadas (espaciado, radios, duraciones)
+- [x] Extension methods implementadas (`context.theme`, `context.colorScheme`, etc.)
+- [x] Toggle temporal de tema funcionando
+- [x] Material Design 3 completamente configurado
+- [x] Google Fonts integrado (Roboto)
+- [x] Componentes M3 configurados (botones, TextFields, Cards, AppBar)
+- [x] Pantalla de prueba creada para validar el tema
+
+### Pendiente (Fases 3-10)
 - [ ] Todos los componentes base implementados
 - [ ] Todas las pantallas creadas y navegables
 - [ ] Navegación completa funcional
@@ -749,6 +758,18 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.2 - 29 de Octubre 2025
+- ✅ **Fase 2 completada:** Sistema de tema Material Design 3
+- ✅ Tema claro y oscuro completamente implementados con `ColorScheme.fromSeed`
+- ✅ Constantes de diseño implementadas: `AppSpacing`, `AppBorderRadius`, `AppDurations`
+- ✅ Extension methods implementadas: `context.theme`, `context.colorScheme`, `context.textTheme`, `context.mediaQuery`, `context.screenWidth`, `context.screenHeight`
+- ✅ Toggle temporal de tema implementado en pantalla de prueba
+- ✅ Componentes M3 configurados: FilledButton, OutlinedButton, TextButton, TextField, Card, AppBar
+- ✅ Google Fonts (Roboto) integrado en ambos temas
+- ✅ Pantalla de prueba creada para validar componentes M3 y paleta de colores
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.1 - 29 de Octubre 2025
 - ✅ **Fase 1 completada:** Setup inicial y estructura Feature-First
@@ -767,7 +788,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 **Última actualización:** 29 de Octubre 2025
-**Estado:** En desarrollo - Fase 1 completada ✅
-**Progreso:** 10% (1/10 fases)
+**Estado:** En desarrollo - Fase 2 completada ✅
+**Progreso:** 20% (2/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
 
