@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// AppBar personalizado con título, acciones configurables y navegación hacia atrás
 ///
@@ -79,8 +80,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determinar si se puede hacer pop del Navigator
-    final canPop = Navigator.of(context).canPop();
+    // Determinar si se puede hacer pop del Router (go_router)
+    final canPop = context.canPop();
 
     // Construir el widget de título
     Widget? titleWidget;
@@ -95,7 +96,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (automaticallyImplyLeading && canPop) {
       leading = IconButton(
         icon: const Icon(Icons.arrow_back),
-        onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+        onPressed: onBackPressed ?? () => context.pop(),
         tooltip: 'Volver',
       );
     } else if (!automaticallyImplyLeading) {
