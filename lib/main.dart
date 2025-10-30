@@ -1,122 +1,263 @@
 import 'package:flutter/material.dart';
+import 'config/theme/app_theme.dart';
+import 'core/extensions/context_extensions.dart';
+import 'core/constants/app_constants.dart';
 
+/// Punto de entrada de la aplicación Playing Tracker
+///
+/// Sprint 0 - Fase 2: Integración del sistema de tema Material Design 3
 void main() {
-  runApp(const MyApp());
+  runApp(const PlayingTrackerApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+/// Widget raíz de la aplicación
+///
+/// Gestiona el tema actual (claro/oscuro) y proporciona el MaterialApp
+/// configurado con los temas de Material Design 3.
+class PlayingTrackerApp extends StatefulWidget {
+  const PlayingTrackerApp({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PlayingTrackerApp> createState() => _PlayingTrackerAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
+  /// Modo de tema actual (claro u oscuro)
+  ///
+  /// Este toggle es temporal y será reemplazado en futuros sprints
+  /// con una configuración persistente usando SharedPreferences o similar.
+  ThemeMode _themeMode = ThemeMode.light;
 
-  void _incrementCounter() {
+  /// Alterna entre tema claro y oscuro
+  void _toggleTheme() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _themeMode = _themeMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    return MaterialApp(
+      title: 'Playing Tracker',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: _themeMode,
+      home: ThemeTestScreen(
+        onToggleTheme: _toggleTheme,
+        currentThemeMode: _themeMode,
+      ),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+/// Pantalla de prueba para verificar el tema Material Design 3
+///
+/// Muestra diferentes componentes M3 para validar que el tema
+/// se aplica correctamente en ambos modos (claro y oscuro).
+class ThemeTestScreen extends StatelessWidget {
+  /// Callback para alternar el tema
+  final VoidCallback onToggleTheme;
+
+  /// Modo de tema actual
+  final ThemeMode currentThemeMode;
+
+  const ThemeTestScreen({
+    super.key,
+    required this.onToggleTheme,
+    required this.currentThemeMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Playing Tracker - Tema M3'),
+        actions: [
+          // Toggle temporal para cambiar entre tema claro y oscuro
+          IconButton(
+            icon: Icon(
+              currentThemeMode == ThemeMode.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            onPressed: onToggleTheme,
+            tooltip: currentThemeMode == ThemeMode.light
+                ? 'Cambiar a tema oscuro'
+                : 'Cambiar a tema claro',
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.m),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Sección de tipografía
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tipografía M3',
+                      style: context.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Text(
+                      'Display Large',
+                      style: context.textTheme.displayLarge,
+                    ),
+                    Text(
+                      'Headline Medium',
+                      style: context.textTheme.headlineMedium,
+                    ),
+                    Text('Body Large', style: context.textTheme.bodyLarge),
+                    Text('Label Small', style: context.textTheme.labelSmall),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.m),
+
+            // Sección de botones M3
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Botones M3', style: context.textTheme.headlineSmall),
+                    const SizedBox(height: AppSpacing.m),
+                    FilledButton(
+                      onPressed: () {},
+                      child: const Text('Filled Button'),
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    FilledButton.tonal(
+                      onPressed: () {},
+                      child: const Text('Filled Tonal Button'),
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    OutlinedButton(
+                      onPressed: () {},
+                      child: const Text('Outlined Button'),
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text('Text Button'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.m),
+
+            // Sección de campos de texto M3
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Campos de Texto M3',
+                      style: context.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Campo de texto',
+                        hintText: 'Escribe algo aquí',
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Campo con error',
+                        errorText: 'Este campo tiene un error',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.m),
+
+            // Sección de colores del tema
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Paleta de Colores',
+                      style: context.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    _ColorSwatch(
+                      label: 'Primary',
+                      color: context.colorScheme.primary,
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    _ColorSwatch(
+                      label: 'Secondary',
+                      color: context.colorScheme.secondary,
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    _ColorSwatch(
+                      label: 'Surface',
+                      color: context.colorScheme.surface,
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    _ColorSwatch(
+                      label: 'Error',
+                      color: context.colorScheme.error,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+/// Widget auxiliar para mostrar una muestra de color
+class _ColorSwatch extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _ColorSwatch({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(AppBorderRadius.small),
+            border: Border.all(
+              color: context.colorScheme.outline.withValues(alpha: 0.3),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.m),
+        Expanded(child: Text(label, style: context.textTheme.bodyMedium)),
+      ],
     );
   }
 }
