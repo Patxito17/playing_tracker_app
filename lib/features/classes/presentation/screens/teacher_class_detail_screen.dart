@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../shared/widgets/navigation_helper.dart';
-import '../widgets/class_tasks_tab.dart';
-import '../widgets/class_students_tab.dart';
 import '../widgets/class_statistics_tab.dart';
+import '../widgets/class_students_tab.dart';
+import '../widgets/class_tasks_tab.dart';
 
 /// Pantalla de detalle de clase para docente (Placeholder - Sprint 0)
 ///
