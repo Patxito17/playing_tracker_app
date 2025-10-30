@@ -110,10 +110,10 @@ lib/
 │   ├── home/                         # 📅 Pantallas Home (Sprint 0)
 │   │   └── presentation/            # 📅 Por implementar
 │   │       └── screens/
-│   │           ├── teacher_home_screen.dart  # Home para docentes
-│   │           └── student_home_screen.dart  # Home para alumnos
+│   │           ├── teacher_home_screen.dart  # Redirige a teacher_classes_list_screen
+│   │           └── student_home_screen.dart  # Redirige a student_classes_list_screen
 │   │
-│   ├── classes/                      # 📅 Gestión de clases (Sprint 3)
+│   ├── classes/                      # 📅 Gestión de clases (Sprint 0 - UI, Sprint 3 - Lógica)
 │   │   ├── domain/                  # 📅 Por implementar
 │   │   │   ├── models/
 │   │   │   │   ├── class_model.dart # Modelo de clase
@@ -174,30 +174,37 @@ lib/
 │   │           ├── timer_screen.dart # Pantalla de cronómetro
 │   │           └── session_history_screen.dart # Historial de sesiones
 │   │
-│   └── statistics/                   # 📅 Estadísticas (Sprint 6)
-│       ├── domain/                  # 📅 Por implementar
-│       │   └── models/
-│       │       └── statistics_model.dart # Modelo de estadísticas
-│       ├── data/                    # 📅 Por implementar
-│       │   ├── services/
-│       │   │   └── statistics_service.dart # Cálculo de estadísticas
-│       │   └── repositories/
-│       │       └── statistics_repository.dart # Orquestación
-│       └── presentation/            # 📅 Por implementar
-│           ├── cubit/
-│           │   ├── statistics_cubit.dart # Cubit de estadísticas
-│           │   └── statistics_state.dart # Estados de estadísticas
+│   ├── statistics/                   # 📅 Estadísticas (Sprint 0 - UI, Sprint 6 - Lógica)
+│   │   ├── domain/                  # 📅 Por implementar
+│   │   │   └── models/
+│   │   │       └── statistics_model.dart # Modelo de estadísticas
+│   │   ├── data/                    # 📅 Por implementar
+│   │   │   ├── services/
+│   │   │   │   └── statistics_service.dart # Cálculo de estadísticas
+│   │   │   └── repositories/
+│   │   │       └── statistics_repository.dart # Orquestación
+│   │   └── presentation/            # 📅 Sprint 0 - UI placeholder
+│   │       ├── cubit/
+│   │       │   ├── statistics_cubit.dart # Cubit de estadísticas
+│   │       │   └── statistics_state.dart # Estados de estadísticas
+│   │       └── screens/
+│   │           └── statistics_screen.dart # Estadísticas generales (reutilizable según contexto)
+│   │
+│   └── settings/                     # 📅 Configuración (Sprint 0 - Placeholder)
+│       └── presentation/
 │           └── screens/
-│               ├── teacher_dashboard_screen.dart # Dashboard docente
-│               └── student_progress_screen.dart # Progreso alumno
+│               └── settings_screen.dart # Pantalla de configuración (placeholder)
 │
 ├── shared/                            # Widgets compartidos 📅
-│   └── widgets/                      # 📅 Por implementar
+│   └── widgets/                      # 📅 Sprint 0 - Componentes base
 │       ├── custom_button.dart       # Botones reutilizables
 │       ├── custom_text_field.dart   # TextField personalizado
 │       ├── loading_overlay.dart     # Overlay de carga
 │       ├── custom_card.dart         # Cards reutilizables
-│       └── custom_app_bar.dart      # AppBar personalizado
+│       ├── custom_app_bar.dart      # AppBar personalizado
+│       ├── custom_bottom_navigation_bar.dart # BottomNavigationBar M3
+│       ├── custom_tab_bar.dart      # TabBar personalizado
+│       └── navigation_helper.dart   # Helper para pruebas de navegación
 │
 └── main.dart                          # 📅 Entry point con Firebase init
 ```
@@ -215,6 +222,12 @@ lib/
 - ✅ Navegación a pantalla home específica de docente
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
+
+**📅 Sprint 0 - UI Placeholder:**
+- ✅ Lista de clases creadas (`TeacherClassesListScreen`) con BottomNavigationBar
+- ✅ Detalle de clase con 3 tabs: Tareas, Estudiantes, Estadísticas de clase
+- ✅ Estadísticas generales (todos los alumnos)
+- ✅ Pantalla de configuración (placeholder)
 
 **📅 Próximamente (Sprint 3+):**
 - 📅 Creación de tareas con:
@@ -235,6 +248,12 @@ lib/
 - ✅ Navegación a pantalla home específica de alumno
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
+
+**📅 Sprint 0 - UI Placeholder:**
+- ✅ Lista de clases a las que pertenece (`StudentClassesListScreen`) con BottomNavigationBar
+- ✅ Detalle de clase con 3 tabs: Tareas (clickeables para iniciar sesión), Información de clase, Estadísticas de clase
+- ✅ Estadísticas generales (todas las clases del estudiante)
+- ✅ Pantalla de configuración (placeholder)
 
 **📅 Próximamente (Sprint 3+):**
 - 📅 Visualización de tareas asignadas
@@ -503,11 +522,19 @@ service cloud.firestore {
 
 **Entregables:**
 - 📱 Pantallas de autenticación (Login, Registro, Recuperación)
-- 📱 Pantallas de docente (Home, Crear Clase, Gestionar Alumnos, Crear Tarea)
-- 📱 Pantallas de alumno (Home, Unirse a Clase, Ver Tareas, Cronómetro)
-- 🧩 Componentes base (Botones, TextFields, Cards, Loading)
+- 📱 Pantallas de docente:
+  - Lista de clases creadas (con BottomNavigationBar)
+  - Detalle de clase con tabs (Tareas, Estudiantes, Estadísticas de clase)
+  - Estadísticas generales
+  - Configuración (placeholder)
+- 📱 Pantallas de alumno:
+  - Lista de clases a las que pertenece (con BottomNavigationBar)
+  - Detalle de clase con tabs (Tareas, Información de clase, Estadísticas de clase)
+  - Estadísticas generales
+  - Configuración (placeholder)
+- 🧩 Componentes base (Botones, TextFields, Cards, Loading, BottomNavigationBar, TabBar)
 - 🎨 Sistema de tema completo (claro/oscuro)
-- 📐 Navegación y routing definidos
+- 📐 Navegación y routing definidos con ShellRoute para BottomNavigationBar
 
 ---
 
