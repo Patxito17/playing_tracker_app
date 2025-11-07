@@ -158,320 +158,327 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: const CustomAppBar(title: AuthStrings.registerTitle),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.l),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Título principal
-              Text(
-                AuthStrings.createAccountTitle,
-                style: context.textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.s),
-              Text(
-                AuthStrings.createAccountSubtitle,
-                style: context.textTheme.bodyLarge?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Selector de rol
-              Text(
-                AuthStrings.accountTypeLabel,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: context.colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-              SegmentedButton<String>(
-                segments: const [
-                  ButtonSegment<String>(
-                    value: 'teacher',
-                    label: Text(AuthStrings.teacherRole),
-                    icon: Icon(Icons.school_outlined),
-                  ),
-                  ButtonSegment<String>(
-                    value: 'student',
-                    label: Text(AuthStrings.studentRole),
-                    icon: Icon(Icons.person_outline),
-                  ),
-                ],
-                selected: {_selectedRole},
-                onSelectionChanged: (Set<String> newSelection) {
-                  setState(() {
-                    _selectedRole = newSelection.first;
-                  });
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Campo de nombre
-              CustomTextField(
-                controller: _firstNameController,
-                label: AuthStrings.firstNameLabel,
-                hint: AuthStrings.firstNameHint,
-                textInputAction: TextInputAction.next,
-                errorText: _firstNameError,
-                prefix: Icon(
-                  Icons.person_outline,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_firstNameError != null) {
-                    setState(() {
-                      _firstNameError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) {
-                  FocusScope.of(context).nextFocus();
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Campo de apellidos
-              CustomTextField(
-                controller: _lastNameController,
-                label: AuthStrings.lastNameLabel,
-                hint: AuthStrings.lastNameHint,
-                textInputAction: TextInputAction.next,
-                errorText: _lastNameError,
-                prefix: Icon(
-                  Icons.person_outline,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_lastNameError != null) {
-                    setState(() {
-                      _lastNameError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) {
-                  FocusScope.of(context).nextFocus();
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Campo de email
-              CustomTextField(
-                controller: _emailController,
-                label: AuthStrings.emailLabel,
-                hint: AuthStrings.emailHint,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                textCapitalization: TextCapitalization.none,
-                errorText: _emailError,
-                prefix: Icon(
-                  Icons.email_outlined,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_emailError != null) {
-                    setState(() {
-                      _emailError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) {
-                  FocusScope.of(context).nextFocus();
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Campo de contraseña
-              CustomTextField(
-                controller: _passwordController,
-                label: AuthStrings.passwordLabel,
-                hint: AuthStrings.passwordMinLengthHint,
-                obscureText: _obscurePassword,
-                textInputAction: TextInputAction.next,
-                textCapitalization: TextCapitalization.none,
-                errorText: _passwordError,
-                prefix: Icon(
-                  Icons.lock_outlined,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                suffix: IconButton(
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                  tooltip: _obscurePassword
-                      ? CommonStrings.showPassword
-                      : CommonStrings.hidePassword,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_passwordError != null) {
-                    setState(() {
-                      _passwordError = null;
-                    });
-                  }
-                  // Validar confirmación si ya tiene valor
-                  if (_confirmPasswordController.text.isNotEmpty) {
-                    _validateConfirmPassword(_confirmPasswordController.text);
-                  }
-                },
-                onSubmitted: (_) {
-                  FocusScope.of(context).nextFocus();
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Campo de confirmación de contraseña
-              CustomTextField(
-                controller: _confirmPasswordController,
-                label: AuthStrings.confirmPasswordLabel,
-                hint: AuthStrings.confirmPasswordHint,
-                obscureText: _obscureConfirmPassword,
-                textInputAction: TextInputAction.done,
-                textCapitalization: TextCapitalization.none,
-                errorText: _confirmPasswordError,
-                prefix: Icon(
-                  Icons.lock_outlined,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                suffix: IconButton(
-                  icon: Icon(
-                    _obscureConfirmPassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureConfirmPassword = !_obscureConfirmPassword;
-                    });
-                  },
-                  tooltip: _obscureConfirmPassword
-                      ? CommonStrings.showPassword
-                      : CommonStrings.hidePassword,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_confirmPasswordError != null) {
-                    setState(() {
-                      _confirmPasswordError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) => _handleRegister(),
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Checkbox de términos y condiciones
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.l),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Checkbox(
-                    value: _termsAccepted,
-                    onChanged: (value) {
+                  // Título principal
+                  Text(
+                    AuthStrings.createAccountTitle,
+                    style: context.textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.s),
+                  Text(
+                    AuthStrings.createAccountSubtitle,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // Selector de rol
+                  Text(
+                    AuthStrings.accountTypeLabel,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.m),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment<String>(
+                        value: 'teacher',
+                        label: Text(AuthStrings.teacherRole),
+                        icon: Icon(Icons.school_outlined),
+                      ),
+                      ButtonSegment<String>(
+                        value: 'student',
+                        label: Text(AuthStrings.studentRole),
+                        icon: Icon(Icons.person_outline),
+                      ),
+                    ],
+                    selected: {_selectedRole},
+                    onSelectionChanged: (Set<String> newSelection) {
                       setState(() {
-                        _termsAccepted = value ?? false;
+                        _selectedRole = newSelection.first;
                       });
                     },
                   ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Campo de nombre
+                  CustomTextField(
+                    controller: _firstNameController,
+                    label: AuthStrings.firstNameLabel,
+                    hint: AuthStrings.firstNameHint,
+                    textInputAction: TextInputAction.next,
+                    errorText: _firstNameError,
+                    prefix: Icon(
+                      Icons.person_outline,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_firstNameError != null) {
                         setState(() {
-                          _termsAccepted = !_termsAccepted;
+                          _firstNameError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) {
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Campo de apellidos
+                  CustomTextField(
+                    controller: _lastNameController,
+                    label: AuthStrings.lastNameLabel,
+                    hint: AuthStrings.lastNameHint,
+                    textInputAction: TextInputAction.next,
+                    errorText: _lastNameError,
+                    prefix: Icon(
+                      Icons.person_outline,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_lastNameError != null) {
+                        setState(() {
+                          _lastNameError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) {
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Campo de email
+                  CustomTextField(
+                    controller: _emailController,
+                    label: AuthStrings.emailLabel,
+                    hint: AuthStrings.emailHint,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.none,
+                    errorText: _emailError,
+                    prefix: Icon(
+                      Icons.email_outlined,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_emailError != null) {
+                        setState(() {
+                          _emailError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) {
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Campo de contraseña
+                  CustomTextField(
+                    controller: _passwordController,
+                    label: AuthStrings.passwordLabel,
+                    hint: AuthStrings.passwordMinLengthHint,
+                    obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.none,
+                    errorText: _passwordError,
+                    prefix: Icon(
+                      Icons.lock_outlined,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    suffix: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
                         });
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.s),
-                        child: RichText(
-                          text: TextSpan(
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
+                      tooltip: _obscurePassword
+                          ? CommonStrings.showPassword
+                          : CommonStrings.hidePassword,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_passwordError != null) {
+                        setState(() {
+                          _passwordError = null;
+                        });
+                      }
+                      // Validar confirmación si ya tiene valor
+                      if (_confirmPasswordController.text.isNotEmpty) {
+                        _validateConfirmPassword(
+                          _confirmPasswordController.text,
+                        );
+                      }
+                    },
+                    onSubmitted: (_) {
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Campo de confirmación de contraseña
+                  CustomTextField(
+                    controller: _confirmPasswordController,
+                    label: AuthStrings.confirmPasswordLabel,
+                    hint: AuthStrings.confirmPasswordHint,
+                    obscureText: _obscureConfirmPassword,
+                    textInputAction: TextInputAction.done,
+                    textCapitalization: TextCapitalization.none,
+                    errorText: _confirmPasswordError,
+                    prefix: Icon(
+                      Icons.lock_outlined,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    suffix: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                      tooltip: _obscureConfirmPassword
+                          ? CommonStrings.showPassword
+                          : CommonStrings.hidePassword,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_confirmPasswordError != null) {
+                        setState(() {
+                          _confirmPasswordError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) => _handleRegister(),
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Checkbox de términos y condiciones
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: _termsAccepted,
+                        onChanged: (value) {
+                          setState(() {
+                            _termsAccepted = value ?? false;
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _termsAccepted = !_termsAccepted;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: AppSpacing.s),
+                            child: RichText(
+                              text: TextSpan(
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
+                                children: [
+                                  TextSpan(text: AuthStrings.acceptTermsPrefix),
+                                  TextSpan(
+                                    text: AuthStrings.termsAndConditions,
+                                    style: TextStyle(
+                                      color: context.colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(text: AuthStrings.acceptTermsMiddle),
+                                  TextSpan(
+                                    text: AuthStrings.privacyPolicy,
+                                    style: TextStyle(
+                                      color: context.colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            children: [
-                              TextSpan(text: AuthStrings.acceptTermsPrefix),
-                              TextSpan(
-                                text: AuthStrings.termsAndConditions,
-                                style: TextStyle(
-                                  color: context.colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextSpan(text: AuthStrings.acceptTermsMiddle),
-                              TextSpan(
-                                text: AuthStrings.privacyPolicy,
-                                style: TextStyle(
-                                  color: context.colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
 
-              const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
-              // Botón de registro
-              CustomButton(
-                label: AuthStrings.registerButton,
-                variant: CustomButtonVariant.filled,
-                isLoading: _isLoading,
-                onPressed: _handleRegister,
-              ),
-
-              const SizedBox(height: AppSpacing.m),
-
-              // Link a login
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AuthStrings.alreadyHaveAccountQuestion,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
+                  // Botón de registro
+                  CustomButton(
+                    label: AuthStrings.registerButton,
+                    variant: CustomButtonVariant.filled,
+                    isLoading: _isLoading,
+                    onPressed: _handleRegister,
                   ),
-                  TextButton(
-                    onPressed: () => context.go('/login'),
-                    child: Text(
-                      AuthStrings.loginLink,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.primary,
+
+                  const SizedBox(height: AppSpacing.m),
+
+                  // Link a login
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AuthStrings.alreadyHaveAccountQuestion,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
+                      TextButton(
+                        onPressed: () => context.pop(),
+                        child: Text(
+                          AuthStrings.loginLink,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
