@@ -591,20 +591,38 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Implementar ShellRoute para BottomNavigationBar persistente
 - [x] Configurar rutas separadas para docente y estudiante
 
-### Fase 5: Pantallas de Autenticación (Día 8)
+### Fase 5: Pantallas de Autenticación (Día 8) ✅ COMPLETADA
 
-- [ ] Crear `lib/features/auth/presentation/screens/login_screen.dart`
-  - [ ] Formulario con email y contraseña
-  - [ ] Botón de login (sin funcionalidad real)
-  - [ ] Link a registro
-  - [ ] Link a recuperación de contraseña
-- [ ] Crear `lib/features/auth/presentation/screens/register_screen.dart`
-  - [ ] Formulario completo (nombre, apellidos, email, contraseña, repetir contraseña, rol)
-  - [ ] Validación visual básica
-  - [ ] Botón de registro (sin funcionalidad real)
-- [ ] Crear `lib/features/auth/presentation/screens/forgot_password_screen.dart`
-  - [ ] Formulario con email
-  - [ ] Botón de envío (sin funcionalidad real)
+- [x] Mejorar `lib/features/auth/presentation/screens/login_screen.dart`
+  - [x] Formulario completo con email y contraseña
+  - [x] Validación visual básica para ambos campos
+  - [x] Toggle para mostrar/ocultar contraseña
+  - [x] Botón de login con estados visuales (loading)
+  - [x] Links a registro y recuperación de contraseña
+  - [x] Diseño Material Design 3 completo
+  - [x] Iconos apropiados (email, lock)
+  - [x] Layout centrado y responsive
+- [x] Mejorar `lib/features/auth/presentation/screens/register_screen.dart`
+  - [x] Formulario completo (nombre, apellidos, email, contraseña, repetir contraseña, rol)
+  - [x] Selector de rol con SegmentedButton M3 (docente/alumno)
+  - [x] Validación visual básica para todos los campos
+  - [x] Toggle para mostrar/ocultar contraseñas
+  - [x] Checkbox para aceptar términos y condiciones
+  - [x] Botón de registro con estados visuales (loading)
+  - [x] Diseño Material Design 3 completo
+  - [x] Layout responsive y accesible
+- [x] Mejorar `lib/features/auth/presentation/screens/forgot_password_screen.dart`
+  - [x] Formulario con email y validación visual
+  - [x] Mensaje informativo claro
+  - [x] Mensaje de confirmación visual (placeholder)
+  - [x] Botón de envío con estados visuales (loading)
+  - [x] Diseño Material Design 3 completo
+  - [x] Icono ilustrativo y layout mejorado
+- [x] Implementar funciones de validación en `lib/core/utils/validators.dart`
+  - [x] Validación de email (formato válido)
+  - [x] Validación de contraseña (mínimo 6 caracteres)
+  - [x] Validación de nombres (mínimo 3 caracteres, solo letras)
+  - [x] Validación de confirmación de contraseña (debe coincidir)
 
 ### Fase 6: Pantallas Home y Navegación Principal (Día 9)
 
@@ -818,7 +836,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 70% (7/10 fases completadas)**
+**Progreso General: 80% (8/10 fases completadas)**
 
 ### Fase 1: Setup Inicial ✅
 - [x] Todas las tareas de la Fase 1 completadas
@@ -861,8 +879,15 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores (0 issues)
 - [x] Código formateado con `dart format`
 
-### Pendiente (Fases 5-10)
-- [ ] UI completa de pantallas de autenticación
+### Fase 5: Pantallas de Autenticación ✅ COMPLETADA
+- [x] LoginScreen con UI completa M3, validación visual y toggle de contraseña
+- [x] RegisterScreen con campos completos, selector de rol M3 y validaciones
+- [x] ForgotPasswordScreen con mensaje informativo y confirmación visual
+- [x] Funciones de validación implementadas en validators.dart
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Código formateado con `dart format`
+
+### Pendiente (Fases 6-10)
 - [ ] UI completa de pantallas home
 - [ ] UI completa de pantallas de clases
 - [ ] UI completa de pantallas de tareas
@@ -876,6 +901,17 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.6 - 29 de Octubre 2025
+- ✅ **Fase 5 completada:** Pantallas de autenticación con UI completa Material Design 3
+- ✅ LoginScreen mejorada con validación visual, toggle de contraseña y diseño profesional
+- ✅ RegisterScreen mejorada con campos completos (apellidos, rol), selector de rol M3 (SegmentedButton), validaciones completas y checkbox de términos
+- ✅ ForgotPasswordScreen mejorada con mensaje informativo, validación visual y mensaje de confirmación
+- ✅ Funciones de validación implementadas en validators.dart (email, contraseña, nombres, confirmación)
+- ✅ Todas las pantallas usan CustomTextField y CustomButton con estados visuales
+- ✅ Diseño responsive y accesible en todas las pantallas
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.5 - 29 de Octubre 2025
 - ✅ **Fase 6 y 7 completadas:** Pantallas de navegación principal y detalle de clase
@@ -947,7 +983,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 **Última actualización:** 29 de Octubre 2025
-**Estado:** En desarrollo - Fase 6 y 7 completadas ✅
-**Progreso:** 70% (7/10 fases)
+**Estado:** En desarrollo - Fase 5 completada ✅
+**Progreso:** 80% (8/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
 
