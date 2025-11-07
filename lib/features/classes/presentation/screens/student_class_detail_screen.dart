@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../widgets/student_class_tasks_tab.dart';
+import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../widgets/class_info_tab.dart';
 import '../widgets/class_statistics_tab.dart';
+import '../widgets/student_class_tasks_tab.dart';
 
 /// Pantalla de detalle de clase para estudiante
 ///
@@ -25,23 +26,24 @@ class StudentClassDetailScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Detalle de Clase'),
+          title: const Text(ClassDetailStrings.classDetailTitle),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
             tooltip: CommonStrings.back,
           ),
-          bottom: TabBar(
+          bottom: CustomTabBar(
             tabs: const [
-              Tab(icon: Icon(Icons.assignment), text: 'Tareas'),
-              Tab(icon: Icon(Icons.info), text: 'Información'),
-              Tab(icon: Icon(Icons.bar_chart), text: 'Estadísticas'),
+              Tab(
+                icon: Icon(Icons.assignment),
+                text: ClassDetailStrings.tasksTab,
+              ),
+              Tab(icon: Icon(Icons.info), text: ClassDetailStrings.infoTab),
+              Tab(
+                icon: Icon(Icons.bar_chart),
+                text: ClassDetailStrings.statisticsTab,
+              ),
             ],
-            labelColor: context.colorScheme.primary,
-            unselectedLabelColor: context.colorScheme.onSurface.withValues(
-              alpha: 0.6,
-            ),
-            indicatorColor: context.colorScheme.primary,
           ),
         ),
         body: TabBarView(

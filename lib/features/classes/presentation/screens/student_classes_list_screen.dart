@@ -31,7 +31,7 @@ class StudentClassesListScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => context.go(AppRoutes.joinClass),
+            onPressed: () => context.push(AppRoutes.joinClass),
             tooltip: ClassesStrings.joinClass,
           ),
         ],
@@ -64,7 +64,7 @@ class StudentClassesListScreen extends StatelessWidget {
                   title: ClassesStrings.noClassesJoined,
                   subtitle: ClassesStrings.joinClassWithCode,
                   actionLabel: ClassesStrings.joinClassAction,
-                  onAction: () => context.go(AppRoutes.joinClass),
+                  onAction: () => context.push(AppRoutes.joinClass),
                 )
               else
                 ...mockClasses.map((classData) {
@@ -100,7 +100,7 @@ class StudentClassesListScreen extends StatelessWidget {
       ),
       // BottomNavigationBar se maneja mediante ShellRoute en app_routes.dart
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go(AppRoutes.joinClass),
+        onPressed: () => context.push(AppRoutes.joinClass),
         icon: const Icon(Icons.add),
         label: Text(ClassesStrings.joinClassAction),
       ),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../config/routes/app_routes.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../config/routes/app_routes.dart';
 
 /// Tab de tareas de la clase (para docente)
 ///
 /// Muestra todas las tareas de la clase con opción para crear nuevas.
-/// Placeholder para Sprint 0 - Fase 7.
+/// Sprint 0 - Fase 7: UI completa con Material Design 3
 class ClassTasksTab extends StatelessWidget {
   final String classId;
 
@@ -29,36 +32,19 @@ class ClassTasksTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomButton(
-            label: 'Crear Nueva Tarea',
+            label: TaskStrings.createTask,
             variant: CustomButtonVariant.filled,
             icon: Icons.add,
-            onPressed: () => context.go(AppRoutes.createTask),
+            onPressed: () => context.push(AppRoutes.createTask),
           ),
           const SizedBox(height: AppSpacing.m),
           if (mockTasks.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.assignment_outlined,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                    const SizedBox(height: AppSpacing.m),
-                    Text(
-                      'No hay tareas en esta clase',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.s),
-                    Text(
-                      'Crea tu primera tarea para comenzar',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
+            _EmptyState(
+              icon: Icons.assignment_outlined,
+              title: TaskStrings.noTasksInClass,
+              subtitle: TaskStrings.createFirstTask,
+              actionLabel: TaskStrings.createTask,
+              onAction: () => context.push(AppRoutes.createTask),
             )
           else
             ...mockTasks.map((taskData) {
@@ -66,8 +52,9 @@ class ClassTasksTab extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: AppSpacing.m),
                 child: CustomCard(
                   title: taskData['title'] as String,
-                  subtitle: 'Asignada a ${taskData['assignedTo']} estudiantes',
-                  onTap: () => context.go(
+                  subtitle:
+                      '${TaskStrings.assignedTo} ${taskData['assignedTo']} ${TaskStrings.studentsLabel}',
+                  onTap: () => context.push(
                     AppRoutes.taskDetail.replaceAll(
                       ':taskId',
                       taskData['id'] as String,
@@ -77,6 +64,59 @@ class ClassTasksTab extends StatelessWidget {
                 ),
               );
             }),
+        ],
+      ),
+    );
+  }
+}
+
+/// Widget para mostrar estado vacío en tabs
+class _EmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _EmptyState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 80, color: context.colorScheme.outline),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            title,
+            style: context.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            subtitle,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          FilledButton.icon(
+            onPressed: onAction,
+            icon: const Icon(Icons.add),
+            label: Text(actionLabel),
+          ),
         ],
       ),
     );

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/custom_card.dart';
+import 'package:flutter/services.dart';
+
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../shared/widgets/custom_card.dart';
 
 /// Tab de información de la clase (para estudiante)
 ///
 /// Muestra información detallada de la clase: nombre, descripción, código de acceso, datos del docente.
-/// Placeholder para Sprint 0 - Fase 7.
+/// Sprint 0 - Fase 7: UI completa con Material Design 3 y funcionalidad de copiar código
 class ClassInfoTab extends StatelessWidget {
   final String classId;
 
@@ -30,50 +34,60 @@ class ClassInfoTab extends StatelessWidget {
         children: [
           CustomCard(
             title: className,
-            subtitle: 'Código de acceso: $classCode',
+            subtitle: '${ClassDetailStrings.accessCode}: $classCode',
+            trailingAction: IconButton(
+              icon: const Icon(Icons.copy_outlined),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: classCode));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(CommonStrings.copied),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              tooltip: CommonStrings.copy,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Descripción',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  ClassDetailStrings.classDescription,
+                  style: context.textTheme.titleMedium,
                 ),
                 const SizedBox(height: AppSpacing.s),
-                Text(
-                  classDescription,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                Text(classDescription, style: context.textTheme.bodyMedium),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.m),
           CustomCard(
-            title: 'Información del Docente',
+            title: ClassDetailStrings.teacherInfo,
             subtitle: teacherName,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Email: $teacherEmail',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  '${ClassDetailStrings.email}: $teacherEmail',
+                  style: context.textTheme.bodyMedium,
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.m),
           CustomCard(
-            title: 'Información de la Clase',
+            title: ClassDetailStrings.classInfo,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Creada: $createdAt',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  '${ClassDetailStrings.created}: $createdAt',
+                  style: context.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppSpacing.s),
                 Text(
-                  'Estudiantes: $studentsCount',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  '${ClassDetailStrings.students}: $studentsCount',
+                  style: context.textTheme.bodyMedium,
                 ),
               ],
             ),

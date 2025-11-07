@@ -125,6 +125,23 @@ class ClassesStrings {
   // Información de clases
   static const String studentsCount = 'estudiantes';
   static const String teacherLabel = 'Profesor: ';
+
+  // Crear clase
+  static const String createClassTitle = 'Crear Nueva Clase';
+  static const String classNameLabel = 'Nombre de la Clase';
+  static const String classNameHint = 'Ej: Piano Nivel 1';
+  static const String classDescriptionLabel = 'Descripción';
+  static const String classDescriptionHint = 'Descripción de la clase';
+  static const String accessCodeLabel = 'Código de Acceso';
+  static const String accessCodeGenerated = 'Se generará automáticamente';
+  static const String createClassButton = 'Crear Clase';
+
+  // Unirse a clase
+  static const String joinClassTitle = 'Unirse a una Clase';
+  static const String accessCodeHint = 'Ingresa el código de la clase';
+  static const String accessCodeInstructions =
+      'Pide el código de acceso a tu profesor para unirte a la clase.';
+  static const String joinButton = 'Unirse';
 }
 
 /// Strings relacionados con navegación
@@ -153,4 +170,115 @@ class CommonStrings {
   static const String back = 'Volver';
   static const String next = 'Siguiente';
   static const String done = 'Hecho';
+  static const String copy = 'Copiar';
+  static const String copied = 'Copiado';
+}
+
+/// Strings relacionados con detalles de clase y tabs
+class ClassDetailStrings {
+  // Títulos de tabs
+  static const String tasksTab = 'Tareas';
+  static const String studentsTab = 'Estudiantes';
+  static const String statisticsTab = 'Estadísticas';
+  static const String infoTab = 'Información';
+
+  // Títulos de pantallas
+  static const String classDetailTitle = 'Detalle de Clase';
+  static const String manageStudentsTitle = 'Gestionar Alumnos';
+
+  // Estadísticas
+  static const String classStatisticsTitle = 'Estadísticas de la Clase';
+  static const String myStatisticsTitle = 'Mis Estadísticas';
+  static const String totalTime = 'Tiempo Total';
+  static const String totalTimeDescription =
+      'Tiempo total de todos los estudiantes';
+  static const String myTotalTimeDescription = 'Tiempo total de estudio';
+  static const String totalSessions = 'Sesiones Totales';
+  static const String mySessions = 'Mis Sesiones';
+  static const String totalSessionsDescription =
+      'Total de sesiones de todos los estudiantes';
+  static const String mySessionsDescription = 'Total de sesiones completadas';
+  static const String activeStudents = 'Estudiantes Activos';
+  static const String activeStudentsDescription =
+      'Estudiantes con actividad esta semana';
+
+  // Información de clase
+  static const String classDescription = 'Descripción';
+  static const String teacherInfo = 'Información del Docente';
+  static const String classInfo = 'Información de la Clase';
+  static const String accessCode = 'Código de acceso';
+  static const String created = 'Creada';
+  static const String students = 'Estudiantes';
+  static const String email = 'Email';
+}
+
+/// Strings relacionados con tareas
+class TaskStrings {
+  // Títulos y acciones
+  static const String createTask = 'Crear Nueva Tarea';
+  static const String tasksTitle = 'Tareas';
+  static const String assignedTo = 'Asignada a';
+  static const String studentsLabel = 'estudiantes';
+  static const String startStudySession = 'Iniciar Sesión de Estudio';
+  static const String viewDetails = 'Ver Detalles';
+
+  // Estados de tareas
+  static const String status = 'Estado';
+  static const String pending = 'Pendiente';
+  static const String inProgress = 'En progreso';
+  static const String completed = 'Completada';
+
+  // Estados vacíos
+  static const String noTasksInClass = 'No hay tareas en esta clase';
+  static const String createFirstTask = 'Crea tu primera tarea para comenzar';
+  static const String noTasksAssigned = 'No hay tareas asignadas';
+  static const String waitForTasks = 'Espera a que tu profesor asigne tareas';
+}
+
+/// Strings relacionados con estudiantes
+class StudentStrings {
+  // Títulos
+  static const String studentsTitle = 'Estudiantes de la Clase';
+  static const String studentsListTitle = 'Alumnos de la Clase';
+
+  // Información de estudiantes
+  static const String sessions = 'sesiones';
+  static const String hours = 'horas';
+  static const String sessionsHours = 'sesiones •';
+
+  // Acciones
+  static const String viewProfile = 'Ver perfil';
+  static const String removeStudent = 'Eliminar estudiante';
+
+  // Estados vacíos
+  static const String noStudentsInClass = 'No hay estudiantes en esta clase';
+  static const String studentsJoinWithCode =
+      'Los estudiantes pueden unirse con el código de acceso';
+}
+
+/// Strings relacionados con configuración
+class SettingsStrings {
+  // Título de pantalla
+  static const String settingsTitle = 'Configuración';
+
+  // Secciones
+  static const String profileSection = 'Perfil';
+  static const String notificationsSection = 'Notificaciones';
+  static const String appearanceSection = 'Apariencia';
+  static const String accountSection = 'Cuenta';
+
+  // Opciones
+  static const String editProfile = 'Editar perfil';
+  static const String notificationSettings = 'Configuración de notificaciones';
+  static const String themeSettings = 'Configuración de tema';
+  static const String logout = 'Cerrar sesión';
+
+  // Mensajes
+  static const String inDevelopment = 'Esta sección está en desarrollo.';
+  static const String futureFeatures =
+      'En futuros sprints se añadirá:\n'
+      '- Gestión de perfil\n'
+      '- Preferencias de notificaciones\n'
+      '- Configuración de tema\n'
+      '- Cerrar sesión';
 }

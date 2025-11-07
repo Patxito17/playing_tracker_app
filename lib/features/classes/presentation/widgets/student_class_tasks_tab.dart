@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../config/routes/app_routes.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../config/routes/app_routes.dart';
 
 /// Tab de tareas de la clase (para estudiante)
 ///
 /// Muestra todas las tareas asignadas al estudiante con opción para iniciar sesión de estudio.
-/// Placeholder para Sprint 0 - Fase 7.
+/// Sprint 0 - Fase 7: UI completa con Material Design 3 y estados visuales
 class StudentClassTasksTab extends StatelessWidget {
   final String classId;
 
@@ -29,72 +31,165 @@ class StudentClassTasksTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (mockTasks.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.assignment_outlined,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                    const SizedBox(height: AppSpacing.m),
-                    Text(
-                      'No hay tareas asignadas',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.s),
-                    Text(
-                      'Espera a que tu profesor asigne tareas',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
+            _EmptyTasksState(
+              icon: Icons.assignment_outlined,
+              title: TaskStrings.noTasksAssigned,
+              subtitle: TaskStrings.waitForTasks,
+              actionLabel: CommonStrings.close,
+              onAction: () => context.pop(),
             )
           else
             ...mockTasks.map((taskData) {
               final status = taskData['status'] as String;
-              final statusText = status == 'pending'
-                  ? 'Pendiente'
-                  : status == 'in_progress'
-                  ? 'En progreso'
-                  : 'Completada';
+              final statusText = _getStatusText(status);
+              final statusColor = _getStatusColor(context, status);
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.m),
                 child: CustomCard(
                   title: taskData['title'] as String,
-                  subtitle: 'Estado: $statusText',
-                  child: CustomButton(
-                    label: status == 'completed'
-                        ? 'Ver Detalles'
-                        : 'Iniciar Sesión de Estudio',
-                    variant: status == 'completed'
-                        ? CustomButtonVariant.outlined
-                        : CustomButtonVariant.filled,
-                    onPressed: () {
-                      if (status == 'completed') {
-                        context.go(
-                          AppRoutes.taskDetail.replaceAll(
-                            ':taskId',
-                            taskData['id'] as String,
-                          ),
-                        );
-                      } else {
-                        context.go(
-                          AppRoutes.timer.replaceAll(
-                            ':taskId',
-                            taskData['id'] as String,
-                          ),
-                        );
-                      }
-                    },
+                  subtitle: '${TaskStrings.status}: $statusText',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Badge de estado
+                      Chip(
+                        label: Text(statusText),
+                        backgroundColor: statusColor.withValues(alpha: 0.2),
+                        labelStyle: TextStyle(
+                          color: statusColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        avatar: Icon(
+                          _getStatusIcon(status),
+                          size: 16,
+                          color: statusColor,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.m),
+                      CustomButton(
+                        label: status == 'completed'
+                            ? TaskStrings.viewDetails
+                            : TaskStrings.startStudySession,
+                        variant: status == 'completed'
+                            ? CustomButtonVariant.outlined
+                            : CustomButtonVariant.filled,
+                        icon: status == 'completed'
+                            ? Icons.visibility_outlined
+                            : Icons.play_arrow,
+                        onPressed: () {
+                          if (status == 'completed') {
+                            context.push(
+                              AppRoutes.taskDetail.replaceAll(
+                                ':taskId',
+                                taskData['id'] as String,
+                              ),
+                            );
+                          } else {
+                            context.push(
+                              AppRoutes.timer.replaceAll(
+                                ':taskId',
+                                taskData['id'] as String,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               );
             }),
+        ],
+      ),
+    );
+  }
+
+  String _getStatusText(String status) {
+    switch (status) {
+      case 'pending':
+        return TaskStrings.pending;
+      case 'in_progress':
+        return TaskStrings.inProgress;
+      case 'completed':
+        return TaskStrings.completed;
+      default:
+        return TaskStrings.pending;
+    }
+  }
+
+  Color _getStatusColor(BuildContext context, String status) {
+    final colorScheme = Theme.of(context).colorScheme;
+    switch (status) {
+      case 'pending':
+        return colorScheme.outline;
+      case 'in_progress':
+        return colorScheme.primary;
+      case 'completed':
+        return colorScheme.tertiary;
+      default:
+        return colorScheme.outline;
+    }
+  }
+
+  IconData _getStatusIcon(String status) {
+    switch (status) {
+      case 'pending':
+        return Icons.pending_outlined;
+      case 'in_progress':
+        return Icons.play_circle_outline;
+      case 'completed':
+        return Icons.check_circle_outline;
+      default:
+        return Icons.pending_outlined;
+    }
+  }
+}
+
+/// Widget para mostrar estado vacío en tabs de tareas
+class _EmptyTasksState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _EmptyTasksState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 80, color: Theme.of(context).colorScheme.outline),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          FilledButton.icon(
+            onPressed: onAction,
+            icon: const Icon(Icons.close),
+            label: Text(actionLabel),
+          ),
         ],
       ),
     );
