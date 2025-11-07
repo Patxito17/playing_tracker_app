@@ -104,164 +104,169 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: const CustomAppBar(title: AuthStrings.loginTitle),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.l),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Espaciado superior
-              SizedBox(height: context.screenHeight * 0.1),
-
-              // Título principal
-              Text(
-                AuthStrings.welcomeTitle,
-                style: context.textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.s),
-              Text(
-                AuthStrings.loginSubtitle,
-                style: context.textTheme.bodyLarge?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Campo de email
-              CustomTextField(
-                controller: _emailController,
-                label: AuthStrings.emailLabel,
-                hint: AuthStrings.emailHint,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                textCapitalization: TextCapitalization.none,
-                errorText: _emailError,
-                prefix: Icon(
-                  Icons.email_outlined,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_emailError != null) {
-                    setState(() {
-                      _emailError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) {
-                  // Mover foco al campo de contraseña
-                  FocusScope.of(context).nextFocus();
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.l),
-
-              // Campo de contraseña
-              CustomTextField(
-                controller: _passwordController,
-                label: AuthStrings.passwordLabel,
-                hint: AuthStrings.passwordHint,
-                obscureText: _obscurePassword,
-                textInputAction: TextInputAction.done,
-                textCapitalization: TextCapitalization.none,
-                errorText: _passwordError,
-                prefix: Icon(
-                  Icons.lock_outlined,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                suffix: IconButton(
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                  tooltip: _obscurePassword
-                      ? CommonStrings.showPassword
-                      : CommonStrings.hidePassword,
-                ),
-                onChanged: (value) {
-                  // Limpiar error al escribir
-                  if (_passwordError != null) {
-                    setState(() {
-                      _passwordError = null;
-                    });
-                  }
-                },
-                onSubmitted: (_) => _handleLogin(),
-              ),
-
-              const SizedBox(height: AppSpacing.s),
-
-              // Link a recuperación de contraseña
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () => context.go('/forgot-password'),
-                  child: Text(
-                    AuthStrings.forgotPasswordLink,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Botón de login
-              CustomButton(
-                label: AuthStrings.loginButton,
-                variant: CustomButtonVariant.filled,
-                isLoading: _isLoading,
-                onPressed: _handleLogin,
-              ),
-
-              const SizedBox(height: AppSpacing.m),
-
-              // Botón de login como alumno (mock)
-              CustomButton(
-                label: AuthStrings.loginAsStudentButton,
-                variant: CustomButtonVariant.outlined,
-                isLoading: _isLoading,
-                onPressed: _handleLoginAsStudent,
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Link a registro
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.l),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Espaciado superior
+                  SizedBox(height: context.screenHeight * 0.1),
+
+                  // Título principal
                   Text(
-                    AuthStrings.noAccountQuestion,
-                    style: context.textTheme.bodyMedium?.copyWith(
+                    AuthStrings.welcomeTitle,
+                    style: context.textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.s),
+                  Text(
+                    AuthStrings.loginSubtitle,
+                    style: context.textTheme.bodyLarge?.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  TextButton(
-                    onPressed: () => context.go('/register'),
-                    child: Text(
-                      AuthStrings.registerLink,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.primary,
+
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // Campo de email
+                  CustomTextField(
+                    controller: _emailController,
+                    label: AuthStrings.emailLabel,
+                    hint: AuthStrings.emailHint,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.none,
+                    errorText: _emailError,
+                    prefix: Icon(
+                      Icons.email_outlined,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_emailError != null) {
+                        setState(() {
+                          _emailError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) {
+                      // Mover foco al campo de contraseña
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  // Campo de contraseña
+                  CustomTextField(
+                    controller: _passwordController,
+                    label: AuthStrings.passwordLabel,
+                    hint: AuthStrings.passwordHint,
+                    obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.done,
+                    textCapitalization: TextCapitalization.none,
+                    errorText: _passwordError,
+                    prefix: Icon(
+                      Icons.lock_outlined,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    suffix: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      tooltip: _obscurePassword
+                          ? CommonStrings.showPassword
+                          : CommonStrings.hidePassword,
+                    ),
+                    onChanged: (value) {
+                      // Limpiar error al escribir
+                      if (_passwordError != null) {
+                        setState(() {
+                          _passwordError = null;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) => _handleLogin(),
+                  ),
+
+                  const SizedBox(height: AppSpacing.s),
+
+                  // Link a recuperación de contraseña
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => context.push('/forgot-password'),
+                      child: Text(
+                        AuthStrings.forgotPasswordLink,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Botón de login
+                  CustomButton(
+                    label: AuthStrings.loginButton,
+                    variant: CustomButtonVariant.filled,
+                    isLoading: _isLoading,
+                    onPressed: _handleLogin,
+                  ),
+
+                  const SizedBox(height: AppSpacing.m),
+
+                  // Botón de login como alumno (mock)
+                  CustomButton(
+                    label: AuthStrings.loginAsStudentButton,
+                    variant: CustomButtonVariant.outlined,
+                    isLoading: _isLoading,
+                    onPressed: _handleLoginAsStudent,
+                  ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Link a registro
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AuthStrings.noAccountQuestion,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => context.push('/register'),
+                        child: Text(
+                          AuthStrings.registerLink,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
