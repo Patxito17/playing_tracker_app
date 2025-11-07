@@ -4,6 +4,7 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../widgets/auth_wrapper.dart';
@@ -62,14 +63,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   /// Valida el campo de nombre
   void _validateFirstName(String value) {
     setState(() {
-      _firstNameError = Validators.name(value, 'El nombre');
+      _firstNameError = Validators.name(
+        value,
+        ValidationStrings.firstNameField,
+      );
     });
   }
 
   /// Valida el campo de apellidos
   void _validateLastName(String value) {
     setState(() {
-      _lastNameError = Validators.name(value, 'Los apellidos');
+      _lastNameError = Validators.name(value, ValidationStrings.lastNameField);
     });
   }
 
@@ -117,7 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_termsAccepted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Debes aceptar los términos y condiciones'),
+          content: const Text(AuthStrings.termsNotAcceptedMessage),
           backgroundColor: context.colorScheme.error,
         ),
       );
@@ -152,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Crear Cuenta'),
+      appBar: const CustomAppBar(title: AuthStrings.registerTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.l),
@@ -161,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               // Título principal
               Text(
-                'Crea tu cuenta',
+                AuthStrings.createAccountTitle,
                 style: context.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.onSurface,
@@ -170,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: AppSpacing.s),
               Text(
-                'Completa el formulario para registrarte',
+                AuthStrings.createAccountSubtitle,
                 style: context.textTheme.bodyLarge?.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
                 ),
@@ -181,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               // Selector de rol
               Text(
-                'Tipo de cuenta',
+                AuthStrings.accountTypeLabel,
                 style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.colorScheme.onSurface,
@@ -192,12 +196,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 segments: const [
                   ButtonSegment<String>(
                     value: 'teacher',
-                    label: Text('Docente'),
+                    label: Text(AuthStrings.teacherRole),
                     icon: Icon(Icons.school_outlined),
                   ),
                   ButtonSegment<String>(
                     value: 'student',
-                    label: Text('Alumno'),
+                    label: Text(AuthStrings.studentRole),
                     icon: Icon(Icons.person_outline),
                   ),
                 ],
@@ -214,8 +218,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Campo de nombre
               CustomTextField(
                 controller: _firstNameController,
-                label: 'Nombre',
-                hint: 'Ingresa tu nombre',
+                label: AuthStrings.firstNameLabel,
+                hint: AuthStrings.firstNameHint,
                 textInputAction: TextInputAction.next,
                 errorText: _firstNameError,
                 prefix: Icon(
@@ -240,8 +244,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Campo de apellidos
               CustomTextField(
                 controller: _lastNameController,
-                label: 'Apellidos',
-                hint: 'Ingresa tus apellidos',
+                label: AuthStrings.lastNameLabel,
+                hint: AuthStrings.lastNameHint,
                 textInputAction: TextInputAction.next,
                 errorText: _lastNameError,
                 prefix: Icon(
@@ -266,8 +270,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Campo de email
               CustomTextField(
                 controller: _emailController,
-                label: 'Email',
-                hint: 'usuario@ejemplo.com',
+                label: AuthStrings.emailLabel,
+                hint: AuthStrings.emailHint,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.none,
@@ -294,8 +298,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Campo de contraseña
               CustomTextField(
                 controller: _passwordController,
-                label: 'Contraseña',
-                hint: 'Mínimo 6 caracteres',
+                label: AuthStrings.passwordLabel,
+                hint: AuthStrings.passwordMinLengthHint,
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.none,
@@ -317,8 +321,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   tooltip: _obscurePassword
-                      ? 'Mostrar contraseña'
-                      : 'Ocultar contraseña',
+                      ? CommonStrings.showPassword
+                      : CommonStrings.hidePassword,
                 ),
                 onChanged: (value) {
                   // Limpiar error al escribir
@@ -342,8 +346,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Campo de confirmación de contraseña
               CustomTextField(
                 controller: _confirmPasswordController,
-                label: 'Confirmar Contraseña',
-                hint: 'Repite tu contraseña',
+                label: AuthStrings.confirmPasswordLabel,
+                hint: AuthStrings.confirmPasswordHint,
                 obscureText: _obscureConfirmPassword,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.none,
@@ -365,8 +369,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   tooltip: _obscureConfirmPassword
-                      ? 'Mostrar contraseña'
-                      : 'Ocultar contraseña',
+                      ? CommonStrings.showPassword
+                      : CommonStrings.hidePassword,
                 ),
                 onChanged: (value) {
                   // Limpiar error al escribir
@@ -408,17 +412,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               color: context.colorScheme.onSurfaceVariant,
                             ),
                             children: [
-                              const TextSpan(text: 'Acepto los '),
+                              TextSpan(text: AuthStrings.acceptTermsPrefix),
                               TextSpan(
-                                text: 'términos y condiciones',
+                                text: AuthStrings.termsAndConditions,
                                 style: TextStyle(
                                   color: context.colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const TextSpan(text: ' y la '),
+                              TextSpan(text: AuthStrings.acceptTermsMiddle),
                               TextSpan(
-                                text: 'política de privacidad',
+                                text: AuthStrings.privacyPolicy,
                                 style: TextStyle(
                                   color: context.colorScheme.primary,
                                   fontWeight: FontWeight.bold,
@@ -437,7 +441,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               // Botón de registro
               CustomButton(
-                label: 'Registrarse',
+                label: AuthStrings.registerButton,
                 variant: CustomButtonVariant.filled,
                 isLoading: _isLoading,
                 onPressed: _handleRegister,
@@ -450,7 +454,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '¿Ya tienes cuenta? ',
+                    AuthStrings.alreadyHaveAccountQuestion,
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
@@ -458,7 +462,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextButton(
                     onPressed: () => context.go('/login'),
                     child: Text(
-                      'Inicia sesión',
+                      AuthStrings.loginLink,
                       style: context.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colorScheme.primary,

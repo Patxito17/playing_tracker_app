@@ -263,7 +263,8 @@ lib/core/extensions/
 └── context_extensions.dart        # context.theme, context.colorScheme, etc.
 
 lib/core/constants/
-└── app_constants.dart              # Espaciado, radios de bordes, duraciones de animaciones
+├── app_constants.dart              # Espaciado, radios de bordes, duraciones de animaciones
+└── app_strings.dart                # Strings centralizados (AuthStrings, ValidationStrings, CommonStrings)
 
 lib/shared/widgets/
 ├── custom_bottom_navigation_bar.dart # BottomNavigationBar M3
@@ -593,6 +594,11 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
 
 ### Fase 5: Pantallas de Autenticación (Día 8) ✅ COMPLETADA
 
+- [x] Crear `lib/core/constants/app_strings.dart` con strings centralizados
+  - [x] Clase `AuthStrings` con todos los strings de autenticación
+  - [x] Clase `ValidationStrings` con mensajes de validación
+  - [x] Clase `CommonStrings` con strings comunes reutilizables
+  - [x] Documentación completa en español
 - [x] Mejorar `lib/features/auth/presentation/screens/login_screen.dart`
   - [x] Formulario completo con email y contraseña
   - [x] Validación visual básica para ambos campos
@@ -602,6 +608,7 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Diseño Material Design 3 completo
   - [x] Iconos apropiados (email, lock)
   - [x] Layout centrado y responsive
+  - [x] Refactorizado para usar `AuthStrings` y `CommonStrings`
 - [x] Mejorar `lib/features/auth/presentation/screens/register_screen.dart`
   - [x] Formulario completo (nombre, apellidos, email, contraseña, repetir contraseña, rol)
   - [x] Selector de rol con SegmentedButton M3 (docente/alumno)
@@ -611,6 +618,7 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Botón de registro con estados visuales (loading)
   - [x] Diseño Material Design 3 completo
   - [x] Layout responsive y accesible
+  - [x] Refactorizado para usar `AuthStrings` y `CommonStrings`
 - [x] Mejorar `lib/features/auth/presentation/screens/forgot_password_screen.dart`
   - [x] Formulario con email y validación visual
   - [x] Mensaje informativo claro
@@ -618,11 +626,13 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Botón de envío con estados visuales (loading)
   - [x] Diseño Material Design 3 completo
   - [x] Icono ilustrativo y layout mejorado
+  - [x] Refactorizado para usar `AuthStrings` y `CommonStrings`
 - [x] Implementar funciones de validación en `lib/core/utils/validators.dart`
   - [x] Validación de email (formato válido)
   - [x] Validación de contraseña (mínimo 6 caracteres)
   - [x] Validación de nombres (mínimo 3 caracteres, solo letras)
   - [x] Validación de confirmación de contraseña (debe coincidir)
+  - [x] Refactorizado para usar `ValidationStrings` de `app_strings.dart`
 
 ### Fase 6: Pantallas Home y Navegación Principal (Día 9)
 
@@ -880,10 +890,13 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] Código formateado con `dart format`
 
 ### Fase 5: Pantallas de Autenticación ✅ COMPLETADA
+- [x] `app_strings.dart` creado con strings centralizados (AuthStrings, ValidationStrings, CommonStrings)
 - [x] LoginScreen con UI completa M3, validación visual y toggle de contraseña
 - [x] RegisterScreen con campos completos, selector de rol M3 y validaciones
 - [x] ForgotPasswordScreen con mensaje informativo y confirmación visual
 - [x] Funciones de validación implementadas en validators.dart
+- [x] Todas las pantallas refactorizadas para usar strings centralizados
+- [x] Validadores refactorizados para usar ValidationStrings
 - [x] `flutter analyze` sin errores (0 issues)
 - [x] Código formateado con `dart format`
 
@@ -901,6 +914,17 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.7 - 29 de Octubre 2025
+- ✅ **Mejora Fase 5:** Refactorización de strings centralizados
+- ✅ `app_strings.dart` creado con organización por categorías (AuthStrings, ValidationStrings, CommonStrings)
+- ✅ Todas las pantallas de autenticación refactorizadas para usar strings centralizados
+- ✅ Validadores refactorizados para usar ValidationStrings de app_strings.dart
+- ✅ Preparación para internacionalización futura con strings centralizados
+- ✅ Mantenibilidad mejorada: cambios de textos en un solo lugar
+- ✅ Consistencia garantizada en todos los mensajes de la aplicación
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.6 - 29 de Octubre 2025
 - ✅ **Fase 5 completada:** Pantallas de autenticación con UI completa Material Design 3
