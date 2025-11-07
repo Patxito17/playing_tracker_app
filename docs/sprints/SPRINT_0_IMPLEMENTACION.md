@@ -2,10 +2,10 @@
 
 **Proyecto:** Playing Tracker - Sistema de Seguimiento de Estudio Musical
 **Sprint:** 0 - Configuración Inicial y Diseño UI/UX
-**Duración:** Octubre 2025 (2 semanas)
-**Estado:** 📅 En desarrollo - Fase 1 completada ✅
-**Versión del documento:** 1.1
-**Última actualización:** 29 de Octubre 2025
+**Duración:** Octubre - Noviembre 2025 (2 semanas)
+**Estado:** 📅 En desarrollo - Fase 8 completada ✅
+**Versión del documento:** 1.14
+**Última actualización:** 7 de Noviembre 2025
 
 ---
 
@@ -796,19 +796,19 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Agregados strings adicionales a ClassesStrings (crear clase, unirse a clase)
   - [x] Agregados strings adicionales a CommonStrings (copy, copied)
 
-### Fase 8: Pantallas de Tareas (Día 11)
+### Fase 8: Pantallas de Tareas (Día 11) ✅ COMPLETADA
 
-- [ ] Crear `lib/features/tasks/presentation/screens/create_task_screen.dart`
-  - [ ] Formulario completo (título, descripción, tiempo, adjuntos)
-  - [ ] Selector de destinatarios (mock)
-  - [ ] Botón crear (sin funcionalidad real)
-- [ ] Crear `lib/features/tasks/presentation/screens/task_list_screen.dart`
-  - [ ] Lista de tareas (datos mock)
-  - [ ] Filtros básicos (UI solamente)
-  - [ ] Navegación al detalle
-- [ ] Crear `lib/features/tasks/presentation/screens/task_detail_screen.dart`
-  - [ ] Información completa de tarea (mock)
-  - [ ] Acciones disponibles según rol
+- [x] Crear `lib/features/tasks/presentation/screens/create_task_screen.dart`
+  - [x] Formulario completo (título, descripción, tiempo, adjuntos)
+  - [x] Selector de destinatarios (mock)
+  - [x] Botón crear (sin funcionalidad real)
+- [x] Crear `lib/features/tasks/presentation/screens/task_list_screen.dart`
+  - [x] Lista de tareas (datos mock)
+  - [x] Filtros básicos (UI solamente)
+  - [x] Navegación al detalle
+- [x] Crear `lib/features/tasks/presentation/screens/task_detail_screen.dart`
+  - [x] Información completa de tarea (mock)
+  - [x] Acciones disponibles según rol
 
 ### Fase 9: Pantallas de Sesiones (Día 12)
 
@@ -1019,8 +1019,18 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] Pantallas auxiliares (crear clase, unirse, gestionar estudiantes) completadas
 - [x] SettingsScreen mejorada con secciones organizadas
 
-### Pendiente (Fases 8-10)
-- [ ] UI completa de pantallas de tareas
+### Fase 8: Pantallas de Tareas ✅ COMPLETADA
+- [x] CreateTaskScreen con formulario completo, validación y selector de destinatarios
+- [x] TaskListScreen con lista mejorada, filtros básicos y estado vacío
+- [x] TaskDetailScreen con información completa y acciones según rol
+- [x] Navegación corregida: context.push() y context.pop() donde corresponde
+- [x] Eliminado NavigationHelper de todas las pantallas de tareas
+- [x] Strings centralizados (TaskStrings expandido)
+- [x] Material Design 3 consistente en todas las pantallas
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Código formateado con `dart format`
+
+### Pendiente (Fases 9-10)
 - [ ] UI completa de pantallas de sesiones
 - [ ] Accesibilidad básica verificada
 - [ ] Documentación del sprint completa
@@ -1157,10 +1167,25 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ---
 
-**Última actualización:** 29 de Octubre 2025
-**Estado:** En desarrollo - Fase 7 completada ✅
-**Progreso:** 100% (10/10 fases)
+**Última actualización:** 7 de Noviembre 2025
+**Estado:** En desarrollo - Fase 8 completada ✅
+**Progreso:** 80% (8/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
+
+### Versión 1.14 - 7 de Noviembre 2025
+- ✅ **Fase 8 completada:** Pantallas de Tareas con UI completa Material Design 3
+- ✅ TaskStrings expandido con strings para formularios, listas, detalles y filtros
+- ✅ CreateTaskScreen completada con formulario completo, validación, selector de destinatarios (FilterChip) y adjuntos placeholder
+- ✅ TaskListScreen completada con lista mejorada, filtros básicos (UI), estado vacío reutilizable y RefreshIndicator
+- ✅ TaskDetailScreen completada con información completa, acciones según rol (docente/estudiante) y navegación correcta
+- ✅ Navegación corregida: todas las pantallas usan `context.push()` para formularios/detalles y `context.pop()` para volver
+- ✅ Eliminado NavigationHelper de todas las pantallas de tareas
+- ✅ Estados vacíos reutilizables implementados con `_EmptyState` widget
+- ✅ Strings centralizados usados en todas las pantallas (TaskStrings, CommonStrings)
+- ✅ Material Design 3 consistente en todas las pantallas con CustomCard, CustomButton, CustomAppBar
+- ✅ CommonStrings.download agregado para acciones de descarga
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.13 - 29 de Octubre 2025
 - ✅ **Mejora de navegación:** Corregida navegación en pantallas de clases para usar `context.push()` y `context.pop()`

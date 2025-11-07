@@ -172,6 +172,7 @@ class CommonStrings {
   static const String done = 'Hecho';
   static const String copy = 'Copiar';
   static const String copied = 'Copiado';
+  static const String download = 'Descargar';
 }
 
 /// Strings relacionados con detalles de clase y tabs
@@ -217,10 +218,48 @@ class TaskStrings {
   // Títulos y acciones
   static const String createTask = 'Crear Nueva Tarea';
   static const String tasksTitle = 'Tareas';
+  static const String myTasksTitle = 'Mis Tareas';
+  static const String taskDetailTitle = 'Detalle de Tarea';
+  static const String newTaskTitle = 'Nueva Tarea';
   static const String assignedTo = 'Asignada a';
   static const String studentsLabel = 'estudiantes';
   static const String startStudySession = 'Iniciar Sesión de Estudio';
   static const String viewDetails = 'Ver Detalles';
+  static const String createTaskButton = 'Crear Tarea';
+  static const String editTask = 'Editar Tarea';
+  static const String deleteTask = 'Eliminar Tarea';
+  static const String assignTask = 'Asignar Tarea';
+  static const String startTimer = 'Iniciar Cronómetro';
+  static const String backToTasks = 'Volver a Tareas';
+
+  // Formulario crear tarea
+  static const String taskTitleLabel = 'Título';
+  static const String taskTitleHint = 'Título de la tarea';
+  static const String taskDescriptionLabel = 'Descripción';
+  static const String taskDescriptionHint = 'Descripción detallada de la tarea';
+  static const String estimatedTimeLabel = 'Tiempo Estimado';
+  static const String estimatedTimeHint = 'Ej: 30 minutos';
+  static const String recipientsLabel = 'Destinatarios';
+  static const String recipientsHint = 'Selecciona los estudiantes';
+  static const String attachmentsLabel = 'Adjuntos';
+  static const String attachmentsHint =
+      'Archivos adjuntos (PDF, imágenes, etc.)';
+  static const String addAttachment = 'Agregar Adjunto';
+  static const String noAttachments = 'No hay adjuntos';
+  static const String selectAllStudents = 'Todos';
+  static const String deselectAllStudents = 'Ninguno';
+
+  // Información de tarea
+  static const String taskInformation = 'Información de la Tarea';
+  static const String estimatedTime = 'Tiempo estimado';
+  static const String createdDate = 'Fecha de creación';
+  static const String dueDate = 'Fecha límite';
+  static const String recipients = 'Destinatarios';
+  static const String attachments = 'Adjuntos';
+  static const String minutes = 'minutos';
+  static const String hours = 'horas';
+  static const String noRecipients = 'No hay destinatarios asignados';
+  static const String selectedRecipients = 'estudiantes seleccionados';
 
   // Estados de tareas
   static const String status = 'Estado';
@@ -228,11 +267,23 @@ class TaskStrings {
   static const String inProgress = 'En progreso';
   static const String completed = 'Completada';
 
+  // Filtros
+  static const String filters = 'Filtros';
+  static const String filterByStatus = 'Filtrar por estado';
+  static const String filterByDate = 'Filtrar por fecha';
+  static const String filterByClass = 'Filtrar por clase';
+  static const String allStatuses = 'Todos los estados';
+  static const String allDates = 'Todas las fechas';
+  static const String allClasses = 'Todas las clases';
+
   // Estados vacíos
   static const String noTasksInClass = 'No hay tareas en esta clase';
   static const String createFirstTask = 'Crea tu primera tarea para comenzar';
   static const String noTasksAssigned = 'No hay tareas asignadas';
   static const String waitForTasks = 'Espera a que tu profesor asigne tareas';
+  static const String noTasksFound = 'No se encontraron tareas';
+  static const String adjustFilters =
+      'Ajusta los filtros para ver más resultados';
 }
 
 /// Strings relacionados con estudiantes
