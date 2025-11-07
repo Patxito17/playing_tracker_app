@@ -263,6 +263,120 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 
 ---
 
+## 📝 Mantenimiento de Documentación
+
+### Regla Fundamental
+**SIEMPRE** actualiza la documentación pertinente cuando realices cambios significativos en el código, arquitectura o funcionalidades del proyecto.
+
+### Archivos de Documentación a Mantener Actualizados
+
+#### 1. README.md
+**Actualizar cuando:**
+- Cambios en setup o instalación
+- Nuevas dependencias añadidas
+- Cambios en estructura del proyecto
+- Actualización del estado del proyecto (sprint actual, progreso)
+- Nuevos comandos útiles
+- Cambios en requisitos previos
+
+**Qué incluir:**
+- Descripción actualizada del proyecto
+- Comandos de instalación y ejecución
+- Estado actual del desarrollo
+- Enlaces a documentación relevante
+
+#### 2. docs/Guia_Proyecto_PlayingTracker.md
+**Actualizar cuando:**
+- Cambios arquitectónicos significativos
+- Nuevas features o módulos añadidos
+- Cambios en el roadmap o sprints
+- Actualización de tecnologías o dependencias principales
+- Cambios en la estructura de base de datos
+- Nuevas decisiones de diseño importantes
+
+**Qué incluir:**
+- Descripción actualizada de arquitectura
+- Nuevas features documentadas
+- Roadmap actualizado
+- Cambios en metodología de trabajo
+
+#### 3. docs/sprints/SPRINT_X_IMPLEMENTACION.md
+**Actualizar cuando:**
+- Cualquier cambio relacionado con el sprint actual
+- Completar tareas o fases del sprint
+- Nuevas implementaciones o mejoras
+- Correcciones de bugs importantes
+- Cambios en criterios de aceptación
+
+**Qué incluir:**
+- Marcar tareas completadas
+- Agregar nueva versión al historial de cambios
+- Detallar cambios implementados
+- Actualizar checklist final
+- Actualizar fechas y estado del sprint
+
+#### 4. Otros Documentos Específicos
+**Actualizar cuando:**
+- Cambios relacionados con el contenido específico del documento
+- Nuevas reglas o convenciones añadidas
+- Actualización de esquemas o modelos
+
+### Checklist de Documentación
+
+Antes de considerar una tarea completada, verifica:
+
+- [ ] ¿Se añadieron nuevas dependencias? → Actualizar `README.md` y `pubspec.yaml` (si aplica)
+- [ ] ¿Se cambió la estructura de carpetas? → Actualizar `README.md` y `Guia_Proyecto_PlayingTracker.md`
+- [ ] ¿Se implementó una nueva feature? → Actualizar documento del sprint y `Guia_Proyecto_PlayingTracker.md`
+- [ ] ¿Se completó una fase del sprint? → Actualizar documento del sprint con nueva versión
+- [ ] ¿Se cambió algo arquitectónico? → Actualizar `Guia_Proyecto_PlayingTracker.md`
+- [ ] ¿Se añadieron nuevas pantallas o componentes? → Actualizar documento del sprint
+- [ ] ¿Se cambió el estado del proyecto? → Actualizar `README.md` con progreso actual
+
+### Formato de Actualización
+
+Al actualizar documentación:
+
+1. **Incluir fecha** de la actualización
+2. **Describir brevemente** el cambio realizado
+3. **Mantener formato** consistente con el resto del documento
+4. **Actualizar índices** si es necesario
+5. **Verificar enlaces** internos y externos
+
+### Ejemplo de Actualización en Documento de Sprint
+
+```markdown
+### Versión X.X - [Fecha]
+- ✅ **Descripción del cambio:** Breve descripción de lo implementado
+- ✅ Detalle 1: Cambio específico realizado
+- ✅ Detalle 2: Otro cambio específico
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
+```
+
+### Prioridad de Actualización
+
+**Alta prioridad (actualizar inmediatamente):**
+- Cambios que afectan setup o instalación
+- Nuevas features principales
+- Cambios arquitectónicos
+- Completar fases de sprint
+
+**Media prioridad (actualizar en la misma sesión):**
+- Mejoras menores de UI
+- Correcciones de bugs
+- Refactorizaciones menores
+
+**Baja prioridad (actualizar cuando sea conveniente):**
+- Mejoras de documentación de código
+- Ajustes menores de estilo
+
+### Recordatorio Importante
+
+**Nunca consideres una tarea completamente terminada hasta que la documentación esté actualizada.** La documentación es tan importante como el código y debe mantenerse sincronizada con el estado actual del proyecto.
+
+---
+
 ## 📚 Referencias Útiles
 
 - [Flutter Documentation](https://docs.flutter.dev)
