@@ -138,6 +138,44 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 
 ---
 
+## 🧭 Convenciones de Navegación y UI
+
+### Strings Centralizados
+- **SIEMPRE** usa strings centralizados de `app_strings.dart` en todas las pantallas.
+- No hardcodees textos directamente en widgets.
+- Organiza strings por categorías (AuthStrings, TaskStrings, ClassesStrings, etc.).
+- Facilita la internacionalización futura y mantiene consistencia.
+
+### Navegación con GoRouter
+- **Para formularios y pantallas de detalle:** Usa `context.push()` para agregar a la pila de navegación.
+- **Para volver después de acciones exitosas:** Usa `context.pop()` para volver a la pantalla anterior.
+- **Para reemplazar la pantalla actual:** Usa `context.go()` solo en casos específicos (redirecciones, cambio de contexto).
+- **Regla general:** Si el usuario puede volver con el botón de retroceso, usa `push()`. Si completó una acción y debe volver, usa `pop()`.
+
+### Material Design 3
+- **SIEMPRE** sigue Material Design 3 consistentemente en todas las pantallas.
+- Usa tokens del tema (`context.colorScheme`, `context.textTheme`) en lugar de colores hardcodeados.
+- Usa componentes M3 estándar: `FilledButton`, `OutlinedButton`, `TextButton`, `TextField` con `filled: true`.
+- Mantén coherencia visual entre todas las pantallas.
+
+### Componentes Reutilizables
+- **SIEMPRE** usa componentes reutilizables cuando estén disponibles:
+  - `CustomButton` para botones
+  - `CustomCard` para cards y contenedores
+  - `CustomTextField` para campos de texto (o `TextFormField` para formularios con validación)
+  - `CustomAppBar` para barras de navegación superiores
+  - `CustomTabBar` para tabs en pantallas de detalle
+- No crees widgets personalizados si ya existe un componente reutilizable equivalente.
+- Si necesitas un nuevo componente reutilizable, créalo en `lib/shared/widgets/` y documenta su uso.
+
+### Estados Vacíos
+- **SIEMPRE** implementa estados vacíos reutilizables donde sea apropiado.
+- Crea widgets privados `_EmptyState` o similares para mostrar estados vacíos consistentes.
+- Incluye: icono, título, subtítulo descriptivo y acción opcional (botón).
+- Usa los mismos estilos y espaciado que el resto de la aplicación.
+
+---
+
 ## 🧰 Utilidades y extras
 
 - Para depuración, usa `log()` de `dart:developer` en lugar de `print()`.
