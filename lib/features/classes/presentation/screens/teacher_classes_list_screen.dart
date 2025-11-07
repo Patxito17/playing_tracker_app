@@ -32,7 +32,7 @@ class TeacherClassesListScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => context.go(AppRoutes.createClass),
+            onPressed: () => context.push(AppRoutes.createClass),
             tooltip: ClassesStrings.createNewClass,
           ),
         ],
@@ -65,7 +65,7 @@ class TeacherClassesListScreen extends StatelessWidget {
                   title: ClassesStrings.noClassesCreated,
                   subtitle: ClassesStrings.createFirstClass,
                   actionLabel: ClassesStrings.createClass,
-                  onAction: () => context.go(AppRoutes.createClass),
+                  onAction: () => context.push(AppRoutes.createClass),
                 )
               else
                 ...mockClasses.map((classData) {
@@ -101,7 +101,7 @@ class TeacherClassesListScreen extends StatelessWidget {
       ),
       // BottomNavigationBar se maneja mediante ShellRoute en app_routes.dart
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go(AppRoutes.createClass),
+        onPressed: () => context.push(AppRoutes.createClass),
         icon: const Icon(Icons.add),
         label: Text(ClassesStrings.createClass),
       ),

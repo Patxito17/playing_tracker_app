@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/custom_card.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../shared/widgets/custom_card.dart';
 
 /// Tab de estudiantes de la clase (para docente)
 ///
-/// Muestra todos los estudiantes de la clase con sus estadísticas.
-/// Placeholder para Sprint 0 - Fase 7.
+/// Muestra todos los estudiantes de la clase con sus estadísticas y acciones.
+/// Sprint 0 - Fase 7: UI completa con Material Design 3
 class ClassStudentsTab extends StatelessWidget {
   final String classId;
 
@@ -26,34 +30,17 @@ class ClassStudentsTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Estudiantes de la Clase',
-            style: Theme.of(context).textTheme.titleLarge,
+            StudentStrings.studentsTitle,
+            style: context.textTheme.titleLarge,
           ),
           const SizedBox(height: AppSpacing.m),
           if (mockStudents.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.person_outline,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                    const SizedBox(height: AppSpacing.m),
-                    Text(
-                      'No hay estudiantes en esta clase',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.s),
-                    Text(
-                      'Los estudiantes pueden unirse con el código de acceso',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
+            _EmptyStudentsState(
+              icon: Icons.person_outline,
+              title: StudentStrings.noStudentsInClass,
+              subtitle: StudentStrings.studentsJoinWithCode,
+              actionLabel: CommonStrings.close,
+              onAction: () => context.pop(),
             )
           else
             ...mockStudents.map((studentData) {
@@ -62,11 +49,84 @@ class ClassStudentsTab extends StatelessWidget {
                 child: CustomCard(
                   title: studentData['name'] as String,
                   subtitle:
-                      '${studentData['sessions']} sesiones • ${studentData['hours']} horas',
+                      '${studentData['sessions']} ${StudentStrings.sessionsHours} ${studentData['hours']} ${StudentStrings.hours}',
+                  trailingAction: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.person_outline),
+                        onPressed: () {
+                          // Placeholder: ver perfil del estudiante
+                        },
+                        tooltip: StudentStrings.viewProfile,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () {
+                          // Placeholder: eliminar estudiante
+                        },
+                        tooltip: StudentStrings.removeStudent,
+                        color: context.colorScheme.error,
+                      ),
+                    ],
+                  ),
                   child: const SizedBox.shrink(),
                 ),
               );
             }),
+        ],
+      ),
+    );
+  }
+}
+
+/// Widget para mostrar estado vacío en tabs de estudiantes
+class _EmptyStudentsState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _EmptyStudentsState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 80, color: context.colorScheme.outline),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            title,
+            style: context.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            subtitle,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          FilledButton.icon(
+            onPressed: onAction,
+            icon: const Icon(Icons.close),
+            label: Text(actionLabel),
+          ),
         ],
       ),
     );

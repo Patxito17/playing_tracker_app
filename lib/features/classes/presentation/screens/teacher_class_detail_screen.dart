@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/extensions/context_extensions.dart';
+import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../widgets/class_statistics_tab.dart';
 import '../widgets/class_students_tab.dart';
 import '../widgets/class_tasks_tab.dart';
@@ -26,23 +26,27 @@ class TeacherClassDetailScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Detalle de Clase'),
+          title: const Text(ClassDetailStrings.classDetailTitle),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
             tooltip: CommonStrings.back,
           ),
-          bottom: TabBar(
+          bottom: CustomTabBar(
             tabs: const [
-              Tab(icon: Icon(Icons.assignment), text: 'Tareas'),
-              Tab(icon: Icon(Icons.people), text: 'Estudiantes'),
-              Tab(icon: Icon(Icons.bar_chart), text: 'Estadísticas'),
+              Tab(
+                icon: Icon(Icons.assignment),
+                text: ClassDetailStrings.tasksTab,
+              ),
+              Tab(
+                icon: Icon(Icons.people),
+                text: ClassDetailStrings.studentsTab,
+              ),
+              Tab(
+                icon: Icon(Icons.bar_chart),
+                text: ClassDetailStrings.statisticsTab,
+              ),
             ],
-            labelColor: context.colorScheme.primary,
-            unselectedLabelColor: context.colorScheme.onSurface.withValues(
-              alpha: 0.6,
-            ),
-            indicatorColor: context.colorScheme.primary,
           ),
         ),
         body: TabBarView(
