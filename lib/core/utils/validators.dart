@@ -6,6 +6,8 @@
 /// Sprint 0 - Fase 5: Validadores implementados para pantallas de autenticación
 library;
 
+import '../constants/app_strings.dart';
+
 /// Clase con métodos estáticos para validación de formularios
 class Validators {
   /// Valida que un campo no esté vacío
@@ -15,7 +17,7 @@ class Validators {
   /// Retorna un mensaje de error si el campo está vacío, null si es válido
   static String? required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName es requerido';
+      return ValidationStrings.required(fieldName);
     }
     return null;
   }
@@ -26,11 +28,11 @@ class Validators {
   /// Retorna un mensaje de error si el email no es válido, null si es válido
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'El email es requerido';
+      return ValidationStrings.emailRequired;
     }
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'El formato del email no es válido';
+      return ValidationStrings.emailInvalidFormat;
     }
     return null;
   }
@@ -41,10 +43,10 @@ class Validators {
   /// Retorna un mensaje de error si la contraseña es muy corta, null si es válida
   static String? password(String? value) {
     if (value == null || value.isEmpty) {
-      return 'La contraseña es requerida';
+      return ValidationStrings.passwordRequired;
     }
     if (value.length < 6) {
-      return 'La contraseña debe tener al menos 6 caracteres';
+      return ValidationStrings.passwordMinLength;
     }
     return null;
   }
@@ -56,14 +58,14 @@ class Validators {
   /// Retorna un mensaje de error si contiene caracteres inválidos, null si es válido
   static String? name(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName es requerido';
+      return ValidationStrings.nameRequired(fieldName);
     }
     if (value.trim().length < 3) {
-      return '$fieldName debe tener al menos 3 caracteres';
+      return ValidationStrings.nameMinLength(fieldName);
     }
     final nameRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$');
     if (!nameRegex.hasMatch(value.trim())) {
-      return '$fieldName solo puede contener letras y espacios';
+      return ValidationStrings.nameInvalidCharacters(fieldName);
     }
     return null;
   }
@@ -75,10 +77,10 @@ class Validators {
   /// Retorna un mensaje de error si no coinciden, null si coinciden
   static String? confirmPassword(String? password, String? confirmPassword) {
     if (confirmPassword == null || confirmPassword.isEmpty) {
-      return 'Debes confirmar tu contraseña';
+      return ValidationStrings.confirmPasswordRequired;
     }
     if (password != confirmPassword) {
-      return 'Las contraseñas no coinciden';
+      return ValidationStrings.passwordsDoNotMatch;
     }
     return null;
   }

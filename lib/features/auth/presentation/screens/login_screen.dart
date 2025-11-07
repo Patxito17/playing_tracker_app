@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Iniciar Sesión'),
+      appBar: const CustomAppBar(title: AuthStrings.loginTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.l),
@@ -113,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Título principal
               Text(
-                'Bienvenido',
+                AuthStrings.welcomeTitle,
                 style: context.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.onSurface,
@@ -122,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: AppSpacing.s),
               Text(
-                'Inicia sesión para continuar',
+                AuthStrings.loginSubtitle,
                 style: context.textTheme.bodyLarge?.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
                 ),
@@ -134,8 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
               // Campo de email
               CustomTextField(
                 controller: _emailController,
-                label: 'Email',
-                hint: 'usuario@ejemplo.com',
+                label: AuthStrings.emailLabel,
+                hint: AuthStrings.emailHint,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.none,
@@ -163,8 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
               // Campo de contraseña
               CustomTextField(
                 controller: _passwordController,
-                label: 'Contraseña',
-                hint: 'Ingresa tu contraseña',
+                label: AuthStrings.passwordLabel,
+                hint: AuthStrings.passwordHint,
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.none,
@@ -186,8 +187,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   },
                   tooltip: _obscurePassword
-                      ? 'Mostrar contraseña'
-                      : 'Ocultar contraseña',
+                      ? CommonStrings.showPassword
+                      : CommonStrings.hidePassword,
                 ),
                 onChanged: (value) {
                   // Limpiar error al escribir
@@ -208,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: () => context.go('/forgot-password'),
                   child: Text(
-                    '¿Olvidaste tu contraseña?',
+                    AuthStrings.forgotPasswordLink,
                     style: context.textTheme.bodySmall?.copyWith(
                       color: context.colorScheme.primary,
                     ),
@@ -220,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Botón de login
               CustomButton(
-                label: 'Iniciar Sesión',
+                label: AuthStrings.loginButton,
                 variant: CustomButtonVariant.filled,
                 isLoading: _isLoading,
                 onPressed: _handleLogin,
@@ -230,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Botón de login como alumno (mock)
               CustomButton(
-                label: 'Iniciar como Alumno (Mock)',
+                label: AuthStrings.loginAsStudentButton,
                 variant: CustomButtonVariant.outlined,
                 isLoading: _isLoading,
                 onPressed: _handleLoginAsStudent,
@@ -243,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '¿No tienes cuenta? ',
+                    AuthStrings.noAccountQuestion,
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
@@ -251,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () => context.go('/register'),
                     child: Text(
-                      'Regístrate',
+                      AuthStrings.registerLink,
                       style: context.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colorScheme.primary,

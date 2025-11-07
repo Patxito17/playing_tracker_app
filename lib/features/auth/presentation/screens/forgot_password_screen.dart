@@ -4,6 +4,7 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 
@@ -75,7 +76,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Recuperar Contraseña'),
+      appBar: const CustomAppBar(title: AuthStrings.forgotPasswordTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.l),
@@ -96,7 +97,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
               // Título principal
               Text(
-                '¿Olvidaste tu contraseña?',
+                AuthStrings.forgotPasswordQuestion,
                 style: context.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.onSurface,
@@ -109,7 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               // Mensaje informativo
               if (!_emailSent)
                 Text(
-                  'Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.',
+                  AuthStrings.forgotPasswordInstructions,
                   style: context.textTheme.bodyLarge?.copyWith(
                     color: context.colorScheme.onSurfaceVariant,
                   ),
@@ -132,7 +133,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: AppSpacing.m),
                       Text(
-                        'Email enviado',
+                        AuthStrings.emailSentTitle,
                         style: context.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.colorScheme.onPrimaryContainer,
@@ -141,7 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: AppSpacing.s),
                       Text(
-                        'Revisa tu bandeja de entrada. Si no encuentras el email, verifica tu carpeta de spam.',
+                        AuthStrings.emailSentMessage,
                         style: context.textTheme.bodyMedium?.copyWith(
                           color: context.colorScheme.onPrimaryContainer,
                         ),
@@ -157,8 +158,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 // Campo de email
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Email',
-                  hint: 'usuario@ejemplo.com',
+                  label: AuthStrings.emailLabel,
+                  hint: AuthStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
                   textCapitalization: TextCapitalization.none,
@@ -182,7 +183,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 // Botón de envío
                 CustomButton(
-                  label: 'Enviar enlace de recuperación',
+                  label: AuthStrings.sendRecoveryLinkButton,
                   variant: CustomButtonVariant.filled,
                   isLoading: _isLoading,
                   onPressed: _handleSendEmail,
@@ -196,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '¿Recordaste tu contraseña? ',
+                    AuthStrings.rememberPasswordQuestion,
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
@@ -204,7 +205,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   TextButton(
                     onPressed: () => context.go('/login'),
                     child: Text(
-                      'Inicia sesión',
+                      AuthStrings.loginLink,
                       style: context.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colorScheme.primary,
