@@ -75,7 +75,7 @@ Establecer la base sólida del proyecto con enfoque **"diseño primero"**, prior
 5. **Navegación y Routing**
    - Configuración de `go_router` con todas las rutas principales
    - Navegación condicional según rol (mock inicial)
-   - ShellRoute para BottomNavigationBar persistente
+   - StatefulShellRoute para BottomNavigationBar persistente con estado independiente por tab
    - Rutas separadas para docente y estudiante
    - Navegación anidada con tabs en pantallas de detalle de clase
 
@@ -128,8 +128,8 @@ Establecer la base sólida del proyecto con enfoque **"diseño primero"**, prior
    - Navegación entre pantallas funcional
 
 5. **Configuración de Navegación**
-   - Archivo `lib/config/routes/app_routes.dart` con go_router configurado
-   - Todas las rutas principales definidas con ShellRoute para BottomNavigationBar
+  - Archivo `lib/config/routes/app_routes.dart` con go_router configurado
+  - Todas las rutas principales definidas con StatefulShellRoute para BottomNavigationBar con estado persistente
    - Navegación condicional por rol (mock)
    - Rutas separadas para docente y estudiante:
      - `/home/teacher/classes` - Lista de clases (docente)
@@ -456,7 +456,34 @@ Implementar `AuthWrapper` (estático, sin lógica real) que:
 
 ### Shell Navigation (GoRouter)
 
-Usar `ShellRoute` para layouts compartidos (AppBar, BottomNavigation, etc.)
+**StatefulShellRoute para navegación con estado persistente:**
+
+Usar `StatefulShellRoute.indexedStack` para layouts compartidos con BottomNavigationBar que mantienen el estado de cada tab independientemente. Esto permite que cada tab (Clases, Estadísticas, Configuración) conserve su estado (scroll, formularios, etc.) al cambiar entre ellos.
+
+**Estructura:**
+```dart
+StatefulShellRoute.indexedStack(
+  builder: (context, state, navigationShell) {
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: CustomBottomNavigationBar(
+        navigationShell: navigationShell,
+      ),
+    );
+  },
+  branches: [
+    StatefulShellBranch(routes: [...]), // Branch 0: Clases
+    StatefulShellBranch(routes: [...]), // Branch 1: Estadísticas
+    StatefulShellBranch(routes: [...]), // Branch 2: Configuración
+  ],
+)
+```
+
+**Ventajas:**
+- Mantiene el estado de cada tab independientemente
+- No requiere reconstruir pantallas al cambiar de tab
+- Navegación fluida sin perder scroll o estado de formularios
+- Compatible con deep linking y navegación programática
 
 ---
 
@@ -589,7 +616,7 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Implementar navegación condicional (mock)
 - [x] Crear `AuthWrapper` estático
 - [x] Probar navegación entre todas las pantallas
-- [x] Implementar ShellRoute para BottomNavigationBar persistente
+- [x] Implementar StatefulShellRoute para BottomNavigationBar persistente con estado independiente
 - [x] Configurar rutas separadas para docente y estudiante
 
 ### Fase 5: Pantallas de Autenticación (Día 8) ✅ COMPLETADA
@@ -634,26 +661,61 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Validación de confirmación de contraseña (debe coincidir)
   - [x] Refactorizado para usar `ValidationStrings` de `app_strings.dart`
 
-### Fase 6: Pantallas Home y Navegación Principal (Día 9)
+### Fase 6: Pantallas Home y Navegación Principal (Día 9) ✅ COMPLETADA
 
-- [ ] Crear `lib/shared/widgets/custom_bottom_navigation_bar.dart`
-  - [ ] BottomNavigationBar con Material Design 3
-  - [ ] Tabs: Clases, Estadísticas, Configuración
-  - [ ] Indicador visual de tab activo
-- [ ] Crear `lib/features/home/presentation/screens/teacher_home_screen.dart`
-  - [ ] Redirige a `/home/teacher/classes`
-- [ ] Crear `lib/features/home/presentation/screens/student_home_screen.dart`
-  - [ ] Redirige a `/home/student/classes`
-- [ ] Crear `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart`
-  - [ ] Lista de clases creadas (datos mock)
-  - [ ] BottomNavigationBar integrado
-  - [ ] Botón para crear nueva clase
-  - [ ] Navegación al detalle de clase
-- [ ] Crear `lib/features/classes/presentation/screens/student_classes_list_screen.dart`
-  - [ ] Lista de clases a las que pertenece (datos mock)
-  - [ ] BottomNavigationBar integrado
-  - [ ] Botón para unirse a clase
-  - [ ] Navegación al detalle de clase
+- [x] Verificar y mejorar `lib/shared/widgets/custom_bottom_navigation_bar.dart`
+  - [x] BottomNavigationBar con Material Design 3 completo
+  - [x] Tabs: Clases, Estadísticas, Configuración
+  - [x] Indicador visual de tab activo
+  - [x] Strings centralizados en NavigationStrings
+  - [x] Refactorizado para usar StatefulNavigationShell (mantiene estado de cada tab)
+- [x] Mejorar `lib/features/home/presentation/screens/teacher_home_screen.dart`
+  - [x] Redirige correctamente a `/home/teacher/classes`
+  - [x] UI mejorada con Material Design 3 (CircularProgressIndicator con color del tema)
+  - [x] Texto "Cargando..." usando CommonStrings.loading
+  - [x] Verificación de context.mounted antes de navegar
+- [x] Mejorar `lib/features/home/presentation/screens/student_home_screen.dart`
+  - [x] Redirige correctamente a `/home/student/classes`
+  - [x] UI mejorada con Material Design 3 (CircularProgressIndicator con color del tema)
+  - [x] Texto "Cargando..." usando CommonStrings.loading
+  - [x] Verificación de context.mounted antes de navegar
+- [x] Mejorar `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart`
+  - [x] Lista de clases creadas (datos mock) con Material Design 3 completo
+  - [x] BottomNavigationBar integrado mediante StatefulShellRoute (mantiene estado independiente)
+  - [x] Botón para crear nueva clase (FloatingActionButton.extended M3)
+  - [x] Navegación al detalle de clase
+  - [x] Estado vacío mejorado con widget reutilizable
+  - [x] RefreshIndicator para pull-to-refresh
+  - [x] Strings centralizados en ClassesStrings
+  - [x] Iconos y diseño Material Design 3 mejorados
+- [x] Mejorar `lib/features/classes/presentation/screens/student_classes_list_screen.dart`
+  - [x] Lista de clases a las que pertenece (datos mock) con Material Design 3 completo
+  - [x] BottomNavigationBar integrado mediante StatefulShellRoute (mantiene estado independiente)
+  - [x] Botón para unirse a clase (FloatingActionButton.extended M3)
+  - [x] Navegación al detalle de clase
+  - [x] Estado vacío mejorado con widget reutilizable
+  - [x] RefreshIndicator para pull-to-refresh
+  - [x] Strings centralizados en ClassesStrings
+  - [x] Iconos y diseño Material Design 3 mejorados
+- [x] Agregar strings de clases y navegación a `lib/core/constants/app_strings.dart`
+  - [x] Clase ClassesStrings con todos los strings de clases
+  - [x] Clase NavigationStrings con strings de tabs del BottomNavigationBar
+- [x] Corregir navegación hacia atrás en pantallas de detalle de clase
+  - [x] Cambiado context.go() a context.push() en navegación al detalle (crea historial)
+  - [x] TeacherClassesListScreen: usa context.push() para navegar al detalle
+  - [x] StudentClassesListScreen: usa context.push() para navegar al detalle
+  - [x] TeacherClassDetailScreen: simplificado a context.pop() (ya no necesita verificación)
+  - [x] StudentClassDetailScreen: simplificado a context.pop() (ya no necesita verificación)
+  - [x] Eliminado NavigationHelper de pantallas de detalle (BottomNavigationBar viene del StatefulShellRoute)
+  - [x] Strings centralizados (CommonStrings.back)
+  - [x] Uso de extensiones de contexto para Material Design 3
+- [x] Implementar navegación moderna con StatefulShellRoute
+  - [x] Refactorizado app_routes.dart para usar StatefulShellRoute.indexedStack en lugar de ShellRoute
+  - [x] Cada tab (Clases, Estadísticas, Configuración) es un StatefulShellBranch independiente
+  - [x] CustomBottomNavigationBar actualizado para usar StatefulNavigationShell
+  - [x] Navegación entre tabs mantiene el estado de cada pantalla independientemente
+  - [x] Implementado tanto para rutas de docente como de estudiante
+  - [x] Eliminada lógica manual de cálculo de currentIndex (ahora viene de navigationShell.currentIndex)
 
 ### Fase 7: Pantallas de Detalle de Clase y Tabs (Día 10)
 
@@ -846,7 +908,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 80% (8/10 fases completadas)**
+**Progreso General: 90% (9/10 fases completadas)**
 
 ### Fase 1: Setup Inicial ✅
 - [x] Todas las tareas de la Fase 1 completadas
@@ -900,9 +962,22 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores (0 issues)
 - [x] Código formateado con `dart format`
 
-### Pendiente (Fases 6-10)
-- [ ] UI completa de pantallas home
-- [ ] UI completa de pantallas de clases
+### Fase 6: Pantallas Home y Navegación Principal ✅ COMPLETADA
+- [x] CustomBottomNavigationBar verificado y mejorado con strings centralizados
+- [x] TeacherClassesListScreen y StudentClassesListScreen mejoradas con UI completa M3
+- [x] BottomNavigationBar integrado mediante ShellRoute (eliminado NavigationHelper)
+- [x] Estados vacíos mejorados con widget reutilizable _EmptyState
+- [x] RefreshIndicator implementado en ambas pantallas
+- [x] FloatingActionButton.extended con Material Design 3
+- [x] Strings centralizados en ClassesStrings y NavigationStrings
+- [x] TeacherHomeScreen y StudentHomeScreen mejoradas con Material Design 3
+- [x] Navegación corregida: cambiado context.go() a context.push() para crear historial
+- [x] Navegación hacia atrás simplificada: solo context.pop() (ya no necesita verificación)
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Código formateado con `dart format`
+
+### Pendiente (Fases 7-10)
+- [ ] UI completa de pantallas de detalle de clase con tabs
 - [ ] UI completa de pantallas de tareas
 - [ ] UI completa de pantallas de sesiones
 - [ ] Accesibilidad básica verificada
@@ -914,6 +989,40 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.10 - 29 de Octubre 2025
+- ✅ **Mejora navegación:** Cambio de context.go() a context.push() para crear historial
+- ✅ TeacherClassesListScreen y StudentClassesListScreen ahora usan context.push() al navegar al detalle
+- ✅ Navegación hacia atrás simplificada: solo context.pop() (ya no necesita verificación canPop)
+- ✅ Eliminados imports no utilizados (app_routes.dart de pantallas de detalle)
+- ✅ Navegación funcionando correctamente con historial completo
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
+
+### Versión 1.9 - 29 de Octubre 2025
+- ✅ **Mejoras Fase 6:** Corrección de navegación y mejoras en pantallas Home
+- ✅ TeacherHomeScreen y StudentHomeScreen mejoradas con Material Design 3 (CircularProgressIndicator con color del tema, texto centralizado)
+- ✅ Navegación hacia atrás corregida en TeacherClassDetailScreen y StudentClassDetailScreen
+- ✅ Implementada verificación con context.canPop() antes de hacer pop
+- ✅ Fallback a context.go() si no se puede hacer pop (evita crashes)
+- ✅ Eliminado NavigationHelper de pantallas de detalle (BottomNavigationBar viene del ShellRoute)
+- ✅ Strings centralizados (CommonStrings.back, CommonStrings.loading)
+- ✅ Verificación de context.mounted antes de navegar en pantallas Home
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
+
+### Versión 1.8 - 29 de Octubre 2025
+- ✅ **Fase 6 completada:** Pantallas Home y Navegación Principal con Material Design 3
+- ✅ CustomBottomNavigationBar mejorado con strings centralizados (NavigationStrings)
+- ✅ TeacherClassesListScreen mejorada: UI completa M3, RefreshIndicator, estado vacío mejorado
+- ✅ StudentClassesListScreen mejorada: UI completa M3, RefreshIndicator, estado vacío mejorado
+- ✅ BottomNavigationBar integrado mediante ShellRoute (eliminado NavigationHelper de pantallas)
+- ✅ Widget reutilizable _EmptyState creado para estados vacíos
+- ✅ FloatingActionButton.extended con Material Design 3 en ambas pantallas
+- ✅ Strings de clases agregados a app_strings.dart (ClassesStrings, NavigationStrings)
+- ✅ Navegación funcionando correctamente con ShellRoute
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.7 - 29 de Octubre 2025
 - ✅ **Mejora Fase 5:** Refactorización de strings centralizados
@@ -1007,7 +1116,19 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 **Última actualización:** 29 de Octubre 2025
-**Estado:** En desarrollo - Fase 5 completada ✅
-**Progreso:** 80% (8/10 fases)
+**Estado:** En desarrollo - Fase 6 completada ✅
+**Progreso:** 90% (9/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
+
+### Versión 1.11 - 29 de Octubre 2025
+- ✅ **Mejora de navegación:** Implementado StatefulShellRoute para mantener estado de tabs
+- ✅ Refactorizado app_routes.dart: ShellRoute reemplazado por StatefulShellRoute.indexedStack
+- ✅ CustomBottomNavigationBar actualizado para usar StatefulNavigationShell
+- ✅ Cada tab (Clases, Estadísticas, Configuración) mantiene su estado independientemente
+- ✅ Navegación fluida entre tabs sin perder scroll, formularios o estado de pantallas
+- ✅ Implementado tanto para rutas de docente como de estudiante
+- ✅ Eliminada lógica manual de cálculo de currentIndex (ahora viene de navigationShell)
+- ✅ Documentación actualizada con detalles de la nueva implementación
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 

@@ -101,6 +101,40 @@ class ValidationStrings {
   static const String lastNameField = 'Los apellidos';
 }
 
+/// Strings relacionados con clases
+class ClassesStrings {
+  // Títulos de pantallas
+  static const String myClassesTitle = 'Mis Clases';
+  static const String classesCreatedTitle = 'Clases Creadas';
+  static const String classesTitle = 'Clases';
+
+  // Acciones
+  static const String createClass = 'Crear Clase';
+  static const String createNewClass = 'Crear Nueva Clase';
+  static const String joinClass = 'Unirse a Clase';
+  static const String joinClassAction = 'Unirse a Clase';
+
+  // Estados vacíos - Docente
+  static const String noClassesCreated = 'No tienes clases creadas';
+  static const String createFirstClass = 'Crea tu primera clase para comenzar';
+
+  // Estados vacíos - Estudiante
+  static const String noClassesJoined = 'No estás en ninguna clase';
+  static const String joinClassWithCode = 'Únete a una clase con un código';
+
+  // Información de clases
+  static const String studentsCount = 'estudiantes';
+  static const String teacherLabel = 'Profesor: ';
+}
+
+/// Strings relacionados con navegación
+class NavigationStrings {
+  // Tabs del BottomNavigationBar
+  static const String classesTab = 'Clases';
+  static const String statisticsTab = 'Estadísticas';
+  static const String settingsTab = 'Configuración';
+}
+
 /// Strings comunes utilizados en toda la aplicación
 class CommonStrings {
   // Acciones de contraseña

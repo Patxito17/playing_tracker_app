@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../config/routes/app_routes.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
-/// Pantalla de inicio para docentes (Placeholder - Sprint 0)
+/// Pantalla de inicio para docentes
 ///
 /// Redirige automáticamente a la lista de clases del docente.
-/// La UI completa se implementará en Sprint 0 - Fase 6.
+/// Muestra un indicador de carga con Material Design 3 mientras redirige.
+///
+/// Sprint 0 - Fase 6: UI mejorada con Material Design 3
 class TeacherHomeScreen extends StatelessWidget {
   const TeacherHomeScreen({super.key});
 
@@ -13,9 +17,27 @@ class TeacherHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Redirigir automáticamente a la lista de clases
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.go(AppRoutes.teacherClassesList);
+      if (context.mounted) {
+        context.go(AppRoutes.teacherClassesList);
+      }
     });
 
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: context.colorScheme.primary),
+            const SizedBox(height: 16),
+            Text(
+              CommonStrings.loading,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

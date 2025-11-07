@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../config/routes/app_routes.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
-import '../../../../shared/widgets/navigation_helper.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../config/routes/app_routes.dart';
 
-/// Pantalla de lista de clases creadas por el docente (Placeholder - Sprint 0)
+/// Pantalla de lista de clases creadas por el docente
 ///
-/// Muestra todas las clases creadas por el docente con BottomNavigationBar.
-/// La UI completa se implementará en Sprint 0 - Fase 6.
+/// Muestra todas las clases creadas por el docente con Material Design 3.
+/// El BottomNavigationBar se maneja mediante ShellRoute en app_routes.dart.
+///
+/// Sprint 0 - Fase 6: UI completa implementada con Material Design 3
 class TeacherClassesListScreen extends StatelessWidget {
   const TeacherClassesListScreen({super.key});
 
@@ -24,79 +28,135 @@ class TeacherClassesListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Mis Clases',
+        title: ClassesStrings.myClassesTitle,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => context.go(AppRoutes.createClass),
-            tooltip: 'Crear Nueva Clase',
+            tooltip: ClassesStrings.createNewClass,
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.m),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Clases Creadas',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.l),
-                  if (mockClasses.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.xxl),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.class_outlined,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                            const SizedBox(height: AppSpacing.m),
-                            Text(
-                              'No tienes clases creadas',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: AppSpacing.s),
-                            Text(
-                              'Crea tu primera clase para comenzar',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    ...mockClasses.map((classData) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                        child: CustomCard(
-                          title: classData['name'] as String,
-                          subtitle: '${classData['students']} estudiantes',
-                          onTap: () => context.go(
-                            '${AppRoutes.teacherClassDetail}/${classData['id']}',
-                          ),
-                          child: const SizedBox.shrink(),
-                        ),
-                      );
-                    }),
-                ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Mock: simular refresh
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.l),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Título de sección
+              Text(
+                ClassesStrings.classesCreatedTitle,
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: context.colorScheme.onSurface,
+                ),
               ),
-            ),
+              const SizedBox(height: AppSpacing.xl),
+
+              // Lista de clases o estado vacío
+              if (mockClasses.isEmpty)
+                _EmptyState(
+                  icon: Icons.class_outlined,
+                  title: ClassesStrings.noClassesCreated,
+                  subtitle: ClassesStrings.createFirstClass,
+                  actionLabel: ClassesStrings.createClass,
+                  onAction: () => context.go(AppRoutes.createClass),
+                )
+              else
+                ...mockClasses.map((classData) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                    child: CustomCard(
+                      title: classData['name'] as String,
+                      subtitle:
+                          '${classData['students']} ${ClassesStrings.studentsCount}',
+                      onTap: () => context.push(
+                        '${AppRoutes.teacherClassDetail}/${classData['id']}',
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.class_,
+                            color: context.colorScheme.primary,
+                            size: 24,
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.chevron_right,
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+            ],
           ),
-          const NavigationHelper(),
-        ],
+        ),
       ),
       // BottomNavigationBar se maneja mediante ShellRoute en app_routes.dart
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.go(AppRoutes.createClass),
         icon: const Icon(Icons.add),
-        label: const Text('Crear Clase'),
+        label: Text(ClassesStrings.createClass),
+      ),
+    );
+  }
+}
+
+/// Widget para mostrar estado vacío
+class _EmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _EmptyState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 80, color: context.colorScheme.outline),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            title,
+            style: context.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            subtitle,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          FilledButton.icon(
+            onPressed: onAction,
+            icon: const Icon(Icons.add),
+            label: Text(actionLabel),
+          ),
+        ],
       ),
     );
   }
