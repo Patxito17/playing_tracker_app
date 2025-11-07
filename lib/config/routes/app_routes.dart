@@ -142,106 +142,108 @@ class AppRoutes {
           builder: (context, state) => const StudentHomeScreen(),
         ),
 
-        // ShellRoute para docente con BottomNavigationBar
-        ShellRoute(
-          builder: (context, state, child) {
-            final role = AuthWrapper.mockRole;
-            final location = state.uri.path;
-
-            // Determinar el índice del tab activo según la ruta
-            int currentIndex = 0;
-            if (location.startsWith(teacherStatistics)) {
-              currentIndex = BottomNavTab.statistics.index;
-            } else if (location.startsWith(teacherSettings)) {
-              currentIndex = BottomNavTab.settings.index;
-            } else {
-              currentIndex = BottomNavTab.classes.index;
-            }
-
+        // StatefulShellRoute para docente con BottomNavigationBar
+        // Mantiene el estado de cada tab independientemente
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) {
             return Scaffold(
-              body: child,
+              body: navigationShell,
               bottomNavigationBar: CustomBottomNavigationBar(
-                currentIndex: currentIndex,
-                onTap: (index) {},
-                role: role,
+                navigationShell: navigationShell,
               ),
             );
           },
-          routes: [
-            GoRoute(
-              path: teacherClassesList,
-              name: 'teacherClassesList',
-              builder: (context, state) => const TeacherClassesListScreen(),
+          branches: [
+            // Branch 0: Clases
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: teacherClassesList,
+                  name: 'teacherClassesList',
+                  builder: (context, state) => const TeacherClassesListScreen(),
+                ),
+                GoRoute(
+                  path: '$teacherClassDetail/:classId',
+                  name: 'teacherClassDetail',
+                  builder: (context, state) {
+                    final classId = state.pathParameters['classId'] ?? '';
+                    return TeacherClassDetailScreen(classId: classId);
+                  },
+                ),
+              ],
             ),
-            GoRoute(
-              path: '$teacherClassDetail/:classId',
-              name: 'teacherClassDetail',
-              builder: (context, state) {
-                final classId = state.pathParameters['classId'] ?? '';
-                return TeacherClassDetailScreen(classId: classId);
-              },
+            // Branch 1: Estadísticas
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: teacherStatistics,
+                  name: 'teacherStatistics',
+                  builder: (context, state) => const StatisticsScreen(),
+                ),
+              ],
             ),
-            GoRoute(
-              path: teacherStatistics,
-              name: 'teacherStatistics',
-              builder: (context, state) => const StatisticsScreen(),
-            ),
-            GoRoute(
-              path: teacherSettings,
-              name: 'teacherSettings',
-              builder: (context, state) => const SettingsScreen(),
+            // Branch 2: Configuración
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: teacherSettings,
+                  name: 'teacherSettings',
+                  builder: (context, state) => const SettingsScreen(),
+                ),
+              ],
             ),
           ],
         ),
 
-        // ShellRoute para estudiante con BottomNavigationBar
-        ShellRoute(
-          builder: (context, state, child) {
-            final role = AuthWrapper.mockRole;
-            final location = state.uri.path;
-
-            // Determinar el índice del tab activo según la ruta
-            int currentIndex = 0;
-            if (location.startsWith(studentStatistics)) {
-              currentIndex = BottomNavTab.statistics.index;
-            } else if (location.startsWith(studentSettings)) {
-              currentIndex = BottomNavTab.settings.index;
-            } else {
-              currentIndex = BottomNavTab.classes.index;
-            }
-
+        // StatefulShellRoute para estudiante con BottomNavigationBar
+        // Mantiene el estado de cada tab independientemente
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) {
             return Scaffold(
-              body: child,
+              body: navigationShell,
               bottomNavigationBar: CustomBottomNavigationBar(
-                currentIndex: currentIndex,
-                onTap: (index) {},
-                role: role,
+                navigationShell: navigationShell,
               ),
             );
           },
-          routes: [
-            GoRoute(
-              path: studentClassesList,
-              name: 'studentClassesList',
-              builder: (context, state) => const StudentClassesListScreen(),
+          branches: [
+            // Branch 0: Clases
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: studentClassesList,
+                  name: 'studentClassesList',
+                  builder: (context, state) => const StudentClassesListScreen(),
+                ),
+                GoRoute(
+                  path: '$studentClassDetail/:classId',
+                  name: 'studentClassDetail',
+                  builder: (context, state) {
+                    final classId = state.pathParameters['classId'] ?? '';
+                    return StudentClassDetailScreen(classId: classId);
+                  },
+                ),
+              ],
             ),
-            GoRoute(
-              path: '$studentClassDetail/:classId',
-              name: 'studentClassDetail',
-              builder: (context, state) {
-                final classId = state.pathParameters['classId'] ?? '';
-                return StudentClassDetailScreen(classId: classId);
-              },
+            // Branch 1: Estadísticas
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: studentStatistics,
+                  name: 'studentStatistics',
+                  builder: (context, state) => const StatisticsScreen(),
+                ),
+              ],
             ),
-            GoRoute(
-              path: studentStatistics,
-              name: 'studentStatistics',
-              builder: (context, state) => const StatisticsScreen(),
-            ),
-            GoRoute(
-              path: studentSettings,
-              name: 'studentSettings',
-              builder: (context, state) => const SettingsScreen(),
+            // Branch 2: Configuración
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: studentSettings,
+                  name: 'studentSettings',
+                  builder: (context, state) => const SettingsScreen(),
+                ),
+              ],
             ),
           ],
         ),
