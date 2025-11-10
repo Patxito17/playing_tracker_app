@@ -97,7 +97,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading = IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: onBackPressed ?? () => context.pop(),
-        tooltip: 'Volver',
+        tooltip:
+            'Volver', // TODO: Usar CommonStrings.back cuando esté disponible
       );
     } else if (!automaticallyImplyLeading) {
       leading = const SizedBox.shrink();

@@ -9,9 +9,9 @@ library;
 /// Strings relacionados con autenticación (login, registro, recuperación de contraseña)
 class AuthStrings {
   // Títulos de pantallas
-  static const String loginTitle = 'Iniciar Sesión';
-  static const String registerTitle = 'Crear Cuenta';
-  static const String forgotPasswordTitle = 'Recuperar Contraseña';
+  static const String loginTitle = 'Iniciar sesión';
+  static const String registerTitle = 'Crear cuenta';
+  static const String forgotPasswordTitle = 'Recuperar contraseña';
 
   // Títulos principales
   static const String welcomeTitle = 'Bienvenido';
@@ -26,7 +26,7 @@ class AuthStrings {
   // Labels de campos de formulario
   static const String emailLabel = 'Email';
   static const String passwordLabel = 'Contraseña';
-  static const String confirmPasswordLabel = 'Confirmar Contraseña';
+  static const String confirmPasswordLabel = 'Confirmar contraseña';
   static const String firstNameLabel = 'Nombre';
   static const String lastNameLabel = 'Apellidos';
   static const String accountTypeLabel = 'Tipo de cuenta';
@@ -44,8 +44,8 @@ class AuthStrings {
   static const String studentRole = 'Alumno';
 
   // Botones
-  static const String loginButton = 'Iniciar Sesión';
-  static const String loginAsStudentButton = 'Iniciar como Alumno (Mock)';
+  static const String loginButton = 'Iniciar sesión';
+  static const String loginAsStudentButton = 'Iniciar como alumno (Mock)';
   static const String registerButton = 'Registrarse';
   static const String sendRecoveryLinkButton = 'Enviar enlace de recuperación';
 
@@ -104,15 +104,15 @@ class ValidationStrings {
 /// Strings relacionados con clases
 class ClassesStrings {
   // Títulos de pantallas
-  static const String myClassesTitle = 'Mis Clases';
-  static const String classesCreatedTitle = 'Clases Creadas';
+  static const String myClassesTitle = 'Mis clases';
+  static const String classesCreatedTitle = 'Clases creadas';
   static const String classesTitle = 'Clases';
 
   // Acciones
-  static const String createClass = 'Crear Clase';
-  static const String createNewClass = 'Crear Nueva Clase';
-  static const String joinClass = 'Unirse a Clase';
-  static const String joinClassAction = 'Unirse a Clase';
+  static const String createClass = 'Crear clase';
+  static const String createNewClass = 'Crear nueva clase';
+  static const String joinClass = 'Unirse a clase';
+  static const String joinClassAction = 'Unirse a clase';
 
   // Estados vacíos - Docente
   static const String noClassesCreated = 'No tienes clases creadas';
@@ -127,17 +127,17 @@ class ClassesStrings {
   static const String teacherLabel = 'Profesor: ';
 
   // Crear clase
-  static const String createClassTitle = 'Crear Nueva Clase';
-  static const String classNameLabel = 'Nombre de la Clase';
+  static const String createClassTitle = 'Crear nueva clase';
+  static const String classNameLabel = 'Nombre de la clase';
   static const String classNameHint = 'Ej: Piano Nivel 1';
   static const String classDescriptionLabel = 'Descripción';
   static const String classDescriptionHint = 'Descripción de la clase';
-  static const String accessCodeLabel = 'Código de Acceso';
+  static const String accessCodeLabel = 'Código de acceso';
   static const String accessCodeGenerated = 'Se generará automáticamente';
-  static const String createClassButton = 'Crear Clase';
+  static const String createClassButton = 'Crear clase';
 
   // Unirse a clase
-  static const String joinClassTitle = 'Unirse a una Clase';
+  static const String joinClassTitle = 'Unirse a una clase';
   static const String accessCodeHint = 'Ingresa el código de la clase';
   static const String accessCodeInstructions =
       'Pide el código de acceso a tu profesor para unirte a la clase.';
@@ -184,29 +184,29 @@ class ClassDetailStrings {
   static const String infoTab = 'Información';
 
   // Títulos de pantallas
-  static const String classDetailTitle = 'Detalle de Clase';
-  static const String manageStudentsTitle = 'Gestionar Alumnos';
+  static const String classDetailTitle = 'Detalle de clase';
+  static const String manageStudentsTitle = 'Gestionar alumnos';
 
   // Estadísticas
-  static const String classStatisticsTitle = 'Estadísticas de la Clase';
-  static const String myStatisticsTitle = 'Mis Estadísticas';
-  static const String totalTime = 'Tiempo Total';
+  static const String classStatisticsTitle = 'Estadísticas de la clase';
+  static const String myStatisticsTitle = 'Mis estadísticas';
+  static const String totalTime = 'Tiempo total';
   static const String totalTimeDescription =
       'Tiempo total de todos los estudiantes';
   static const String myTotalTimeDescription = 'Tiempo total de estudio';
-  static const String totalSessions = 'Sesiones Totales';
-  static const String mySessions = 'Mis Sesiones';
+  static const String totalSessions = 'Sesiones totales';
+  static const String mySessions = 'Mis sesiones';
   static const String totalSessionsDescription =
       'Total de sesiones de todos los estudiantes';
   static const String mySessionsDescription = 'Total de sesiones completadas';
-  static const String activeStudents = 'Estudiantes Activos';
+  static const String activeStudents = 'Estudiantes activos';
   static const String activeStudentsDescription =
       'Estudiantes con actividad esta semana';
 
   // Información de clase
   static const String classDescription = 'Descripción';
-  static const String teacherInfo = 'Información del Docente';
-  static const String classInfo = 'Información de la Clase';
+  static const String teacherInfo = 'Información del docente';
+  static const String classInfo = 'Información de la clase';
   static const String accessCode = 'Código de acceso';
   static const String created = 'Creada';
   static const String students = 'Estudiantes';
@@ -216,41 +216,41 @@ class ClassDetailStrings {
 /// Strings relacionados con tareas
 class TaskStrings {
   // Títulos y acciones
-  static const String createTask = 'Crear Nueva Tarea';
+  static const String createTask = 'Crear nueva tarea';
   static const String tasksTitle = 'Tareas';
-  static const String myTasksTitle = 'Mis Tareas';
-  static const String taskDetailTitle = 'Detalle de Tarea';
-  static const String newTaskTitle = 'Nueva Tarea';
+  static const String myTasksTitle = 'Mis tareas';
+  static const String taskDetailTitle = 'Detalle de tarea';
+  static const String newTaskTitle = 'Nueva tarea';
   static const String assignedTo = 'Asignada a';
   static const String studentsLabel = 'estudiantes';
-  static const String startStudySession = 'Iniciar Sesión de Estudio';
-  static const String viewDetails = 'Ver Detalles';
-  static const String createTaskButton = 'Crear Tarea';
-  static const String editTask = 'Editar Tarea';
-  static const String deleteTask = 'Eliminar Tarea';
-  static const String assignTask = 'Asignar Tarea';
-  static const String startTimer = 'Iniciar Cronómetro';
-  static const String backToTasks = 'Volver a Tareas';
+  static const String startStudySession = 'Iniciar sesión de estudio';
+  static const String viewDetails = 'Ver detalles';
+  static const String createTaskButton = 'Crear tarea';
+  static const String editTask = 'Editar tarea';
+  static const String deleteTask = 'Eliminar tarea';
+  static const String assignTask = 'Asignar tarea';
+  static const String startTimer = 'Iniciar cronómetro';
+  static const String backToTasks = 'Volver a tareas';
 
   // Formulario crear tarea
   static const String taskTitleLabel = 'Título';
   static const String taskTitleHint = 'Título de la tarea';
   static const String taskDescriptionLabel = 'Descripción';
   static const String taskDescriptionHint = 'Descripción detallada de la tarea';
-  static const String estimatedTimeLabel = 'Tiempo Estimado';
+  static const String estimatedTimeLabel = 'Tiempo estimado';
   static const String estimatedTimeHint = 'Ej: 30 minutos';
   static const String recipientsLabel = 'Destinatarios';
   static const String recipientsHint = 'Selecciona los estudiantes';
   static const String attachmentsLabel = 'Adjuntos';
   static const String attachmentsHint =
       'Archivos adjuntos (PDF, imágenes, etc.)';
-  static const String addAttachment = 'Agregar Adjunto';
+  static const String addAttachment = 'Agregar adjunto';
   static const String noAttachments = 'No hay adjuntos';
   static const String selectAllStudents = 'Todos';
   static const String deselectAllStudents = 'Ninguno';
 
   // Información de tarea
-  static const String taskInformation = 'Información de la Tarea';
+  static const String taskInformation = 'Información de la tarea';
   static const String estimatedTime = 'Tiempo estimado';
   static const String createdDate = 'Fecha de creación';
   static const String dueDate = 'Fecha límite';
@@ -289,8 +289,8 @@ class TaskStrings {
 /// Strings relacionados con estudiantes
 class StudentStrings {
   // Títulos
-  static const String studentsTitle = 'Estudiantes de la Clase';
-  static const String studentsListTitle = 'Alumnos de la Clase';
+  static const String studentsTitle = 'Estudiantes de la clase';
+  static const String studentsListTitle = 'Alumnos de la clase';
 
   // Información de estudiantes
   static const String sessions = 'sesiones';
@@ -338,14 +338,14 @@ class SettingsStrings {
 class SessionStrings {
   // Títulos de pantallas
   static const String timerTitle = 'Cronómetro';
-  static const String sessionHistoryTitle = 'Historial de Sesiones';
+  static const String sessionHistoryTitle = 'Historial de sesiones';
 
   // Controles del cronómetro
   static const String start = 'Iniciar';
   static const String pause = 'Pausar';
   static const String resume = 'Reanudar';
   static const String reset = 'Reiniciar';
-  static const String finish = 'Finalizar Sesión';
+  static const String finish = 'Finalizar sesión';
 
   // Estados del cronómetro
   static const String idle = 'Inactivo';
@@ -354,7 +354,7 @@ class SessionStrings {
   static const String completed = 'Completada';
 
   // Información de sesión
-  static const String currentTask = 'Tarea Actual';
+  static const String currentTask = 'Tarea actual';
   static const String duration = 'Duración';
   static const String date = 'Fecha';
   static const String taskName = 'Tarea';

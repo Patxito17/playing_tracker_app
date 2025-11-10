@@ -146,6 +146,25 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Organiza strings por categorías (AuthStrings, TaskStrings, ClassesStrings, etc.).
 - Facilita la internacionalización futura y mantiene consistencia.
 
+#### Convención de Capitalización
+- **Regla general:** Primera palabra con mayúscula inicial, palabras siguientes en minúsculas (excepto nombres propios).
+- **Ejemplos correctos:**
+  - ✅ "Crear clase" (no "Crear Clase")
+  - ✅ "Iniciar sesión" (no "Iniciar Sesión")
+  - ✅ "Mis clases" (no "Mis Clases")
+  - ✅ "Gestionar alumnos" (no "Gestionar Alumnos")
+  - ✅ "Tiempo total" (no "Tiempo Total")
+  - ✅ "Ver detalles" (no "Ver Detalles")
+- **Excepciones (nombres propios se mantienen):**
+  - ✅ "Piano Nivel 1" (nombre propio de ejemplo)
+  - ✅ "Juan Pérez" (nombre de persona)
+- **Aplicar esta convención a:**
+  - Títulos de pantallas
+  - Labels de botones
+  - Textos de acciones
+  - Títulos de secciones
+  - Cualquier texto visible en la UI
+
 ### Navegación con GoRouter
 - **Para formularios y pantallas de detalle:** Usa `context.push()` para agregar a la pila de navegación.
 - **Para volver después de acciones exitosas:** Usa `context.pop()` para volver a la pantalla anterior.
