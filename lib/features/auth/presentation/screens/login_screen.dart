@@ -118,18 +118,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Título principal
                   Text(
                     AuthStrings.welcomeTitle,
-                    style: context.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface,
-                    ),
+                    style: context.displaySmallBold,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.s),
                   Text(
                     AuthStrings.loginSubtitle,
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
+                    style: context.bodyLargeOnSurfaceVariant,
                     textAlign: TextAlign.center,
                   ),
 
@@ -213,8 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () => context.push('/forgot-password'),
                       child: Text(
                         AuthStrings.forgotPasswordLink,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colorScheme.primary,
+                        style: context.textPrimary?.copyWith(
+                          fontSize: context.textTheme.bodySmall?.fontSize,
                         ),
                       ),
                     ),
@@ -248,17 +243,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         AuthStrings.noAccountQuestion,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: context.bodyMediumOnSurfaceVariant,
                       ),
                       TextButton(
                         onPressed: () => context.push('/register'),
                         child: Text(
                           AuthStrings.registerLink,
-                          style: context.textTheme.bodyMedium?.copyWith(
+                          style: context.textPrimary?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: context.colorScheme.primary,
+                            fontSize: context.textTheme.bodyMedium?.fontSize,
                           ),
                         ),
                       ),

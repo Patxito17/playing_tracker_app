@@ -68,9 +68,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
                         Expanded(
                           child: Text(
                             ClassesStrings.accessCodeInstructions,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
+                            style: context.bodyMediumOnSurfaceVariant,
                           ),
                         ),
                       ],

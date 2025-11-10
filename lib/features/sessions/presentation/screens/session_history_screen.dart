@@ -185,9 +185,9 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
                         trailingAction: Chip(
                           label: Text(
                             _formatDurationReadable(session['duration'] as int),
-                            style: TextStyle(
-                              color: context.colorScheme.primary,
+                            style: context.textPrimary?.copyWith(
                               fontWeight: FontWeight.w600,
+                              fontSize: context.textTheme.bodySmall?.fontSize,
                             ),
                           ),
                           backgroundColor: context.colorScheme.primaryContainer
@@ -259,12 +259,11 @@ class _FilterChip extends StatelessWidget {
       onSelected: onSelected,
       selectedColor: context.colorScheme.primaryContainer,
       checkmarkColor: context.colorScheme.onPrimaryContainer,
-      labelStyle: TextStyle(
-        color: selected
-            ? context.colorScheme.onPrimaryContainer
-            : context.colorScheme.onSurface,
-        fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-      ),
+      labelStyle: selected
+          ? context.bodySmallBold?.copyWith(
+              color: context.colorScheme.onPrimaryContainer,
+            )
+          : context.bodySmallOnSurface,
     );
   }
 }
@@ -287,18 +286,8 @@ class _InfoRow extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: context.colorScheme.onSurfaceVariant),
         const SizedBox(width: AppSpacing.s),
-        Text(
-          '$label: ',
-          style: context.textTheme.bodySmall?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        Text(
-          value,
-          style: context.textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        Text('$label: ', style: context.bodySmallOnSurfaceVariant),
+        Text(value, style: context.bodySmallBold),
       ],
     );
   }
@@ -334,8 +323,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppSpacing.l),
             Text(
               title,
-              style: context.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: context.titleLargeBold?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -343,9 +331,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppSpacing.s),
             Text(
               subtitle,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
+              style: context.bodyMediumOnSurfaceVariant,
               textAlign: TextAlign.center,
             ),
           ],

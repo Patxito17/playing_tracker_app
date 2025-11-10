@@ -107,18 +107,13 @@ class _EmptyStudentsState extends StatelessWidget {
           const SizedBox(height: AppSpacing.l),
           Text(
             title,
-            style: context.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.colorScheme.onSurface,
-            ),
+            style: context.titleLargeBold,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s),
           Text(
             subtitle,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
+            style: context.bodyMediumOnSurfaceVariant,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),

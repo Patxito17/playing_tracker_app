@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
 
@@ -173,9 +174,7 @@ class _EmptyTasksState extends StatelessWidget {
           const SizedBox(height: AppSpacing.l),
           Text(
             title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+            style: context.titleLargeBold,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s),

@@ -159,9 +159,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         Expanded(
                           child: Text(
                             TaskStrings.recipientsHint,
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
+                            style: context.bodySmallOnSurfaceVariant,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s),
@@ -208,9 +206,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   children: [
                     Text(
                       TaskStrings.attachmentsHint,
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
+                      style: context.bodySmallOnSurfaceVariant,
                     ),
                     const SizedBox(height: AppSpacing.m),
                     OutlinedButton.icon(

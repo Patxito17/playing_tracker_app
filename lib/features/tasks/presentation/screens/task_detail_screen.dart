@@ -147,9 +147,7 @@ class TaskDetailScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(AppSpacing.m),
                       child: Text(
                         TaskStrings.noRecipients,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: context.bodyMediumOnSurfaceVariant,
                       ),
                     )
                   : Column(
@@ -179,9 +177,7 @@ class TaskDetailScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(AppSpacing.m),
                       child: Text(
                         TaskStrings.noAttachments,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: context.bodyMediumOnSurfaceVariant,
                       ),
                     )
                   : Column(
@@ -287,18 +283,8 @@ class _InfoRow extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: context.colorScheme.onSurfaceVariant),
         const SizedBox(width: AppSpacing.s),
-        Text(
-          '$label: ',
-          style: context.textTheme.bodySmall?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        Text(
-          value,
-          style: context.textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        Text('$label: ', style: context.bodySmallOnSurfaceVariant),
+        Text(value, style: context.bodySmallBold),
       ],
     );
   }
