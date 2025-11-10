@@ -1190,6 +1190,18 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 **Progreso:** 90% (9/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
 
+### Versión 1.16 - 7 de Noviembre 2025
+- ✅ **Mejora de mantenibilidad:** Centralización de estilos de texto en AppTextStyles
+- ✅ Clase AppTextStyles creada en app_constants.dart con métodos estáticos para todos los estilos comunes
+- ✅ Extension methods agregados en context_extensions.dart para acceso fácil desde context
+- ✅ Todas las pantallas refactorizadas para usar estilos centralizados (auth, sessions, tasks, classes, settings, home)
+- ✅ 57 usos de estilos centralizados implementados en 18 archivos
+- ✅ Eliminados todos los casos de textTheme.copyWith repetitivos en pantallas
+- ✅ Mantenibilidad mejorada: cambios de estilo ahora se hacen en un solo lugar
+- ✅ Consistencia visual garantizada en toda la aplicación
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
+
 ### Versión 1.15 - 7 de Noviembre 2025
 - ✅ **Fase 9 completada:** Pantallas de Sesiones con UI completa Material Design 3
 - ✅ TimerScreen mejorada completamente: cronómetro grande (HH:MM:SS), controles (iniciar, pausar, reanudar, reiniciar, finalizar), estados visuales (idle, running, paused)

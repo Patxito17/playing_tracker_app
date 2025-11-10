@@ -101,10 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   // Título principal
                   Text(
                     AuthStrings.forgotPasswordQuestion,
-                    style: context.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface,
-                    ),
+                    style: context.headlineMediumBold,
                     textAlign: TextAlign.center,
                   ),
 
@@ -114,9 +111,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   if (!_emailSent)
                     Text(
                       AuthStrings.forgotPasswordInstructions,
-                      style: context.textTheme.bodyLarge?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
+                      style: context.bodyLargeOnSurfaceVariant,
                       textAlign: TextAlign.center,
                     )
                   else
@@ -139,8 +134,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           const SizedBox(height: AppSpacing.m),
                           Text(
                             AuthStrings.emailSentTitle,
-                            style: context.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
+                            style: context.titleLargeBold?.copyWith(
                               color: context.colorScheme.onPrimaryContainer,
                             ),
                             textAlign: TextAlign.center,
@@ -148,7 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           const SizedBox(height: AppSpacing.s),
                           Text(
                             AuthStrings.emailSentMessage,
-                            style: context.textTheme.bodyMedium?.copyWith(
+                            style: AppTextStyles.bodyMedium(context)?.copyWith(
                               color: context.colorScheme.onPrimaryContainer,
                             ),
                             textAlign: TextAlign.center,
@@ -203,17 +197,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     children: [
                       Text(
                         AuthStrings.rememberPasswordQuestion,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: context.bodyMediumOnSurfaceVariant,
                       ),
                       TextButton(
                         onPressed: () => context.pop(),
                         child: Text(
                           AuthStrings.loginLink,
-                          style: context.textTheme.bodyMedium?.copyWith(
+                          style: context.textPrimary?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: context.colorScheme.primary,
+                            fontSize: context.textTheme.bodyMedium?.fontSize,
                           ),
                         ),
                       ),

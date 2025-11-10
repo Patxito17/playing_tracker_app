@@ -31,9 +31,7 @@ class StudentHomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               CommonStrings.loading,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
+              style: context.bodyMediumOnSurfaceVariant,
             ),
           ],
         ),

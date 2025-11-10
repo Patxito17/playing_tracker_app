@@ -88,16 +88,12 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       SettingsStrings.inDevelopment,
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: context.titleSmallBold,
                     ),
                     const SizedBox(height: AppSpacing.s),
                     Text(
                       SettingsStrings.futureFeatures,
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
+                      style: context.bodySmallOnSurfaceVariant,
                     ),
                   ],
                 ),
@@ -131,9 +127,8 @@ class _SettingsSection extends StatelessWidget {
           ),
           child: Text(
             title,
-            style: context.textTheme.titleSmall?.copyWith(
+            style: context.titleSmallBold?.copyWith(
               color: context.colorScheme.primary,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 
 /// Extension methods para BuildContext
 ///
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 /// propiedades frecuentemente usadas del BuildContext.
 ///
 /// Sprint 0 - Fase 2: Extension methods implementadas
+/// Sprint 0 - Mejora: Extension methods para estilos de texto centralizados
 extension BuildContextExtensions on BuildContext {
   /// Acceso rápido al ThemeData
   ///
@@ -36,4 +38,64 @@ extension BuildContextExtensions on BuildContext {
   ///
   /// Uso: `context.screenHeight`
   double get screenHeight => MediaQuery.of(this).size.height;
+
+  // ============================================================================
+  // ESTILOS DE TEXTO CENTRALIZADOS
+  // ============================================================================
+  // Estos métodos proporcionan acceso fácil a los estilos centralizados
+  // de AppTextStyles sin necesidad de escribir AppTextStyles.metodo(this)
+
+  /// Estilo para cronómetros grandes y números destacados
+  TextStyle? get displayLargeBold => AppTextStyles.displayLargeBold(this);
+
+  /// Estilo para títulos principales de pantalla
+  TextStyle? get displaySmallBold => AppTextStyles.displaySmallBold(this);
+
+  /// Estilo para títulos de sección
+  TextStyle? get headlineMediumBold => AppTextStyles.headlineMediumBold(this);
+
+  /// Estilo para títulos de cards y contenedores
+  TextStyle? get titleLargeBold => AppTextStyles.titleLargeBold(this);
+
+  /// Estilo para subtítulos destacados
+  TextStyle? get titleMediumBold => AppTextStyles.titleMediumBold(this);
+
+  /// Estilo para títulos pequeños
+  TextStyle? get titleSmallBold => AppTextStyles.titleSmallBold(this);
+
+  /// Texto de cuerpo principal con color onSurface
+  TextStyle? get bodyLargeOnSurface => AppTextStyles.bodyLargeOnSurface(this);
+
+  /// Texto de cuerpo secundario con color onSurfaceVariant
+  TextStyle? get bodyLargeOnSurfaceVariant =>
+      AppTextStyles.bodyLargeOnSurfaceVariant(this);
+
+  /// Texto de cuerpo medio con color onSurface
+  TextStyle? get bodyMediumOnSurface => AppTextStyles.bodyMediumOnSurface(this);
+
+  /// Texto de cuerpo medio secundario con color onSurfaceVariant
+  TextStyle? get bodyMediumOnSurfaceVariant =>
+      AppTextStyles.bodyMediumOnSurfaceVariant(this);
+
+  /// Texto pequeño con color onSurface
+  TextStyle? get bodySmallOnSurface => AppTextStyles.bodySmallOnSurface(this);
+
+  /// Texto pequeño secundario con color onSurfaceVariant
+  TextStyle? get bodySmallOnSurfaceVariant =>
+      AppTextStyles.bodySmallOnSurfaceVariant(this);
+
+  /// Texto pequeño en negrita con color onSurface
+  TextStyle? get bodySmallBold => AppTextStyles.bodySmallBold(this);
+
+  /// Texto de error
+  TextStyle? get textError => AppTextStyles.error(this);
+
+  /// Texto destacado con color primario
+  TextStyle? get textPrimary => AppTextStyles.primary(this);
+
+  /// Texto con color secundario
+  TextStyle? get textSecondary => AppTextStyles.secondary(this);
+
+  /// Texto de ayuda/hint
+  TextStyle? get textHint => AppTextStyles.hint(this);
 }

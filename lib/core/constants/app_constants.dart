@@ -82,3 +82,221 @@ class AppColors {
   /// de superficie, error, etc., garantizando contraste y accesibilidad.
   static const Color seedColor = Color(0xFF1E88E5);
 }
+
+/// Estilos de texto centralizados de la aplicación
+///
+/// Proporciona métodos estáticos para obtener estilos de texto consistentes
+/// en toda la aplicación. Facilita el mantenimiento y garantiza coherencia visual.
+///
+/// **Ejemplo de uso:**
+/// ```dart
+/// Text(
+///   'Título',
+///   style: AppTextStyles.displaySmallBold(context),
+/// )
+/// ```
+///
+/// Sprint 0 - Mejora: Centralización de estilos de texto
+class AppTextStyles {
+  AppTextStyles._(); // Constructor privado para evitar instanciación
+
+  // ============================================================================
+  // TÍTULOS
+  // ============================================================================
+
+  /// Estilo para cronómetros grandes y números destacados
+  ///
+  /// Usa `displayLarge` con fontWeight bold y color onSurface
+  static TextStyle? displayLargeBold(BuildContext context) =>
+      Theme.of(context).textTheme.displayLarge?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Estilo para títulos principales de pantalla
+  ///
+  /// Usa `displaySmall` con fontWeight bold y color onSurface
+  static TextStyle? displaySmallBold(BuildContext context) =>
+      Theme.of(context).textTheme.displaySmall?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Estilo para títulos de sección
+  ///
+  /// Usa `headlineMedium` con fontWeight bold y color onSurface
+  static TextStyle? headlineMediumBold(BuildContext context) =>
+      Theme.of(context).textTheme.headlineMedium?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Estilo para títulos de cards y contenedores
+  ///
+  /// Usa `titleLarge` con fontWeight bold y color onSurface
+  static TextStyle? titleLargeBold(BuildContext context) =>
+      Theme.of(context).textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Estilo para subtítulos destacados
+  ///
+  /// Usa `titleMedium` con fontWeight semibold y color onSurface
+  static TextStyle? titleMediumBold(BuildContext context) =>
+      Theme.of(context).textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Estilo para títulos pequeños
+  ///
+  /// Usa `titleSmall` con fontWeight semibold y color onSurface
+  static TextStyle? titleSmallBold(BuildContext context) =>
+      Theme.of(context).textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  // ============================================================================
+  // CUERPO - COLORES PREDETERMINADOS
+  // ============================================================================
+
+  /// Texto de cuerpo principal con color onSurface
+  ///
+  /// Usa `bodyLarge` con color onSurface (texto principal)
+  static TextStyle? bodyLargeOnSurface(BuildContext context) =>
+      Theme.of(context).textTheme.bodyLarge?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Texto de cuerpo secundario con color onSurfaceVariant
+  ///
+  /// Usa `bodyLarge` con color onSurfaceVariant (texto secundario)
+  static TextStyle? bodyLargeOnSurfaceVariant(BuildContext context) =>
+      Theme.of(context).textTheme.bodyLarge?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      );
+
+  /// Texto de cuerpo medio con color onSurface
+  ///
+  /// Usa `bodyMedium` con color onSurface
+  static TextStyle? bodyMediumOnSurface(BuildContext context) =>
+      Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Texto de cuerpo medio secundario con color onSurfaceVariant
+  ///
+  /// Usa `bodyMedium` con color onSurfaceVariant
+  static TextStyle? bodyMediumOnSurfaceVariant(BuildContext context) =>
+      Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      );
+
+  /// Texto pequeño con color onSurface
+  ///
+  /// Usa `bodySmall` con color onSurface
+  static TextStyle? bodySmallOnSurface(BuildContext context) =>
+      Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  /// Texto pequeño secundario con color onSurfaceVariant
+  ///
+  /// Usa `bodySmall` con color onSurfaceVariant (más común)
+  static TextStyle? bodySmallOnSurfaceVariant(BuildContext context) =>
+      Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      );
+
+  /// Texto pequeño en negrita con color onSurface
+  ///
+  /// Usa `bodySmall` con fontWeight semibold y color onSurface
+  static TextStyle? bodySmallBold(BuildContext context) =>
+      Theme.of(context).textTheme.bodySmall?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: Theme.of(context).colorScheme.onSurface,
+      );
+
+  // ============================================================================
+  // CUERPO - SIN MODIFICAR COLOR (usa el del tema)
+  // ============================================================================
+
+  /// Texto de cuerpo principal sin modificar color
+  ///
+  /// Usa `bodyLarge` tal como está definido en el tema
+  static TextStyle? bodyLarge(BuildContext context) =>
+      Theme.of(context).textTheme.bodyLarge;
+
+  /// Texto de cuerpo medio sin modificar color
+  ///
+  /// Usa `bodyMedium` tal como está definido en el tema
+  static TextStyle? bodyMedium(BuildContext context) =>
+      Theme.of(context).textTheme.bodyMedium;
+
+  /// Texto pequeño sin modificar color
+  ///
+  /// Usa `bodySmall` tal como está definido en el tema
+  static TextStyle? bodySmall(BuildContext context) =>
+      Theme.of(context).textTheme.bodySmall;
+
+  // ============================================================================
+  // ETIQUETAS Y ACCIONES
+  // ============================================================================
+
+  /// Etiqueta grande para botones y acciones principales
+  ///
+  /// Usa `labelLarge` tal como está definido en el tema
+  static TextStyle? labelLarge(BuildContext context) =>
+      Theme.of(context).textTheme.labelLarge;
+
+  /// Etiqueta mediana
+  ///
+  /// Usa `labelMedium` tal como está definido en el tema
+  static TextStyle? labelMedium(BuildContext context) =>
+      Theme.of(context).textTheme.labelMedium;
+
+  /// Etiqueta pequeña
+  ///
+  /// Usa `labelSmall` tal como está definido en el tema
+  static TextStyle? labelSmall(BuildContext context) =>
+      Theme.of(context).textTheme.labelSmall;
+
+  // ============================================================================
+  // ESTADOS ESPECIALES
+  // ============================================================================
+
+  /// Texto de error
+  ///
+  /// Usa `bodyMedium` con color error
+  static TextStyle? error(BuildContext context) => Theme.of(
+    context,
+  ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error);
+
+  /// Texto destacado con color primario
+  ///
+  /// Usa `bodyMedium` con color primary
+  static TextStyle? primary(BuildContext context) => Theme.of(context)
+      .textTheme
+      .bodyMedium
+      ?.copyWith(color: Theme.of(context).colorScheme.primary);
+
+  /// Texto con color secundario
+  ///
+  /// Usa `bodyMedium` con color secondary
+  static TextStyle? secondary(BuildContext context) => Theme.of(context)
+      .textTheme
+      .bodyMedium
+      ?.copyWith(color: Theme.of(context).colorScheme.secondary);
+
+  /// Texto de ayuda/hint
+  ///
+  /// Usa `bodySmall` con color onSurfaceVariant (más sutil)
+  static TextStyle? hint(BuildContext context) =>
+      Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(
+          context,
+        ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+      );
+}

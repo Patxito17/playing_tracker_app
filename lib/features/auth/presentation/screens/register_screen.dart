@@ -169,18 +169,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // Título principal
                   Text(
                     AuthStrings.createAccountTitle,
-                    style: context.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface,
-                    ),
+                    style: context.displaySmallBold,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.s),
                   Text(
                     AuthStrings.createAccountSubtitle,
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
+                    style: context.bodyLargeOnSurfaceVariant,
                     textAlign: TextAlign.center,
                   ),
 
@@ -189,10 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // Selector de rol
                   Text(
                     AuthStrings.accountTypeLabel,
-                    style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: context.colorScheme.onSurface,
-                    ),
+                    style: context.titleMediumBold,
                   ),
                   const SizedBox(height: AppSpacing.m),
                   SegmentedButton<String>(
@@ -413,24 +405,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             padding: const EdgeInsets.only(top: AppSpacing.s),
                             child: RichText(
                               text: TextSpan(
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: context.colorScheme.onSurfaceVariant,
-                                ),
+                                style: context.bodySmallOnSurfaceVariant,
                                 children: [
                                   TextSpan(text: AuthStrings.acceptTermsPrefix),
                                   TextSpan(
                                     text: AuthStrings.termsAndConditions,
-                                    style: TextStyle(
-                                      color: context.colorScheme.primary,
+                                    style: context.textPrimary?.copyWith(
                                       fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          context.textTheme.bodySmall?.fontSize,
                                     ),
                                   ),
                                   TextSpan(text: AuthStrings.acceptTermsMiddle),
                                   TextSpan(
                                     text: AuthStrings.privacyPolicy,
-                                    style: TextStyle(
-                                      color: context.colorScheme.primary,
+                                    style: context.textPrimary?.copyWith(
                                       fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          context.textTheme.bodySmall?.fontSize,
                                     ),
                                   ),
                                 ],
@@ -460,17 +452,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Text(
                         AuthStrings.alreadyHaveAccountQuestion,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
+                        style: context.bodyMediumOnSurfaceVariant,
                       ),
                       TextButton(
                         onPressed: () => context.pop(),
                         child: Text(
                           AuthStrings.loginLink,
-                          style: context.textTheme.bodyMedium?.copyWith(
+                          style: context.textPrimary?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: context.colorScheme.primary,
+                            fontSize: context.textTheme.bodyMedium?.fontSize,
                           ),
                         ),
                       ),
