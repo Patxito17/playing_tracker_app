@@ -810,16 +810,24 @@ El Sprint 0 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Información completa de tarea (mock)
   - [x] Acciones disponibles según rol
 
-### Fase 9: Pantallas de Sesiones (Día 12)
+### Fase 9: Pantallas de Sesiones (Día 12) ✅ COMPLETADA
 
-- [ ] Crear `lib/features/sessions/presentation/screens/timer_screen.dart`
-  - [ ] Cronómetro grande y visible
-  - [ ] Controles: iniciar, pausar, reiniciar, finalizar (sin funcionalidad real)
-  - [ ] Información de tarea actual
-  - [ ] UI completa para estados del cronómetro
-- [ ] Crear `lib/features/sessions/presentation/screens/session_history_screen.dart`
-  - [ ] Lista de sesiones (datos mock)
-  - [ ] Filtros por fecha (UI solamente)
+- [x] Crear `lib/features/sessions/presentation/screens/timer_screen.dart`
+  - [x] Cronómetro grande y visible (formato HH:MM:SS con displayLarge)
+  - [x] Controles: iniciar, pausar, reiniciar, finalizar (sin funcionalidad real)
+  - [x] Información de tarea actual (datos mock)
+  - [x] UI completa para estados del cronómetro (idle, running, paused)
+  - [x] Estados visuales con Chip y colores según estado
+  - [x] Strings centralizados de SessionStrings
+- [x] Crear `lib/features/sessions/presentation/screens/session_history_screen.dart`
+  - [x] Lista de sesiones (datos mock)
+  - [x] Filtros por fecha (UI solamente) con FilterChip
+  - [x] Estado vacío reutilizable (_EmptyState)
+  - [x] RefreshIndicator para pull-to-refresh
+  - [x] Formato de duración legible
+  - [x] Strings centralizados de SessionStrings
+- [x] Agregar clase SessionStrings a app_strings.dart
+- [x] Agregar ruta /sessions/history en app_routes.dart
 
 ### Fase 10: Pulido y Documentación (Días 13-14)
 
@@ -945,7 +953,7 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 100% (10/10 fases completadas)**
+**Progreso General: 90% (9/10 fases completadas)**
 
 ### Fase 1: Setup Inicial ✅
 - [x] Todas las tareas de la Fase 1 completadas
@@ -1030,8 +1038,18 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores (0 issues)
 - [x] Código formateado con `dart format`
 
-### Pendiente (Fases 9-10)
-- [ ] UI completa de pantallas de sesiones
+### Fase 9: Pantallas de Sesiones ✅ COMPLETADA
+- [x] TimerScreen mejorada completamente con UI Material Design 3
+- [x] SessionHistoryScreen creada con lista y filtros
+- [x] SessionStrings agregado a app_strings.dart
+- [x] Ruta /sessions/history agregada a app_routes.dart
+- [x] Estados del cronómetro implementados (idle, running, paused)
+- [x] Controles del cronómetro funcionales visualmente
+- [x] Filtros por fecha en historial (UI solamente)
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Código formateado con `dart format`
+
+### Pendiente (Fase 10)
 - [ ] Accesibilidad básica verificada
 - [ ] Documentación del sprint completa
 - [ ] Screenshots capturados
@@ -1168,9 +1186,25 @@ Una vez completado el Sprint 0, el siguiente sprint se enfocará en:
 ---
 
 **Última actualización:** 7 de Noviembre 2025
-**Estado:** En desarrollo - Fase 8 completada ✅
-**Progreso:** 80% (8/10 fases)
+**Estado:** En desarrollo - Fase 9 completada ✅
+**Progreso:** 90% (9/10 fases)
 **Responsable:** Equipo de desarrollo Playing Tracker
+
+### Versión 1.15 - 7 de Noviembre 2025
+- ✅ **Fase 9 completada:** Pantallas de Sesiones con UI completa Material Design 3
+- ✅ TimerScreen mejorada completamente: cronómetro grande (HH:MM:SS), controles (iniciar, pausar, reanudar, reiniciar, finalizar), estados visuales (idle, running, paused)
+- ✅ SessionHistoryScreen creada: lista de sesiones con datos mock, filtros por fecha (UI solamente), estado vacío reutilizable, RefreshIndicator
+- ✅ SessionStrings agregado a app_strings.dart con todos los strings de sesiones y cronómetro
+- ✅ Ruta /sessions/history agregada a app_routes.dart para SessionHistoryScreen
+- ✅ Estados del cronómetro implementados con enum TimerState (idle, running, paused)
+- ✅ Información de tarea actual mostrada con datos mock en TimerScreen
+- ✅ Formato de duración legible en SessionHistoryScreen (ej: "30 min" o "1 hora 15 minutos")
+- ✅ Navegación al detalle de tarea desde historial de sesiones
+- ✅ Material Design 3 consistente: CustomButton, CustomCard, CustomAppBar, extensiones de contexto
+- ✅ Strings centralizados usados en todas las pantallas (SessionStrings, TaskStrings, CommonStrings)
+- ✅ Eliminado import no usado de app_routes.dart en TimerScreen
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format`
 
 ### Versión 1.14 - 7 de Noviembre 2025
 - ✅ **Fase 8 completada:** Pantallas de Tareas con UI completa Material Design 3
