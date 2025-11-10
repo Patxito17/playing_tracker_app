@@ -17,6 +17,7 @@ import '../../features/tasks/presentation/screens/task_list_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
+import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../shared/widgets/custom_bottom_navigation_bar.dart';
@@ -62,6 +63,7 @@ class AppRoutes {
 
   // Rutas de Sesiones
   static const String timer = '/timer/:taskId';
+  static const String sessionHistory = '/sessions/history';
 
   // Rutas de Estadísticas (deprecated - usar teacherStatistics o studentStatistics)
   static const String statistics = '/statistics';
@@ -296,6 +298,11 @@ class AppRoutes {
             final taskId = state.pathParameters['taskId'] ?? '';
             return TimerScreen(taskId: taskId);
           },
+        ),
+        GoRoute(
+          path: sessionHistory,
+          name: 'sessionHistory',
+          builder: (context, state) => const SessionHistoryScreen(),
         ),
 
         // Rutas de estadísticas
