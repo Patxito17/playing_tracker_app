@@ -267,52 +267,327 @@ flowchart LR
 
 ## 4. 🎨 Diseño de la Interfaz de la Aplicación
 
-### 4.1 Flujo de Navegación Principal
+El diseño de la interfaz de Playing Tracker sigue los principios de Material Design 3, proporcionando una experiencia de usuario moderna, intuitiva y accesible. La aplicación implementa navegación condicional según el rol del usuario (docente o alumno), con flujos específicos optimizados para cada tipo de usuario.
 
+### 4.1 Flujo de Navegación Docente
+
+El flujo específico para docentes incluye gestión de clases, creación de tareas y visualización de estadísticas. La navegación utiliza un `BottomNavigationBar` con tres tabs principales:
+
+```mermaid
+flowchart LR
+    Login["login_screen"] --> TeacherHome["teacher_home_screen"]
+    TeacherHome --> ClassesList["teacher_classes_list_screen"] & Statistics["statistics_screen"] & Settings["settings_screen"]
+    ClassesList --> CreateClass["create_class_screen"] & ClassDetail["teacher_class_detail_screen"]
+    ClassDetail --> CreateTask["create_task_screen"] & TaskDetail["task_detail_screen"] & ManageStudents["manage_students_screen"] & ClassStatistics["statistics_screen"]
+
+    %% Colores de nodos
+    style Login stroke:#1A237E,fill:#C5CAE9,color:#000
+    style TeacherHome stroke:#004D40,fill:#B2DFDB,color:#000
+    style ClassesList stroke:#1565C0,fill:#BBDEFB,color:#000
+    style Statistics stroke:#4A148C,fill:#E1BEE7,color:#000
+    style Settings stroke:#263238,fill:#CFD8DC,color:#000
+    style CreateClass stroke:#FF6D00,fill:#FFE0B2,color:#000
+    style ClassDetail stroke:#FFD600,fill:#FFF9C4,color:#000
+    style CreateTask stroke:#FFD600,fill:#FFF59D,color:#000
+    style TaskDetail stroke:#00C853,fill:#C8E6C9,color:#000
+    style ManageStudents stroke:#2962FF,fill:#BBDEFB,color:#000
+    style ClassStatistics stroke:#AA00FF,fill:#E1BEE7,color:#000
 ```
-Splash Screen
-    ↓
-Login/Register
-    ↓
-Home (según rol)
-    ├── Docente: Dashboard → Clases → Tareas → Estadísticas
-    └── Alumno: Dashboard → Tareas → Cronómetro → Progreso
+
+### 4.2 Flujo de Navegación Alumno
+
+El flujo específico para alumnos se centra en acceder a sus clases, visualizar tareas asignadas y registrar sesiones de estudio mediante el cronómetro:
+
+```mermaid
+flowchart LR
+    Login["login_screen"] --> StudentHome["student_home_screen"]
+    StudentHome --> ClassesList["student_classes_list_screen"] & Statistics["statistics_screen"] & Settings["settings_screen"]
+    ClassesList --> JoinClass["join_class_screen"] & ClassDetail["student_class_detail_screen"]
+    ClassDetail --> Timer["timer_screen"] & ClassInformation["student_class_information"] & ClassStatistics["statistics_screen"]
+
+    %% Colores de nodos
+    style Login stroke:#1A237E,fill:#C5CAE9,color:#000
+    style StudentHome stroke:#004D40,fill:#B2DFDB,color:#000
+    style ClassesList stroke:#1565C0,fill:#BBDEFB,color:#000
+    style Statistics stroke:#4A148C,fill:#E1BEE7,color:#000
+    style Settings stroke:#263238,fill:#CFD8DC,color:#000
+    style JoinClass stroke:#FF6D00,fill:#FFE0B2,color:#000
+    style ClassDetail stroke:#FFD600,fill:#FFF9C4,color:#000
+    style Timer stroke:#FFD600,fill:#FFF59D,color:#000
+    style ClassInformation stroke:#2962FF,fill:#BBDEFB,color:#000
+    style ClassStatistics stroke:#AA00FF,fill:#E1BEE7,color:#000
 ```
 
-### 4.2 Pantallas Principales
+### 4.3 Descripción de Pantallas
 
-#### Pantalla de Login
-- **Elementos:** Logo, campos email/contraseña, botón login, enlace registro
-- **Diseño:** Material Design 3, tema claro/oscuro
-- **Validaciones:** Email válido, contraseña requerida
+A continuación se describen las pantallas de la aplicación según su secuencia de aparición, mostrando primero la imagen correspondiente y luego una descripción breve con los flujos de navegación posibles.
 
-#### Pantalla de Registro
-- **Elementos:** Formulario completo (nombre, apellidos, email, contraseña, rol)
-- **Diseño:** Formulario paso a paso, validaciones en tiempo real
-- **Validaciones:** Todos los campos obligatorios, email único
+#### Pantallas de Autenticación
 
-#### Home Docente
-- **Elementos:** Cards de clases, botón crear clase, estadísticas rápidas
-- **Diseño:** Grid de cards, navegación por tabs
-- **Funcionalidades:** Acceso rápido a funciones principales
+##### Pantalla de Login
 
-#### Home Alumno
-- **Elementos:** Lista de tareas pendientes, cronómetro rápido, progreso
-- **Diseño:** Lista vertical, cards de tareas
-- **Funcionalidades:** Inicio rápido de estudio
+![Pantalla de Login](docs/screenshots/login_screen.png)
 
-#### Pantalla de Cronómetro
-- **Elementos:** Cronómetro grande, controles (iniciar/pausar/finalizar), información de tarea
-- **Diseño:** Interfaz minimalista, colores de estado
-- **Funcionalidades:** Persistencia en segundo plano
+**Descripción:** Primera pantalla que ve el usuario al abrir la aplicación si no está autenticado. Implementa un formulario de inicio de sesión con diseño Material Design 3, incluyendo campos de email y contraseña con validación en tiempo real.
 
-### 4.3 Componentes Reutilizables
+**Flujos de navegación:**
+- Login exitoso → Redirección según rol (docente o alumno)
+- Click en "Regístrate" → Pantalla de registro
+- Click en "¿Olvidaste tu contraseña?" → Pantalla de recuperación
 
-- **CustomButton:** Botones con Material Design 3
-- **CustomTextField:** Campos de texto con validaciones
-- **CustomCard:** Cards para mostrar información
-- **LoadingOverlay:** Indicadores de carga
-- **CustomAppBar:** Barra de navegación personalizada
+---
+
+##### Pantalla de Registro
+
+![Pantalla de Registro](docs/screenshots/register_screen.png)
+
+**Descripción:** Permite a nuevos usuarios crear una cuenta en el sistema, seleccionando su rol (docente o alumno) durante el proceso de registro. Incluye formulario completo con validaciones en tiempo real.
+
+**Flujos de navegación:**
+- Registro exitoso → Autenticación automática → Redirección según rol
+- Click en "Inicia sesión" → Pantalla de login
+
+---
+
+##### Pantalla de Recuperación de Contraseña
+
+![Pantalla de Recuperación de Contraseña](docs/screenshots/forgot_password_screen.png)
+
+**Descripción:** Permite a los usuarios recuperar su contraseña mediante el envío de un email de restablecimiento a través de Firebase Authentication.
+
+**Flujos de navegación:**
+- Envío exitoso → Mensaje de confirmación → Opción de volver al login
+- Click en "Volver al login" → Pantalla de login
+
+---
+
+#### Pantallas de Docente
+
+##### Pantalla Home Docente
+
+![Pantalla Home Docente](docs/screenshots/teacher_home_screen.png)
+
+**Descripción:** Pantalla de entrada para docentes autenticados. Actúa como punto de redirección hacia la lista de clases, mostrando un indicador de carga durante la transición.
+
+**Flujos de navegación:**
+- Carga completa → Redirección automática a Lista de Clases
+
+---
+
+##### Pantalla de Lista de Clases (Docente)
+
+![Pantalla de Lista de Clases Docente](docs/screenshots/teacher_classes_list_screen.png)
+
+**Descripción:** Pantalla principal del docente que muestra todas las clases creadas por el usuario. Incluye navegación mediante BottomNavigationBar con tres tabs: Clases, Estadísticas y Configuración.
+
+**Flujos de navegación:**
+- Click en clase → Detalle de Clase Docente
+- Click en FAB "Crear clase" → Pantalla de Crear Clase
+- Tab Estadísticas → Pantalla de Estadísticas (contexto docente)
+- Tab Configuración → Pantalla de Configuración
+
+---
+
+##### Pantalla de Crear Clase
+
+![Pantalla de Crear Clase](docs/screenshots/create_class_screen.png)
+
+**Descripción:** Formulario completo para que el docente cree una nueva clase, definiendo su nombre, descripción opcional y obteniendo automáticamente un código de acceso único de 6 caracteres.
+
+**Flujos de navegación:**
+- Creación exitosa → Detalle de Clase Docente con la nueva clase
+- Click en "Cancelar" → Lista de Clases Docente
+
+---
+
+##### Pantalla de Detalle de Clase (Docente)
+
+![Pantalla de Detalle de Clase Docente](docs/screenshots/teacher_class_detail_screen.png)
+
+**Descripción:** Muestra información detallada de una clase específica con navegación mediante tabs para acceder a diferentes secciones: Tareas, Estudiantes y Estadísticas de la clase.
+
+**Flujos de navegación:**
+- Tab Tareas → Click en tarea → Detalle de Tarea
+- Tab Tareas → FAB "Crear tarea" → Pantalla de Crear Tarea
+- Tab Estudiantes → Botón "Gestionar" → Pantalla de Gestionar Alumnos
+- Botón retroceso → Lista de Clases Docente
+
+---
+
+##### Pantalla de Gestionar Alumnos
+
+![Pantalla de Gestionar Alumnos](docs/screenshots/manage_students_screen.png)
+
+**Descripción:** Permite al docente gestionar los alumnos miembros de una clase específica, incluyendo visualización de información, eliminación de membresías y acceso a estadísticas individuales.
+
+**Flujos de navegación:**
+- Click en alumno → Estadísticas del alumno
+- Eliminación exitosa → Actualización de lista
+- Botón retroceso → Detalle de Clase Docente
+
+---
+
+##### Pantalla de Crear Tarea
+
+![Pantalla de Crear Tarea](docs/screenshots/create_task_screen.png)
+
+**Descripción:** Formulario completo para que el docente cree una nueva tarea de estudio, definiendo todos sus detalles (título, descripción, tiempo sugerido, archivos adjuntos) y asignándola a clases o alumnos específicos.
+
+**Flujos de navegación:**
+- Creación exitosa → Detalle de Tarea o Detalle de Clase Docente
+- Click en "Cancelar" → Pantalla anterior
+
+---
+
+##### Pantalla de Detalle de Tarea (Docente)
+
+![Pantalla de Detalle de Tarea](docs/screenshots/task_detail_screen.png)
+
+**Descripción:** Muestra información completa de una tarea específica, incluyendo detalles, alumnos asignados y su progreso individual con indicadores visuales.
+
+**Flujos de navegación:**
+- Click en alumno → Estadísticas del alumno para esta tarea
+- Botón "Editar" → Formulario de edición (si aplica)
+- Botón retroceso → Pantalla anterior
+
+---
+
+##### Pantalla de Estadísticas (Docente)
+
+![Pantalla de Estadísticas](docs/screenshots/statistics_screen.png)
+
+**Descripción:** Dashboard completo de estadísticas que permite al docente visualizar el progreso de sus alumnos con múltiples filtros (período, clase, tarea) y visualizaciones gráficas interactivas.
+
+**Flujos de navegación:**
+- Click en alumno de la tabla → Estadísticas del alumno
+- Click en tarea → Detalle de Tarea
+- Botón "Exportar" → Diálogo de selección de formato (CSV o PDF)
+
+---
+
+##### Pantalla de Configuración (Docente)
+
+![Pantalla de Configuración](docs/screenshots/settings_screen.png)
+
+**Descripción:** Permite al docente gestionar su perfil, preferencias de la aplicación (tema claro/oscuro, notificaciones) y configuraciones generales.
+
+**Flujos de navegación:**
+- Cerrar sesión → Pantalla de Login (limpieza de estado)
+- Eliminar cuenta → Confirmación → Pantalla de Login
+
+---
+
+#### Pantallas de Alumno
+
+##### Pantalla Home Alumno
+
+![Pantalla Home Alumno](docs/screenshots/student_home_screen.png)
+
+**Descripción:** Pantalla de entrada para alumnos autenticados. Actúa como punto de redirección hacia la lista de clases del alumno, mostrando un indicador de carga durante la transición.
+
+**Flujos de navegación:**
+- Carga completa → Redirección automática a Lista de Clases Alumno
+
+---
+
+##### Pantalla de Lista de Clases (Alumno)
+
+![Pantalla de Lista de Clases Alumno](docs/screenshots/student_classes_list_screen.png)
+
+**Descripción:** Pantalla principal del alumno que muestra todas las clases a las que pertenece. Incluye navegación mediante BottomNavigationBar con tres tabs: Clases, Estadísticas y Configuración.
+
+**Flujos de navegación:**
+- Click en clase → Detalle de Clase Alumno
+- Click en FAB "Unirse a clase" → Pantalla de Unirse a Clase
+- Tab Estadísticas → Pantalla de Estadísticas (contexto alumno)
+- Tab Configuración → Pantalla de Configuración
+
+---
+
+##### Pantalla de Unirse a Clase
+
+![Pantalla de Unirse a Clase](docs/screenshots/join_class_screen.png)
+
+**Descripción:** Permite al alumno unirse a una clase existente introduciendo el código de acceso único de 6 caracteres proporcionado por el docente.
+
+**Flujos de navegación:**
+- Unión exitosa → Detalle de Clase Alumno con la nueva clase
+- Click en "Cancelar" → Lista de Clases Alumno
+
+---
+
+##### Pantalla de Detalle de Clase (Alumno)
+
+![Pantalla de Detalle de Clase Alumno](docs/screenshots/student_class_detail_screen.png)
+
+**Descripción:** Muestra información detallada de una clase específica a la que pertenece el alumno, con navegación mediante tabs para acceder a diferentes secciones: Tareas, Información y Estadísticas.
+
+**Flujos de navegación:**
+- Tab Tareas → Click en tarea → Detalle de Tarea
+- Tab Información → Pantalla de Información de Clase
+- Tab Estadísticas → Estadísticas de la clase
+- Botón retroceso → Lista de Clases Alumno
+
+---
+
+##### Pantalla de Información de Clase (Alumno)
+
+![Pantalla de Información de Clase Alumno](docs/screenshots/student_class_information.png)
+
+**Descripción:** Muestra la información detallada de la clase y del docente, incluyendo descripción de la clase, datos de contacto del docente, código de acceso (solo lectura) y fecha de unión a la clase.
+
+**Flujos de navegación:**
+- Botón retroceso → Detalle de Clase Alumno
+- Navegación mediante tabs → Tab Tareas o Tab Estadísticas
+
+---
+
+##### Pantalla de Detalle de Tarea (Alumno)
+
+![Pantalla de Detalle de Tarea](docs/screenshots/task_detail_screen.png)
+
+**Descripción:** Muestra información completa de una tarea asignada al alumno, incluyendo detalles, archivos adjuntos, progreso personal y opción para iniciar una sesión de estudio.
+
+**Flujos de navegación:**
+- Click en "Iniciar estudio" → Pantalla de Cronómetro con la tarea activa
+- Click en "Ver historial" → Historial de Sesiones filtrado por tarea
+- Botón retroceso → Pantalla anterior
+
+---
+
+##### Pantalla de Cronómetro
+
+![Pantalla de Cronómetro](docs/screenshots/timer_screen.png)
+
+**Descripción:** Pantalla central del flujo de estudio del alumno. Implementa un cronómetro persistente que registra el tiempo de estudio incluso cuando la aplicación pasa a segundo plano, con controles para iniciar, pausar, reiniciar y finalizar la sesión.
+
+**Flujos de navegación:**
+- Click en "Finalizar sesión" → Diálogo de confirmación → Registro → Detalle de Tarea o Detalle de Clase Alumno
+- Click en cerrar (AppBar) → Diálogo de confirmación si hay sesión activa
+
+---
+
+##### Pantalla de Estadísticas (Alumno)
+
+![Pantalla de Estadísticas](docs/screenshots/statistics_screen.png)
+
+**Descripción:** Dashboard de estadísticas personales que permite al alumno visualizar su progreso de estudio con gráficos y métricas motivadoras, incluyendo filtros por período, clase y tarea.
+
+**Flujos de navegación:**
+- Click en tarea → Detalle de Tarea
+- Click en clase → Detalle de Clase Alumno
+
+---
+
+##### Pantalla de Configuración (Alumno)
+
+![Pantalla de Configuración](docs/screenshots/settings_screen.png)
+
+**Descripción:** Permite al alumno gestionar su perfil, preferencias de la aplicación (tema claro/oscuro, notificaciones, recordatorios) y configuraciones generales.
+
+**Flujos de navegación:**
+- Cerrar sesión → Pantalla de Login (limpieza de estado)
+- Eliminar cuenta → Confirmación → Pantalla de Login
 
 ---
 
