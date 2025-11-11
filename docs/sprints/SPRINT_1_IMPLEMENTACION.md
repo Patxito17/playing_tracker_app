@@ -5,7 +5,7 @@
 **Duración:** Noviembre 2025 (2 semanas)
 **Estado:** 📅 Planificado
 **Versión del documento:** 1.0
-**Última actualización:** 7 de Noviembre 2025
+**Última actualización:** 11 de Noviembre 2025
 
 ---
 
