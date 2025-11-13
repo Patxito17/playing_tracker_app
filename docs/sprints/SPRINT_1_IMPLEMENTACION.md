@@ -3,8 +3,8 @@
 **Proyecto:** Playing Tracker - Sistema de Seguimiento de Estudio Musical
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
-**Estado:** 🚧 En Progreso
-**Versión del documento:** 1.5
+**Estado:** ✅ Completado
+**Versión del documento:** 1.6
 **Última actualización:** 13 de Noviembre 2025
 
 ---
@@ -494,23 +494,285 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Documentación de cada índice con justificación
 - [x] Documentar índices en el documento del sprint
 
-### Fase 6: Documentación y Pruebas (Día 9) 📅
+### Fase 6: Documentación y Pruebas (Día 9) ✅ COMPLETADA
 
-- [ ] Revisar documentación de todos los modelos
-  - [ ] Comentarios dartdoc completos
-  - [ ] Ejemplos de uso en comentarios
-  - [ ] Descripción de campos denormalizados
-- [ ] Revisar documentación de todos los enums
-  - [ ] Comentarios dartdoc completos
-  - [ ] Descripción de cada valor
-- [ ] Revisar documentación de validadores
-  - [ ] Comentarios dartdoc completos
-  - [ ] Ejemplos de uso
-- [ ] Crear sección de ejemplos de uso en el documento del sprint
-- [ ] Actualizar README.md con información del Sprint 1
-- [ ] Ejecutar `flutter analyze` y verificar 0 errores
-- [ ] Ejecutar `dart format .` y verificar 0 cambios
-- [ ] Ejecutar `dart run build_runner build --delete-conflicting-outputs` y verificar éxito
+- [x] Revisar documentación de todos los modelos
+  - [x] Comentarios dartdoc completos
+  - [x] Ejemplos de uso en comentarios
+  - [x] Descripción de campos denormalizados
+- [x] Revisar documentación de todos los enums
+  - [x] Comentarios dartdoc completos
+  - [x] Descripción de cada valor
+- [x] Revisar documentación de validadores
+  - [x] Comentarios dartdoc completos
+  - [x] Ejemplos de uso
+- [x] Crear sección de ejemplos de uso en el documento del sprint
+- [x] Actualizar README.md con información del Sprint 1
+- [x] Ejecutar `flutter analyze` y verificar 0 errores
+- [x] Ejecutar `dart format .` y verificar 0 cambios
+- [x] Ejecutar `dart run build_runner build --delete-conflicting-outputs` y verificar éxito
+
+---
+
+## 📚 Ejemplos de Uso
+
+Esta sección proporciona ejemplos prácticos de uso de los modelos, validadores y utilidades implementados en este sprint.
+
+### Ejemplo 1: Crear y Serializar un Modelo
+
+```dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
+
+// Crear una instancia de TeacherModel
+final teacher = TeacherModel(
+  id: 'teacher_uid_123',
+  firstName: 'María',
+  lastName: 'García',
+  email: 'maria.garcia@ejemplo.com',
+  createdAt: Timestamp.now(),
+  updatedAt: Timestamp.now(),
+  isActive: true,
+);
+
+// Acceder al nombre completo usando el getter
+print(teacher.fullName); // Output: "María García"
+
+// Serializar a JSON para guardar en Firestore
+final json = teacher.toJson();
+// json = {
+//   'id': 'teacher_uid_123',
+//   'firstName': 'María',
+//   'lastName': 'García',
+//   'email': 'maria.garcia@ejemplo.com',
+//   'createdAt': Timestamp(...),
+//   'updatedAt': Timestamp(...),
+//   'isActive': true
+// }
+```
+
+### Ejemplo 2: Deserializar desde JSON
+
+```dart
+import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
+
+// JSON recibido desde Firestore
+final jsonFromFirestore = {
+  'id': 'student_uid_456',
+  'firstName': 'Carlos',
+  'lastName': 'Rodríguez',
+  'email': 'carlos.rodriguez@ejemplo.com',
+  'createdAt': Timestamp.now(),
+  'updatedAt': Timestamp.now(),
+  'isActive': true,
+  'totalSessionsCount': 15,
+  'totalDurationLogged': 54000, // 15 horas en segundos
+  'lastSessionDate': Timestamp.now(),
+};
+
+// Deserializar desde JSON
+final student = StudentModel.fromJson(jsonFromFirestore);
+
+// Acceder a campos agregados (denormalizados)
+print('Sesiones totales: ${student.totalSessionsCount}'); // 15
+print('Tiempo total: ${student.totalDurationLogged} segundos'); // 54000
+print('Nombre completo: ${student.fullName}'); // "Carlos Rodríguez"
+```
+
+### Ejemplo 3: Uso de copyWith para Modificar Modelos
+
+```dart
+import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
+
+// Modelo original
+final originalClass = ClassModel(
+  id: 'class_123',
+  name: 'Piano Nivel 1',
+  description: 'Clase para principiantes',
+  ownerTeacherId: 'teacher_456',
+  accessCode: 'ABC123',
+  createdAt: Timestamp.now(),
+  updatedAt: Timestamp.now(),
+  isActive: true,
+);
+
+// Crear una copia modificando solo algunos campos
+final updatedClass = originalClass.copyWith(
+  name: 'Piano Nivel Intermedio',
+  description: 'Clase actualizada para nivel intermedio',
+  updatedAt: Timestamp.now(),
+);
+
+// El resto de campos se mantienen iguales
+print(updatedClass.id); // 'class_123' (sin cambios)
+print(updatedClass.name); // 'Piano Nivel Intermedio' (actualizado)
+print(updatedClass.accessCode); // 'ABC123' (sin cambios)
+```
+
+### Ejemplo 4: Uso de Validadores
+
+```dart
+import 'package:playing_tracker/core/utils/domain_validators.dart';
+
+// Validar nombre de usuario
+final nameError = validateName('María García');
+if (nameError == null) {
+  print('Nombre válido ✓');
+} else {
+  print('Error: $nameError');
+}
+
+// Validar email
+final emailError = validateEmail('usuario@ejemplo.com');
+if (emailError == null) {
+  print('Email válido ✓');
+} else {
+  print('Error: $emailError');
+}
+
+// Validar código de acceso de clase
+final codeError = validateAccessCode('ABC123');
+if (codeError == null) {
+  print('Código válido ✓');
+} else {
+  print('Error: $codeError');
+}
+
+// Validar duración en segundos
+final durationError = validateDuration(1800); // 30 minutos
+if (durationError == null) {
+  print('Duración válida ✓');
+} else {
+  print('Error: $durationError');
+}
+```
+
+### Ejemplo 5: Generar IDs Compuestos para Assignments
+
+```dart
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
+
+// Generar ID compuesto para una asignación
+final assignmentId = AssignmentModel.generateId(
+  taskId: 'task_789',
+  studentId: 'student_456',
+);
+print(assignmentId); // Output: "task_789_student_456"
+
+// Crear una asignación con el ID generado
+final assignment = AssignmentModel(
+  id: assignmentId,
+  taskId: 'task_789',
+  studentId: 'student_456',
+  teacherId: 'teacher_012',
+  status: TaskStatus.pending,
+  assignedAt: Timestamp.now(),
+  sessionsCount: 0,
+  totalDurationLogged: 0,
+);
+
+// Verificar estado usando getters
+print(assignment.isPending); // true
+print(assignment.isInProgress); // false
+print(assignment.isCompleted); // false
+```
+
+### Ejemplo 6: Generar monthBucket para Sesiones
+
+```dart
+import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
+
+// Generar monthBucket desde un DateTime
+final date = DateTime(2025, 11, 13);
+final monthBucket = SessionModel.generateMonthBucket(date);
+print(monthBucket); // Output: "2025-11"
+
+// Crear una sesión con monthBucket
+final session = SessionModel(
+  id: 'session_abc_123',
+  studentId: 'student_456',
+  taskId: 'task_789',
+  teacherId: 'teacher_012',
+  startTime: Timestamp.fromDate(DateTime(2025, 11, 13, 10, 0)),
+  endTime: Timestamp.fromDate(DateTime(2025, 11, 13, 10, 45)),
+  totalDuration: 2700, // 45 minutos
+  pausedDuration: 300, // 5 minutos de pausa
+  dateLogged: Timestamp.fromDate(date),
+  monthBucket: monthBucket,
+  notes: 'Sesión enfocada en escalas',
+  createdAt: Timestamp.now(),
+);
+
+// Usar getters formatados
+print(session.durationFormatted); // "45min"
+print(session.pausedDurationFormatted); // "5min"
+```
+
+### Ejemplo 7: Uso de Enums con Helpers de UI
+
+```dart
+import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/attachment_type.dart';
+
+// Usar enum de estado de tarea
+final status = TaskStatus.inProgress;
+print(status.displayName); // "En progreso"
+print(status.color); // Colors.orange
+
+// Usar enum de tipo de adjunto
+final attachmentType = AttachmentType.pdf;
+print(attachmentType.displayName); // "PDF"
+print(attachmentType.icon); // Icons.picture_as_pdf
+
+// En un widget, podrías usar:
+// Icon(attachmentType.icon, color: status.color)
+```
+
+### Ejemplo 8: Trabajar con Listas de Attachments
+
+```dart
+import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
+import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/attachment_type.dart';
+
+// Crear tarea con múltiples adjuntos
+final task = TaskModel(
+  id: 'task_123',
+  title: 'Escalas de Do Mayor',
+  description: 'Practicar escalas en 2 octavas',
+  createdBy: 'teacher_456',
+  durationSuggested: 1800, // 30 minutos
+  attachments: [
+    AttachmentModel(
+      name: 'Partitura - Escalas',
+      url: 'https://storage.ejemplo.com/escalas.pdf',
+      type: AttachmentType.pdf,
+    ),
+    AttachmentModel(
+      name: 'Ejemplo de audio',
+      url: 'https://storage.ejemplo.com/escalas.mp3',
+      type: AttachmentType.audio,
+    ),
+    AttachmentModel(
+      name: 'Tutorial en YouTube',
+      url: 'https://youtube.com/watch?v=ejemplo',
+      type: AttachmentType.link,
+    ),
+  ],
+  createdAt: Timestamp.now(),
+  updatedAt: Timestamp.now(),
+  isActive: true,
+);
+
+// Acceder a attachments
+print('Número de adjuntos: ${task.attachments.length}'); // 3
+print('Duración formateada: ${task.durationFormatted}'); // "30min"
+
+// Serializar tarea completa (incluye attachments)
+final taskJson = task.toJson();
+// Los attachments se serializan automáticamente gracias a explicitToJson: true
+```
 
 ---
 
@@ -614,7 +876,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 83% (5/6 fases completadas) ✅**
+**Progreso General: 100% (6/6 fases completadas) ✅**
 
 ### Fase 1: Enums de Dominio ✅
 - [x] Todos los enums creados (5 enums)
@@ -650,19 +912,48 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - [x] `firebase/firestore.indexes.json` creado
 - [x] Documentación de índices completa
 
-### Fase 6: Documentación y Pruebas 📅
-- [ ] Documentación de modelos revisada
-- [ ] Documentación de enums revisada
-- [ ] Documentación de validadores revisada
-- [ ] README actualizado
-- [ ] Ejemplos de uso documentados
-- [ ] `flutter analyze` sin errores (0 issues)
-- [ ] Código formateado con `dart format`
-- [ ] `build_runner` ejecutado exitosamente
+### Fase 6: Documentación y Pruebas ✅
+- [x] Documentación de modelos revisada
+- [x] Documentación de enums revisada
+- [x] Documentación de validadores revisada
+- [x] README actualizado
+- [x] Ejemplos de uso documentados
+- [x] `flutter analyze` sin errores (0 issues)
+- [x] Código formateado con `dart format`
+- [x] `build_runner` ejecutado exitosamente
 
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.6 - 13 de Noviembre 2025 - ✅ SPRINT COMPLETADO
+- ✅ **Fase 6 COMPLETADA:** Documentación y Pruebas Finales
+- ✅ **Revisión completa de documentación:**
+  - 8 modelos revisados: Todos con documentación dartdoc completa y ejemplos de uso
+  - 5 enums revisados: Todos con documentación completa y métodos helper documentados
+  - 8 validadores revisados: Todos con documentación, ejemplos y mensajes de error claros
+- ✅ **Sección de ejemplos de uso creada** en el documento del sprint (8 ejemplos prácticos):
+  - Ejemplo 1: Crear y serializar un modelo
+  - Ejemplo 2: Deserializar desde JSON
+  - Ejemplo 3: Uso de copyWith para modificar modelos
+  - Ejemplo 4: Uso de validadores
+  - Ejemplo 5: Generar IDs compuestos para Assignments
+  - Ejemplo 6: Generar monthBucket para Sesiones
+  - Ejemplo 7: Uso de Enums con helpers de UI
+  - Ejemplo 8: Trabajar con listas de Attachments
+- ✅ **Validaciones finales exitosas:**
+  - `dart format .` ✅ 0 cambios necesarios (65 archivos formateados)
+  - `flutter analyze` ✅ No issues found! (0 errores)
+  - `dart run build_runner build` ✅ Ejecutado exitosamente (0 outputs nuevos)
+- ✅ **Sprint 1 COMPLETADO:** 100% (6/6 fases)
+- ✅ **Entregables finales:**
+  - 5 enums con serialización JSON
+  - 8 modelos con serialización JSON completa
+  - TimestampConverter personalizado
+  - 8 funciones de validación
+  - Reglas de seguridad de Firestore (227 líneas)
+  - 11 índices compuestos de Firestore
+  - Documentación completa con 8 ejemplos de uso prácticos
 
 ### Versión 1.5 - 13 de Noviembre 2025
 - ✅ **Fase 5 COMPLETADA:** Índices Compuestos de Firestore
@@ -785,7 +1076,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ---
 
 **Última actualización:** 13 de Noviembre 2025
-**Estado:** 🚧 En Progreso
-**Progreso:** 83% (5/6 fases) ✅
+**Estado:** ✅ Completado
+**Progreso:** 100% (6/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 
