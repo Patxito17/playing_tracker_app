@@ -210,7 +210,7 @@ flutter build web
 
 ### ✅ Sprint 1 - Modelos de Dominio (Completado)
 
-✅ **Bundle IDs Unificados:** Todas las plataformas ahora usan `com.gabriom.playingtrackerapp` de forma consistente. Ver: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](docs/FIREBASE_BUNDLE_ID_FIX.md)
+✅ **Bundle IDs Unificados:** Todas las plataformas ahora usan `com.gabriom.playingtrackerapp` de forma consistente.
 
 **Fase 1 Completada: Enums de Dominio** ✅
 - ✅ 5 enums implementados con serialización JSON

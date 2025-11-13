@@ -258,8 +258,6 @@ dev_dependencies:
 - Namespace de Android alineado correctamente con applicationId y google-services.json
 - Estructura de paquetes de Kotlin reorganizada para coincidir con el namespace
 
-Ver detalles completos en: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](../FIREBASE_BUNDLE_ID_FIX.md)
-
 ---
 
 ## 📊 Estructura de Modelos de Datos
