@@ -14,7 +14,7 @@ SessionModel _$SessionModelFromJson(Map<String, dynamic> json) => SessionModel(
   startTime: const TimestampConverter().fromJson(json['startTime'] as Object),
   endTime: const TimestampConverter().fromJson(json['endTime'] as Object),
   totalDuration: (json['totalDuration'] as num).toInt(),
-  pausedDuration: (json['pausedDuration'] as num).toInt(),
+  pausedDuration: (json['pausedDuration'] as num?)?.toInt() ?? 0,
   dateLogged: const TimestampConverter().fromJson(json['dateLogged'] as Object),
   monthBucket: json['monthBucket'] as String,
   notes: json['notes'] as String?,

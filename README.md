@@ -174,7 +174,7 @@ flutter build web
 
 **Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos 🚧
 
-**Progreso Sprint 1:** 33% completado (2/6 fases) ✅
+**Progreso Sprint 1:** 50% completado (3/6 fases) ✅
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -208,8 +208,15 @@ flutter build web
 - ✅ Documentación dartdoc completa en español
 - ✅ Código formateado y analizado sin errores
 
+**Fase 3 Completada: Validadores de Dominio** ✅
+- ✅ 8 funciones de validación implementadas en `domain_validators.dart`
+- ✅ Bug corregido: `pausedDuration` en SessionModel con default = 0
+- ✅ Validadores para nombres, emails, códigos de acceso, duraciones, IDs, descripciones, URLs y títulos
+- ✅ Documentación dartdoc completa con ejemplos de uso
+- ✅ Mensajes de error descriptivos en español
+- ✅ Código formateado y analizado sin errores
+
 **Próximas Fases del Sprint 1:**
-- Fase 3: Validadores de Dominio
 - Fase 4: Configuración de Firestore
 - Fase 5: Índices Compuestos
 - Fase 6: Documentación y Pruebas
