@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.playing_tracker"
+    namespace = "com.gabriom.playingtrackerapp"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
