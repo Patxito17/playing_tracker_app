@@ -1,8 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "memberships",
-      "queryScope": "COLLECTION",
+      "collectionId": "memberships",
       "fields": [
         {
           "fieldPath": "classId",
@@ -15,8 +14,7 @@
       ]
     },
     {
-      "collectionGroup": "memberships",
-      "queryScope": "COLLECTION",
+      "collectionId": "memberships",
       "fields": [
         {
           "fieldPath": "studentId",
@@ -29,8 +27,7 @@
       ]
     },
     {
-      "collectionGroup": "assignments",
-      "queryScope": "COLLECTION",
+      "collectionId": "assignments",
       "fields": [
         {
           "fieldPath": "taskId",
@@ -43,8 +40,7 @@
       ]
     },
     {
-      "collectionGroup": "assignments",
-      "queryScope": "COLLECTION",
+      "collectionId": "assignments",
       "fields": [
         {
           "fieldPath": "studentId",
@@ -57,8 +53,7 @@
       ]
     },
     {
-      "collectionGroup": "assignments",
-      "queryScope": "COLLECTION",
+      "collectionId": "assignments",
       "fields": [
         {
           "fieldPath": "teacherId",
@@ -71,8 +66,7 @@
       ]
     },
     {
-      "collectionGroup": "sessions",
-      "queryScope": "COLLECTION",
+      "collectionId": "sessions",
       "fields": [
         {
           "fieldPath": "studentId",
@@ -85,8 +79,7 @@
       ]
     },
     {
-      "collectionGroup": "sessions",
-      "queryScope": "COLLECTION",
+      "collectionId": "sessions",
       "fields": [
         {
           "fieldPath": "taskId",
@@ -99,8 +92,7 @@
       ]
     },
     {
-      "collectionGroup": "sessions",
-      "queryScope": "COLLECTION",
+      "collectionId": "sessions",
       "fields": [
         {
           "fieldPath": "teacherId",
@@ -113,8 +105,7 @@
       ]
     },
     {
-      "collectionGroup": "sessions",
-      "queryScope": "COLLECTION_GROUP",
+      "collectionId": "sessions",
       "fields": [
         {
           "fieldPath": "monthBucket",
@@ -127,8 +118,7 @@
       ]
     },
     {
-      "collectionGroup": "tasks",
-      "queryScope": "COLLECTION",
+      "collectionId": "tasks",
       "fields": [
         {
           "fieldPath": "createdBy",
@@ -141,8 +131,7 @@
       ]
     },
     {
-      "collectionGroup": "classes",
-      "queryScope": "COLLECTION",
+      "collectionId": "classes",
       "fields": [
         {
           "fieldPath": "ownerTeacherId",
