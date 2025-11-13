@@ -440,20 +440,21 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Ejecutar `flutter analyze` y corregir errores
 - [x] Ejecutar `dart format .`
 
-### Fase 3: Validadores de Dominio (Día 6) 📅
+### Fase 3: Validadores de Dominio (Día 6) ✅ COMPLETADA
 
-- [ ] Crear `lib/core/utils/domain_validators.dart`
-  - [ ] Función `validateName(String name)` - Longitud mínima 3, solo letras y espacios
-  - [ ] Función `validateEmail(String email)` - Formato de email válido
-  - [ ] Función `validateAccessCode(String code)` - 6 caracteres alfanuméricos
-  - [ ] Función `validateDuration(int duration)` - Duración positiva en segundos
-  - [ ] Función `validateId(String id)` - ID no vacío
-  - [ ] Función `validateDescription(String? description)` - Descripción opcional, máximo 1000 caracteres
-  - [ ] Función `validateUrl(String url)` - URL válida para attachments
-  - [ ] Todas las funciones retornan `String?` (null si válido, mensaje de error si inválido)
-  - [ ] Documentación completa con ejemplos
-- [ ] Ejecutar `flutter analyze` y corregir errores
-- [ ] Ejecutar `dart format .`
+- [x] Crear `lib/core/utils/domain_validators.dart`
+  - [x] Función `validateName(String name)` - Longitud mínima 3, solo letras y espacios
+  - [x] Función `validateEmail(String email)` - Formato de email válido
+  - [x] Función `validateAccessCode(String code)` - 6 caracteres alfanuméricos
+  - [x] Función `validateDuration(int duration)` - Duración positiva en segundos
+  - [x] Función `validateId(String id)` - ID no vacío
+  - [x] Función `validateDescription(String? description)` - Descripción opcional, máximo 1000 caracteres
+  - [x] Función `validateUrl(String url)` - URL válida para attachments
+  - [x] Función `validateTitle(String title)` - Títulos de tareas (3-100 caracteres)
+  - [x] Todas las funciones retornan `String?` (null si válido, mensaje de error si inválido)
+  - [x] Documentación completa con ejemplos
+- [x] Ejecutar `flutter analyze` y corregir errores
+- [x] Ejecutar `dart format .`
 
 ### Fase 4: Configuración de Firestore (Día 7) 📅
 
@@ -724,6 +725,6 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 **Última actualización:** 13 de Noviembre 2025
 **Estado:** 🚧 En Progreso
-**Progreso:** 33% (2/6 fases) ✅
+**Progreso:** 50% (3/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 
