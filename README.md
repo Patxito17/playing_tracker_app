@@ -246,11 +246,11 @@ flutter build web
 - ✅ 11 índices compuestos implementados en `firebase/firestore.indexes.json`
 - ✅ **Memberships:** 2 índices (`classId+isActive`, `studentId+isActive`)
 - ✅ **Assignments:** 3 índices (`taskId+status`, `studentId+status`, `teacherId+status`)
-- ✅ **Sessions:** 4 índices (`studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC` collection group)
+- ✅ **Sessions:** 4 índices (`studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC`)
 - ✅ **Tasks:** 1 índice (`createdBy+isActive`)
 - ✅ **Classes:** 1 índice (`ownerTeacherId+isActive`)
+- ✅ Uso correcto de `collectionId` para colecciones top-level (no `collectionGroup`)
 - ✅ Índices optimizados para consultas frecuentes del sistema
-- ✅ Collection group index para métricas mensuales con `monthBucket`
 - ✅ Validación exitosa con `firebase deploy --only firestore:indexes --dry-run`
 
 **Próxima Fase del Sprint 1:**

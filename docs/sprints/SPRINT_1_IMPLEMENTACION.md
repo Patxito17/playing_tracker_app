@@ -670,14 +670,18 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - ✅ **Índices implementados:**
   - **Memberships (2 índices):** `classId+isActive`, `studentId+isActive`
   - **Assignments (3 índices):** `taskId+status`, `studentId+status`, `teacherId+status`
-  - **Sessions (4 índices):** `studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC` (collection group)
+  - **Sessions (4 índices):** `studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC`
   - **Tasks (1 índice):** `createdBy+isActive`
   - **Classes (1 índice):** `ownerTeacherId+isActive`
+- ✅ **Estructura correcta de índices:**
+  - Uso de `collectionId` en lugar de `collectionGroup` (apropiado para colecciones top-level)
+  - Campo `queryScope` eliminado (no necesario, default es `COLLECTION`)
+  - Todos los índices optimizados para las 7 colecciones top-level del proyecto
 - ✅ **Justificación documentada** para cada índice:
   - Índices de memberships optimizan consultas de alumnos por clase y clases por alumno
   - Índices de assignments permiten filtrado eficiente por estado (pending/in_progress/completed)
   - Índices de sessions ordenados DESC para mostrar historial más reciente primero
-  - Collection group index permite métricas mensuales agregadas con `monthBucket`
+  - Índice de monthBucket permite métricas mensuales agregadas eficientes
   - Índices de tasks y classes filtran elementos activos del teacher
 - ✅ **Validación exitosa:**
   - `firebase deploy --only firestore:indexes --dry-run` ✅ Compilación exitosa
