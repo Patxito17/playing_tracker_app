@@ -3,9 +3,9 @@
 **Proyecto:** Playing Tracker - Sistema de Seguimiento de Estudio Musical
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
-**Estado:** 📅 Planificado
-**Versión del documento:** 1.0
-**Última actualización:** 11 de Noviembre 2025
+**Estado:** 🚧 En Progreso
+**Versión del documento:** 1.1
+**Última actualización:** 13 de Noviembre 2025
 
 ---
 
@@ -337,30 +337,35 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
 
 ## 🎯 Tareas Detalladas
 
-### Fase 1: Enums de Dominio (Día 1) 📅
+### Fase 1: Enums de Dominio (Día 1) ✅ COMPLETADA
 
-- [ ] Crear `lib/features/auth/domain/enums/user_role.dart`
-  - [ ] Enum `UserRole` con valores: `teacher`, `student`
-  - [ ] Serialización JSON con `@JsonValue`
-  - [ ] Documentación completa
-- [ ] Crear `lib/features/tasks/domain/enums/task_status.dart`
-  - [ ] Enum `TaskStatus` con valores: `pending`, `in_progress`, `completed`
-  - [ ] Serialización JSON con `@JsonValue`
-  - [ ] Documentación completa
-- [ ] Crear `lib/features/tasks/domain/enums/attachment_type.dart`
-  - [ ] Enum `AttachmentType` con valores: `pdf`, `audio`, `link`
-  - [ ] Serialización JSON con `@JsonValue`
-  - [ ] Documentación completa
-- [ ] Crear `lib/features/sessions/domain/enums/session_status.dart`
-  - [ ] Enum `SessionStatus` con valores: `idle`, `running`, `paused`, `completed`
-  - [ ] Serialización JSON con `@JsonValue`
-  - [ ] Documentación completa
-- [ ] Crear `lib/features/classes/domain/enums/class_status.dart`
-  - [ ] Enum `ClassStatus` con valores: `active`, `inactive`
-  - [ ] Serialización JSON con `@JsonValue`
-  - [ ] Documentación completa
-- [ ] Ejecutar `flutter analyze` y corregir errores
-- [ ] Ejecutar `dart format .`
+- [x] Crear `lib/features/auth/domain/enums/user_role.dart`
+  - [x] Enum `UserRole` con valores: `teacher`, `student`
+  - [x] Serialización JSON con `@JsonValue`
+  - [x] Documentación completa
+  - [x] Método helper `displayName` para UI
+- [x] Crear `lib/features/tasks/domain/enums/task_status.dart`
+  - [x] Enum `TaskStatus` con valores: `pending`, `inProgress`, `completed`
+  - [x] Serialización JSON con `@JsonValue`
+  - [x] Documentación completa
+  - [x] Métodos helper `displayName` y `color` para UI
+- [x] Crear `lib/features/tasks/domain/enums/attachment_type.dart`
+  - [x] Enum `AttachmentType` con valores: `pdf`, `audio`, `link`
+  - [x] Serialización JSON con `@JsonValue`
+  - [x] Documentación completa
+  - [x] Métodos helper `displayName` e `icon` para UI
+- [x] Crear `lib/features/sessions/domain/enums/session_status.dart`
+  - [x] Enum `SessionStatus` con valores: `idle`, `running`, `paused`, `completed`
+  - [x] Serialización JSON con `@JsonValue`
+  - [x] Documentación completa
+  - [x] Métodos helper `displayName` y `color` para UI
+- [x] Crear `lib/features/classes/domain/enums/class_status.dart`
+  - [x] Enum `ClassStatus` con valores: `active`, `inactive`
+  - [x] Serialización JSON con `@JsonValue`
+  - [x] Documentación completa
+  - [x] Método helper `displayName` para UI
+- [x] Ejecutar `flutter analyze` y corregir errores
+- [x] Ejecutar `dart format .`
 
 ### Fase 2: Modelos de Dominio (Días 2-5) 📅
 
@@ -592,14 +597,14 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 0% (0/6 fases completadas) 📅**
+**Progreso General: 17% (1/6 fases completadas) ✅**
 
-### Fase 1: Enums de Dominio 📅
-- [ ] Todos los enums creados (5 enums)
-- [ ] Serialización JSON implementada
-- [ ] Documentación completa
-- [ ] `flutter analyze` sin errores
-- [ ] Código formateado con `dart format`
+### Fase 1: Enums de Dominio ✅
+- [x] Todos los enums creados (5 enums)
+- [x] Serialización JSON implementada
+- [x] Documentación completa
+- [x] `flutter analyze` sin errores
+- [x] Código formateado con `dart format`
 
 ### Fase 2: Modelos de Dominio 📅
 - [ ] Todos los modelos creados (8 modelos)
@@ -640,6 +645,17 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## 📝 Historial de Cambios
 
+### Versión 1.1 - 13 de Noviembre 2025
+- ✅ **Fase 1 COMPLETADA:** Enums de Dominio
+- ✅ Implementados 5 enums con serialización JSON: UserRole, TaskStatus, AttachmentType, SessionStatus, ClassStatus
+- ✅ Todos los enums incluyen métodos helper para UI (displayName, color, icon según corresponda)
+- ✅ Documentación dartdoc completa en español para cada enum
+- ✅ Dependencias añadidas: json_annotation, json_serializable, build_runner, cloud_firestore, firebase_core
+- ✅ `flutter pub get` ejecutado exitosamente
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format` (5 archivos formateados)
+- ✅ Estructura de carpetas domain/enums creada en cada feature
+
 ### Versión 1.0 - 7 de Noviembre 2025
 - Documento inicial creado con planificación completa del Sprint 1
 - 6 fases definidas con tareas detalladas
@@ -648,8 +664,8 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ---
 
-**Última actualización:** 7 de Noviembre 2025
-**Estado:** 📅 Planificado
-**Progreso:** 0% (0/6 fases) 📅
+**Última actualización:** 13 de Noviembre 2025
+**Estado:** 🚧 En Progreso
+**Progreso:** 17% (1/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 

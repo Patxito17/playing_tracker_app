@@ -39,11 +39,18 @@ dependencies:
   google_fonts: ^6.2.1          # Fuentes personalizadas
 
   # Navegación
-  go_router: ^16.3.0            # Navegación declarativa
+  go_router: ^17.0.0            # Navegación declarativa
 
   # Gestión de Estado (estructura, sin lógica aún)
   flutter_bloc: ^9.1.1          # Framework de gestión de estado
   equatable: ^2.0.7             # Comparación de objetos
+
+  # Firebase
+  cloud_firestore: ^6.1.0       # Base de datos Firestore
+  firebase_core: ^4.2.1         # Core de Firebase
+
+  # Serialización JSON
+  json_annotation: ^4.9.0       # Anotaciones JSON
 
   # Utilidades
   intl: ^0.20.2                 # Internacionalización
@@ -58,6 +65,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  build_runner: ^2.4.13         # Generación de código
+  json_serializable: ^6.8.0     # Serialización JSON
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
