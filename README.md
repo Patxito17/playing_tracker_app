@@ -190,7 +190,7 @@ flutter build web
 
 **Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos 🚧
 
-**Progreso Sprint 1:** 67% completado (4/6 fases) ✅
+**Progreso Sprint 1:** 83% completado (5/6 fases) ✅
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -242,8 +242,18 @@ flutter build web
 - ✅ Validación exitosa con `firebase deploy --dry-run`
 - ✅ Archivo de índices creado (`firebase/firestore.indexes.json`)
 
-**Próximas Fases del Sprint 1:**
-- Fase 5: Índices Compuestos
+**Fase 5 Completada: Índices Compuestos de Firestore** ✅
+- ✅ 11 índices compuestos implementados en `firebase/firestore.indexes.json`
+- ✅ **Memberships:** 2 índices (`classId+isActive`, `studentId+isActive`)
+- ✅ **Assignments:** 3 índices (`taskId+status`, `studentId+status`, `teacherId+status`)
+- ✅ **Sessions:** 4 índices (`studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC` collection group)
+- ✅ **Tasks:** 1 índice (`createdBy+isActive`)
+- ✅ **Classes:** 1 índice (`ownerTeacherId+isActive`)
+- ✅ Índices optimizados para consultas frecuentes del sistema
+- ✅ Collection group index para métricas mensuales con `monthBucket`
+- ✅ Validación exitosa con `firebase deploy --only firestore:indexes --dry-run`
+
+**Próxima Fase del Sprint 1:**
 - Fase 6: Documentación y Pruebas
 
 ### 📋 Sprints Futuros
