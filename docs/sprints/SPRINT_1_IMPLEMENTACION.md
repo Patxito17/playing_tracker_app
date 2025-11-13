@@ -252,6 +252,12 @@ dev_dependencies:
 - Configuración de Firebase Authentication (Sprint 2)
 - Lista de dominios autorizados en Firebase Console
 
+⚠️ **PROBLEMA CONOCIDO:** Existe una inconsistencia crítica en los Bundle IDs:
+- Android usa `com.example.playing_tracker` (snake_case)
+- iOS/macOS usan `com.example.playingTracker` (camelCase)
+
+**Esto debe corregirse antes del Sprint 2** para evitar problemas de autenticación entre plataformas. Ver instrucciones detalladas en: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](../FIREBASE_BUNDLE_ID_FIX.md)
+
 ---
 
 ## 📊 Estructura de Modelos de Datos
@@ -942,6 +948,12 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ## 📝 Historial de Cambios
 
 ### Versión 1.6 - 13 de Noviembre 2025 - ✅ SPRINT COMPLETADO
+- ⚠️ **PROBLEMA CONOCIDO IDENTIFICADO:** Inconsistencia crítica de Bundle IDs entre plataformas
+  - Android: `com.example.playing_tracker` (snake_case)
+  - iOS/macOS: `com.example.playingTracker` (camelCase)
+  - **Impacto:** Puede causar problemas de autenticación entre plataformas en Sprint 2
+  - **Solución:** Documento de corrección creado en `docs/FIREBASE_BUNDLE_ID_FIX.md`
+  - **Acción requerida:** Debe corregirse antes de implementar Firebase Authentication
 - ✅ **Fase 6 COMPLETADA:** Documentación y Pruebas Finales
 - ✅ **Revisión completa de documentación:**
   - 8 modelos revisados: Todos con documentación dartdoc completa y ejemplos de uso

@@ -210,6 +210,8 @@ flutter build web
 
 ### ✅ Sprint 1 - Modelos de Dominio (Completado)
 
+⚠️ **IMPORTANTE:** Existe un problema conocido de inconsistencia de Bundle IDs entre plataformas que debe corregirse antes del Sprint 2. Ver: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](docs/FIREBASE_BUNDLE_ID_FIX.md)
+
 **Fase 1 Completada: Enums de Dominio** ✅
 - ✅ 5 enums implementados con serialización JSON
 - ✅ Dependencias de Firebase y JSON añadidas
