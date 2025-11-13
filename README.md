@@ -80,13 +80,19 @@ Asegúrate de tener Flutter 3.x y Dart 3.9.2+ instalados.
 flutter pub get
 ```
 
-### 4. Configurar Firebase (Próximamente)
+### 4. Generar código de serialización JSON (Requerido para Sprint 1+)
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+### 5. Configurar Firebase (Próximamente)
 
 En sprints futuros se requerirá:
 - Archivo `google-services.json` para Android
 - Archivo `GoogleService-Info.plist` para iOS
 
-### 5. Ejecutar la aplicación
+### 6. Ejecutar la aplicación
 
 ```bash
 flutter run
@@ -130,6 +136,9 @@ Para más detalles sobre la arquitectura, consulta la [Guía del Proyecto](docs/
 # Obtener dependencias
 flutter pub get
 
+# Generar código de serialización JSON
+dart run build_runner build --delete-conflicting-outputs
+
 # Formatear código
 dart format .
 
@@ -163,11 +172,11 @@ flutter build web
 
 ## 📊 Estado del Proyecto
 
-**Sprint Actual:** Sprint 0 - Diseño UI/UX
+**Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos 🚧
 
-**Progreso:** 100% completado (10/10 fases) ✅
+**Progreso Sprint 1:** 17% completado (1/6 fases) ✅
 
-### ✅ Completado
+### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
 - ✅ Sistema de tema Material Design 3 (claro/oscuro)
 - ✅ Componentes base reutilizables (Botones, TextFields, Cards, AppBar, TabBar, BottomNavigationBar)
@@ -183,9 +192,23 @@ flutter build web
 - ✅ Accesibilidad completa (Semantics, tamaños táctiles, contraste)
 - ✅ Documentación de componentes completa
 
-### 📋 Próximos Sprints
+### 🚧 Sprint 1 - Modelos de Dominio (En Progreso)
 
-- Sprint 1: Modelos de Dominio y Arquitectura de Datos
+**Fase 1 Completada: Enums de Dominio** ✅
+- ✅ 5 enums implementados con serialización JSON
+- ✅ Dependencias de Firebase y JSON añadidas
+- ✅ Documentación dartdoc completa
+- ✅ Código formateado y analizado sin errores
+
+**Próximas Fases del Sprint 1:**
+- Fase 2: Modelos de Dominio (8 modelos)
+- Fase 3: Validadores de Dominio
+- Fase 4: Configuración de Firestore
+- Fase 5: Índices Compuestos
+- Fase 6: Documentación y Pruebas
+
+### 📋 Sprints Futuros
+
 - Sprint 2: Autenticación y Gestión de Usuarios
 - Sprint 3: Sistema de Clases y Membresías
 - Sprint 4: Gestión de Tareas y Asignaciones
@@ -193,7 +216,9 @@ flutter build web
 - Sprint 6: Estadísticas y Dashboards
 - Sprint 7: Testing y Optimización
 
-Para más detalles sobre el progreso, consulta la [Documentación del Sprint 0](docs/sprints/SPRINT_0_IMPLEMENTACION.md).
+Para más detalles sobre el progreso, consulta:
+- [Documentación del Sprint 0](docs/sprints/SPRINT_0_IMPLEMENTACION.md)
+- [Documentación del Sprint 1](docs/sprints/SPRINT_1_IMPLEMENTACION.md)
 
 ---
 
@@ -202,7 +227,8 @@ Para más detalles sobre el progreso, consulta la [Documentación del Sprint 0](
 ### Documentación Principal
 
 - 📄 [Guía del Proyecto](docs/Guia_Proyecto_PlayingTracker.md) - Visión general, arquitectura y roadmap
-- 📄 [Sprint 0 - Implementación](docs/sprints/SPRINT_0_IMPLEMENTACION.md) - Detalles de implementación del sprint actual
+- 📄 [Sprint 0 - Implementación](docs/sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX (Completado)
+- 📄 [Sprint 1 - Implementación](docs/sprints/SPRINT_1_IMPLEMENTACION.md) - Modelos de Dominio (En Progreso)
 - 📄 [Guía de Componentes](docs/components/COMPONENTS_GUIDE.md) - Documentación completa de componentes base
 - 📄 [Reglas de Estilo](.cursor/rules/flutter_style_rules.mdc) - Convenciones de código y buenas prácticas
 
@@ -211,7 +237,8 @@ Para más detalles sobre el progreso, consulta la [Documentación del Sprint 0](
 ```
 docs/
 ├── sprints/
-│   └── SPRINT_0_IMPLEMENTACION.md
+│   ├── SPRINT_0_IMPLEMENTACION.md  # Diseño UI/UX (Completado)
+│   └── SPRINT_1_IMPLEMENTACION.md  # Modelos de Dominio (En Progreso)
 ├── components/
 │   └── COMPONENTS_GUIDE.md          # Guía completa de componentes base
 ├── screenshots/                      # Screenshots de todas las pantallas
@@ -305,6 +332,6 @@ Para más información sobre el proyecto, consulta la documentación en `docs/`.
 
 ---
 
-**Última actualización:** 7 de Noviembre 2025
-**Versión:** 1.0.0
-**Estado:** Sprint 0 completado ✅ - Listo para Sprint 1
+**Última actualización:** 13 de Noviembre 2025
+**Versión:** 1.1.0
+**Estado:** Sprint 1 en progreso 🚧 - Fase 1 completada ✅
