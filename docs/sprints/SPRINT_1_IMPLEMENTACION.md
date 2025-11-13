@@ -4,7 +4,7 @@
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
 **Estado:** 🚧 En Progreso
-**Versión del documento:** 1.1
+**Versión del documento:** 1.2
 **Última actualización:** 13 de Noviembre 2025
 
 ---
@@ -367,67 +367,78 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Ejecutar `flutter analyze` y corregir errores
 - [x] Ejecutar `dart format .`
 
-### Fase 2: Modelos de Dominio (Días 2-5) 📅
+### Fase 2: Modelos de Dominio (Días 2-5) ✅ COMPLETADA
 
-- [ ] Crear `lib/features/auth/domain/models/teacher_model.dart`
-  - [ ] Modelo `TeacherModel` con campos: id, firstName, lastName, email, createdAt, updatedAt, isActive
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/auth/domain/models/student_model.dart`
-  - [ ] Modelo `StudentModel` con campos: id, firstName, lastName, email, createdAt, updatedAt, isActive
-  - [ ] Agregados denormalizados: totalSessionsCount, totalDurationLogged, lastSessionDate
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/classes/domain/models/class_model.dart`
-  - [ ] Modelo `ClassModel` con campos: id, name, description, ownerTeacherId, accessCode, createdAt, updatedAt, isActive
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/classes/domain/models/membership_model.dart`
-  - [ ] Modelo `MembershipModel` con campos: id, classId, studentId, teacherId, className, joinedAt, isActive
-  - [ ] Campos denormalizados: teacherId, className
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/tasks/domain/models/attachment_model.dart`
-  - [ ] Modelo `AttachmentModel` con campos: name, url, type
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/tasks/domain/models/task_model.dart`
-  - [ ] Modelo `TaskModel` con campos: id, title, description, createdBy, durationSuggested, attachments, createdAt, updatedAt, dueDate, isActive
-  - [ ] Lista de `AttachmentModel` para attachments
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/tasks/domain/models/assignment_model.dart`
-  - [ ] Modelo `AssignmentModel` con campos: id (clave compuesta), taskId, studentId, teacherId, status, assignedAt, completedAt, sessionsCount, totalDurationLogged, lastSessionDate
-  - [ ] Clave compuesta: `${taskId}_${studentId}`
-  - [ ] Campos denormalizados: teacherId
-  - [ ] Contadores de progreso: sessionsCount, totalDurationLogged, lastSessionDate
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Crear `lib/features/sessions/domain/models/session_model.dart`
-  - [ ] Modelo `SessionModel` con campos: id, studentId, taskId, teacherId, startTime, endTime, totalDuration, pausedDuration, dateLogged, monthBucket, notes, createdAt
-  - [ ] Campo `monthBucket` para queries de métricas (formato: "2025-10")
-  - [ ] Campos denormalizados: teacherId
-  - [ ] Serialización JSON con `json_serializable`
-  - [ ] Constructor con `const` para inmutabilidad
-  - [ ] Métodos `copyWith` para crear copias modificadas
-  - [ ] Documentación completa con ejemplos
-- [ ] Ejecutar `dart run build_runner build --delete-conflicting-outputs`
-- [ ] Ejecutar `flutter analyze` y corregir errores
-- [ ] Ejecutar `dart format .`
+- [x] Crear `lib/core/utils/timestamp_converter.dart`
+  - [x] Converter personalizado para serializar Timestamp de Firestore
+  - [x] Manejo de diferentes formatos de entrada
+  - [x] Documentación completa
+- [x] Crear `lib/features/auth/domain/models/teacher_model.dart`
+  - [x] Modelo `TeacherModel` con campos: id, firstName, lastName, email, createdAt, updatedAt, isActive
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+  - [x] Getter `fullName` para nombre completo
+- [x] Crear `lib/features/auth/domain/models/student_model.dart`
+  - [x] Modelo `StudentModel` con campos: id, firstName, lastName, email, createdAt, updatedAt, isActive
+  - [x] Agregados denormalizados: totalSessionsCount, totalDurationLogged, lastSessionDate
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+  - [x] Getter `fullName` para nombre completo
+- [x] Crear `lib/features/classes/domain/models/class_model.dart`
+  - [x] Modelo `ClassModel` con campos: id, name, description, ownerTeacherId, accessCode, createdAt, updatedAt, isActive
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+- [x] Crear `lib/features/classes/domain/models/membership_model.dart`
+  - [x] Modelo `MembershipModel` con campos: id, classId, studentId, teacherId, className, joinedAt, isActive
+  - [x] Campos denormalizados: teacherId, className
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+- [x] Crear `lib/features/tasks/domain/models/attachment_model.dart`
+  - [x] Modelo `AttachmentModel` con campos: name, url, type
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+- [x] Crear `lib/features/tasks/domain/models/task_model.dart`
+  - [x] Modelo `TaskModel` con campos: id, title, description, createdBy, durationSuggested, attachments, createdAt, updatedAt, dueDate, isActive
+  - [x] Lista de `AttachmentModel` para attachments
+  - [x] Serialización JSON con `json_serializable` y `explicitToJson: true`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+  - [x] Getter `durationFormatted` para formato legible
+- [x] Crear `lib/features/tasks/domain/models/assignment_model.dart`
+  - [x] Modelo `AssignmentModel` con campos: id (clave compuesta), taskId, studentId, teacherId, status, assignedAt, completedAt, sessionsCount, totalDurationLogged, lastSessionDate
+  - [x] Clave compuesta: `${taskId}_${studentId}`
+  - [x] Campos denormalizados: teacherId
+  - [x] Contadores de progreso: sessionsCount, totalDurationLogged, lastSessionDate
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+  - [x] Método estático `generateId` para crear IDs compuestos
+  - [x] Getters de estado: `isCompleted`, `isInProgress`, `isPending`
+- [x] Crear `lib/features/sessions/domain/models/session_model.dart`
+  - [x] Modelo `SessionModel` con campos: id, studentId, taskId, teacherId, startTime, endTime, totalDuration, pausedDuration, dateLogged, monthBucket, notes, createdAt
+  - [x] Campo `monthBucket` para queries de métricas (formato: "YYYY-MM")
+  - [x] Campos denormalizados: teacherId
+  - [x] Serialización JSON con `json_serializable`
+  - [x] Constructor con `const` para inmutabilidad
+  - [x] Métodos `copyWith` para crear copias modificadas
+  - [x] Documentación completa con ejemplos
+  - [x] Método estático `generateMonthBucket` para crear monthBucket
+  - [x] Getters formatados: `durationFormatted`, `pausedDurationFormatted`
+- [x] Ejecutar `dart run build_runner build --delete-conflicting-outputs`
+- [x] Ejecutar `flutter analyze` y corregir errores
+- [x] Ejecutar `dart format .`
 
 ### Fase 3: Validadores de Dominio (Día 6) 📅
 
@@ -597,7 +608,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 17% (1/6 fases completadas) ✅**
+**Progreso General: 33% (2/6 fases completadas) ✅**
 
 ### Fase 1: Enums de Dominio ✅
 - [x] Todos los enums creados (5 enums)
@@ -606,13 +617,13 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores
 - [x] Código formateado con `dart format`
 
-### Fase 2: Modelos de Dominio 📅
-- [ ] Todos los modelos creados (8 modelos)
-- [ ] Serialización JSON implementada
-- [ ] `build_runner` ejecutado exitosamente
-- [ ] Documentación completa
-- [ ] `flutter analyze` sin errores
-- [ ] Código formateado con `dart format`
+### Fase 2: Modelos de Dominio ✅
+- [x] Todos los modelos creados (8 modelos + TimestampConverter)
+- [x] Serialización JSON implementada
+- [x] `build_runner` ejecutado exitosamente (8 archivos .g.dart generados)
+- [x] Documentación completa
+- [x] `flutter analyze` sin errores
+- [x] Código formateado con `dart format` (9 archivos formateados)
 
 ### Fase 3: Validadores de Dominio 📅
 - [ ] Validadores implementados
@@ -645,6 +656,30 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## 📝 Historial de Cambios
 
+### Versión 1.2 - 13 de Noviembre 2025
+- ✅ **Fase 2 COMPLETADA:** Modelos de Dominio
+- ✅ TimestampConverter implementado para serialización de Timestamp de Firestore
+- ✅ Implementados 8 modelos con serialización JSON:
+  - TeacherModel (con getter fullName)
+  - StudentModel (con agregados denormalizados y getter fullName)
+  - ClassModel
+  - MembershipModel (con campos denormalizados)
+  - AttachmentModel
+  - TaskModel (con lista de attachments y getter durationFormatted)
+  - AssignmentModel (con clave compuesta, método generateId y getters de estado)
+  - SessionModel (con monthBucket, método generateMonthBucket y getters formatados)
+- ✅ Todos los modelos incluyen:
+  - Serialización JSON completa con json_serializable
+  - Constructores const para inmutabilidad
+  - Métodos copyWith para crear copias modificadas
+  - Operadores == y hashCode
+  - Método toString descriptivo
+  - Documentación dartdoc completa en español
+- ✅ `dart run build_runner build` ejecutado exitosamente (8 archivos .g.dart generados)
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format` (9 archivos formateados)
+- ✅ Estructura de carpetas domain/models creada en cada feature
+
 ### Versión 1.1 - 13 de Noviembre 2025
 - ✅ **Fase 1 COMPLETADA:** Enums de Dominio
 - ✅ Implementados 5 enums con serialización JSON: UserRole, TaskStatus, AttachmentType, SessionStatus, ClassStatus
@@ -666,6 +701,6 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 **Última actualización:** 13 de Noviembre 2025
 **Estado:** 🚧 En Progreso
-**Progreso:** 17% (1/6 fases) ✅
+**Progreso:** 33% (2/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 
