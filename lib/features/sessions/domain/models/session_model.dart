@@ -96,7 +96,7 @@ class SessionModel {
     required this.startTime,
     required this.endTime,
     required this.totalDuration,
-    required this.pausedDuration,
+    this.pausedDuration = 0,
     required this.dateLogged,
     required this.monthBucket,
     this.notes,

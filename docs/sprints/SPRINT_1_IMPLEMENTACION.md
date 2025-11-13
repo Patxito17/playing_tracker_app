@@ -4,7 +4,7 @@
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
 **Estado:** 🚧 En Progreso
-**Versión del documento:** 1.2
+**Versión del documento:** 1.3
 **Última actualización:** 13 de Noviembre 2025
 
 ---
@@ -608,7 +608,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 33% (2/6 fases completadas) ✅**
+**Progreso General: 50% (3/6 fases completadas) ✅**
 
 ### Fase 1: Enums de Dominio ✅
 - [x] Todos los enums creados (5 enums)
@@ -625,11 +625,11 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores
 - [x] Código formateado con `dart format` (9 archivos formateados)
 
-### Fase 3: Validadores de Dominio 📅
-- [ ] Validadores implementados
-- [ ] Documentación completa
-- [ ] `flutter analyze` sin errores
-- [ ] Código formateado con `dart format`
+### Fase 3: Validadores de Dominio ✅
+- [x] Validadores implementados (8 funciones de validación)
+- [x] Documentación completa
+- [x] `flutter analyze` sin errores
+- [x] Código formateado con `dart format`
 
 ### Fase 4: Configuración de Firestore 📅
 - [ ] Reglas de seguridad implementadas
@@ -655,6 +655,28 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.3 - 13 de Noviembre 2025
+- ✅ **Fase 3 COMPLETADA:** Validadores de Dominio
+- ✅ **BUG CORREGIDO:** Campo `pausedDuration` en SessionModel ahora tiene default value = 0 (consistente con otros modelos)
+- ✅ Archivo `lib/core/utils/domain_validators.dart` creado con 8 funciones de validación:
+  - `validateName` - Valida nombres con mínimo 3 caracteres, solo letras, espacios, guiones y apóstrofes
+  - `validateEmail` - Valida formato de email con RegExp, máximo 254 caracteres
+  - `validateAccessCode` - Valida códigos de 6 caracteres alfanuméricos
+  - `validateDuration` - Valida duraciones en segundos (valores positivos)
+  - `validateId` - Valida IDs no vacíos
+  - `validateDescription` - Valida descripciones opcionales con máximo 1000 caracteres
+  - `validateUrl` - Valida URLs con Uri.tryParse (requiere esquema y host)
+  - `validateTitle` - Valida títulos de tareas (3-100 caracteres)
+- ✅ Todas las funciones incluyen:
+  - Documentación dartdoc completa en español
+  - Ejemplos de uso detallados
+  - Mensajes de error descriptivos
+  - Validación de null y strings vacíos
+- ✅ `build_runner` ejecutado exitosamente después del fix del bug
+- ✅ `flutter analyze` sin errores (0 issues)
+- ✅ Código formateado con `dart format` (1 archivo formateado)
+- ✅ Progreso del sprint actualizado a 50% (3/6 fases completadas)
 
 ### Versión 1.2 - 13 de Noviembre 2025
 - ✅ **Fase 2 COMPLETADA:** Modelos de Dominio
