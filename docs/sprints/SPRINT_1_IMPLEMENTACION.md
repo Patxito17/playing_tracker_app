@@ -4,7 +4,7 @@
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
 **Estado:** 🚧 En Progreso
-**Versión del documento:** 1.4
+**Versión del documento:** 1.5
 **Última actualización:** 13 de Noviembre 2025
 
 ---
@@ -477,22 +477,22 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Validar reglas con Firebase CLI: `firebase deploy --only firestore:rules --dry-run` ✅
 - [x] Validar código con `flutter analyze` (0 issues) ✅
 
-### Fase 5: Índices Compuestos (Día 8) 📅
+### Fase 5: Índices Compuestos (Día 8) ✅ COMPLETADA
 
-- [ ] Crear `firebase/firestore.indexes.json`
-  - [ ] Índice para `memberships` por `classId` y `isActive`
-  - [ ] Índice para `memberships` por `studentId` y `isActive`
-  - [ ] Índice para `assignments` por `taskId` y `status`
-  - [ ] Índice para `assignments` por `studentId` y `status`
-  - [ ] Índice para `assignments` por `teacherId` y `status`
-  - [ ] Índice para `sessions` por `studentId` y `dateLogged`
-  - [ ] Índice para `sessions` por `taskId` y `dateLogged`
-  - [ ] Índice para `sessions` por `teacherId` y `dateLogged`
-  - [ ] Collection group index para `sessions` por `monthBucket` y `dateLogged`
-  - [ ] Índice para `tasks` por `createdBy` y `isActive`
-  - [ ] Índice para `classes` por `ownerTeacherId` y `isActive`
-  - [ ] Documentación de cada índice con justificación
-- [ ] Documentar índices en el documento del sprint
+- [x] Crear `firebase/firestore.indexes.json`
+  - [x] Índice para `memberships` por `classId` y `isActive`
+  - [x] Índice para `memberships` por `studentId` y `isActive`
+  - [x] Índice para `assignments` por `taskId` y `status`
+  - [x] Índice para `assignments` por `studentId` y `status`
+  - [x] Índice para `assignments` por `teacherId` y `status`
+  - [x] Índice para `sessions` por `studentId` y `dateLogged`
+  - [x] Índice para `sessions` por `taskId` y `dateLogged`
+  - [x] Índice para `sessions` por `teacherId` y `dateLogged`
+  - [x] Collection group index para `sessions` por `monthBucket` y `dateLogged`
+  - [x] Índice para `tasks` por `createdBy` y `isActive`
+  - [x] Índice para `classes` por `ownerTeacherId` y `isActive`
+  - [x] Documentación de cada índice con justificación
+- [x] Documentar índices en el documento del sprint
 
 ### Fase 6: Documentación y Pruebas (Día 9) 📅
 
@@ -614,7 +614,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 67% (4/6 fases completadas) ✅**
+**Progreso General: 83% (5/6 fases completadas) ✅**
 
 ### Fase 1: Enums de Dominio ✅
 - [x] Todos los enums creados (5 enums)
@@ -645,10 +645,10 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - [x] `firebase.json` creado con configuración
 - [x] `firebase/firestore.indexes.json` creado
 
-### Fase 5: Índices Compuestos 📅
-- [ ] Índices documentados
-- [ ] `firebase/firestore.indexes.json` creado
-- [ ] Documentación de índices completa
+### Fase 5: Índices Compuestos ✅
+- [x] Índices documentados
+- [x] `firebase/firestore.indexes.json` creado
+- [x] Documentación de índices completa
 
 ### Fase 6: Documentación y Pruebas 📅
 - [ ] Documentación de modelos revisada
@@ -663,6 +663,26 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.5 - 13 de Noviembre 2025
+- ✅ **Fase 5 COMPLETADA:** Índices Compuestos de Firestore
+- ✅ Archivo `firebase/firestore.indexes.json` creado con 11 índices compuestos optimizados
+- ✅ **Índices implementados:**
+  - **Memberships (2 índices):** `classId+isActive`, `studentId+isActive`
+  - **Assignments (3 índices):** `taskId+status`, `studentId+status`, `teacherId+status`
+  - **Sessions (4 índices):** `studentId+dateLogged DESC`, `taskId+dateLogged DESC`, `teacherId+dateLogged DESC`, `monthBucket+dateLogged DESC` (collection group)
+  - **Tasks (1 índice):** `createdBy+isActive`
+  - **Classes (1 índice):** `ownerTeacherId+isActive`
+- ✅ **Justificación documentada** para cada índice:
+  - Índices de memberships optimizan consultas de alumnos por clase y clases por alumno
+  - Índices de assignments permiten filtrado eficiente por estado (pending/in_progress/completed)
+  - Índices de sessions ordenados DESC para mostrar historial más reciente primero
+  - Collection group index permite métricas mensuales agregadas con `monthBucket`
+  - Índices de tasks y classes filtran elementos activos del teacher
+- ✅ **Validación exitosa:**
+  - `firebase deploy --only firestore:indexes --dry-run` ✅ Compilación exitosa
+  - `flutter analyze` ✅ 0 issues
+- ✅ Progreso del sprint actualizado a 83% (5/6 fases completadas)
 
 ### Versión 1.4 - 13 de Noviembre 2025
 - ✅ **Fase 4 COMPLETADA:** Configuración de Firestore
@@ -762,6 +782,6 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 **Última actualización:** 13 de Noviembre 2025
 **Estado:** 🚧 En Progreso
-**Progreso:** 67% (4/6 fases) ✅
+**Progreso:** 83% (5/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 
