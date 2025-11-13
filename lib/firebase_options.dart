@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDADfDxzQChIc7IruY-chQkmKm296gOSw4',
-    appId: '1:537954318009:web:ce52fdb64c12912c9f8d68',
+    appId: '1:537954318009:web:eff2d7a3f7e6660e9f8d68',
     messagingSenderId: '537954318009',
     projectId: 'playing-tracker-app',
     authDomain: 'playing-tracker-app.firebaseapp.com',
     storageBucket: 'playing-tracker-app.firebasestorage.app',
-    measurementId: 'G-E1DFH2GR6N',
+    measurementId: 'G-TBX67P20SD',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCNIf0IET1Qd10g36do2oMKI9vKJ0gwwDI',
-    appId: '1:537954318009:android:5f68233a131bc3ae9f8d68',
+    appId: '1:537954318009:android:35845aaeaf3eeaf89f8d68',
     messagingSenderId: '537954318009',
     projectId: 'playing-tracker-app',
     storageBucket: 'playing-tracker-app.firebasestorage.app',
@@ -60,29 +60,30 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCbOdLKboyT0C8SkL2kuR6snWoYWezQSBQ',
-    appId: '1:537954318009:ios:a0bd3a0e829820499f8d68',
+    appId: '1:537954318009:ios:36f47ece6fe9a0d59f8d68',
     messagingSenderId: '537954318009',
     projectId: 'playing-tracker-app',
     storageBucket: 'playing-tracker-app.firebasestorage.app',
-    iosBundleId: 'com.example.playingTracker',
+    iosBundleId: 'com.gabriom.playingtrackerapp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCbOdLKboyT0C8SkL2kuR6snWoYWezQSBQ',
-    appId: '1:537954318009:ios:a0bd3a0e829820499f8d68',
+    appId: '1:537954318009:ios:36f47ece6fe9a0d59f8d68',
     messagingSenderId: '537954318009',
     projectId: 'playing-tracker-app',
     storageBucket: 'playing-tracker-app.firebasestorage.app',
-    iosBundleId: 'com.example.playingTracker',
+    iosBundleId: 'com.gabriom.playingtrackerapp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDADfDxzQChIc7IruY-chQkmKm296gOSw4',
-    appId: '1:537954318009:web:bddfb66c302587c79f8d68',
+    appId: '1:537954318009:web:0e32d5bb498bf5db9f8d68',
     messagingSenderId: '537954318009',
     projectId: 'playing-tracker-app',
     authDomain: 'playing-tracker-app.firebaseapp.com',
     storageBucket: 'playing-tracker-app.firebasestorage.app',
-    measurementId: 'G-KCL3BZ3YVG',
+    measurementId: 'G-Z2P13CZFVV',
   );
+
 }
