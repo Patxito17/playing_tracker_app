@@ -174,7 +174,7 @@ flutter build web
 
 **Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos 🚧
 
-**Progreso Sprint 1:** 17% completado (1/6 fases) ✅
+**Progreso Sprint 1:** 33% completado (2/6 fases) ✅
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -200,8 +200,15 @@ flutter build web
 - ✅ Documentación dartdoc completa
 - ✅ Código formateado y analizado sin errores
 
+**Fase 2 Completada: Modelos de Dominio** ✅
+- ✅ 8 modelos implementados con serialización JSON completa
+- ✅ TimestampConverter para Firestore implementado
+- ✅ build_runner ejecutado (8 archivos .g.dart generados)
+- ✅ Todos los modelos son inmutables con métodos copyWith
+- ✅ Documentación dartdoc completa en español
+- ✅ Código formateado y analizado sin errores
+
 **Próximas Fases del Sprint 1:**
-- Fase 2: Modelos de Dominio (8 modelos)
 - Fase 3: Validadores de Dominio
 - Fase 4: Configuración de Firestore
 - Fase 5: Índices Compuestos
@@ -333,5 +340,5 @@ Para más información sobre el proyecto, consulta la documentación en `docs/`.
 ---
 
 **Última actualización:** 13 de Noviembre 2025
-**Versión:** 1.1.0
-**Estado:** Sprint 1 en progreso 🚧 - Fase 1 completada ✅
+**Versión:** 1.2.0
+**Estado:** Sprint 1 en progreso 🚧 - Fases 1 y 2 completadas ✅
