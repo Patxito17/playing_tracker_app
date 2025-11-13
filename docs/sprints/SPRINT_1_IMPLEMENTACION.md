@@ -239,11 +239,18 @@ dev_dependencies:
 
 ### Configuración de Firebase
 
-**Archivos de configuración necesarios:**
+**Archivos de configuración implementados:**
 - `firebase/firestore.rules` - Reglas de seguridad
 - `firebase/firestore.indexes.json` - Índices compuestos
+- `lib/firebase_options.dart` - Configuración multiplataforma generada por FlutterFire CLI
+- `android/app/google-services.json` - Configuración para Android
+- `ios/Runner/GoogleService-Info.plist` - Configuración para iOS
+- `macos/Runner/GoogleService-Info.plist` - Configuración para macOS
 
-**Nota:** Los archivos `google-services.json` y `GoogleService-Info.plist` se configurarán en Sprint 2 cuando se implemente la autenticación real.
+**Nota sobre Seguridad:** Las API keys de Firebase incluidas en estos archivos son públicas por diseño. La seguridad del proyecto se garantiza mediante:
+- Reglas de Firestore/Storage (implementadas en Fase 4)
+- Configuración de Firebase Authentication (Sprint 2)
+- Lista de dominios autorizados en Firebase Console
 
 ---
 
@@ -474,6 +481,14 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
   - [x] Validación de campos obligatorios en operaciones create
   - [x] Documentación extensa de reglas en comentarios
 - [x] Crear `firebase/firestore.indexes.json` (vacío, se llenará en Fase 5)
+- [x] Configurar Firebase para todas las plataformas con FlutterFire CLI:
+  - [x] `lib/firebase_options.dart` generado con configuraciones multiplataforma
+  - [x] `android/app/google-services.json` creado para Android
+  - [x] `ios/Runner/GoogleService-Info.plist` creado para iOS
+  - [x] `macos/Runner/GoogleService-Info.plist` creado para macOS
+  - [x] Archivos de configuración incluidos en el repositorio (API keys públicas por diseño)
+  - [x] Configuración de Gradle plugins para Android (`com.google.gms.google-services`)
+  - [x] Configuración de Xcode projects para iOS/macOS
 - [x] Validar reglas con Firebase CLI: `firebase deploy --only firestore:rules --dry-run` ✅
 - [x] Validar código con `flutter analyze` (0 issues) ✅
 
@@ -981,11 +996,16 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ### Versión 1.4 - 13 de Noviembre 2025
 - ✅ **Fase 4 COMPLETADA:** Configuración de Firestore
-- ✅ **Firebase CLI** configurado en el proyecto
+- ✅ **Firebase CLI** y **FlutterFire CLI** configurados en el proyecto
 - ✅ Archivos de configuración creados:
   - `firebase.json` - Configuración principal de Firebase CLI
   - `firebase/firestore.rules` - Reglas de seguridad completas (227 líneas)
   - `firebase/firestore.indexes.json` - Archivo de índices (se llenará en Fase 5)
+  - `lib/firebase_options.dart` - Configuración multiplataforma generada por FlutterFire CLI
+  - `android/app/google-services.json` - Configuración para Android
+  - `ios/Runner/GoogleService-Info.plist` - Configuración para iOS
+  - `macos/Runner/GoogleService-Info.plist` - Configuración para macOS
+- ✅ **Nota de Seguridad:** Las API keys de Firebase incluidas son públicas por diseño. La seguridad se garantiza mediante reglas de Firestore, configuración de Auth y dominios autorizados
 - ✅ **Reglas de seguridad implementadas** para las 7 colecciones:
   - `teachers` - Solo el propio docente puede leer/escribir su perfil
   - `students` - Solo el propio alumno puede leer/escribir su perfil
