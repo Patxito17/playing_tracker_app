@@ -659,6 +659,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ### Versión 1.3 - 13 de Noviembre 2025
 - ✅ **Fase 3 COMPLETADA:** Validadores de Dominio
 - ✅ **BUG CORREGIDO:** Campo `pausedDuration` en SessionModel ahora tiene default value = 0 (consistente con otros modelos)
+- ✅ **BUG CORREGIDO:** TimestampConverter.fromJson ahora tiene manejo seguro de null (evita `null as int` en runtime)
 - ✅ Archivo `lib/core/utils/domain_validators.dart` creado con 8 funciones de validación:
   - `validateName` - Valida nombres con mínimo 3 caracteres, solo letras, espacios, guiones y apóstrofes
   - `validateEmail` - Valida formato de email con RegExp, máximo 254 caracteres

@@ -28,10 +28,18 @@ class TimestampConverter implements JsonConverter<Timestamp, Object> {
 
     // Si es un Map con segundos y nanosegundos (formato típico de Firestore)
     if (json is Map<String, dynamic>) {
-      return Timestamp(
-        json['_seconds'] as int? ?? json['seconds'] as int,
-        json['_nanoseconds'] as int? ?? json['nanoseconds'] as int,
-      );
+      final seconds = json['_seconds'] as int? ?? json['seconds'] as int?;
+      final nanoseconds =
+          json['_nanoseconds'] as int? ?? json['nanoseconds'] as int?;
+
+      if (seconds == null || nanoseconds == null) {
+        throw ArgumentError(
+          'No se puede convertir $json a Timestamp. '
+          'Faltan campos requeridos (seconds: $seconds, nanoseconds: $nanoseconds).',
+        );
+      }
+
+      return Timestamp(seconds, nanoseconds);
     }
 
     // Si es un número (milisegundos desde epoch)
