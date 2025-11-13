@@ -252,11 +252,13 @@ dev_dependencies:
 - Configuración de Firebase Authentication (Sprint 2)
 - Lista de dominios autorizados en Firebase Console
 
-⚠️ **PROBLEMA CONOCIDO:** Existe una inconsistencia crítica en los Bundle IDs:
-- Android usa `com.example.playing_tracker` (snake_case)
-- iOS/macOS usan `com.example.playingTracker` (camelCase)
+✅ **BUNDLE IDS UNIFICADOS:** El problema de inconsistencia de Bundle IDs ha sido completamente resuelto:
+- Todas las plataformas (Android, iOS, macOS) ahora usan: `com.gabriom.playingtrackerapp`
+- Configuración de Firebase actualizada y consistente en todas las plataformas
+- Namespace de Android alineado correctamente con applicationId y google-services.json
+- Estructura de paquetes de Kotlin reorganizada para coincidir con el namespace
 
-**Esto debe corregirse antes del Sprint 2** para evitar problemas de autenticación entre plataformas. Ver instrucciones detalladas en: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](../FIREBASE_BUNDLE_ID_FIX.md)
+Ver detalles completos en: [`docs/FIREBASE_BUNDLE_ID_FIX.md`](../FIREBASE_BUNDLE_ID_FIX.md)
 
 ---
 
@@ -948,12 +950,13 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ## 📝 Historial de Cambios
 
 ### Versión 1.6 - 13 de Noviembre 2025 - ✅ SPRINT COMPLETADO
-- ⚠️ **PROBLEMA CONOCIDO IDENTIFICADO:** Inconsistencia crítica de Bundle IDs entre plataformas
-  - Android: `com.example.playing_tracker` (snake_case)
-  - iOS/macOS: `com.example.playingTracker` (camelCase)
-  - **Impacto:** Puede causar problemas de autenticación entre plataformas en Sprint 2
-  - **Solución:** Documento de corrección creado en `docs/FIREBASE_BUNDLE_ID_FIX.md`
-  - **Acción requerida:** Debe corregirse antes de implementar Firebase Authentication
+- ✅ **BUNDLE IDS UNIFICADOS:** Problema de inconsistencia de Bundle IDs completamente resuelto
+  - **Nuevo Bundle ID unificado:** `com.gabriom.playingtrackerapp` (todas las plataformas)
+  - Android: namespace, applicationId, package_name y estructura de directorios alineados
+  - iOS/macOS: iosBundleId actualizado
+  - Firebase Console: Todas las apps reconfiguradas correctamente
+  - **Verificación:** `flutter analyze` sin errores ✅
+  - **Documentación:** Ver `docs/FIREBASE_BUNDLE_ID_FIX.md` para detalles completos
 - ✅ **Fase 6 COMPLETADA:** Documentación y Pruebas Finales
 - ✅ **Revisión completa de documentación:**
   - 8 modelos revisados: Todos con documentación dartdoc completa y ejemplos de uso
