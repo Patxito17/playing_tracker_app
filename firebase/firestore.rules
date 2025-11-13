@@ -1,0 +1,210 @@
+rules_version = '2';
+
+// ============================================================================
+// Reglas de Seguridad de Firestore - Playing Tracker
+// ============================================================================
+//
+// Este archivo define las reglas de seguridad para todas las colecciones
+// de Firestore del proyecto Playing Tracker.
+//
+// Sprint 1 - Fase 4: Reglas de seguridad implementadas
+// Fecha: Noviembre 2025
+//
+// Principios de seguridad:
+// - Denegar por defecto, permitir explícitamente
+// - Todos los permisos requieren autenticación
+// - Validación de roles mediante verificación de existencia en colecciones
+// - Separación granular de permisos (create/read/update/delete)
+// - Inmutabilidad de sesiones (no update/delete)
+//
+// ============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================================================
+    // FUNCIONES HELPER
+    // ==========================================================================
+
+    /// Verifica si el usuario está autenticado
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    /// Verifica si el usuario es el propietario del documento
+    /// @param userId - ID del usuario a verificar
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    /// Verifica si el usuario autenticado es un docente
+    /// Valida la existencia del documento en la colección teachers
+    /// Nota: Tiene costo de lectura adicional pero es necesario para seguridad
+    function isTeacher() {
+      return isAuth() &&
+             exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+    }
+
+    /// Verifica si el usuario autenticado es un alumno
+    /// Valida la existencia del documento en la colección students
+    /// Nota: Tiene costo de lectura adicional pero es necesario para seguridad
+    function isStudent() {
+      return isAuth() &&
+             exists(/databases/$(database)/documents/students/$(request.auth.uid));
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: teachers
+    // ==========================================================================
+    // Perfiles de docentes
+    // - Read: Solo el propio docente
+    // - Write: Solo el propio docente
+    // - IDs: UID de Firebase Authentication
+
+    match /teachers/{teacherId} {
+      allow read: if isOwner(teacherId);
+      allow create: if isOwner(teacherId) &&
+                      request.resource.data.keys().hasAll(['id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'isActive']);
+      allow update: if isOwner(teacherId);
+      allow delete: if isOwner(teacherId);
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: students
+    // ==========================================================================
+    // Perfiles de alumnos con agregados denormalizados
+    // - Read: Solo el propio alumno
+    // - Write: Solo el propio alumno
+    // - IDs: UID de Firebase Authentication
+
+    match /students/{studentId} {
+      allow read: if isOwner(studentId);
+      allow create: if isOwner(studentId) &&
+                      request.resource.data.keys().hasAll(['id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'isActive']);
+      allow update: if isOwner(studentId);
+      allow delete: if isOwner(studentId);
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: classes
+    // ==========================================================================
+    // Definiciones de clases/grupos
+    // - Read: Cualquier usuario autenticado
+    // - Create: Solo docentes (validado con isTeacher())
+    // - Update/Delete: Solo el docente propietario (ownerTeacherId)
+
+    match /classes/{classId} {
+      allow read: if isAuth();
+
+      // Solo teachers pueden crear clases
+      allow create: if isTeacher() &&
+                      request.resource.data.ownerTeacherId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['id', 'name', 'ownerTeacherId', 'accessCode', 'createdAt', 'updatedAt', 'isActive']);
+
+      // Solo el owner puede actualizar o eliminar
+      allow update: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
+      allow delete: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: memberships
+    // ==========================================================================
+    // Relación N:M entre alumnos y clases
+    // - Read: Alumno o docente relacionados
+    // - Create: Solo el docente relacionado
+    // - Update/Delete: Solo el docente relacionado
+
+    match /memberships/{membershipId} {
+      // Lectura: alumno involucrado o teacher relacionado
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
+
+      // Creación: solo el teacher relacionado
+      allow create: if isAuth() &&
+                      request.resource.data.teacherId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'isActive']);
+
+      // Actualización y eliminación: solo el teacher relacionado
+      allow update, delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: tasks
+    // ==========================================================================
+    // Definiciones maestras de tareas
+    // - Read: Cualquier usuario autenticado
+    // - Create: Solo docentes (validado con isTeacher())
+    // - Update/Delete: Solo el docente creador (createdBy)
+
+    match /tasks/{taskId} {
+      allow read: if isAuth();
+
+      // Solo teachers pueden crear tareas
+      allow create: if isTeacher() &&
+                      request.resource.data.createdBy == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['id', 'title', 'createdBy', 'durationSuggested', 'createdAt', 'updatedAt', 'isActive']);
+
+      // Solo el creador puede actualizar o eliminar
+      allow update: if isAuth() && resource.data.createdBy == request.auth.uid;
+      allow delete: if isAuth() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: assignments
+    // ==========================================================================
+    // Asignaciones individuales tarea-alumno con progreso
+    // - Read: Alumno asignado o docente relacionado
+    // - Create: Solo el docente relacionado
+    // - Update: Docente relacionado o alumno (para actualizar progreso)
+    // - Delete: Solo el docente relacionado
+
+    match /assignments/{assignmentId} {
+      // Lectura: student asignado o teacher relacionado
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
+
+      // Creación: solo el teacher relacionado
+      allow create: if isAuth() &&
+                      request.resource.data.teacherId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['id', 'taskId', 'studentId', 'teacherId', 'status', 'assignedAt']);
+
+      // Actualización: teacher relacionado O student asignado (para progreso)
+      allow update: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        resource.data.studentId == request.auth.uid
+      );
+
+      // Eliminación: solo el teacher relacionado
+      allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+    }
+
+    // ==========================================================================
+    // COLECCIÓN: sessions
+    // ==========================================================================
+    // Registros atómicos de sesiones de estudio (INMUTABLES)
+    // - Create: Solo el alumno propietario (validado con isStudent())
+    // - Read: Alumno propietario o docente relacionado
+    // - Update/Delete: NO PERMITIDO (inmutabilidad para integridad histórica)
+
+    match /sessions/{sessionId} {
+      // Creación: solo students pueden crear sesiones propias
+      allow create: if isStudent() &&
+                      request.resource.data.studentId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['id', 'studentId', 'taskId', 'teacherId', 'startTime', 'endTime', 'totalDuration', 'pausedDuration', 'dateLogged', 'monthBucket', 'createdAt']);
+
+      // Lectura: student propietario o teacher relacionado
+      allow read: if isAuth() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.teacherId == request.auth.uid
+      );
+
+      // Inmutabilidad: NO permitir actualizaciones ni eliminaciones
+      allow update, delete: if false;
+    }
+  }
+}
+
