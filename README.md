@@ -233,14 +233,21 @@ flutter build web
 - ✅ Código formateado y analizado sin errores
 
 **Fase 4 Completada: Configuración de Firestore** ✅
-- ✅ Firebase CLI configurado con `firebase.json`
-- ✅ Reglas de seguridad completas en `firebase/firestore.rules` (227 líneas)
+- ✅ Firebase CLI y FlutterFire CLI configurados
+- ✅ Archivos de configuración implementados:
+  - `firebase.json` - Configuración principal
+  - `firebase/firestore.rules` - Reglas de seguridad (227 líneas)
+  - `firebase/firestore.indexes.json` - Archivo de índices
+  - `lib/firebase_options.dart` - Configuración multiplataforma
+  - `android/app/google-services.json` - Android
+  - `ios/Runner/GoogleService-Info.plist` - iOS
+  - `macos/Runner/GoogleService-Info.plist` - macOS
 - ✅ Validación de roles con `isTeacher()` e `isStudent()`
 - ✅ Solo teachers pueden crear classes y tasks
 - ✅ Separación granular de permisos (create/read/update/delete)
 - ✅ Sesiones inmutables (no update/delete)
 - ✅ Validación exitosa con `firebase deploy --dry-run`
-- ✅ Archivo de índices creado (`firebase/firestore.indexes.json`)
+- ✅ **Nota:** API keys de Firebase son públicas por diseño. Seguridad garantizada por reglas de Firestore
 
 **Fase 5 Completada: Índices Compuestos de Firestore** ✅
 - ✅ 11 índices compuestos implementados en `firebase/firestore.indexes.json`
