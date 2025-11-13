@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:537954318009:android:5f68233a131bc3ae9f8d68",
+        "mobilesdk_app_id": "1:537954318009:android:35845aaeaf3eeaf89f8d68",
         "android_client_info": {
-          "package_name": "com.example.playing_tracker"
+          "package_name": "com.gabriom.playingtrackerapp"
         }
       },
       "oauth_client": [],
