@@ -155,6 +155,22 @@ flutter run
 flutter clean
 ```
 
+### Firebase (Sprint 1+)
+
+```bash
+# Verificar instalación de Firebase CLI
+firebase --version
+
+# Validar reglas de Firestore (dry-run)
+firebase deploy --only firestore:rules --dry-run
+
+# Validar índices de Firestore (dry-run)
+firebase deploy --only firestore:indexes --dry-run
+
+# Deploy de reglas e índices (cuando esté configurado)
+firebase deploy --only firestore
+```
+
 ### Build
 
 ```bash
@@ -174,7 +190,7 @@ flutter build web
 
 **Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos 🚧
 
-**Progreso Sprint 1:** 50% completado (3/6 fases) ✅
+**Progreso Sprint 1:** 67% completado (4/6 fases) ✅
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -216,8 +232,17 @@ flutter build web
 - ✅ Mensajes de error descriptivos en español
 - ✅ Código formateado y analizado sin errores
 
+**Fase 4 Completada: Configuración de Firestore** ✅
+- ✅ Firebase CLI configurado con `firebase.json`
+- ✅ Reglas de seguridad completas en `firebase/firestore.rules` (227 líneas)
+- ✅ Validación de roles con `isTeacher()` e `isStudent()`
+- ✅ Solo teachers pueden crear classes y tasks
+- ✅ Separación granular de permisos (create/read/update/delete)
+- ✅ Sesiones inmutables (no update/delete)
+- ✅ Validación exitosa con `firebase deploy --dry-run`
+- ✅ Archivo de índices creado (`firebase/firestore.indexes.json`)
+
 **Próximas Fases del Sprint 1:**
-- Fase 4: Configuración de Firestore
 - Fase 5: Índices Compuestos
 - Fase 6: Documentación y Pruebas
 

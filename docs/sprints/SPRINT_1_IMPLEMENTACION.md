@@ -4,7 +4,7 @@
 **Sprint:** 1 - Modelos de Dominio y Arquitectura de Datos
 **Duración:** Noviembre 2025 (2 semanas)
 **Estado:** 🚧 En Progreso
-**Versión del documento:** 1.3
+**Versión del documento:** 1.4
 **Última actualización:** 13 de Noviembre 2025
 
 ---
@@ -456,21 +456,26 @@ El Sprint 1 se considera **completo** cuando se cumplen **TODOS** estos criterio
 - [x] Ejecutar `flutter analyze` y corregir errores
 - [x] Ejecutar `dart format .`
 
-### Fase 4: Configuración de Firestore (Día 7) 📅
+### Fase 4: Configuración de Firestore (Día 7) ✅ COMPLETADA
 
-- [ ] Crear carpeta `firebase/` en la raíz del proyecto
-- [ ] Crear `firebase/firestore.rules`
-  - [ ] Reglas para colección `teachers` (solo lectura/escritura del propio perfil)
-  - [ ] Reglas para colección `students` (solo lectura/escritura del propio perfil)
-  - [ ] Reglas para colección `classes` (lectura para autenticados, escritura solo para owner)
-  - [ ] Reglas para colección `memberships` (lectura para teacher/student relacionados, escritura solo para teacher)
-  - [ ] Reglas para colección `tasks` (lectura para autenticados, escritura solo para creador)
-  - [ ] Reglas para colección `assignments` (lectura para teacher/student relacionados, escritura para teacher o student)
-  - [ ] Reglas para colección `sessions` (creación solo por student, lectura para teacher/student relacionados, sin update/delete)
-  - [ ] Funciones helper: `isAuth()`, `isOwner()`
-  - [ ] Documentación de reglas en comentarios
-- [ ] Validar reglas con Firebase CLI: `firebase deploy --only firestore:rules` (dry-run)
-- [ ] Documentar reglas en el documento del sprint
+- [x] Crear carpeta `firebase/` en la raíz del proyecto
+- [x] Crear `firebase.json` con configuración de Firebase CLI
+- [x] Crear `firebase/firestore.rules`
+  - [x] Reglas para colección `teachers` (solo lectura/escritura del propio perfil)
+  - [x] Reglas para colección `students` (solo lectura/escritura del propio perfil)
+  - [x] Reglas para colección `classes` (lectura para autenticados, **creación solo para teachers**)
+  - [x] Reglas para colección `memberships` (lectura para teacher/student relacionados, escritura solo para teacher)
+  - [x] Reglas para colección `tasks` (lectura para autenticados, **creación solo para teachers**)
+  - [x] Reglas para colección `assignments` (lectura para teacher/student relacionados, escritura para teacher o student)
+  - [x] Reglas para colección `sessions` (creación solo por student con validación, lectura para teacher/student relacionados, sin update/delete)
+  - [x] Funciones helper: `isAuth()`, `isOwner()`, `isTeacher()`, `isStudent()`
+  - [x] Validación de roles mediante verificación de existencia en colecciones
+  - [x] Separación granular de permisos (create/read/update/delete)
+  - [x] Validación de campos obligatorios en operaciones create
+  - [x] Documentación extensa de reglas en comentarios
+- [x] Crear `firebase/firestore.indexes.json` (vacío, se llenará en Fase 5)
+- [x] Validar reglas con Firebase CLI: `firebase deploy --only firestore:rules --dry-run` ✅
+- [x] Validar código con `flutter analyze` (0 issues) ✅
 
 ### Fase 5: Índices Compuestos (Día 8) 📅
 
@@ -609,7 +614,7 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 ## ✅ Checklist Final del Sprint
 
-**Progreso General: 50% (3/6 fases completadas) ✅**
+**Progreso General: 67% (4/6 fases completadas) ✅**
 
 ### Fase 1: Enums de Dominio ✅
 - [x] Todos los enums creados (5 enums)
@@ -632,11 +637,13 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 - [x] `flutter analyze` sin errores
 - [x] Código formateado con `dart format`
 
-### Fase 4: Configuración de Firestore 📅
-- [ ] Reglas de seguridad implementadas
-- [ ] Reglas validadas con Firebase CLI
-- [ ] Documentación de reglas completa
-- [ ] `firebase/firestore.rules` creado
+### Fase 4: Configuración de Firestore ✅
+- [x] Reglas de seguridad implementadas con validación de roles
+- [x] Reglas validadas con Firebase CLI (dry-run exitoso)
+- [x] Documentación de reglas completa (comentarios extensos)
+- [x] `firebase/firestore.rules` creado con funciones helper
+- [x] `firebase.json` creado con configuración
+- [x] `firebase/firestore.indexes.json` creado
 
 ### Fase 5: Índices Compuestos 📅
 - [ ] Índices documentados
@@ -656,6 +663,36 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 ---
 
 ## 📝 Historial de Cambios
+
+### Versión 1.4 - 13 de Noviembre 2025
+- ✅ **Fase 4 COMPLETADA:** Configuración de Firestore
+- ✅ **Firebase CLI** configurado en el proyecto
+- ✅ Archivos de configuración creados:
+  - `firebase.json` - Configuración principal de Firebase CLI
+  - `firebase/firestore.rules` - Reglas de seguridad completas (227 líneas)
+  - `firebase/firestore.indexes.json` - Archivo de índices (se llenará en Fase 5)
+- ✅ **Reglas de seguridad implementadas** para las 7 colecciones:
+  - `teachers` - Solo el propio docente puede leer/escribir su perfil
+  - `students` - Solo el propio alumno puede leer/escribir su perfil
+  - `classes` - Lectura para autenticados, **creación solo para teachers**
+  - `memberships` - Lectura para relacionados, escritura solo para teacher
+  - `tasks` - Lectura para autenticados, **creación solo para teachers**
+  - `assignments` - Lectura para relacionados, escritura para teacher/student
+  - `sessions` - Creación solo por students, lectura para relacionados, inmutables
+- ✅ **Funciones helper** implementadas:
+  - `isAuth()` - Verificación de autenticación
+  - `isOwner(userId)` - Verificación de propiedad
+  - `isTeacher()` - Validación de rol docente (exists en colección teachers)
+  - `isStudent()` - Validación de rol alumno (exists en colección students)
+- ✅ **Mejoras de seguridad**:
+  - Separación granular de permisos (create/read/update/delete)
+  - Validación de campos obligatorios en operaciones create
+  - Validación de roles mediante verificación de existencia
+  - Inmutabilidad de sesiones (no update/delete)
+- ✅ **Validación exitosa**:
+  - `firebase deploy --only firestore:rules --dry-run` ✅ Compilación exitosa
+  - `flutter analyze` ✅ 0 issues
+- ✅ Progreso del sprint actualizado a 67% (4/6 fases completadas)
 
 ### Versión 1.3 - 13 de Noviembre 2025
 - ✅ **Fase 3 COMPLETADA:** Validadores de Dominio
@@ -725,6 +762,6 @@ Una vez completado el Sprint 1, el siguiente sprint se enfocará en:
 
 **Última actualización:** 13 de Noviembre 2025
 **Estado:** 🚧 En Progreso
-**Progreso:** 50% (3/6 fases) ✅
+**Progreso:** 67% (4/6 fases) ✅
 **Responsable:** Equipo de desarrollo Playing Tracker
 
