@@ -559,22 +559,33 @@ service cloud.firestore {
 ---
 
 ### 📅 Sprint 2: Autenticación y Gestión de Usuarios
-**Duración:** Próximamente
+**Duración:** 2-3 semanas
 **Estado:** 📅 Planificado
+**Documento:** [`SPRINT_2_IMPLEMENTACION.md`](sprints/SPRINT_2_IMPLEMENTACION.md)
 
 **Objetivos:**
-- 🔐 **Firebase Authentication** integrado
-- 👥 **Gestión de perfiles** (Teacher/Student)
-- 🔄 **Gestión de estado** con Cubit (sistema principal)
-- 🧭 **Navegación condicional** por rol
-- ✅ **Validaciones completas** en español
+- 🔐 **Firebase Authentication** integrado (email/password)
+- 👥 **Gestión de perfiles** diferenciados (Teacher/Student) en Firestore
+- 🔄 **Gestión de estado** con Cubit + hydrated_bloc
+- 🧭 **Navegación condicional** por rol con GoRouter
+- 💾 **Persistencia de sesión** automática entre reinicios
+- 🎨 **UI completa** usando custom widgets del Sprint 0
+- ✅ **Validaciones** usando validadores del Sprint 1
+
+**Stack Tecnológico:**
+- `firebase_auth: ^5.3.4` - Autenticación
+- `hydrated_bloc: ^9.1.5` - Persistencia automática de estado
+- `go_router: ^14.6.2` - Navegación declarativa con guards reactivos
+- `path_provider: ^2.1.5` - Storage multiplataforma
 
 **Entregables:**
-- 🔐 Sistema de autenticación funcional
-- 👥 CRUD de usuarios en Firestore
-- 🔄 Gestión de estado con Cubit (flutter_bloc)
-- 🧭 Navegación por roles
-- ✅ Validaciones y manejo de errores
+- 🔐 Sistema de autenticación completo (login, registro Teacher/Student, logout)
+- 👥 Perfiles de usuario en Firestore (collections `teachers` y `students`)
+- 🔄 AuthCubit con HydratedBloc para persistencia
+- 🧭 GoRouter con guards de autenticación y rol
+- 📱 Pantallas: Splash, Login, Registro, TeacherHome, StudentHome, Profile
+- 🧪 Tests unitarios de AuthCubit (>=80% cobertura)
+- 📚 Documentación completa y ejemplos de uso
 
 ---
 
