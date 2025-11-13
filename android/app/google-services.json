@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "537954318009",
+    "project_id": "playing-tracker-app",
+    "storage_bucket": "playing-tracker-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537954318009:android:5f68233a131bc3ae9f8d68",
+        "android_client_info": {
+          "package_name": "com.example.playing_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNIf0IET1Qd10g36do2oMKI9vKJ0gwwDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
