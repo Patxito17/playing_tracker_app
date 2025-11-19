@@ -54,6 +54,14 @@ dependencies:
 
   # Utilidades
   intl: ^0.20.2                 # Internacionalización
+  # Autenticación
+  firebase_auth: ^6.1.2
+
+  # Persistencia de estado
+  hydrated_bloc: ^10.1.1
+
+  # Storage para hydrated_bloc
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +75,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.13         # Generación de código
   json_serializable: ^6.8.0     # Serialización JSON
+  # Testing utilities
+  mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

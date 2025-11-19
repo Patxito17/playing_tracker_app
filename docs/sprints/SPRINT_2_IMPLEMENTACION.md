@@ -11,10 +11,10 @@
 | **Proyecto** | Playing Tracker |
 | **Sprint** | Sprint 2 |
 | **Duración** | 2-3 semanas |
-| **Estado** | 📅 Planificado |
-| **Versión del documento** | 1.0 |
+| **Estado** | En progreso (Fase 1 completada) |
+| **Versión del documento** | 1.1 |
 | **Fecha** | 13 de Noviembre 2025 |
-| **Última actualización** | 13 de Noviembre 2025 |
+| **Última actualización** | 19 de Noviembre 2025 |
 | **Responsable** | Equipo de Desarrollo |
 
 ---
@@ -74,11 +74,11 @@ dependencies:
 
 **Total de Fases:** 8
 **Duración Estimada:** 2-3 semanas
-**Progreso:** 0% (0/8 fases completadas)
+**Progreso:** 12.5% (1/8 fases completadas)
 
 | Fase | Descripción | Estado | Duración |
 |------|-------------|--------|----------|
-| **Fase 1** | Configuración Inicial y Dependencias | ⏳ Pendiente | 2 horas |
+| **Fase 1** | Configuración Inicial y Dependencias | ✅ Completada | 2 horas |
 | **Fase 2** | AuthCubit y Estados de Autenticación | ⏳ Pendiente | 4 horas |
 | **Fase 3** | Repositorios de Autenticación y Firestore | ⏳ Pendiente | 3 horas |
 | **Fase 4** | GoRouter y Navegación Condicional | ⏳ Pendiente | 4 horas |
@@ -94,7 +94,7 @@ dependencies:
 ### Fase 1: Configuración Inicial y Dependencias
 
 **Duración:** 2 horas
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completada
 
 #### Archivos a Crear/Modificar
 
@@ -142,11 +142,13 @@ void main() async {
 
 #### Checklist de Fase 1
 
-- [ ] Dependencies agregadas en `pubspec.yaml`
-- [ ] `flutter pub get` ejecutado exitosamente
-- [ ] Firebase inicializado en `main.dart`
-- [ ] HydratedBloc configurado correctamente
-- [ ] `flutter analyze` sin errores
+- [x] Dependencies agregadas en `pubspec.yaml`
+- [x] `flutter pub get` ejecutado exitosamente
+- [x] Firebase inicializado en `main.dart`
+- [x] HydratedBloc configurado correctamente
+- [x] `flutter analyze` sin errores
+
+**Dependencias agregadas (19 de Noviembre 2025):** `firebase_auth`, `hydrated_bloc`, `path_provider`, `mocktail` (dev).
 
 ---
 
