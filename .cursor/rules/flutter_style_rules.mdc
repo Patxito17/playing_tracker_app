@@ -17,6 +17,8 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Prefiere **composición** sobre herencia.
 - Usa nombres descriptivos con verbos auxiliares: `isLoading`, `hasError`, `canSubmit`.
 - Aplica programación declarativa/funcional donde tenga sentido.
+- Garantiza que `flutter --version` reporte **Flutter 3.38.x** + **Dart 3.10.x** y fija `environment.sdk` en el `pubspec.yaml` para evitar divergencias entre entornos.
+- Ejecuta `dart format`, `dart analyze` y `flutter test` antes de subir cambios; automatiza estas verificaciones en CI/CD.
 
 ---
 
@@ -29,6 +31,11 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Getters/setters simples deben usar cuerpos de expresión.
 - Usa comas finales para que el formateo con `dart format` quede bien estructurado.
 - Usa pattern matching cuando trabajes con sealed classes o registros.
+- Habilita los **dot shorthands** de Dart 3.10 (`mainAxisAlignment: .start`) para reducir ruido cuando el tipo ya es conocido.
+- Declara modificadores de clase (`sealed`, `base`, `interface`, `final`) para comunicar la intención exacta (`https://dart.dev/language/class-modifiers`).
+- Prefiere `switch` expresivos con patrones, guard clauses y destructuración en vez de cadenas de `if` (`https://dart.dev/language/patterns`).
+- Documenta y versiona cualquier **build hook / macro** personalizada en `build.dart` o `tool/`, explicando su propósito y entradas/salidas para que el equipo pueda regenerar artefactos.
+- Centraliza las reglas del analizador usando `flutter_lints` + `package:lints` y, cuando sea necesario, publica **analyzer plugins** compartidos para reglas específicas del dominio.
 
 ---
 
@@ -42,6 +49,8 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Para formularios, usa `InputDecoration` con `filled: true` y bordes redondeados.
 - Aprovecha los nuevos estilos de tipografía M3: `displayLarge`, `headlineMedium`, `bodyLarge`, etc.
 - Usa `ColorScheme.fromSeed()` con diferentes brightness para modo claro/oscuro.
+- Implementa layouts adaptables con `LayoutBuilder`, `MediaQueryData.size` y `AdaptiveLayout` para cumplir las guías multiplataforma de Flutter 3.38 (`https://docs.flutter.dev/release/whats-new#flutter-338`).
+- Evalúa **GenUI SDK** al diseñar experiencias dinámicas o generativas; documenta prompts y límites para mantener consistencia visual.
 
 ---
 
@@ -53,6 +62,10 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Usa **extension methods** para añadir funcionalidad específica a tipos: `extension StringX on String`.
 - Implementa dependency injection manual o con paquetes como `get_it`.
 - Mantén un solo sistema de gestión de estado por proyecto (preferentemente Bloc/Cubit).
+- Agrupa cada feature en un **paquete Dart interno** cuando supere las 500 líneas para aprovechar `dart run build_runner` incremental y aislar dependencias.
+- Define contratos claros entre capas mediante `typedef` de records (`typedef SessionDTO = ({String id, DateTime createdAt});`) para explotar records inmutables.
+- Centraliza la navegación con `GoRouter` declarativo y habilita redirecciones basadas en estado (guards) según las guías oficiales (`https://docs.flutter.dev/cookbook/navigation`).
+- Documenta diagramas de flujo (Mermaid) en `docs/` para cada caso de uso que incluya Firebase o servicios externos, evitando conocimiento implícito.
 
 ---
 
@@ -67,6 +80,9 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Los nombres de los métodos del Cubit deben ser descriptivos: `loginUser()`, `createTask()`, `startSession()`.
 - En widgets, usa `context.read<CubitType>()` para acciones y `context.watch<CubitType>()` para escuchar cambios.
 - Usa `BlocBuilder`, `BlocListener` y `BlocConsumer` según necesites rebuilds, side effects o ambos.
+- Define los estados como `final class` con constructores `const` y, cuando sea útil, sobrescribe `==`/`hashCode` usando `package:equatable`.
+- Aprovecha `switch (state)` con patrones para evitar `if` anidados en los widgets y garantizar exhaustividad en compilación.
+- Configura un `BlocObserver` global dentro de `BlocOverrides.runZoned()` para loggear transiciones relevantes y errores críticos.
 **Ejemplo de estados con sealed class nativa (Dart 3):**
 ```dart
 sealed class AuthState {}
@@ -132,11 +148,16 @@ class UserModel {
 
 ## 🔥 Firebase / Backend
 
-- Utiliza Firebase Authentication para registro, login y gestión de contraseña.
-- Usa Firestore para almacenamiento estructurado de datos.
-- Usa Firebase Storage para archivos (PDF, attachments), con manejo de errores robusto.
-- Captura excepciones de Firebase y muestra mensajes claros.
-- Asegura reglas de Firestore/Storage según roles (docente / alumno).
+- Configura cada entorno con **FlutterFire CLI** (`firebase flutter configure`) para generar `firebase_options.dart` y evitar configuraciones manuales (`https://firebase.google.com/docs/flutter/setup`).
+- Activa **App Check** en todas las apps y servicios sensibles (Firestore, Functions, Storage) siguiendo `https://firebase.google.com/docs/app-check/flutter` para mitigar abuso.
+- Utiliza Firebase Authentication para registro, login y gestión de contraseña; aplica `multi-factor` cuando sea requisito de negocio.
+- Usa Firestore para almacenamiento estructurado: define `composite indexes`, activa `serverTimestamp()` y versiona reglas en `firestore.rules`.
+- Usa Firebase Storage para archivos (PDF, attachments) con validaciones de tamaño/MIME y limpia objetos huérfanos mediante Cloud Functions programadas.
+- Integra **Crashlytics**, **Performance Monitoring** y **Analytics** desde el arranque (`Firebase.initializeApp`) y adjunta `setUserId`/`setCustomKey` en los Cubits relevantes.
+- Emplea **App Distribution** para compartir builds QA y documenta el flujo en `docs/sprints/`.
+- Captura excepciones de Firebase y muestra mensajes claros usando estados del Cubit; no expongas textos crudos del backend.
+- Ejecuta pruebas locales con `firebase emulators:start`, cargando datos semilla por script (`functions/scripts/seed.dart`) y aisla credenciales mediante variables `.env`.
+- Asegura reglas de Firestore/Storage según roles (docente / alumno) y prueba escenarios con `firebase emulators:exec`.
 
 ---
 
@@ -148,6 +169,8 @@ class UserModel {
   - `AssetImage` para recursos locales.
   - `cached_network_image` para imágenes remotas con cache.
 - En Firestore, usa índices y límites para consultas eficientes.
+- Verifica que el motor **Impeller** esté habilitado (`flutter run --impeller`) en iOS/Android y prueba animaciones críticas buscando jank (`https://docs.flutter.dev/perf/impeller`).
+- Segmenta recursos grandes con `deferred components` / `split per ABI` cuando el tamaño del bundle supere los 150 MB.
 
 ---
 
@@ -242,6 +265,15 @@ class UserModel {
   ```
 - Usa `flutter analyze` para verificar problemas antes de commit.
 - Configura shortcuts de teclado en el IDE para formateo automático con `dart format`.
+- Automatiza tareas repetitivas con `dart run build_runner watch` y preferentemente añade un `build.yaml` por feature para acotar generación de código.
+- Antes de subir un fix, ejecuta `dart run fix --apply` para aplicar sugerencias triviales del analizador.
+
+## 🧠 Cursor 2.0 / Automatización
+
+- Usa **Composer** para generar o refactorizar widgets complejos; documenta el comando utilizado en las PR para trazabilidad (`https://cursor.com/blog/2-0`).
+- Divide trabajos largos en agentes paralelos (hasta 8) y sincroniza cambios mediante `git worktree` para evitar conflictos según las guías de Cursor 2.0.
+- Usa los **Smart Rewrites** para mantener reglas de estilo consistentes y activa los protectores de archivos críticos (`.cursor/rules/`) antes de ejecutar refactors masivos.
+- Invoca la documentación integrada de Cursor para mantener este archivo y el resto de la guía sincronizados; cualquier ajuste mayor debe reflejarse en `docs/`.
 
 ---
 
@@ -290,6 +322,9 @@ class UserModel {
   });
   ```
 - Mantén cobertura de tests >80% en lógica de negocio.
+- Mockea Firebase usando `fake_cloud_firestore`, `firebase_auth_mocks` y los emuladores locales; nunca golpees producción desde tests.
+- Ejecuta `integration_test` en **Firebase Test Lab** (Android/iOS) antes de liberar funciones críticas y adjunta los reportes en el documento del sprint.
+- Crea **golden tests adaptativos** (light/dark + textScaleFactor) usando `flutter_test` + `golden_toolkit`.
 
 ---
 
@@ -314,6 +349,7 @@ class UserModel {
 - Sigue las guías oficiales de Flutter, Cubit y Firebase como referencia.
 - Siempre que Cursor genere código, debe alinearse con estas reglas y con la documentación oficial y actualizada de Flutter y Dart.
 - Mantén un `CHANGELOG.md` actualizado con cambios significativos por sprint.
+- En cada PR cita la versión específica de las guías consultadas (`https://docs.flutter.dev/release/whats-new`, `https://dart.dev/language`, `https://firebase.google.com/docs/flutter`) para garantizar trazabilidad.
 
 ---
 
@@ -434,10 +470,18 @@ Al actualizar documentación:
 ## 📚 Referencias Útiles
 
 - [Flutter Documentation](https://docs.flutter.dev)
+- [Flutter 3.38 - What's new](https://docs.flutter.dev/release/whats-new#flutter-338)
 - [Material Design 3](https://m3.material.io/)
 - [Cubit Documentation](https://bloclibrary.dev/docs/cubit)
 - [Effective Dart](https://dart.dev/guides/language/effective-dart)
 - [Flutter Architecture Guide](https://docs.flutter.dev/app-architecture/guide)
+- [Dart Class Modifiers](https://dart.dev/language/class-modifiers)
+- [Dart Patterns](https://dart.dev/language/patterns)
+- [Firebase for Flutter](https://firebase.google.com/docs/flutter/setup)
+- [Firebase App Check para Flutter](https://firebase.google.com/docs/app-check/flutter)
+- [Cursor 2.0](https://cursor.com/blog/2-0)
+- [Impeller Guide](https://docs.flutter.dev/perf/impeller)
+- [GoRouter Cookbook](https://docs.flutter.dev/cookbook/navigation)
 
 ---
 
