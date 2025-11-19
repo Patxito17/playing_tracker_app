@@ -23,7 +23,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 ## 🐦 Convenciones de Flutter / Dart
 
 - Usa `const` siempre que sea posible en widgets inmutables.
-- Usa **Freezed** o **sealed class** para clases de estado inmutables y uniones (Dart 3+).
+- Para clases de estado inmutables y uniones, usa **sealed class** nativas de Dart 3 o, opcionalmente, Freezed si el equipo lo prefiere. Para modelos y serialización, usa **json_serializable** siguiendo la documentación oficial de Flutter y Dart.
 - Aprovecha **record types** cuando sea apropiado para retornar múltiples valores: `(String, int)`.
 - Para funciones simples, usa la sintaxis flecha (`=>`).
 - Getters/setters simples deben usar cuerpos de expresión.
@@ -63,26 +63,61 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
   - **Cubit:** Para estado simple y directo (ideal para la mayoría de casos de uso).
   - **Bloc:** Solo cuando necesites historial de eventos y lógica basada en eventos complejos.
 - Mantén **Cubit como sistema principal** de gestión de estado para consistencia.
-- Todos los estados deben definirse con **Freezed** o **sealed class** (inmutabilidad).
+- Todos los estados deben definirse como **sealed class** nativas de Dart 3 (recomendado) o, opcionalmente, con Freezed si el equipo lo prefiere. Los modelos deben usar **json_serializable**.
 - Los nombres de los métodos del Cubit deben ser descriptivos: `loginUser()`, `createTask()`, `startSession()`.
 - En widgets, usa `context.read<CubitType>()` para acciones y `context.watch<CubitType>()` para escuchar cambios.
 - Usa `BlocBuilder`, `BlocListener` y `BlocConsumer` según necesites rebuilds, side effects o ambos.
-- **Estructura recomendada para Cubit:**
-  ```dart
-  class AuthCubit extends Cubit<AuthState> {
-    AuthCubit() : super(AuthInitial());
+**Ejemplo de estados con sealed class nativa (Dart 3):**
+```dart
+sealed class AuthState {}
+class AuthInitial extends AuthState {}
+class AuthLoading extends AuthState {}
+class AuthSuccess extends AuthState {
+  final User user;
+  AuthSuccess(this.user);
+}
+class AuthError extends AuthState {
+  final String message;
+  AuthError(this.message);
+}
 
-    Future<void> loginUser(String email, String password) async {
-      emit(AuthLoading());
-      try {
-        final user = await _authService.login(email, password);
-        emit(AuthSuccess(user));
-      } catch (e) {
-        emit(AuthError(e.toString()));
-      }
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthInitial());
+
+  Future<void> loginUser(String email, String password) async {
+    emit(AuthLoading());
+    try {
+      final user = await _authService.login(email, password);
+      emit(AuthSuccess(user));
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
-  ```
+}
+```
+
+**Ejemplo de modelo con json_serializable:**
+```dart
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user_model.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class UserModel {
+  final String id;
+  final String email;
+  final DateTime createdAt;
+
+  UserModel({
+    required this.id,
+    required this.email,
+    required this.createdAt,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+}
+```
 
 ---
 
@@ -119,7 +154,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 ## 📚 Modelos / JSON / Base de datos
 
 - En documentos de Firestore, incluye campos comunes como `createdAt`, `updatedAt`, `isDeleted`.
-- Usa `@JsonSerializable(fieldRename: FieldRename.snake)` para modelos Dart.
+- Usa `@JsonSerializable(fieldRename: FieldRename.snake)` para modelos Dart. Prefiere sealed class nativas para estados y uniones; Freezed es opcional.
 - Para campos de solo lectura, usa `@JsonKey(includeFromJson: true, includeToJson: false)`.
 
 ---
@@ -277,7 +312,7 @@ Estas reglas se aplican a todo el código Dart del proyecto y sirven como contex
 - Usa **dartdoc comments** (`///`) para documentar APIs públicas.
 - Incluye ejemplos de uso en comentarios de funciones/clases complejas.
 - Sigue las guías oficiales de Flutter, Cubit y Firebase como referencia.
-- Siempre que Cursor genere código, debe alinearse con estas reglas.
+- Siempre que Cursor genere código, debe alinearse con estas reglas y con la documentación oficial y actualizada de Flutter y Dart.
 - Mantén un `CHANGELOG.md` actualizado con cambios significativos por sprint.
 
 ---
