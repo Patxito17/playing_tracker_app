@@ -5,7 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:playing_tracker/main.dart';
 
@@ -14,10 +13,8 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const PlayingTrackerApp());
 
-    // Verify that the app title is displayed
-    expect(find.text('Playing Tracker - Tema M3'), findsOneWidget);
-
-    // Verify that theme toggle button is present
-    expect(find.byIcon(Icons.dark_mode), findsOneWidget);
+    // Allow router to settle and verify that the login welcome title is shown
+    await tester.pumpAndSettle();
+    expect(find.text('Bienvenido'), findsOneWidget);
   });
 }

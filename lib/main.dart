@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
+import 'firebase_options.dart';
 
 /// Punto de entrada de la aplicación Playing Tracker
 ///
-/// Sprint 0 - Fase 4: Integración de GoRouter para navegación
-void main() {
+/// Fase 1 - Inicialización: Firebase + HydratedBloc
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 1) Inicializar Firebase primero (usar las opciones generadas por FlutterFire)
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // 2) Construir HydratedStorage (usa ruta por defecto si no se pasa directory)
+  //    Nota: algunas versiones de hydrated_bloc aceptan una sobrecarga sin parámetros.
+  // Construir HydratedStorage usando HydratedStorageDirectory según la API
+  final storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorageDirectory.web
+        : HydratedStorageDirectory((await getApplicationDocumentsDirectory()).path),
+  );
+
+  // Asignar storage globalmente y ejecutar la app
+  HydratedBloc.storage = storage;
   runApp(const PlayingTrackerApp());
 }
 
