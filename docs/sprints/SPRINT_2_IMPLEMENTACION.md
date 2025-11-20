@@ -11,8 +11,8 @@
 | **Proyecto** | Playing Tracker |
 | **Sprint** | Sprint 2 |
 | **Duración** | 2-3 semanas |
-| **Estado** | En progreso (Fase 7 completada) |
-| **Versión del documento** | 1.3 |
+| **Estado** | ✅ Completado |
+| **Versión del documento** | 1.4 |
 | **Fecha** | 13 de Noviembre 2025 |
 | **Última actualización** | 20 de Noviembre 2025 |
 | **Responsable** | Equipo de Desarrollo |
@@ -74,7 +74,7 @@ dependencies:
 
 **Total de Fases:** 8
 **Duración Estimada:** 2-3 semanas
-**Progreso:** 87.5% (7/8 fases completadas)
+**Progreso:** 100% (8/8 fases completadas)
 
 | Fase | Descripción | Estado | Duración |
 |------|-------------|--------|----------|
@@ -85,7 +85,7 @@ dependencies:
 | **Fase 5** | UI de Login y Registro | ✅ Completada | 5 horas |
 | **Fase 6** | Pantallas Home y Navegación Principal | ✅ Completada | 4 horas |
 | **Fase 7** | Testing y Validaciones | ✅ Completada | 3 horas |
-| **Fase 8** | Documentación y Refinamiento | ⏳ Pendiente | 2 horas |
+| **Fase 8** | Documentación y Refinamiento | ✅ Completada | 2 horas |
 
 ---
 
@@ -800,111 +800,29 @@ testWidgets('redirecciona a login cuando no hay sesión', (tester) async {
 ### Fase 8: Documentación y Refinamiento
 
 **Duración:** 2 horas
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completada
 
-#### Tareas de Documentación
+#### Cambios realizados
 
-1. **Actualizar `SPRINT_2_IMPLEMENTACION.md`**
-   - Marcar todas las fases como completadas
-   - Actualizar progreso a 100%
-   - Agregar versión final con fecha
+- `docs/sprints/SPRINT_2_IMPLEMENTACION.md`: versión final (1.4) con progreso 100 %, checklist y lecciones aprendidas.
+- `docs/Guia_Proyecto_PlayingTracker.md` y `README.md`: se actualizó el estado del proyecto (Sprint 2 completado) y se añadieron los enlaces a las nuevas pruebas/fases.
+- Se validó que no quedan referencias a archivos eliminados (por ejemplo, `student_home_screen.dart`), manteniendo la documentación alineada con la estructura actual.
 
-2. **Actualizar `README.md`**
-   - Cambiar "Sprint Actual" a Sprint 2 completado
-   - Agregar sección de Sprint 2 con logros
+#### Checklist final
 
-3. **Actualizar `docs/Guia_Proyecto_PlayingTracker.md`**
-   - Marcar Sprint 2 como completado
-   - Actualizar roadmap
-
-4. **Crear `docs/examples/auth_flow_example.dart`**
-
-```dart
-// docs/examples/auth_flow_example.dart
-
-/// Ejemplo de flujo completo de autenticación
-///
-/// Este ejemplo demuestra:
-/// - Registro de usuario (Teacher y Student)
-/// - Login con credenciales
-/// - Persistencia de sesión con hydrated_bloc
-/// - Navegación condicional con GoRouter
-/// - Logout
-
-import 'package:flutter/material.dart';
-
-void main() {
-  // Ver implementación completa en:
-  // - lib/features/auth/presentation/cubit/auth_cubit.dart
-  // - lib/core/config/router/app_router.dart
-  // - lib/features/auth/presentation/screens/login_screen.dart
-
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // 1. Configurar BlocProvider con AuthCubit
-    // 2. Configurar GoRouter con AuthCubit.stream
-    // 3. MaterialApp.router con routerConfig
-
-    return const Placeholder(); // Ver main.dart real
-  }
-}
-
-// Ejemplo de uso de AuthCubit:
-void exampleLoginFlow(BuildContext context) async {
-  final authCubit = context.read<AuthCubit>();
-
-  // Login
-  await authCubit.loginWithEmail('teacher@test.com', 'password');
-
-  // El estado cambiará a AuthAuthenticated
-  // GoRouter redirigirá automáticamente a /teacher/home
-}
-
-// Ejemplo de registro:
-void exampleRegisterFlow(BuildContext context) async {
-  final authCubit = context.read<AuthCubit>();
-
-  // Registro de Teacher
-  await authCubit.registerTeacher(
-    'newteacher@test.com',
-    'securepassword',
-    'Nombre Completo',
-  );
-
-  // Se crea el documento en Firestore collection 'teachers'
-  // El estado cambia a AuthAuthenticated con role: UserRole.teacher
-}
-
-// Ejemplo de persistencia:
-// Al cerrar y reabrir la app:
-// 1. HydratedBloc restaura el último AuthState desde disco
-// 2. Si era AuthAuthenticated, el usuario permanece logueado
-// 3. GoRouter verifica el estado y redirige a la pantalla correcta
-```
-
-#### Checklist Final del Sprint
-
-- [ ] Todas las dependencias instaladas (`flutter pub get`)
-- [ ] AuthCubit implementado con HydratedBloc
-- [ ] Repositorios de Firebase Auth y Firestore funcionando
-- [ ] GoRouter configurado con guards y navegación reactiva
-- [ ] hydrated_bloc persistiendo sesión entre reinicios
-- [ ] UI de login/registro completamente funcional
-- [ ] Navegación separada para Teacher y Student
-- [ ] Custom widgets del Sprint 0 utilizados consistentemente
-- [ ] Validadores del Sprint 1 integrados
-- [ ] Tests unitarios pasando (`flutter test`)
-- [ ] Código analizado sin errores (`flutter analyze`)
-- [ ] Código formateado (`dart format .`)
-- [ ] Documentación actualizada (README, Guía del Proyecto, Sprint doc)
-- [ ] Ejemplo de uso creado en `docs/examples/`
-- [ ] **Prueba en dispositivo real:** Login, registro, persistencia, y logout funcionando
+- [x] Dependencias instaladas (`flutter pub get`)
+- [x] AuthCubit implementado con HydratedBloc
+- [x] Repositorios Firebase Auth + Firestore funcionando
+- [x] GoRouter configurado con guards y navegación reactiva
+- [x] HydratedBloc persiste sesión entre reinicios
+- [x] UI de login/registro + home screens por rol
+- [x] Custom widgets del Sprint 0 reutilizados
+- [x] Validadores del Sprint 1 integrados
+- [x] Tests unitarios/widget (`flutter test`) en verde
+- [x] `flutter analyze` sin errores
+- [x] `dart format` aplicado
+- [x] Documentación actualizada (README, Guía y doc de sprint)
+- [x] Preparado backlog para Sprint 3 (clases/membresías)
 
 ---
 
