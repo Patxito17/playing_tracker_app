@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** Octubre 2025
-**Estado del proyecto:** Inicio del desarrollo - Sprint 0 📅
+**Última actualización:** 20 de Noviembre 2025
+**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 1 completada) 🚧
 
 ---
 
@@ -35,7 +35,8 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 ## 🧩 Arquitectura del Proyecto
 
 ### Lenguaje y Framework
-- **Frontend:** Flutter 3.x (Dart 3.9.2+) ✅
+- **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
+  Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 (baseline actual ^3.9.2).
 - **Backend:** Firebase ✅
   - Firebase Authentication ✅ (Email/Password)
   - Cloud Firestore ✅ (Base de datos NoSQL)
@@ -46,11 +47,11 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Herramientas:** DevTools, Flutter Widget Inspector ✅
 
 ### Gestión de Estado
-- **flutter_bloc** 📅 - Biblioteca para gestión de estado
-- **Cubit** 📅 - Sistema principal de gestión de estado (más simple que Bloc)
-- **Equatable** 📅 - Para comparación de estados
-- **BlocProvider** 📅 - Inyección de dependencias
-- **BlocBuilder/BlocConsumer** 📅 - Para reactividad en UI
+- **flutter_bloc** ✅ Dependencia configurada (Sprint 0) y usada en wrappers de UI.
+- **Cubit** 🚧 Sistema principal definido en flutter_style_rules; AuthCubit inicia en Sprint 2.
+- **Equatable** ✅ Disponible para estados/entidades desde Sprint 1.
+- **BlocProvider** ✅ Configurado en ejemplos y listo para inyección en Sprint 2.
+- **BlocBuilder/BlocConsumer** ✅ Utilizados en pantallas de autenticación (Sprint 0) como base.
 
 ### Diseño y Tema (Material Design 3)
 La aplicación implementa **Material Design 3** completamente:
@@ -208,6 +209,8 @@ lib/
 │
 └── main.dart                          # 📅 Entry point con Firebase init
 ```
+
+> **Nota:** Los módulos `core/*`, `config/*` y las pantallas base de `features/auth`, `features/classes`, `features/tasks`, `features/sessions` y `shared/widgets` se completaron durante los Sprints 0 y 1 siguiendo las `flutter_style_rules`. Los marcadores 📅 del diagrama indican lógica pendiente (por ejemplo, repositorios o Cubits definitivos) que se abordará en los Sprints 2+.
 
 ---
 
@@ -507,9 +510,9 @@ service cloud.firestore {
 
 ## 🔁 Metodología de Trabajo (Scrum Adaptado)
 
-### 📅 Sprint 0: Configuración Inicial y Diseño UI/UX (ACTUAL)
+### ✅ Sprint 0: Configuración Inicial y Diseño UI/UX
 **Duración:** Octubre 2025
-**Estado:** 📅 En desarrollo - Prioridad máxima
+**Estado:** ✅ Finalizado (entregables aprobados)
 
 📄 **Documentación detallada:** [SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md)
 
@@ -538,9 +541,11 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 1: Modelos de Dominio y Arquitectura de Datos
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### ✅ Sprint 1: Modelos de Dominio y Arquitectura de Datos
+**Duración:** Noviembre 2025
+**Estado:** ✅ Finalizado (13 de Noviembre 2025)
+
+📄 **Documentación detallada:** [SPRINT_1_IMPLEMENTACION.md](sprints/SPRINT_1_IMPLEMENTACION.md)
 
 **Objetivos:**
 - 📊 **Implementación de 7 colecciones Firestore** con estructura optimizada
@@ -558,9 +563,9 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 2: Autenticación y Gestión de Usuarios
+### 🚧 Sprint 2: Autenticación y Gestión de Usuarios
 **Duración:** 2-3 semanas
-**Estado:** 📅 Planificado
+**Estado:** 🚧 En progreso (Fase 1 completada, 12.5%)
 **Documento:** [`SPRINT_2_IMPLEMENTACION.md`](sprints/SPRINT_2_IMPLEMENTACION.md)
 
 **Objetivos:**
@@ -573,9 +578,9 @@ service cloud.firestore {
 - ✅ **Validaciones** usando validadores del Sprint 1
 
 **Stack Tecnológico:**
-- `firebase_auth: ^5.3.4` - Autenticación
-- `hydrated_bloc: ^9.1.5` - Persistencia automática de estado
-- `go_router: ^14.6.2` - Navegación declarativa con guards reactivos
+- `firebase_auth: ^6.1.2` - Autenticación
+- `hydrated_bloc: ^10.1.1` - Persistencia automática de estado
+- `go_router: ^17.0.0` - Navegación declarativa con guards reactivos
 - `path_provider: ^2.1.5` - Storage multiplataforma
 
 **Entregables:**
@@ -692,16 +697,16 @@ service cloud.firestore {
 ### 📊 Progreso General del Proyecto
 
 ```
-Sprint 0: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Diseño UI/UX (ACTUAL)
-Sprint 1: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Modelos y Arquitectura
-Sprint 2: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Autenticación
-Sprint 3: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Clases y Membresías
-Sprint 4: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Tareas y Asignaciones
-Sprint 5: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Cronómetro y Sesiones
-Sprint 6: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Estadísticas
-Sprint 7: ░░░░░░░░░░░░░░░░░░░░   0% 📅 Testing y Producción
+Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
+Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
+Sprint 2: ██░░░░░░░░░░░░░░░░░░ 12.5% 🚧 Autenticación
+Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
+Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
+Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
+Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
+Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
 
-Progreso Total: ░░░░░░░░░░░░░░░░░░░░   0% (Inicio del desarrollo)
+Progreso Total: ███░░░░░░░░░░░░░░░░ 26% (2 sprints terminados + Sprint 2 en curso)
 ```
 
 ---
@@ -842,28 +847,28 @@ dev_dependencies:
 
 ## 📚 Documentación del Proyecto
 
-### Documentación Técnica (Por Crear)
-- 📄 [README.md](README.md) - Descripción general y setup (por crear)
-- 📄 [Guia_Proyecto_PlayingTracker.md](Guia_Proyecto_PlayingTracker.md) - Este documento ✅
-- 📄 [docs/FIRESTORE_SCHEMA.md](docs/FIRESTORE_SCHEMA.md) - Esquema de base de datos (por crear)
-- 📄 [docs/DEVTOOLS_SETUP.md](docs/DEVTOOLS_SETUP.md) - Configuración de herramientas (por crear)
+### Documentación Técnica
+- ✅ [README.md](README.md) - Descripción general, setup y estado actualizado por sprint
+- ✅ [Guia_Proyecto_PlayingTracker.md](Guia_Proyecto_PlayingTracker.md) - Este documento
+- 📄 [docs/FIRESTORE_SCHEMA.md](docs/FIRESTORE_SCHEMA.md) - Esquema de base de datos (backlog Sprint 3)
+- 📄 [docs/DEVTOOLS_SETUP.md](docs/DEVTOOLS_SETUP.md) - Configuración de herramientas (pendiente)
 
 ### Documentación de Sprints
-- ✅ [docs/sprints/SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX e Implementación detallada (Sprint 0)
-- 📄 [docs/sprints/SPRINT_1_COMPLETADO.md](sprints/SPRINT_1_COMPLETADO.md) - Modelos y Arquitectura (por crear)
-- 📄 [docs/sprints/SPRINT_2_COMPLETADO.md](sprints/SPRINT_2_COMPLETADO.md) - Autenticación (por crear)
+- ✅ [docs/sprints/SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX (Sprint 0)
+- ✅ [docs/sprints/SPRINT_1_IMPLEMENTACION.md](sprints/SPRINT_1_IMPLEMENTACION.md) - Modelos y Arquitectura (Sprint 1)
+- 🚧 [docs/sprints/SPRINT_2_IMPLEMENTACION.md](sprints/SPRINT_2_IMPLEMENTACION.md) - Autenticación (Sprint 2 en curso)
 
 ### Reglas de Desarrollo
-- 📄 [.cursor/rules/flutter_style_rules.mdc](.cursor/rules/) - Convenciones de código (por crear)
-- 📄 [analysis_options.yaml](analysis_options.yaml) - Reglas de linting (por crear)
+- ✅ [.cursor/rules/flutter_style_rules.mdc](.cursor/rules/flutter_style_rules.mdc) - Convenciones activas del proyecto
+- ✅ [analysis_options.yaml](analysis_options.yaml) - Reglas de linting basadas en `flutter_lints`
 
 ### Estructura de Documentación
 ```
 docs/
 ├── sprints/
 │   ├── SPRINT_0_IMPLEMENTACION.md  ✅ # Implementación detallada Sprint 0
-│   ├── SPRINT_1_COMPLETADO.md      📅 # Resumen Sprint 1 (por crear)
-│   └── SPRINT_2_COMPLETADO.md      📅 # Resumen Sprint 2 (por crear)
+│   ├── SPRINT_1_IMPLEMENTACION.md  ✅ # Implementación detallada Sprint 1
+│   └── SPRINT_2_IMPLEMENTACION.md  🚧 # Documento vivo Sprint 2
 ├── FIRESTORE_SCHEMA.md           📅 # Esquema de base de datos
 ├── DEVTOOLS_SETUP.md             📅 # Configuración de herramientas
 ├── ARCHITECTURE.md               📅 # Arquitectura del proyecto
@@ -900,7 +905,7 @@ Este documento sirve como **guía integral para el entorno Cursor**, proporciona
 - 📚 Referencias a documentación detallada
 - ✅ Progreso verificable con enfoque iterativo
 
-**Última actualización:** Octubre 2025
-**Versión del documento:** 5.0
-**Progreso del proyecto:** Inicio del desarrollo - Sprint 0
-**Siguiente sprint:** Sprint 0 - Diseño UI/UX completo
+**Última actualización:** 20 de Noviembre 2025
+**Versión del documento:** 5.1
+**Progreso del proyecto:** Sprint 2 en progreso (Sprints 0 y 1 completados)
+**Siguiente sprint:** Sprint 3 - Sistema de Clases y Membresías (planificado)
