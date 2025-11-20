@@ -1,25 +1,32 @@
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/config/router/go_router_refresh_stream.dart';
+import '../../features/auth/domain/enums/user_role.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/cubit/auth_state.dart';
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
-import '../../features/auth/presentation/screens/forgot_password_screen.dart';
-import '../../features/auth/presentation/widgets/auth_wrapper.dart';
-import '../../features/home/presentation/screens/teacher_home_screen.dart';
-import '../../features/home/presentation/screens/student_home_screen.dart';
-import '../../features/classes/presentation/screens/teacher_classes_list_screen.dart';
-import '../../features/classes/presentation/screens/student_classes_list_screen.dart';
-import '../../features/classes/presentation/screens/teacher_class_detail_screen.dart';
-import '../../features/classes/presentation/screens/student_class_detail_screen.dart';
 import '../../features/classes/presentation/screens/create_class_screen.dart';
 import '../../features/classes/presentation/screens/join_class_screen.dart';
 import '../../features/classes/presentation/screens/manage_students_screen.dart';
-import '../../features/tasks/presentation/screens/task_list_screen.dart';
+import '../../features/classes/presentation/screens/student_class_detail_screen.dart';
+import '../../features/classes/presentation/screens/student_classes_list_screen.dart';
+import '../../features/classes/presentation/screens/teacher_class_detail_screen.dart';
+import '../../features/classes/presentation/screens/teacher_classes_list_screen.dart';
+import '../../features/home/presentation/screens/student_home_screen.dart';
+import '../../features/home/presentation/screens/teacher_home_screen.dart';
+import '../../features/sessions/presentation/screens/session_history_screen.dart';
+import '../../features/sessions/presentation/screens/timer_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/statistics/presentation/screens/statistics_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
-import '../../features/sessions/presentation/screens/timer_screen.dart';
-import '../../features/sessions/presentation/screens/session_history_screen.dart';
-import '../../features/statistics/presentation/screens/statistics_screen.dart';
-import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/tasks/presentation/screens/task_list_screen.dart';
 import '../../shared/widgets/custom_bottom_navigation_bar.dart';
 import '../../shared/widgets/error_screen.dart';
 
@@ -28,9 +35,14 @@ import '../../shared/widgets/error_screen.dart';
 /// Utiliza go_router para navegación declarativa con rutas nombradas.
 /// Incluye navegación condicional según el rol del usuario.
 ///
-/// Sprint 0 - Fase 4: Implementación completa de GoRouter
+/// Sprint 2 - Fase 4: Implementación GoRouter reactiva con guards reales.
 class AppRoutes {
+  AppRoutes(this.authCubit);
+
+  final AuthCubit authCubit;
+
   /// Constantes de rutas principales
+  static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
@@ -68,252 +80,253 @@ class AppRoutes {
   // Rutas de Estadísticas (deprecated - usar teacherStatistics o studentStatistics)
   static const String statistics = '/statistics';
 
-  /// Configuración de GoRouter
-  ///
-  /// Define todas las rutas de la aplicación con navegación condicional
-  /// basada en el rol del usuario (mock en este sprint).
-  static GoRouter get router {
-    return GoRouter(
-      initialLocation: '/',
-      redirect: (context, state) {
-        // Navegación condicional según el rol mock
-        final location = state.uri.path;
+  static const List<String> _publicRoutes = [login, register, forgotPassword];
 
-        // Si estamos en la ruta raíz, redirigir según el rol
-        if (location == '/') {
-          final role = AuthWrapper.mockRole;
-          if (role == 'teacher') {
-            return teacherHome;
-          } else if (role == 'student') {
-            return studentHome;
-          } else {
-            return login;
-          }
-        }
+  /// Configuración de GoRouter reactivo.
+  late final GoRouter router = GoRouter(
+    initialLocation: splash,
+    refreshListenable: GoRouterRefreshStream(authCubit.stream),
+    redirect: (context, state) {
+      final authState = authCubit.state;
+      final location = state.uri.path;
 
-        // Permitir acceso a rutas de autenticación sin verificación
-        if (location == login ||
-            location == register ||
-            location == forgotPassword) {
-          return null;
-        }
+      if (authState is AuthInitial || authState is AuthLoading) {
+        final isPublicRoute = _publicRoutes.contains(location);
+        return isPublicRoute || location == splash ? null : splash;
+      }
 
-        // Para otras rutas, verificar si hay rol (mock)
-        // En Sprint 2, esto se validará con Firebase Auth
-        final role = AuthWrapper.mockRole;
-        if (role == null && location != login) {
+      if (authState is AuthUnauthenticated) {
+        if (location == splash || !_publicRoutes.contains(location)) {
           return login;
         }
+        return null;
+      }
 
-        return null; // No redirigir, continuar con la navegación normal
-      },
-      routes: [
-        // Ruta raíz (manejada por redirect)
-        GoRoute(
-          path: '/',
-          builder: (context, state) =>
-              const Scaffold(body: Center(child: CircularProgressIndicator())),
-        ),
+      if (authState is AuthAuthenticated) {
+        final home = authState.role == UserRole.teacher
+            ? teacherHome
+            : studentHome;
 
-        // Rutas de autenticación
-        GoRoute(
-          path: login,
-          name: 'login',
-          builder: (context, state) => const LoginScreen(),
-        ),
-        GoRoute(
-          path: register,
-          name: 'register',
-          builder: (context, state) => const RegisterScreen(),
-        ),
-        GoRoute(
-          path: forgotPassword,
-          name: 'forgotPassword',
-          builder: (context, state) => const ForgotPasswordScreen(),
-        ),
+        if (location == splash || _publicRoutes.contains(location)) {
+          return home;
+        }
 
-        // Rutas de home (redirigen a lista de clases)
-        GoRoute(
-          path: teacherHome,
-          name: 'teacherHome',
-          builder: (context, state) => const TeacherHomeScreen(),
-        ),
-        GoRoute(
-          path: studentHome,
-          name: 'studentHome',
-          builder: (context, state) => const StudentHomeScreen(),
-        ),
+        final isTeacherPath = location.startsWith('/home/teacher');
+        final isStudentPath = location.startsWith('/home/student');
 
-        // StatefulShellRoute para docente con BottomNavigationBar
-        // Mantiene el estado de cada tab independientemente
-        StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) {
-            return Scaffold(
-              body: navigationShell,
-              bottomNavigationBar: CustomBottomNavigationBar(
-                navigationShell: navigationShell,
+        if (isTeacherPath && authState.role != UserRole.teacher) {
+          return studentHome;
+        }
+
+        if (isStudentPath && authState.role != UserRole.student) {
+          return teacherHome;
+        }
+      }
+
+      return null;
+    },
+    routes: [
+      // Splash / loader
+      GoRoute(
+        path: splash,
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: CircularProgressIndicator())),
+      ),
+
+      // Rutas de autenticación
+      GoRoute(
+        path: login,
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: register,
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: forgotPassword,
+        name: 'forgotPassword',
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              ForgotPasswordCubit(context.read<AuthRepository>()),
+          child: const ForgotPasswordScreen(),
+        ),
+      ),
+
+      // Rutas de home simples
+      GoRoute(
+        path: teacherHome,
+        name: 'teacherHome',
+        builder: (context, state) => const TeacherHomeScreen(),
+      ),
+      GoRoute(
+        path: studentHome,
+        name: 'studentHome',
+        builder: (context, state) => const StudentHomeScreen(),
+      ),
+
+      // StatefulShellRoute para docente con BottomNavigationBar
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return Scaffold(
+            body: navigationShell,
+            bottomNavigationBar: CustomBottomNavigationBar(
+              navigationShell: navigationShell,
+            ),
+          );
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: teacherClassesList,
+                name: 'teacherClassesList',
+                builder: (context, state) => const TeacherClassesListScreen(),
               ),
-            );
-          },
-          branches: [
-            // Branch 0: Clases
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: teacherClassesList,
-                  name: 'teacherClassesList',
-                  builder: (context, state) => const TeacherClassesListScreen(),
-                ),
-                GoRoute(
-                  path: '$teacherClassDetail/:classId',
-                  name: 'teacherClassDetail',
-                  builder: (context, state) {
-                    final classId = state.pathParameters['classId'] ?? '';
-                    return TeacherClassDetailScreen(classId: classId);
-                  },
-                ),
-              ],
-            ),
-            // Branch 1: Estadísticas
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: teacherStatistics,
-                  name: 'teacherStatistics',
-                  builder: (context, state) => const StatisticsScreen(),
-                ),
-              ],
-            ),
-            // Branch 2: Configuración
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: teacherSettings,
-                  name: 'teacherSettings',
-                  builder: (context, state) => const SettingsScreen(),
-                ),
-              ],
-            ),
-          ],
-        ),
-
-        // StatefulShellRoute para estudiante con BottomNavigationBar
-        // Mantiene el estado de cada tab independientemente
-        StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) {
-            return Scaffold(
-              body: navigationShell,
-              bottomNavigationBar: CustomBottomNavigationBar(
-                navigationShell: navigationShell,
+              GoRoute(
+                path: '$teacherClassDetail/:classId',
+                name: 'teacherClassDetail',
+                builder: (context, state) {
+                  final classId = state.pathParameters['classId'] ?? '';
+                  return TeacherClassDetailScreen(classId: classId);
+                },
               ),
-            );
-          },
-          branches: [
-            // Branch 0: Clases
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: studentClassesList,
-                  name: 'studentClassesList',
-                  builder: (context, state) => const StudentClassesListScreen(),
-                ),
-                GoRoute(
-                  path: '$studentClassDetail/:classId',
-                  name: 'studentClassDetail',
-                  builder: (context, state) {
-                    final classId = state.pathParameters['classId'] ?? '';
-                    return StudentClassDetailScreen(classId: classId);
-                  },
-                ),
-              ],
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: teacherStatistics,
+                name: 'teacherStatistics',
+                builder: (context, state) => const StatisticsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: teacherSettings,
+                name: 'teacherSettings',
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      // StatefulShellRoute para estudiante con BottomNavigationBar
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return Scaffold(
+            body: navigationShell,
+            bottomNavigationBar: CustomBottomNavigationBar(
+              navigationShell: navigationShell,
             ),
-            // Branch 1: Estadísticas
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: studentStatistics,
-                  name: 'studentStatistics',
-                  builder: (context, state) => const StatisticsScreen(),
-                ),
-              ],
-            ),
-            // Branch 2: Configuración
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: studentSettings,
-                  name: 'studentSettings',
-                  builder: (context, state) => const SettingsScreen(),
-                ),
-              ],
-            ),
-          ],
-        ),
+          );
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: studentClassesList,
+                name: 'studentClassesList',
+                builder: (context, state) => const StudentClassesListScreen(),
+              ),
+              GoRoute(
+                path: '$studentClassDetail/:classId',
+                name: 'studentClassDetail',
+                builder: (context, state) {
+                  final classId = state.pathParameters['classId'] ?? '';
+                  return StudentClassDetailScreen(classId: classId);
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: studentStatistics,
+                name: 'studentStatistics',
+                builder: (context, state) => const StatisticsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: studentSettings,
+                name: 'studentSettings',
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
 
-        // Rutas de clases (auxiliares)
-        GoRoute(
-          path: createClass,
-          name: 'createClass',
-          builder: (context, state) => const CreateClassScreen(),
-        ),
-        GoRoute(
-          path: joinClass,
-          name: 'joinClass',
-          builder: (context, state) => const JoinClassScreen(),
-        ),
-        GoRoute(
-          path: '$manageStudents/:classId',
-          name: 'manageStudents',
-          builder: (context, state) {
-            final classId = state.pathParameters['classId'] ?? '';
-            return ManageStudentsScreen(classId: classId);
-          },
-        ),
+      // Rutas de clases (auxiliares)
+      GoRoute(
+        path: createClass,
+        name: 'createClass',
+        builder: (context, state) => const CreateClassScreen(),
+      ),
+      GoRoute(
+        path: joinClass,
+        name: 'joinClass',
+        builder: (context, state) => const JoinClassScreen(),
+      ),
+      GoRoute(
+        path: '$manageStudents/:classId',
+        name: 'manageStudents',
+        builder: (context, state) {
+          final classId = state.pathParameters['classId'] ?? '';
+          return ManageStudentsScreen(classId: classId);
+        },
+      ),
 
-        // Rutas de tareas
-        GoRoute(
-          path: taskList,
-          name: 'taskList',
-          builder: (context, state) => const TaskListScreen(),
-        ),
-        GoRoute(
-          path: createTask,
-          name: 'createTask',
-          builder: (context, state) => const CreateTaskScreen(),
-        ),
-        GoRoute(
-          path: taskDetail,
-          name: 'taskDetail',
-          builder: (context, state) {
-            final taskId = state.pathParameters['taskId'] ?? '';
-            return TaskDetailScreen(taskId: taskId);
-          },
-        ),
+      // Rutas de tareas
+      GoRoute(
+        path: taskList,
+        name: 'taskList',
+        builder: (context, state) => const TaskListScreen(),
+      ),
+      GoRoute(
+        path: createTask,
+        name: 'createTask',
+        builder: (context, state) => const CreateTaskScreen(),
+      ),
+      GoRoute(
+        path: taskDetail,
+        name: 'taskDetail',
+        builder: (context, state) {
+          final taskId = state.pathParameters['taskId'] ?? '';
+          return TaskDetailScreen(taskId: taskId);
+        },
+      ),
 
-        // Rutas de sesiones
-        GoRoute(
-          path: timer,
-          name: 'timer',
-          builder: (context, state) {
-            final taskId = state.pathParameters['taskId'] ?? '';
-            return TimerScreen(taskId: taskId);
-          },
-        ),
-        GoRoute(
-          path: sessionHistory,
-          name: 'sessionHistory',
-          builder: (context, state) => const SessionHistoryScreen(),
-        ),
+      // Rutas de sesiones
+      GoRoute(
+        path: timer,
+        name: 'timer',
+        builder: (context, state) {
+          final taskId = state.pathParameters['taskId'] ?? '';
+          return TimerScreen(taskId: taskId);
+        },
+      ),
+      GoRoute(
+        path: sessionHistory,
+        name: 'sessionHistory',
+        builder: (context, state) => const SessionHistoryScreen(),
+      ),
 
-        // Rutas de estadísticas
-        GoRoute(
-          path: statistics,
-          name: 'statistics',
-          builder: (context, state) => const StatisticsScreen(),
-        ),
-      ],
-      errorBuilder: (context, state) =>
-          ErrorScreen(errorMessage: 'Ruta no encontrada: ${state.uri.path}'),
-    );
-  }
+      // Rutas de estadísticas
+      GoRoute(
+        path: statistics,
+        name: 'statistics',
+        builder: (context, state) => const StatisticsScreen(),
+      ),
+    ],
+    errorBuilder: (context, state) =>
+        ErrorScreen(errorMessage: 'Ruta no encontrada: ${state.uri.path}'),
+  );
 }

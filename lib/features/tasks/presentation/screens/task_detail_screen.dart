@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../features/auth/presentation/widgets/auth_wrapper.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../../auth/domain/enums/user_role.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 
 /// Pantalla de detalle de tarea
 ///
@@ -85,7 +88,9 @@ class TaskDetailScreen extends StatelessWidget {
     final status = taskData['status'] as String;
     final statusText = _getStatusText(status);
     final statusColor = _getStatusColor(context, status);
-    final isTeacher = AuthWrapper.mockRole == 'teacher';
+    final authState = context.watch<AuthCubit>().state;
+    final isTeacher =
+        authState is AuthAuthenticated && authState.role == UserRole.teacher;
 
     return Scaffold(
       appBar: const CustomAppBar(title: TaskStrings.taskDetailTitle),

@@ -95,6 +95,9 @@ class CustomTextField extends StatelessWidget {
   /// Formatters personalizados
   final List<TextInputFormatter>? inputFormatters;
 
+  /// Autofill hints para el teclado virtual.
+  final Iterable<String>? autofillHints;
+
   const CustomTextField({
     super.key,
     this.label,
@@ -117,6 +120,7 @@ class CustomTextField extends StatelessWidget {
     this.focusNode,
     this.readOnly = false,
     this.inputFormatters,
+    this.autofillHints,
   });
 
   @override
@@ -166,6 +170,7 @@ class CustomTextField extends StatelessWidget {
         maxLength: maxLength,
         focusNode: focusNode,
         inputFormatters: inputFormatters,
+        autofillHints: autofillHints,
         decoration: decoration,
         style: context.textTheme.bodyLarge,
       ),

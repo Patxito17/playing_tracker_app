@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 20 de Noviembre 2025
-**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 1 completada) 🚧
+**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 6 completada) 🚧
 
 ---
 
@@ -49,6 +49,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 ### Gestión de Estado
 - **flutter_bloc** ✅ Dependencia configurada (Sprint 0) y usada en wrappers de UI.
 - **Cubit** 🚧 Sistema principal definido en flutter_style_rules; AuthCubit inicia en Sprint 2.
+- **ForgotPasswordCubit** ✅ Añadido en Sprint 2 (Fase 5) para manejar recuperación de contraseña desacoplada del flujo principal.
 - **Equatable** ✅ Disponible para estados/entidades desde Sprint 1.
 - **BlocProvider** ✅ Configurado en ejemplos y listo para inyección en Sprint 2.
 - **BlocBuilder/BlocConsumer** ✅ Utilizados en pantallas de autenticación (Sprint 0) como base.
@@ -205,7 +206,7 @@ lib/
 │       ├── custom_app_bar.dart      # AppBar personalizado
 │       ├── custom_bottom_navigation_bar.dart # BottomNavigationBar M3
 │       ├── custom_tab_bar.dart      # TabBar personalizado
-│       └── navigation_helper.dart   # Helper para pruebas de navegación
+│       └── (otros helpers menores)
 │
 └── main.dart                          # 📅 Entry point con Firebase init
 ```
@@ -222,7 +223,8 @@ lib/
 - ✅ Registro y autenticación con Firebase
 - ✅ Login con email y contraseña
 - ✅ Recuperación de contraseña
-- ✅ Navegación a pantalla home específica de docente
+- ✅ Home docente con hero card, acciones rápidas y CTA hacia clases
+- ✅ Navegación declarativa GoRouter (guardada por rol)
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
 
@@ -248,6 +250,7 @@ lib/
 - ✅ Registro y autenticación con Firebase
 - ✅ Login con email y contraseña
 - ✅ Recuperación de contraseña
+- ✅ Home alumno con acciones rápidas (unirse a clase, ver tareas, continuar práctica)
 - ✅ Navegación a pantalla home específica de alumno
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
@@ -282,6 +285,13 @@ lib/
 - ✅ Manejo de errores de Firebase en español
 - ✅ Estados de carga y feedback visual
 - ✅ Navegación condicional según rol (docente/alumno)
+- ✅ Suite de pruebas unitarias/widget que cubre AuthCubit y las redirecciones del router
+
+#### Estado actual de pruebas
+
+- `test/features/auth/presentation/cubit/auth_cubit_test.dart` abarca login, registro (teacher/student), logout, manejo de errores y persistencia `toJson/fromJson` usando `mocktail` + `HydratedBloc`.
+- `test/features/home/presentation/router_navigation_test.dart` monta un `GoRouter` real con un `AuthCubit` controlado para validar las redirecciones hacia login/home y los guards por rol.
+- `test/widget_test.dart` mantiene un smoke test completo del `PlayingTrackerApp`, inyectando un repositorio mock para evitar dependencias externas.
 
 ---
 
@@ -583,6 +593,12 @@ service cloud.firestore {
 - `go_router: ^17.0.0` - Navegación declarativa con guards reactivos
 - `path_provider: ^2.1.5` - Storage multiplataforma
 
+**Avances recientes (20 nov 2025):**
+- ✅ Fase 2 completada con `AuthCubit` hidratado + tests unitarios.
+- ✅ Fase 3 completada con `AuthRepositoryImpl` (Firebase Auth + Firestore) y helper `firebase_error_mapper.dart`.
+- ✅ Fase 4 completada: `AppRoutes` ahora escucha `AuthCubit`, se creó `GoRouterRefreshStream` y se removieron mocks (`AuthWrapper`, `navigation_helper.dart`).
+- 🧪 `flutter analyze` y `flutter test` integrados al flujo diario antes de continuar con la Fase 4.
+
 **Entregables:**
 - 🔐 Sistema de autenticación completo (login, registro Teacher/Student, logout)
 - 👥 Perfiles de usuario en Firestore (collections `teachers` y `students`)
@@ -699,7 +715,7 @@ service cloud.firestore {
 ```
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
-Sprint 2: ██░░░░░░░░░░░░░░░░░░ 12.5% 🚧 Autenticación
+Sprint 2: ██████░░░░░░░░░░░░ 50% 🚧 Autenticación
 Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
 Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
 Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
