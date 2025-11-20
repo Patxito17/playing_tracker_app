@@ -74,13 +74,20 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
       child: BlocProvider(
         create: (_) =>
             widget.authCubitBuilder?.call(repository) ?? AuthCubit(repository),
-        child: MaterialApp.router(
-          title: 'Playing Tracker',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: _themeMode,
-          routerConfig: AppRoutes.router,
-          debugShowCheckedModeBanner: false,
+        child: Builder(
+          builder: (context) {
+            final authCubit = context.read<AuthCubit>();
+            final appRoutes = AppRoutes(authCubit);
+
+            return MaterialApp.router(
+              title: 'Playing Tracker',
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: _themeMode,
+              routerConfig: appRoutes.router,
+              debugShowCheckedModeBanner: false,
+            );
+          },
         ),
       ),
     );

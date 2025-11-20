@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
-import '../../../../shared/widgets/navigation_helper.dart';
-import '../../../../core/constants/app_constants.dart';
 
 /// Pantalla de estadísticas (Placeholder - Sprint 0)
 ///
@@ -48,7 +48,6 @@ class StatisticsScreen extends StatelessWidget {
               ),
             ),
           ),
-          const NavigationHelper(),
         ],
       ),
     );
