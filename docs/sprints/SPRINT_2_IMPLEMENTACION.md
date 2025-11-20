@@ -12,9 +12,9 @@
 | **Sprint** | Sprint 2 |
 | **Duración** | 2-3 semanas |
 | **Estado** | En progreso (Fase 1 completada) |
-| **Versión del documento** | 1.1 |
+| **Versión del documento** | 1.2 |
 | **Fecha** | 13 de Noviembre 2025 |
-| **Última actualización** | 19 de Noviembre 2025 |
+| **Última actualización** | 20 de Noviembre 2025 |
 | **Responsable** | Equipo de Desarrollo |
 
 ---
@@ -42,20 +42,20 @@ Implementar un sistema completo de autenticación con Firebase que permita:
 ```yaml
 dependencies:
   # Firebase Core y Firestore (necesarios para inicialización y datos)
-  firebase_core: ^3.3.0
-  cloud_firestore: ^5.4.4
+  firebase_core: ^4.2.1
+  cloud_firestore: ^6.1.0
 
   # Firebase Authentication
-  firebase_auth: ^5.3.4
+  firebase_auth: ^6.1.2
 
   # Gestión de Estado (ya incluido en Sprint 1)
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
 
   # Persistencia automática de estado
-  hydrated_bloc: ^9.1.5
+  hydrated_bloc: ^10.1.1
 
   # Navegación declarativa y guards
-  go_router: ^14.6.2
+  go_router: ^17.0.0
 
   # Storage para hydrated_bloc
   path_provider: ^2.1.5
@@ -786,12 +786,12 @@ class MyApp extends StatelessWidget {
 - `lib/features/auth/presentation/screens/register_selection_screen.dart`
 - `lib/features/auth/presentation/screens/register_teacher_screen.dart`
 - `lib/features/auth/presentation/screens/register_student_screen.dart`
-- `lib/shared/strings/auth_strings.dart` - Strings centralizados (según flutter_style_rules)
+- `lib/core/constants/app_strings.dart` - Centralización de strings (AuthStrings / ClassesStrings)
 
 #### Strings Centralizados
 
 ```dart
-// lib/shared/strings/auth_strings.dart
+// lib/core/constants/app_strings.dart
 
 class AuthStrings {
   // Login
@@ -838,7 +838,7 @@ import 'package:playing_tracker/shared/widgets/custom_text_field.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
 import 'package:playing_tracker/shared/widgets/custom_card.dart';
 import 'package:playing_tracker/core/utils/domain_validators.dart';
-import 'package:playing_tracker/shared/strings/auth_strings.dart';
+import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/config/router/route_names.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -875,112 +875,107 @@ class _LoginScreenState extends State<LoginScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      body: BlocListener<AuthCubit, AuthState>(
-        listener: (context, state) {
-          // GoRouter maneja la navegación automáticamente
-          // Solo mostrar errores aquí
-          if (state is AuthError) {
-            // Usar SelectableText según flutter_style_rules
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: SelectableText.rich(
-                  TextSpan(
-                    text: state.message,
-                    style: TextStyle(color: colorScheme.onError),
-                  ),
-                ),
-                backgroundColor: colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: CustomCard(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Título
-                        Text(
-                          AuthStrings.loginTitle,
-                          style: textTheme.headlineMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 32),
+      body: SafeArea(
+        child: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final isLoading = state is AuthLoading;
+            final errorMessage =
+                state is AuthError ? state.message : null;
 
-                        // Campo Email
-                        CustomTextField(
-                          controller: _emailController,
-                          label: AuthStrings.emailLabel,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          validator: validateEmail, // Del Sprint 1
-                          // Semantics para accesibilidad
-                          semanticsLabel: 'Campo de correo electrónico',
-                        ),
-                        const SizedBox(height: 16),
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  child: CustomCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Título
+                          Text(
+                            AuthStrings.loginTitle,
+                            style: textTheme.headlineMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 32),
 
-                        // Campo Password
-                        CustomTextField(
-                          controller: _passwordController,
-                          label: AuthStrings.passwordLabel,
-                          obscureText: true,
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (_) => _handleLogin(),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'La contraseña es requerida';
-                            }
-                            if (value.length < 6) {
-                              return AuthStrings.errorWeakPassword;
-                            }
-                            return null;
-                          },
-                          semanticsLabel: 'Campo de contraseña',
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Botón Login
-                        BlocBuilder<AuthCubit, AuthState>(
-                          builder: (context, state) {
-                            final isLoading = state is AuthLoading;
-
-                            return CustomButton(
-                              text: AuthStrings.loginButton,
-                              onPressed: isLoading ? null : _handleLogin,
-                              isLoading: isLoading,
-                              semanticsLabel: 'Botón de iniciar sesión',
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Link a registro
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(AuthStrings.noAccountQuestion),
-                            TextButton(
-                              onPressed: () => context.push(RouteNames.registerSelection),
-                              child: Text(AuthStrings.registerLink),
+                          if (errorMessage != null) ...[
+                            SelectableText.rich(
+                              TextSpan(
+                                text: errorMessage,
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.error,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
                             ),
+                            const SizedBox(height: 16),
                           ],
-                        ),
-                      ],
+
+                          // Campo Email
+                          CustomTextField(
+                            controller: _emailController,
+                            label: AuthStrings.emailLabel,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            validator: validateEmail, // Del Sprint 1
+                            // Semantics para accesibilidad
+                            semanticsLabel: 'Campo de correo electrónico',
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Campo Password
+                          CustomTextField(
+                            controller: _passwordController,
+                            label: AuthStrings.passwordLabel,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _handleLogin(),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return ValidationStrings.passwordRequired;
+                              }
+                              if (value.length < 6) {
+                                return AuthStrings.errorWeakPassword;
+                              }
+                              return null;
+                            },
+                            semanticsLabel: 'Campo de contraseña',
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Botón Login
+                          CustomButton(
+                            text: AuthStrings.loginButton,
+                            onPressed: isLoading ? null : _handleLogin,
+                            isLoading: isLoading,
+                            semanticsLabel: 'Botón de iniciar sesión',
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Link a registro
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(AuthStrings.noAccountQuestion),
+                              TextButton(
+                                onPressed: () => context
+                                    .push(RouteNames.registerSelection),
+                                child: Text(AuthStrings.registerLink),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -997,7 +992,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playing_tracker/shared/widgets/custom_card.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
-import 'package:playing_tracker/shared/strings/auth_strings.dart';
+import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/config/router/route_names.dart';
 
 class RegisterSelectionScreen extends StatelessWidget {
@@ -1060,6 +1055,10 @@ class RegisterSelectionScreen extends StatelessWidget {
 **Gestión de TextEditingController:**
 - Usar `BlocBuilder<AuthCubit, AuthState>` para envolver solo los widgets que deben reconstruirse
 - Los `TextEditingController` deben mantenerse en el State, no reconstruirse con cada cambio de estado
+
+**Errores accesibles (según flutter_style_rules):**
+- Mostrar los mensajes directamente en la UI usando `SelectableText.rich` con contraste adecuado.
+- Evitar `SnackBar` para errores de formularios de autenticación; la información debe permanecer visible.
 
 **Accesibilidad:**
 - Todos los botones deben tener `semanticsLabel` para VoiceOver/TalkBack
