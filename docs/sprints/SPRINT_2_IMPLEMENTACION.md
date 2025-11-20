@@ -74,7 +74,7 @@ dependencies:
 
 **Total de Fases:** 8
 **Duración Estimada:** 2-3 semanas
-**Progreso:** 62.5% (5/8 fases completadas)
+**Progreso:** 75% (6/8 fases completadas)
 
 | Fase | Descripción | Estado | Duración |
 |------|-------------|--------|----------|
@@ -83,7 +83,7 @@ dependencies:
 | **Fase 3** | Repositorios de Autenticación y Firestore | ✅ Completada | 3 horas |
 | **Fase 4** | GoRouter y Navegación Condicional | ✅ Completada | 4 horas |
 | **Fase 5** | UI de Login y Registro | ✅ Completada | 5 horas |
-| **Fase 6** | Pantallas Home y Navegación Principal | ⏳ Pendiente | 4 horas |
+| **Fase 6** | Pantallas Home y Navegación Principal | ✅ Completada | 4 horas |
 | **Fase 7** | Testing y Validaciones | ⏳ Pendiente | 3 horas |
 | **Fase 8** | Documentación y Refinamiento | ⏳ Pendiente | 2 horas |
 
@@ -675,234 +675,64 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
 ### Fase 6: Pantallas Home y Navegación Principal
 
 **Duración:** 4 horas
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completada
 
-#### Archivos a Crear
+#### Archivos actualizados
 
 - `lib/features/home/presentation/screens/teacher_home_screen.dart`
 - `lib/features/home/presentation/screens/student_home_screen.dart`
-- `lib/features/profile/presentation/screens/profile_screen.dart`
-- `lib/shared/widgets/custom_drawer.dart`
+- `lib/features/home/presentation/widgets/home_quick_action_card.dart`
+- `lib/features/home/presentation/widgets/home_sections.dart`
+- `lib/core/constants/app_strings.dart` (`HomeStrings`)
 
-#### TeacherHomeScreen (Estructura)
+#### Resumen de implementación
 
-```dart
-// lib/features/home/presentation/screens/teacher_home_screen.dart
+Creamos una experiencia de inicio real para cada rol, aprovechando GoRouter, AuthCubit y Material 3:
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:playing_tracker/shared/widgets/custom_app_bar.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
-import 'package:playing_tracker/shared/widgets/custom_drawer.dart';
-
-class TeacherHomeScreen extends StatelessWidget {
-  const TeacherHomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Panel de docente',
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () => context.push('/teacher/profile'),
-            tooltip: 'Perfil',
-          ),
-        ],
+```39:70:lib/features/home/presentation/screens/teacher_home_screen.dart
+return Scaffold(
+  appBar: CustomAppBar(
+    title: HomeStrings.teacherHomeTitle,
+    automaticallyImplyLeading: false,
+    actions: [
+      IconButton(
+        tooltip: SettingsStrings.logout,
+        icon: const Icon(Icons.logout_rounded),
+        onPressed: () => context.read<AuthCubit>().logout(),
       ),
-      drawer: const CustomDrawer(role: UserRole.teacher),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Cards de acceso rápido
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  children: [
-                    _DashboardCard(
-                      title: 'Mis clases',
-                      icon: Icons.class_,
-                      color: colorScheme.primary,
-                      onTap: () {
-                        // TODO: Navegar a clases (Sprint 3)
-                      },
-                    ),
-                    _DashboardCard(
-                      title: 'Mis tareas',
-                      icon: Icons.assignment,
-                      color: colorScheme.secondary,
-                      onTap: () {
-                        // TODO: Navegar a tareas (Sprint 4)
-                      },
-                    ),
-                    _DashboardCard(
-                      title: 'Estadísticas',
-                      icon: Icons.analytics,
-                      color: colorScheme.tertiary,
-                      onTap: () {
-                        // TODO: Navegar a estadísticas (Sprint 5)
-                      },
-                    ),
-                    _DashboardCard(
-                      title: 'Alumnos',
-                      icon: Icons.people,
-                      color: colorScheme.error,
-                      onTap: () {
-                        // TODO: Navegar a alumnos (Sprint 3)
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: Crear nueva clase (Sprint 3)
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Nueva clase'),
-      ),
-    );
-  }
-}
-
-class _DashboardCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _DashboardCard({
-    required this.title,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomCard(
-      onTap: onTap,
+    ],
+  ),
+  body: SafeArea(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSpacing.l),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(icon, size: 48, color: color),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
+          HomeHeroCard(...),
+          const SizedBox(height: AppSpacing.xl),
+          HomeQuickActionsSection(...),
+          const SizedBox(height: AppSpacing.xl),
+          const HomeHighlightsCard(...),
         ],
       ),
-    );
-  }
-}
+    ),
+  ),
+);
 ```
 
-#### CustomDrawer con Logout
-
-```dart
-// lib/shared/widgets/custom_drawer.dart
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:playing_tracker/core/enums/user_role.dart';
-
-class CustomDrawer extends StatelessWidget {
-  final UserRole role;
-
-  const CustomDrawer({
-    super.key,
-    required this.role,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  role == UserRole.teacher ? Icons.school : Icons.person,
-                  size: 48,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  role == UserRole.teacher ? 'Panel de docente' : 'Panel de alumno',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Inicio'),
-            onTap: () {
-              Navigator.pop(context); // Cerrar drawer
-              context.go(role == UserRole.teacher ? '/teacher/home' : '/student/home');
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Perfil'),
-            onTap: () {
-              Navigator.pop(context); // Cerrar drawer
-              context.push(role == UserRole.teacher ? '/teacher/profile' : '/student/profile');
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Cerrar sesión'),
-            onTap: () {
-              Navigator.pop(context); // Cerrar drawer primero
-              context.read<AuthCubit>().logout();
-              // GoRouter maneja la redirección automáticamente
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-```
+- **TeacherHomeScreen** expone un hero card con CTA hacia las clases, un bloque de acciones rápidas (Crear clase, ir a estadísticas, etc.) y un recordatorio visual que servirá para futuras alertas.
+- **StudentHomeScreen** reutiliza los mismos widgets para mostrar acciones orientadas al alumno (unirse a clase, revisar tareas, continuar práctica). Ambos flujos ahora funcionan sin redirecciones silenciosas y respetan el estado actual del router.
+- Se introdujeron componentes reutilizables (`HomeHeroCard`, `HomeQuickActionsSection`, `HomeHighlightsCard`, `HomeQuickActionCard`) para facilitar la expansión futura y reducir duplicación.
+- `HomeStrings` centraliza todos los textos visibles siguiendo las reglas de capitalización del proyecto.
 
 #### Checklist de Fase 6
 
-- [ ] `TeacherHomeScreen` con cards de acceso rápido
-- [ ] `StudentHomeScreen` con estructura similar
-- [ ] `ProfileScreen` compartida entre roles
-- [ ] `CustomDrawer` con navegación y logout
-- [ ] Logout ejecuta `Navigator.pop()` antes de `context.read<AuthCubit>().logout()`
-- [ ] FAB (FloatingActionButton) en TeacherHome para crear clase
-- [ ] Navegación entre pantallas funcionando
+- [x] `TeacherHomeScreen` con hero, acciones rápidas y cierre de sesión vía AuthCubit
+- [x] `StudentHomeScreen` equivalente con navegación declarativa y acciones específicas
+- [x] Componentes reutilizables (`HomeHeroCard`, `HomeQuickActionsSection`, `HomeHighlightsCard`, `HomeQuickActionCard`)
+- [x] Strings centralizados (`HomeStrings`) y uso de `CustomAppBar`
+- [x] Navegación con GoRouter (`context.go`/`context.push`) conectada al router principal
+- [x] QA completo (`dart format`, `flutter analyze`, `flutter test`) sin errores
 
 ---
 

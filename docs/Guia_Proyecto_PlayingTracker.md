@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 20 de Noviembre 2025
-**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 5 completada) 🚧
+**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 6 completada) 🚧
 
 ---
 
@@ -223,7 +223,8 @@ lib/
 - ✅ Registro y autenticación con Firebase
 - ✅ Login con email y contraseña
 - ✅ Recuperación de contraseña
-- ✅ Navegación a pantalla home específica de docente
+- ✅ Home docente con hero card, acciones rápidas y CTA hacia clases
+- ✅ Navegación declarativa GoRouter (guardada por rol)
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
 
@@ -249,6 +250,7 @@ lib/
 - ✅ Registro y autenticación con Firebase
 - ✅ Login con email y contraseña
 - ✅ Recuperación de contraseña
+- ✅ Home alumno con acciones rápidas (unirse a clase, ver tareas, continuar práctica)
 - ✅ Navegación a pantalla home específica de alumno
 - ✅ Visualización de datos de perfil (nombre completo)
 - ✅ Logout seguro
