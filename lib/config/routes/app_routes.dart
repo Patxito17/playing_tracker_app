@@ -91,7 +91,8 @@ class AppRoutes {
       final location = state.uri.path;
 
       if (authState is AuthInitial || authState is AuthLoading) {
-        return location == splash ? null : splash;
+        final isPublicRoute = _publicRoutes.contains(location);
+        return isPublicRoute || location == splash ? null : splash;
       }
 
       if (authState is AuthUnauthenticated) {
