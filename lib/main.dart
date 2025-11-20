@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/domain/repositories/auth_repository.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'firebase_options.dart';
 
 /// Punto de entrada de la aplicación Playing Tracker
@@ -23,7 +27,9 @@ void main() async {
   final storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorageDirectory.web
-        : HydratedStorageDirectory((await getApplicationDocumentsDirectory()).path),
+        : HydratedStorageDirectory(
+            (await getApplicationDocumentsDirectory()).path,
+          ),
   );
 
   // Asignar storage globalmente y ejecutar la app
@@ -36,7 +42,17 @@ void main() async {
 /// Gestiona el tema actual (claro/oscuro) y proporciona el MaterialApp.router
 /// configurado con GoRouter y los temas de Material Design 3.
 class PlayingTrackerApp extends StatefulWidget {
-  const PlayingTrackerApp({super.key});
+  const PlayingTrackerApp({
+    super.key,
+    this.authRepository,
+    this.authCubitBuilder,
+  });
+
+  /// Permite inyectar un repositorio custom (por ejemplo en tests).
+  final AuthRepository? authRepository;
+
+  /// Builder opcional para crear el [AuthCubit] con configuraciones especiales.
+  final AuthCubit Function(AuthRepository repository)? authCubitBuilder;
 
   @override
   State<PlayingTrackerApp> createState() => _PlayingTrackerAppState();
@@ -51,13 +67,22 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Playing Tracker',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: _themeMode,
-      routerConfig: AppRoutes.router,
-      debugShowCheckedModeBanner: false,
+    final repository = widget.authRepository ?? AuthRepositoryImpl();
+
+    return RepositoryProvider<AuthRepository>.value(
+      value: repository,
+      child: BlocProvider(
+        create: (_) =>
+            widget.authCubitBuilder?.call(repository) ?? AuthCubit(repository),
+        child: MaterialApp.router(
+          title: 'Playing Tracker',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: _themeMode,
+          routerConfig: AppRoutes.router,
+          debugShowCheckedModeBanner: false,
+        ),
+      ),
     );
   }
 }
