@@ -10,6 +10,7 @@ import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../domain/enums/user_role.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
@@ -86,7 +87,18 @@ class _LoginScreenState extends State<LoginScreen> {
             constraints: const BoxConstraints(maxWidth: 600),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSpacing.l),
-              child: BlocBuilder<AuthCubit, AuthState>(
+              child: BlocConsumer<AuthCubit, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthAuthenticated) {
+                    final destination = state.role == UserRole.teacher
+                        ? AppRoutes.teacherHome
+                        : AppRoutes.studentHome;
+                    if (!mounted) {
+                      return;
+                    }
+                    context.go(destination);
+                  }
+                },
                 builder: (context, state) {
                   final isLoading = state is AuthLoading;
                   final errorMessage = state is AuthError
