@@ -54,6 +54,14 @@ void main() {
     },
   );
 
+  test('debe emitir AuthUnauthenticated cuando no existe usuario', () async {
+    when(() => mockAuthRepository.currentUser).thenReturn(null);
+
+    await authCubit.checkAuthState();
+
+    expect(authCubit.state, isA<AuthUnauthenticated>());
+  });
+
   test('debe emitir AuthError cuando login falla', () async {
     when(
       () => mockAuthRepository.signInWithEmail(any(), any()),
@@ -134,6 +142,41 @@ void main() {
     );
   });
 
+  test('debe registrar alumno y emitir AuthAuthenticated student', () async {
+    final credential = MockUserCredential();
+    final mockUser = MockFirebaseUser();
+    when(() => mockUser.uid).thenReturn('student-uid');
+    when(() => credential.user).thenReturn(mockUser);
+    when(
+      () => mockAuthRepository.registerWithEmail(any(), any()),
+    ).thenAnswer((_) async => credential);
+    when(
+      () => mockAuthRepository.createStudent(
+        userId: any(named: 'userId'),
+        firstName: any(named: 'firstName'),
+        lastName: any(named: 'lastName'),
+        email: any(named: 'email'),
+      ),
+    ).thenAnswer((_) async {});
+
+    expectLater(
+      authCubit.stream,
+      emitsInOrder([
+        isA<AuthLoading>(),
+        isA<AuthAuthenticated>()
+            .having((state) => state.role, 'role', UserRole.student)
+            .having((state) => state.userId, 'userId', 'student-uid'),
+      ]),
+    );
+
+    await authCubit.registerStudent(
+      firstName: 'Test',
+      lastName: 'Student',
+      email: 'student@test.com',
+      password: '123456',
+    );
+  });
+
   test('logout exitoso debe emitir AuthUnauthenticated', () async {
     when(() => mockAuthRepository.signOut()).thenAnswer((_) async {});
 
@@ -143,6 +186,69 @@ void main() {
     );
 
     await authCubit.logout();
+  });
+
+  test('logout con error debe emitir AuthError', () async {
+    when(
+      () => mockAuthRepository.signOut(),
+    ).thenThrow(AuthRepositoryException('logout-error'));
+
+    expectLater(
+      authCubit.stream,
+      emitsInOrder([
+        isA<AuthLoading>(),
+        isA<AuthError>().having(
+          (state) => state.message,
+          'message',
+          contains('logout'),
+        ),
+      ]),
+    );
+
+    await authCubit.logout();
+  });
+
+  test('registerTeacher con error mapea mensaje del repositorio', () async {
+    when(
+      () => mockAuthRepository.registerWithEmail(any(), any()),
+    ).thenThrow(AuthRepositoryException('teacher-error'));
+
+    expectLater(
+      authCubit.stream,
+      emitsInOrder([
+        isA<AuthLoading>(),
+        isA<AuthError>().having(
+          (state) => state.message,
+          'message',
+          contains('teacher'),
+        ),
+      ]),
+    );
+
+    await authCubit.registerTeacher(
+      firstName: 'Name',
+      lastName: 'Last',
+      email: 'teacher@test.com',
+      password: '123456',
+    );
+  });
+
+  test('registerStudent con error emite AuthError', () async {
+    when(
+      () => mockAuthRepository.registerWithEmail(any(), any()),
+    ).thenThrow(Exception('generic'));
+
+    expectLater(
+      authCubit.stream,
+      emitsInOrder([isA<AuthLoading>(), isA<AuthError>()]),
+    );
+
+    await authCubit.registerStudent(
+      firstName: 'Name',
+      lastName: 'Last',
+      email: 'student@test.com',
+      password: '123456',
+    );
   });
 
   test('toJson/fromJson solo persiste AuthAuthenticated', () {
