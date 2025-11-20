@@ -69,6 +69,16 @@ class AuthStrings {
       'Revisa tu bandeja de entrada. Si no encuentras el email, verifica tu carpeta de spam.';
   static const String termsNotAcceptedMessage =
       'Debes aceptar los términos y condiciones';
+
+  // Accesibilidad y Semantics
+  static const String loginErrorSemanticLabel =
+      'Error al iniciar sesión. Revisa los datos ingresados.';
+  static const String registerErrorSemanticLabel =
+      'Error al registrarte. Revisa la información del formulario.';
+  static const String forgotPasswordSuccessSemanticLabel =
+      'Enlace de recuperación enviado correctamente.';
+  static const String forgotPasswordErrorSemanticLabel =
+      'No se pudo enviar el enlace de recuperación.';
 }
 
 /// Strings relacionados con validación de formularios

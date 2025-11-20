@@ -34,6 +34,9 @@ abstract class AuthRepository {
     required String email,
   });
 
+  /// Envía un email para restablecer la contraseña del usuario.
+  Future<void> sendPasswordResetEmail(String email);
+
   /// Cierra la sesión actual.
   Future<void> signOut();
 }
