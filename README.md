@@ -188,9 +188,9 @@ flutter build web
 
 ## 📊 Estado del Proyecto
 
-**Sprint Actual:** Sprint 1 - Modelos de Dominio y Arquitectura de Datos ✅ COMPLETADO
+**Sprint Actual:** Sprint 2 - Autenticación y Gestión de Usuarios ✅ COMPLETADO
 
-**Progreso Sprint 1:** 100% completado (6/6 fases) ✅
+**Progreso Sprint 2:** 100% completado (8/8 fases) ✅
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -271,38 +271,18 @@ flutter build web
   - `dart run build_runner build` ✅ Ejecutado exitosamente
 - ✅ **Sprint 1 completado al 100%**
 
-### 📋 Sprint 2 - Autenticación y Gestión de Usuarios (Planificado)
+### ✅ Sprint 2 - Autenticación y Gestión de Usuarios (Completado)
 
-**Duración Estimada:** 2-3 semanas
-**Estado:** 📅 Planificado
-**Documento:** [`docs/sprints/SPRINT_2_IMPLEMENTACION.md`](docs/sprints/SPRINT_2_IMPLEMENTACION.md)
-
-**Objetivos Principales:**
-- 🔐 Sistema completo de autenticación con Firebase Auth
-- 👥 Gestión de perfiles Teacher/Student en Firestore
-- 🧭 Navegación condicional por rol con GoRouter
-- 💾 Persistencia de sesión con hydrated_bloc
-- 🎨 UI completa con custom widgets del Sprint 0
-
-**Stack Tecnológico:**
-- `firebase_auth` - Autenticación
-- `go_router` - Navegación declarativa y guards
-- `hydrated_bloc` - Persistencia automática de estado
-- `path_provider` - Storage multiplataforma
-
-**Fases del Sprint:**
-- Fase 1: Configuración inicial y dependencias (2h)
-- Fase 2: AuthCubit y estados de autenticación (4h)
-- Fase 3: Repositorios Firebase Auth y Firestore (3h)
-- Fase 4: GoRouter y navegación condicional (4h)
-- Fase 5: UI de login y registro (5h)
-- Fase 6: Pantallas home y navegación principal (4h)
-- Fase 7: Testing y validaciones (3h)
-- Fase 8: Documentación y refinamiento (2h)
+- 🔐 Autenticación Firebase + perfiles Teacher/Student en Firestore
+- 🧭 GoRouter con guards reactivos y homes por rol (docente/alumno)
+- 💾 Persistencia de sesión con `HydratedBloc`
+- 🎨 UI de login/registro/forgot password conectada al cubit real
+- 🧪 Pruebas unitarias/widget (`AuthCubit`, navegación por rol) documentadas
+  Documento: [`docs/sprints/SPRINT_2_IMPLEMENTACION.md`](docs/sprints/SPRINT_2_IMPLEMENTACION.md)
 
 ### 📋 Sprints Futuros
 
-- Sprint 3: Sistema de Clases y Membresías
+- Sprint 3: Sistema de Clases y Membresías (siguiente backlog)
 - Sprint 4: Gestión de Tareas y Asignaciones
 - Sprint 5: Cronómetro y Sesiones de Estudio
 - Sprint 6: Estadísticas y Dashboards
@@ -316,11 +296,10 @@ Para más detalles sobre el progreso, consulta:
 
 ## 📚 Documentación
 
-### Documentación Principal
-
 - 📄 [Guía del Proyecto](docs/Guia_Proyecto_PlayingTracker.md) - Visión general, arquitectura y roadmap
 - 📄 [Sprint 0 - Implementación](docs/sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX (Completado)
-- 📄 [Sprint 1 - Implementación](docs/sprints/SPRINT_1_IMPLEMENTACION.md) - Modelos de Dominio (En Progreso)
+- 📄 [Sprint 1 - Implementación](docs/sprints/SPRINT_1_IMPLEMENTACION.md) - Modelos de Dominio (Completado)
+- 📄 [Sprint 2 - Implementación](docs/sprints/SPRINT_2_IMPLEMENTACION.md) - Autenticación y navegación real (Completado)
 - 📄 [Guía de Componentes](docs/components/COMPONENTS_GUIDE.md) - Documentación completa de componentes base
 - 📄 [Reglas de Estilo](.cursor/rules/flutter_style_rules.mdc) - Convenciones de código y buenas prácticas
 
