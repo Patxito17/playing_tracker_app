@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_button.dart';
-import '../../../../shared/widgets/custom_text_field.dart';
+
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/custom_text_field.dart';
+import '../cubit/forgot_password_cubit.dart';
+import '../cubit/forgot_password_state.dart';
 
 /// Pantalla de recuperación de contraseña
 ///
@@ -22,17 +27,9 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  // Controlador de texto
   final _emailController = TextEditingController();
 
-  // Estado de validación
   String? _emailError;
-
-  // Estado de carga (mock)
-  bool _isLoading = false;
-
-  // Estado de confirmación enviada
-  bool _emailSent = false;
 
   @override
   void dispose() {
@@ -47,30 +44,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
   }
 
-  /// Maneja el envío del formulario
+  /// Maneja la solicitud de recuperación.
   void _handleSendEmail() {
-    // Validar email
     _validateEmail(_emailController.text);
 
-    // Si hay error, no continuar
     if (_emailError != null) {
       return;
     }
 
-    // Mock: simular envío de email
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simular carga (mock)
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _emailSent = true;
-        });
-      }
-    });
+    context.read<ForgotPasswordCubit>().sendResetLink(
+      _emailController.text.trim(),
+    );
   }
 
   @override
@@ -83,135 +67,156 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             constraints: const BoxConstraints(maxWidth: 600),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSpacing.l),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Espaciado superior
-                  SizedBox(height: context.screenHeight * 0.1),
+              child: BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+                builder: (context, state) {
+                  final isLoading = state is ForgotPasswordLoading;
+                  final emailSent = state is ForgotPasswordSuccess;
+                  final errorMessage = state is ForgotPasswordError
+                      ? state.message
+                      : null;
 
-                  // Icono ilustrativo
-                  Icon(
-                    Icons.lock_reset_outlined,
-                    size: 80,
-                    color: context.colorScheme.primary,
-                  ),
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Título principal
-                  Text(
-                    AuthStrings.forgotPasswordQuestion,
-                    style: context.headlineMediumBold,
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: AppSpacing.m),
-
-                  // Mensaje informativo
-                  if (!_emailSent)
-                    Text(
-                      AuthStrings.forgotPasswordInstructions,
-                      style: context.bodyLargeOnSurfaceVariant,
-                      textAlign: TextAlign.center,
-                    )
-                  else
-                    // Mensaje de confirmación
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.l),
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(
-                          AppBorderRadius.large,
+                  return AutofillGroup(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: context.screenHeight * 0.1),
+                        Icon(
+                          Icons.lock_reset_outlined,
+                          size: 80,
+                          color: context.colorScheme.primary,
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.check_circle_outline,
-                            size: 48,
-                            color: context.colorScheme.onPrimaryContainer,
+                        const SizedBox(height: AppSpacing.xl),
+                        Text(
+                          AuthStrings.forgotPasswordQuestion,
+                          style: context.headlineMediumBold,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.m),
+                        if (!emailSent)
+                          Text(
+                            AuthStrings.forgotPasswordInstructions,
+                            style: context.bodyLargeOnSurfaceVariant,
+                            textAlign: TextAlign.center,
+                          )
+                        else
+                          Semantics(
+                            label:
+                                AuthStrings.forgotPasswordSuccessSemanticLabel,
+                            liveRegion: true,
+                            child: Container(
+                              padding: const EdgeInsets.all(AppSpacing.l),
+                              decoration: BoxDecoration(
+                                color: context.colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(
+                                  AppBorderRadius.large,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    size: 48,
+                                    color:
+                                        context.colorScheme.onPrimaryContainer,
+                                  ),
+                                  const SizedBox(height: AppSpacing.m),
+                                  Text(
+                                    AuthStrings.emailSentTitle,
+                                    style: context.titleLargeBold?.copyWith(
+                                      color: context
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: AppSpacing.s),
+                                  Text(
+                                    AuthStrings.emailSentMessage,
+                                    style: AppTextStyles.bodyMedium(context)
+                                        ?.copyWith(
+                                          color: context
+                                              .colorScheme
+                                              .onPrimaryContainer,
+                                        ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                        if (errorMessage != null) ...[
                           const SizedBox(height: AppSpacing.m),
-                          Text(
-                            AuthStrings.emailSentTitle,
-                            style: context.titleLargeBold?.copyWith(
-                              color: context.colorScheme.onPrimaryContainer,
+                          Semantics(
+                            label: AuthStrings.forgotPasswordErrorSemanticLabel,
+                            liveRegion: true,
+                            child: SelectableText.rich(
+                              TextSpan(
+                                text: errorMessage,
+                                style: context.bodyMediumOnSurface?.copyWith(
+                                  color: context.colorScheme.error,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: AppSpacing.s),
-                          Text(
-                            AuthStrings.emailSentMessage,
-                            style: AppTextStyles.bodyMedium(context)?.copyWith(
-                              color: context.colorScheme.onPrimaryContainer,
-                            ),
-                            textAlign: TextAlign.center,
                           ),
                         ],
-                      ),
-                    ),
-
-                  if (!_emailSent) ...[
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // Campo de email
-                    CustomTextField(
-                      controller: _emailController,
-                      label: AuthStrings.emailLabel,
-                      hint: AuthStrings.emailHint,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.done,
-                      textCapitalization: TextCapitalization.none,
-                      errorText: _emailError,
-                      prefix: Icon(
-                        Icons.email_outlined,
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
-                      onChanged: (value) {
-                        // Limpiar error al escribir
-                        if (_emailError != null) {
-                          setState(() {
-                            _emailError = null;
-                          });
-                        }
-                      },
-                      onSubmitted: (_) => _handleSendEmail(),
-                    ),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Botón de envío
-                    CustomButton(
-                      label: AuthStrings.sendRecoveryLinkButton,
-                      variant: CustomButtonVariant.filled,
-                      isLoading: _isLoading,
-                      onPressed: _handleSendEmail,
-                    ),
-                  ],
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Link para volver al login
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AuthStrings.rememberPasswordQuestion,
-                        style: context.bodyMediumOnSurfaceVariant,
-                      ),
-                      TextButton(
-                        onPressed: () => context.pop(),
-                        child: Text(
-                          AuthStrings.loginLink,
-                          style: context.textPrimary?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: context.textTheme.bodyMedium?.fontSize,
+                        if (!emailSent) ...[
+                          const SizedBox(height: AppSpacing.xxl),
+                          CustomTextField(
+                            controller: _emailController,
+                            label: AuthStrings.emailLabel,
+                            hint: AuthStrings.emailHint,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.done,
+                            textCapitalization: TextCapitalization.none,
+                            autofillHints: const [AutofillHints.email],
+                            errorText: _emailError,
+                            prefix: Icon(
+                              Icons.email_outlined,
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                            onChanged: (value) {
+                              if (_emailError != null) {
+                                setState(() {
+                                  _emailError = null;
+                                });
+                              }
+                            },
+                            onSubmitted: (_) => _handleSendEmail(),
                           ),
+                          const SizedBox(height: AppSpacing.xl),
+                          CustomButton(
+                            label: AuthStrings.sendRecoveryLinkButton,
+                            variant: CustomButtonVariant.filled,
+                            isLoading: isLoading,
+                            onPressed: isLoading ? null : _handleSendEmail,
+                          ),
+                        ],
+                        const SizedBox(height: AppSpacing.xl),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AuthStrings.rememberPasswordQuestion,
+                              style: context.bodyMediumOnSurfaceVariant,
+                            ),
+                            TextButton(
+                              onPressed: () => context.go(AppRoutes.login),
+                              child: Text(
+                                AuthStrings.loginLink,
+                                style: context.textPrimary?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      context.textTheme.bodyMedium?.fontSize,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),

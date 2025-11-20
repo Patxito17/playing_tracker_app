@@ -11,8 +11,8 @@
 | **Proyecto** | Playing Tracker |
 | **Sprint** | Sprint 2 |
 | **Duración** | 2-3 semanas |
-| **Estado** | En progreso (Fase 1 completada) |
-| **Versión del documento** | 1.2 |
+| **Estado** | En progreso (Fase 5 completada) |
+| **Versión del documento** | 1.3 |
 | **Fecha** | 13 de Noviembre 2025 |
 | **Última actualización** | 20 de Noviembre 2025 |
 | **Responsable** | Equipo de Desarrollo |
@@ -74,7 +74,7 @@ dependencies:
 
 **Total de Fases:** 8
 **Duración Estimada:** 2-3 semanas
-**Progreso:** 50% (4/8 fases completadas)
+**Progreso:** 62.5% (5/8 fases completadas)
 
 | Fase | Descripción | Estado | Duración |
 |------|-------------|--------|----------|
@@ -82,7 +82,7 @@ dependencies:
 | **Fase 2** | AuthCubit y Estados de Autenticación | ✅ Completada | 4 horas |
 | **Fase 3** | Repositorios de Autenticación y Firestore | ✅ Completada | 3 horas |
 | **Fase 4** | GoRouter y Navegación Condicional | ✅ Completada | 4 horas |
-| **Fase 5** | UI de Login y Registro | ⏳ Pendiente | 5 horas |
+| **Fase 5** | UI de Login y Registro | ✅ Completada | 5 horas |
 | **Fase 6** | Pantallas Home y Navegación Principal | ⏳ Pendiente | 4 horas |
 | **Fase 7** | Testing y Validaciones | ⏳ Pendiente | 3 horas |
 | **Fase 8** | Documentación y Refinamiento | ⏳ Pendiente | 2 horas |
@@ -598,310 +598,77 @@ class AppRoutes {
 
 ---
 
-### Fase 5: UI de Login y Registro
+### Fase 5: UI de Login, Registro y Recuperación
 
 **Duración:** 5 horas
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completada
 
-#### Archivos a Crear
+#### Archivos Actualizados
 
-- `lib/features/auth/presentation/screens/splash_screen.dart`
 - `lib/features/auth/presentation/screens/login_screen.dart`
-- `lib/features/auth/presentation/screens/register_selection_screen.dart`
-- `lib/features/auth/presentation/screens/register_teacher_screen.dart`
-- `lib/features/auth/presentation/screens/register_student_screen.dart`
-- `lib/core/constants/app_strings.dart` - Centralización de strings (AuthStrings / ClassesStrings)
+- `lib/features/auth/presentation/screens/register_screen.dart`
+- `lib/features/auth/presentation/screens/forgot_password_screen.dart`
+- `lib/features/auth/presentation/cubit/forgot_password_cubit.dart`
+- `lib/features/auth/presentation/cubit/forgot_password_state.dart`
+- `lib/features/auth/domain/repositories/auth_repository.dart` + `auth_repository_impl.dart`
+- `lib/shared/widgets/custom_text_field.dart`
+- `lib/config/routes/app_routes.dart`
+- `lib/core/constants/app_strings.dart`
 
-#### Strings Centralizados
+#### Resumen de Implementación
 
-```dart
-// lib/core/constants/app_strings.dart
+- **LoginScreen** ahora usa `AutofillGroup`, `CustomTextField` con hints nativos y `Semantics` para los errores persistentes. Las acciones secundarias (`¿olvidaste tu contraseña?`, `Regístrate`) se enlazan mediante `AppRoutes` para mantener una sola fuente de verdad de rutas.
+- **RegisterScreen** incorpora autofill para nombres/apellidos, validación visual inmediata, `SegmentedButton` para rol docente/alumno y `Checkbox` adaptativo para los términos. Se añadió un mensaje accesible para los errores globales y navegación explícita a login via `context.go`.
+- **ForgotPasswordScreen** dejó de usar mocks y ahora depende de un nuevo `ForgotPasswordCubit`, el cual orquesta el envío real del email mediante `AuthRepository.sendPasswordResetEmail`. La UI muestra estados `loading/success/error` persistentes usando `SelectableText.rich` y contenedores con contraste.
+- **CustomTextField** soporta `autofillHints`, garantizando compatibilidad con Material 3 y mejores métricas de accesibilidad.
+- **AuthRepository** expone `sendPasswordResetEmail`, implementado en `AuthRepositoryImpl` con mapeo centralizado de errores para mantener los mensajes en español.
+- **GoRouter** crea el `ForgotPasswordCubit` en el builder de la ruta `forgotPassword`, asegurando que cada visita tenga su propio ciclo de vida y evitando inyecciones ad-hoc desde la UI.
 
-class AuthStrings {
-  // Login
-  static const loginTitle = 'Iniciar sesión';
-  static const emailLabel = 'Correo electrónico';
-  static const passwordLabel = 'Contraseña';
-  static const loginButton = 'Entrar';
-  static const noAccountQuestion = '¿No tienes cuenta?';
-  static const registerLink = 'Regístrate';
-
-  // Register Selection
-  static const registerTitle = 'Crear cuenta';
-  static const selectRoleSubtitle = 'Selecciona tu rol';
-  static const teacherOption = 'Soy docente';
-  static const studentOption = 'Soy alumno';
-
-  // Register Teacher
-  static const registerTeacherTitle = 'Registro de docente';
-  static const nameLabel = 'Nombre completo';
-  static const createAccountButton = 'Crear cuenta';
-
-  // Register Student
-  static const registerStudentTitle = 'Registro de alumno';
-
-  // Errores
-  static const errorInvalidCredentials = 'Email o contraseña incorrectos';
-  static const errorEmailInUse = 'Este correo ya está registrado';
-  static const errorWeakPassword = 'La contraseña debe tener al menos 6 caracteres';
-  static const errorGeneric = 'Ocurrió un error. Intenta nuevamente';
-}
-```
-
-#### LoginScreen (Ejemplo Completo)
-
-```dart
-// lib/features/auth/presentation/screens/login_screen.dart
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
-import 'package:playing_tracker/shared/widgets/custom_text_field.dart';
-import 'package:playing_tracker/shared/widgets/custom_button.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
-import 'package:playing_tracker/core/utils/domain_validators.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
-import 'package:playing_tracker/core/config/router/route_names.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      context.read<AuthCubit>().loginWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            final isLoading = state is AuthLoading;
-            final errorMessage =
-                state is AuthError ? state.message : null;
-
-            return Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: CustomCard(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Título
-                          Text(
-                            AuthStrings.loginTitle,
-                            style: textTheme.headlineMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 32),
-
-                          if (errorMessage != null) ...[
-                            SelectableText.rich(
+```601:629:lib/features/auth/presentation/screens/login_screen.dart
+                        if (errorMessage != null) ...[
+                          Semantics(
+                            label: AuthStrings.loginErrorSemanticLabel,
+                            liveRegion: true,
+                            child: SelectableText.rich(
                               TextSpan(
                                 text: errorMessage,
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.error,
+                                style: context.bodyMediumOnSurface?.copyWith(
+                                  color: context.colorScheme.error,
                                 ),
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 16),
-                          ],
-
-                          // Campo Email
-                          CustomTextField(
-                            controller: _emailController,
-                            label: AuthStrings.emailLabel,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            validator: validateEmail, // Del Sprint 1
-                            // Semantics para accesibilidad
-                            semanticsLabel: 'Campo de correo electrónico',
                           ),
-                          const SizedBox(height: 16),
-
-                          // Campo Password
-                          CustomTextField(
-                            controller: _passwordController,
-                            label: AuthStrings.passwordLabel,
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            onFieldSubmitted: (_) => _handleLogin(),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return ValidationStrings.passwordRequired;
-                              }
-                              if (value.length < 6) {
-                                return AuthStrings.errorWeakPassword;
-                              }
-                              return null;
-                            },
-                            semanticsLabel: 'Campo de contraseña',
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Botón Login
-                          CustomButton(
-                            text: AuthStrings.loginButton,
-                            onPressed: isLoading ? null : _handleLogin,
-                            isLoading: isLoading,
-                            semanticsLabel: 'Botón de iniciar sesión',
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Link a registro
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(AuthStrings.noAccountQuestion),
-                              TextButton(
-                                onPressed: () => context
-                                    .push(RouteNames.registerSelection),
-                                child: Text(AuthStrings.registerLink),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
 ```
 
-#### RegisterSelectionScreen (Simplificado)
+```24:49:lib/features/auth/presentation/cubit/forgot_password_cubit.dart
+class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
+  ForgotPasswordCubit(this._authRepository)
+      : super(const ForgotPasswordInitial());
 
-```dart
-// lib/features/auth/presentation/screens/register_selection_screen.dart
+  final AuthRepository _authRepository;
 
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
-import 'package:playing_tracker/shared/widgets/custom_button.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
-import 'package:playing_tracker/core/config/router/route_names.dart';
-
-class RegisterSelectionScreen extends StatelessWidget {
-  const RegisterSelectionScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AuthStrings.registerTitle),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: CustomCard(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      AuthStrings.selectRoleSubtitle,
-                      style: textTheme.headlineSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Opción Teacher
-                    CustomButton(
-                      text: AuthStrings.teacherOption,
-                      onPressed: () => context.push(RouteNames.registerTeacher),
-                      icon: Icons.school,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Opción Student
-                    CustomButton.outlined(
-                      text: AuthStrings.studentOption,
-                      onPressed: () => context.push(RouteNames.registerStudent),
-                      icon: Icons.person,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  Future<void> sendResetLink(String email) async {
+    emit(const ForgotPasswordLoading());
+    try {
+      await _authRepository.sendPasswordResetEmail(email);
+      emit(ForgotPasswordSuccess(email));
+    } catch (error) {
+      emit(ForgotPasswordError(FirebaseErrorMapper.map(error)));
+    }
   }
-}
 ```
-
-#### Notas Técnicas de UI
-
-**Gestión de TextEditingController:**
-- Usar `BlocBuilder<AuthCubit, AuthState>` para envolver solo los widgets que deben reconstruirse
-- Los `TextEditingController` deben mantenerse en el State, no reconstruirse con cada cambio de estado
-
-**Errores accesibles (según flutter_style_rules):**
-- Mostrar los mensajes directamente en la UI usando `SelectableText.rich` con contraste adecuado.
-- Evitar `SnackBar` para errores de formularios de autenticación; la información debe permanecer visible.
-
-**Accesibilidad:**
-- Todos los botones deben tener `semanticsLabel` para VoiceOver/TalkBack
-- Contraste mínimo de 4.5:1 en textos (ya garantizado por Material 3)
-- Área de toque mínima de 48x48 dp (CustomButton ya lo cumple)
 
 #### Checklist de Fase 5
 
-- [ ] `SplashScreen` implementada
-- [ ] `LoginScreen` con validaciones y manejo de errores
-- [ ] `RegisterSelectionScreen` con opciones Teacher/Student
-- [ ] `RegisterTeacherScreen` con formulario completo
-- [ ] `RegisterStudentScreen` con formulario completo
-- [ ] Strings centralizados en `auth_strings.dart`
-- [ ] Validadores del Sprint 1 utilizados
-- [ ] Custom widgets del Sprint 0 utilizados
-- [ ] Manejo de errores con `SelectableText.rich`
-- [ ] Accesibilidad implementada (semanticsLabel)
-- [ ] `TextEditingController` gestionados correctamente
+- [x] `LoginScreen` con validaciones visuales, Semantics y navegación centralizada
+- [x] `RegisterScreen` con selector de rol, autofill y aceptación de términos
+- [x] `ForgotPasswordScreen` real con Cubit dedicado y feedback persistente
+- [x] `AuthRepository` actualizado con `sendPasswordResetEmail`
+- [x] `CustomTextField` actualizado con soporte de `autofillHints`
+- [x] Strings de autenticación con etiquetas semánticas (`AuthStrings.*SemanticLabel`)
+- [x] GoRouter creando el `ForgotPasswordCubit` por ruta protegida
+- [x] Tests (`flutter test`) y análisis (`flutter analyze`) ejecutados sin errores
 
 ---
 

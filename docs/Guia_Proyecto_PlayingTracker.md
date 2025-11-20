@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 20 de Noviembre 2025
-**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 1 completada) 🚧
+**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 5 completada) 🚧
 
 ---
 
@@ -49,6 +49,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 ### Gestión de Estado
 - **flutter_bloc** ✅ Dependencia configurada (Sprint 0) y usada en wrappers de UI.
 - **Cubit** 🚧 Sistema principal definido en flutter_style_rules; AuthCubit inicia en Sprint 2.
+- **ForgotPasswordCubit** ✅ Añadido en Sprint 2 (Fase 5) para manejar recuperación de contraseña desacoplada del flujo principal.
 - **Equatable** ✅ Disponible para estados/entidades desde Sprint 1.
 - **BlocProvider** ✅ Configurado en ejemplos y listo para inyección en Sprint 2.
 - **BlocBuilder/BlocConsumer** ✅ Utilizados en pantallas de autenticación (Sprint 0) como base.

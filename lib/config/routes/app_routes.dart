@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/router/go_router_refresh_stream.dart';
 import '../../features/auth/domain/enums/user_role.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
@@ -143,7 +146,11 @@ class AppRoutes {
       GoRoute(
         path: forgotPassword,
         name: 'forgotPassword',
-        builder: (context, state) => const ForgotPasswordScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              ForgotPasswordCubit(context.read<AuthRepository>()),
+          child: const ForgotPasswordScreen(),
+        ),
       ),
 
       // Rutas de home simples

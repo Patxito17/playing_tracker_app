@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -92,154 +93,145 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? state.message
                       : null;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Espaciado superior
-                      SizedBox(height: context.screenHeight * 0.1),
-
-                      // Título principal
-                      Text(
-                        AuthStrings.welcomeTitle,
-                        style: context.displaySmallBold,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.s),
-                      Text(
-                        AuthStrings.loginSubtitle,
-                        style: context.bodyLargeOnSurfaceVariant,
-                        textAlign: TextAlign.center,
-                      ),
-
-                      const SizedBox(height: AppSpacing.xxl),
-
-                      if (errorMessage != null) ...[
-                        SelectableText.rich(
-                          TextSpan(
-                            text: errorMessage,
-                            style: context.bodyMediumOnSurface?.copyWith(
-                              color: context.colorScheme.error,
-                            ),
-                          ),
+                  return AutofillGroup(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: context.screenHeight * 0.1),
+                        Text(
+                          AuthStrings.welcomeTitle,
+                          style: context.displaySmallBold,
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: AppSpacing.l),
-                      ],
-
-                      // Campo de email
-                      CustomTextField(
-                        controller: _emailController,
-                        label: AuthStrings.emailLabel,
-                        hint: AuthStrings.emailHint,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        textCapitalization: TextCapitalization.none,
-                        errorText: _emailError,
-                        prefix: Icon(
-                          Icons.email_outlined,
-                          color: context.colorScheme.onSurfaceVariant,
+                        const SizedBox(height: AppSpacing.s),
+                        Text(
+                          AuthStrings.loginSubtitle,
+                          style: context.bodyLargeOnSurfaceVariant,
+                          textAlign: TextAlign.center,
                         ),
-                        onChanged: (value) {
-                          if (_emailError != null) {
-                            setState(() {
-                              _emailError = null;
-                            });
-                          }
-                        },
-                        onSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                      ),
-
-                      const SizedBox(height: AppSpacing.l),
-
-                      // Campo de contraseña
-                      CustomTextField(
-                        controller: _passwordController,
-                        label: AuthStrings.passwordLabel,
-                        hint: AuthStrings.passwordHint,
-                        obscureText: _obscurePassword,
-                        textInputAction: TextInputAction.done,
-                        textCapitalization: TextCapitalization.none,
-                        errorText: _passwordError,
-                        prefix: Icon(
-                          Icons.lock_outlined,
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
-                        suffix: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                          tooltip: _obscurePassword
-                              ? CommonStrings.showPassword
-                              : CommonStrings.hidePassword,
-                        ),
-                        onChanged: (value) {
-                          if (_passwordError != null) {
-                            setState(() {
-                              _passwordError = null;
-                            });
-                          }
-                        },
-                        onSubmitted: (_) => _handleLogin(),
-                      ),
-
-                      const SizedBox(height: AppSpacing.s),
-
-                      // Link a recuperación de contraseña
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => context.push('/forgot-password'),
-                          child: Text(
-                            AuthStrings.forgotPasswordLink,
-                            style: context.textPrimary?.copyWith(
-                              fontSize: context.textTheme.bodySmall?.fontSize,
+                        const SizedBox(height: AppSpacing.xxl),
+                        if (errorMessage != null) ...[
+                          Semantics(
+                            label: AuthStrings.loginErrorSemanticLabel,
+                            liveRegion: true,
+                            child: SelectableText.rich(
+                              TextSpan(
+                                text: errorMessage,
+                                style: context.bodyMediumOnSurface?.copyWith(
+                                  color: context.colorScheme.error,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(height: AppSpacing.xl),
-
-                      // Botón de login
-                      CustomButton(
-                        label: AuthStrings.loginButton,
-                        variant: CustomButtonVariant.filled,
-                        isLoading: isLoading,
-                        onPressed: isLoading ? null : _handleLogin,
-                      ),
-
-                      const SizedBox(height: AppSpacing.xl),
-
-                      // Link a registro
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AuthStrings.noAccountQuestion,
-                            style: context.bodyMediumOnSurfaceVariant,
+                          const SizedBox(height: AppSpacing.l),
+                        ],
+                        CustomTextField(
+                          controller: _emailController,
+                          label: AuthStrings.emailLabel,
+                          hint: AuthStrings.emailHint,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          textCapitalization: TextCapitalization.none,
+                          autofillHints: const [AutofillHints.email],
+                          errorText: _emailError,
+                          prefix: Icon(
+                            Icons.email_outlined,
+                            color: context.colorScheme.onSurfaceVariant,
                           ),
-                          TextButton(
-                            onPressed: () => context.push('/register'),
+                          onChanged: (value) {
+                            if (_emailError != null) {
+                              setState(() {
+                                _emailError = null;
+                              });
+                            }
+                          },
+                          onSubmitted: (_) =>
+                              FocusScope.of(context).nextFocus(),
+                        ),
+                        const SizedBox(height: AppSpacing.l),
+                        CustomTextField(
+                          controller: _passwordController,
+                          label: AuthStrings.passwordLabel,
+                          hint: AuthStrings.passwordHint,
+                          obscureText: _obscurePassword,
+                          textInputAction: TextInputAction.done,
+                          textCapitalization: TextCapitalization.none,
+                          autofillHints: const [AutofillHints.password],
+                          errorText: _passwordError,
+                          prefix: Icon(
+                            Icons.lock_outlined,
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
+                          suffix: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            tooltip: _obscurePassword
+                                ? CommonStrings.showPassword
+                                : CommonStrings.hidePassword,
+                          ),
+                          onChanged: (value) {
+                            if (_passwordError != null) {
+                              setState(() {
+                                _passwordError = null;
+                              });
+                            }
+                          },
+                          onSubmitted: (_) => _handleLogin(),
+                        ),
+                        const SizedBox(height: AppSpacing.s),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.forgotPassword),
                             child: Text(
-                              AuthStrings.registerLink,
+                              AuthStrings.forgotPasswordLink,
                               style: context.textPrimary?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    context.textTheme.bodyMedium?.fontSize,
+                                fontSize: context.textTheme.bodySmall?.fontSize,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        CustomButton(
+                          label: AuthStrings.loginButton,
+                          variant: CustomButtonVariant.filled,
+                          isLoading: isLoading,
+                          onPressed: isLoading ? null : _handleLogin,
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              AuthStrings.noAccountQuestion,
+                              style: context.bodyMediumOnSurfaceVariant,
+                            ),
+                            TextButton(
+                              onPressed: () => context.push(AppRoutes.register),
+                              child: Text(
+                                AuthStrings.registerLink,
+                                style: context.textPrimary?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      context.textTheme.bodyMedium?.fontSize,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
