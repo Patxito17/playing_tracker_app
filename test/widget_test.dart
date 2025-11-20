@@ -30,13 +30,13 @@ void main() {
     await tester.pumpWidget(
       PlayingTrackerApp(
         authRepository: mockAuthRepository,
-        authCubitBuilder: (repository) =>
-            AuthCubit(repository, shouldCheckAuthState: false),
+        authCubitBuilder: AuthCubit.new,
       ),
     );
 
-    // Allow router to settle and verify that the login welcome title is shown
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.text(AuthStrings.welcomeTitle), findsOneWidget);
   });
 }

@@ -205,7 +205,7 @@ lib/
 │       ├── custom_app_bar.dart      # AppBar personalizado
 │       ├── custom_bottom_navigation_bar.dart # BottomNavigationBar M3
 │       ├── custom_tab_bar.dart      # TabBar personalizado
-│       └── navigation_helper.dart   # Helper para pruebas de navegación
+│       └── (otros helpers menores)
 │
 └── main.dart                          # 📅 Entry point con Firebase init
 ```
@@ -586,6 +586,7 @@ service cloud.firestore {
 **Avances recientes (20 nov 2025):**
 - ✅ Fase 2 completada con `AuthCubit` hidratado + tests unitarios.
 - ✅ Fase 3 completada con `AuthRepositoryImpl` (Firebase Auth + Firestore) y helper `firebase_error_mapper.dart`.
+- ✅ Fase 4 completada: `AppRoutes` ahora escucha `AuthCubit`, se creó `GoRouterRefreshStream` y se removieron mocks (`AuthWrapper`, `navigation_helper.dart`).
 - 🧪 `flutter analyze` y `flutter test` integrados al flujo diario antes de continuar con la Fase 4.
 
 **Entregables:**
@@ -704,7 +705,7 @@ service cloud.firestore {
 ```
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
-Sprint 2: ████░░░░░░░░░░░░░░░ 37.5% 🚧 Autenticación
+Sprint 2: ██████░░░░░░░░░░░░ 50% 🚧 Autenticación
 Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
 Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
 Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
