@@ -74,13 +74,13 @@ dependencies:
 
 **Total de Fases:** 8
 **Duración Estimada:** 2-3 semanas
-**Progreso:** 12.5% (1/8 fases completadas)
+**Progreso:** 37.5% (3/8 fases completadas)
 
 | Fase | Descripción | Estado | Duración |
 |------|-------------|--------|----------|
 | **Fase 1** | Configuración Inicial y Dependencias | ✅ Completada | 2 horas |
-| **Fase 2** | AuthCubit y Estados de Autenticación | ⏳ Pendiente | 4 horas |
-| **Fase 3** | Repositorios de Autenticación y Firestore | ⏳ Pendiente | 3 horas |
+| **Fase 2** | AuthCubit y Estados de Autenticación | ✅ Completada | 4 horas |
+| **Fase 3** | Repositorios de Autenticación y Firestore | ✅ Completada | 3 horas |
 | **Fase 4** | GoRouter y Navegación Condicional | ⏳ Pendiente | 4 horas |
 | **Fase 5** | UI de Login y Registro | ⏳ Pendiente | 5 horas |
 | **Fase 6** | Pantallas Home y Navegación Principal | ⏳ Pendiente | 4 horas |
@@ -343,12 +343,12 @@ enum UserRole {
 
 #### Checklist de Fase 2
 
-- [ ] Enum `UserRole` creado en `lib/core/enums/`
-- [ ] Estados de `AuthCubit` definidos con sealed classes
-- [ ] `AuthCubit` extendiendo `HydratedCubit`
-- [ ] Métodos `fromJson()` y `toJson()` implementados
-- [ ] Solo se persisten `userId` y `role` (no tokens sensibles)
-- [ ] Tests unitarios básicos de AuthCubit creados
+- [x] Enum `UserRole` creado en `lib/features/auth/domain/enums/`
+- [x] Estados de `AuthCubit` definidos con sealed classes
+- [x] `AuthCubit` extendiendo `HydratedCubit`
+- [x] Métodos `fromJson()` y `toJson()` implementados
+- [x] Solo se persisten `userId` y `role` (no tokens sensibles)
+- [x] Tests unitarios básicos de AuthCubit creados
 
 ---
 
@@ -359,14 +359,14 @@ enum UserRole {
 
 #### Archivos a Crear
 
-- `lib/features/auth/domain/repositories/i_auth_repository.dart` - Interface
-- `lib/features/auth/data/repositories/auth_repository_impl.dart` - Implementación
-- `lib/features/auth/data/repositories/firestore_user_repository_impl.dart` - Gestión de usuarios
+- `lib/features/auth/domain/repositories/auth_repository.dart` - Contrato principal
+- `lib/features/auth/data/repositories/auth_repository_impl.dart` - Implementación Firebase
+- `lib/core/utils/firebase_error_mapper.dart` - Helper común de mapeo de errores
 
 #### Interface del AuthRepository
 
 ```dart
-// lib/features/auth/domain/repositories/i_auth_repository.dart
+// lib/features/auth/domain/repositories/auth_repository.dart
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playing_tracker/core/enums/user_role.dart';
@@ -508,12 +508,12 @@ class AuthRepositoryImpl implements IAuthRepository {
 
 #### Checklist de Fase 3
 
-- [ ] Interface `IAuthRepository` definida
-- [ ] `AuthRepositoryImpl` implementado con Firebase Auth
-- [ ] Referencias a colecciones `teachers` y `students` configuradas
-- [ ] Método `getUserRole()` implementado con lógica de búsqueda
-- [ ] Modelos del Sprint 1 (TeacherModel, StudentModel) utilizados
-- [ ] Manejo de errores con excepciones descriptivas
+- [x] Contrato `AuthRepository` definido
+- [x] `AuthRepositoryImpl` implementado con Firebase Auth + Firestore
+- [x] Referencias a colecciones `teachers` y `students` configuradas
+- [x] Método `getUserRole()` implementado con lógica de búsqueda
+- [x] Modelos del Sprint 1 (TeacherModel, StudentModel) utilizados
+- [x] Manejo de errores consistente con `FirebaseErrorMapper`
 
 ---
 

@@ -583,6 +583,11 @@ service cloud.firestore {
 - `go_router: ^17.0.0` - Navegación declarativa con guards reactivos
 - `path_provider: ^2.1.5` - Storage multiplataforma
 
+**Avances recientes (20 nov 2025):**
+- ✅ Fase 2 completada con `AuthCubit` hidratado + tests unitarios.
+- ✅ Fase 3 completada con `AuthRepositoryImpl` (Firebase Auth + Firestore) y helper `firebase_error_mapper.dart`.
+- 🧪 `flutter analyze` y `flutter test` integrados al flujo diario antes de continuar con la Fase 4.
+
 **Entregables:**
 - 🔐 Sistema de autenticación completo (login, registro Teacher/Student, logout)
 - 👥 Perfiles de usuario en Firestore (collections `teachers` y `students`)
@@ -699,7 +704,7 @@ service cloud.firestore {
 ```
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
-Sprint 2: ██░░░░░░░░░░░░░░░░░░ 12.5% 🚧 Autenticación
+Sprint 2: ████░░░░░░░░░░░░░░░ 37.5% 🚧 Autenticación
 Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
 Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
 Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
