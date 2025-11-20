@@ -285,6 +285,13 @@ lib/
 - ✅ Manejo de errores de Firebase en español
 - ✅ Estados de carga y feedback visual
 - ✅ Navegación condicional según rol (docente/alumno)
+- ✅ Suite de pruebas unitarias/widget que cubre AuthCubit y las redirecciones del router
+
+#### Estado actual de pruebas
+
+- `test/features/auth/presentation/cubit/auth_cubit_test.dart` abarca login, registro (teacher/student), logout, manejo de errores y persistencia `toJson/fromJson` usando `mocktail` + `HydratedBloc`.
+- `test/features/home/presentation/router_navigation_test.dart` monta un `GoRouter` real con un `AuthCubit` controlado para validar las redirecciones hacia login/home y los guards por rol.
+- `test/widget_test.dart` mantiene un smoke test completo del `PlayingTrackerApp`, inyectando un repositorio mock para evitar dependencias externas.
 
 ---
 
