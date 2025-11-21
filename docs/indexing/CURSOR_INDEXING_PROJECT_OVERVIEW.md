@@ -1,8 +1,8 @@
 # Resumen Ejecutivo del Proyecto - Playing Tracker
 
-**Última actualización:** Octubre 2025
-**Estado:** Sprint 0 - Diseño UI/UX en desarrollo
-**Versión:** 1.0
+**Última actualización:** Noviembre 2025
+**Estado:** Sprint 3 - Sistema de Clases en progreso (Fase 3 completada)
+**Versión:** 1.1
 
 ---
 
@@ -44,37 +44,30 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita asignar t
 
 ## Estado Actual del Proyecto
 
-### Sprint Actual: Sprint 0 - Diseño UI/UX
-**Estado:** En desarrollo
-**Duración:** Octubre 2025
+### Sprint Actual: Sprint 3 - Sistema de Clases y Membresías
+**Estado:** Fase 3 completada (servicios, reglas e índices listos)
+**Duración:** Noviembre 2025
 
-**Completado:**
-- Configuración inicial de Flutter 3.x con Dart 3.9.2+
-- Sistema de tema Material Design 3 completo (claro/oscuro)
-- Componentes base reutilizables
-- Prototipos de todas las pantallas (UI estática)
-- Navegación con go_router y ShellRoute
-- Estructura Feature-First Architecture
+**Completado recientemente:**
+- Helper `lib/core/utils/access_code_generator.dart`
+- `lib/features/classes/data/services/class_service.dart`
+- `lib/features/classes/data/services/membership_service.dart`
+- Actualización de `firebase/firestore.rules` y `firebase/firestore.indexes.json`
+- Tests dedicados en `test/features/classes/data/services/` con `fake_cloud_firestore`
+- Documentación sincronizada (Guía del Proyecto, Sprint 3, Análisis de requisitos, README)
 
-**En progreso:**
-- Refinamiento de componentes UI
-- Implementación de accesibilidad completa
+**En progreso (Sprint 3):**
+- Integración de Cubits y UI docente/estudiante (Fases 4-7)
+- Fan-out helper para tareas (Fase 7)
 
-**Próximos sprints:**
-- Sprint 1: Modelos de Dominio y Arquitectura de Datos
-- Sprint 2: Autenticación y Gestión de Usuarios
-- Sprint 3: Sistema de Clases y Membresías
-- Sprint 4: Gestión de Tareas y Asignaciones
-- Sprint 5: Cronómetro y Sesiones de Estudio
-- Sprint 6: Estadísticas y Dashboards
-- Sprint 7: Testing y Optimización
+**Siguientes sprints:** Tareas/Asignaciones, Cronómetro, Estadísticas, QA final
 
 ---
 
 ## Arquitectura General
 
 ### Stack Tecnológico
-- **Frontend:** Flutter 3.x (Dart 3.9.2+)
+- **Frontend:** Flutter 3.38.x (Dart 3.10.x)
 - **Backend:** Firebase
   - Firebase Authentication (Email/Password)
   - Cloud Firestore (Base de datos NoSQL)
@@ -130,6 +123,7 @@ lib/
 ## Referencias Principales
 
 - **Guía completa del proyecto:** [Guia_Proyecto_PlayingTracker.md](./Guia_Proyecto_PlayingTracker.md)
+- **Sprint 3 detalle:** [sprints/SPRINT_3_IMPLEMENTACION.md](../sprints/SPRINT_3_IMPLEMENTACION.md)
 - **Sprint 0 detallado:** [sprints/SPRINT_0_IMPLEMENTACION.md](./sprints/SPRINT_0_IMPLEMENTACION.md)
 - **Arquitectura técnica:** [CURSOR_INDEXING_ARCHITECTURE.md](./CURSOR_INDEXING_ARCHITECTURE.md)
 - **Referencias técnicas:** [CURSOR_INDEXING_TECHNICAL_REFERENCES.md](./CURSOR_INDEXING_TECHNICAL_REFERENCES.md)
@@ -145,4 +139,5 @@ lib/
 4. **Comentarios en español** - Todo el código debe tener comentarios descriptivos en español
 5. **Diseño primero** - Completar UI antes de implementar lógica de negocio
 6. **Accesibilidad desde el inicio** - Asegurar contraste mínimo 4.5:1 y soporte para TalkBack/VoiceOver
+7. **Servicios verificados** - Reutilizar `ClassService`/`MembershipService` antes de tocar Firestore directo; tests disponibles como referencia
 

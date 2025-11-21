@@ -17,6 +17,23 @@
       "collectionId": "memberships",
       "fields": [
         {
+          "fieldPath": "classId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "joinedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "memberships",
+      "fields": [
+        {
           "fieldPath": "studentId",
           "order": "ASCENDING"
         },
@@ -140,6 +157,19 @@
         {
           "fieldPath": "isActive",
           "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "classes",
+      "fields": [
+        {
+          "fieldPath": "ownerTeacherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
         }
       ]
     }

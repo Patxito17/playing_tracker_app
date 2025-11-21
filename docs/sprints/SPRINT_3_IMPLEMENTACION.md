@@ -5,7 +5,7 @@
 **Contexto:** Depende del cierre del Sprint 2 (infraestructura + autenticación)
 **Propósito:** Implementar toda la capa funcional de clases, membresías y fan-out inicial manteniendo arquitectura Domain → Repository → Service → UI y Material Design 3.
 **Estado:** 🚧 En progreso
-**Versión del documento:** 0.4
+**Versión del documento:** 0.5
 **Última actualización:** 21 de Noviembre 2025
 **Responsable:** Equipo de Desarrollo (documento apto para ejecución por IA-agents y desarrolladores humanos)
 
@@ -278,9 +278,18 @@ El sprint se considera listo respecto al fan-out cuando:
 - Documentar flujos en `docs/analisis_requisitos_fase_diseño/`.
 
 **Checklist**
-- [ ] Servicios completados con manejo de excepciones traducidas vía `firebase_error_mapper`.
-- [ ] Reglas y archivos de índices actualizados.
-- [ ] Tests unitarios de servicios con `fake_cloud_firestore`.
+- [x] Servicios completados con manejo de excepciones traducidas vía `firebase_error_mapper`.
+- [x] Reglas y archivos de índices actualizados.
+- [x] Tests unitarios de servicios con `fake_cloud_firestore`.
+
+**Actualización 21/11/2025**
+- Se implementó `AccessCodeGenerator` con caracteres sin ambigüedad, reutilizado por `ClassService`.
+- `ClassService` cubre creación paginada, regeneración de códigos, observación en tiempo real y hook `fanOutTaskHook` con TODO para Sprint 4.
+- `MembershipService` soporta invitaciones manuales, unión por código, reactivación de membresías y obtención de alumnos para el futuro fan-out.
+- Reglas de Firestore permiten que alumnos creen/reactiven membresías verificadas por código y exigen `updatedAt`; los índices incluyen `classes.ownerTeacherId+createdAt` y `memberships.classId+isActive+joinedAt`.
+- Nuevos tests en `test/features/classes/data/services/` usando `fake_cloud_firestore` + `mocktail`; ejecutados con `flutter test test/features/classes/data/services` (100% passing).
+- Documentación sincronizada (Guía del Proyecto, README, índice Cursor y análisis de requisitos) y registro de la nueva dependencia `fake_cloud_firestore`.
+- Se ejecutaron `flutter pub outdated` y `flutter pub upgrade`; sólo `built_value` avanzó a 8.12.1, mientras que `json_serializable >=6.11.3` permanece bloqueado por `bloc_test`/`flutter_test` (analyzer 9), documentándose la restricción para próximas migraciones de SDK.
 
 ---
 
@@ -443,6 +452,7 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 0.5 | 21/11/2025 | Fase 3 completada: helper de códigos, servicios de clases/membresías, reglas/índices de Firestore y suite de tests con `fake_cloud_firestore`. Documentación y README actualizados. |
 | 0.4 | 21/11/2025 | Actualización del SDK completada: Flutter 3.35.6 → 3.38.2, Dart 3.9.2 → 3.10.0. Actualizado build_runner a 2.10.4. Dependencias discontinuadas (build_resolvers, build_runner_core) resueltas y eliminadas. Todas las verificaciones de calidad pasadas: `flutter analyze` (0 issues), `dart analyze --fatal-infos --fatal-warnings` (0 issues), `dart format .` (0 changed), `flutter test` (15 tests pasados). |
 | 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade. Estado del sprint actualizado a "En progreso". |
 | 0.2 | 20/11/2025 | Añadidos file plan, reglas de no rotura, hooks, QA y guía para agentes. |

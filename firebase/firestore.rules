@@ -121,13 +121,22 @@ service cloud.firestore {
         resource.data.teacherId == request.auth.uid
       );
 
-      // Creación: solo el teacher relacionado
+      // Creación: teacher propietario o alumno autenticado (código de acceso)
       allow create: if isAuth() &&
-                      request.resource.data.teacherId == request.auth.uid &&
-                      request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'isActive']);
+                      (
+                        (isTeacher() && request.resource.data.teacherId == request.auth.uid) ||
+                        request.resource.data.studentId == request.auth.uid
+                      ) &&
+                      request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'updatedAt', 'isActive']);
 
-      // Actualización y eliminación: solo el teacher relacionado
-      allow update, delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+      // Actualización: teacher propietario o alumno dueño de la membresía
+      allow update: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        resource.data.studentId == request.auth.uid
+      );
+
+      // Eliminación: solo el teacher relacionado
+      allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
     }
 
     // ==========================================================================

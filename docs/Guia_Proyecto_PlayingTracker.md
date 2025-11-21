@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 20 de Noviembre 2025
-**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 6 completada) 🚧
+**Última actualización:** 21 de Noviembre 2025
+**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 3 completada) 🚧
 
 ---
 
@@ -36,7 +36,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 
 ### Lenguaje y Framework
 - **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
-  Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 (baseline actual ^3.9.2).
+  Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 y validada nuevamente al incorporar `fake_cloud_firestore` para las pruebas de servicios en Sprint 3.
 - **Backend:** Firebase ✅
   - Firebase Authentication ✅ (Email/Password)
   - Cloud Firestore ✅ (Base de datos NoSQL)
@@ -45,6 +45,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Control de versiones:** Git/GitHub ✅
 - **Diseño UI:** Material Design 3 ✅
 - **Herramientas:** DevTools, Flutter Widget Inspector ✅
+- **Testing helpers:** fake_cloud_firestore + mocktail para aislar servicios (Sprint 3)
 
 ### Gestión de Estado
 - **flutter_bloc** ✅ Dependencia configurada (Sprint 0) y usada en wrappers de UI.
@@ -75,9 +76,10 @@ lib/
 │   │   └── app_strings.dart          # Strings organizados por categorías
 │   ├── extensions/                    # 📅 Por implementar
 │   │   └── context_extensions.dart   # Extensions para BuildContext
-│   └── utils/                         # 📅 Por implementar
+│   └── utils/                         # Helpers compartidos activos
 │       ├── validators.dart           # Validadores de formularios
-│       └── firebase_error_mapper.dart # Mapeo de errores Firebase a español
+│       ├── firebase_error_mapper.dart # Mapeo de errores Firebase a español
+│       └── access_code_generator.dart # Generador centralizado de códigos (Sprint 3)
 │
 ├── config/                            # Configuración de la app 📅
 │   ├── theme/                        # 📅 Por implementar
@@ -115,16 +117,17 @@ lib/
 │   │           ├── teacher_home_screen.dart  # Redirige a teacher_classes_list_screen
 │   │           └── student_home_screen.dart  # Redirige a student_classes_list_screen
 │   │
-│   ├── classes/                      # 📅 Gestión de clases (Sprint 0 - UI, Sprint 3 - Lógica)
-│   │   ├── domain/                  # 📅 Por implementar
+│   ├── classes/                      # Gestión de clases (Sprint 0 - UI, Sprint 3 - Lógica)
+│   │   ├── domain/
 │   │   │   ├── models/
 │   │   │   │   ├── class_model.dart # Modelo de clase
 │   │   │   │   └── membership_model.dart # Modelo de membresía
 │   │   │   └── enums/
 │   │   │       └── class_status.dart # Estados de clase
-│   │   ├── data/                    # 📅 Por implementar
+│   │   ├── data/
 │   │   │   ├── services/
-│   │   │   │   └── class_service.dart # CRUD de clases
+│   │   │   │   ├── class_service.dart     # CRUD + generación de códigos (Sprint 3)
+│   │   │   │   └── membership_service.dart # Relación N:M (Sprint 3)
 │   │   │   └── repositories/
 │   │   │       └── class_repository.dart # Orquestación
 │   │   └── presentation/            # 📅 Por implementar
@@ -216,6 +219,15 @@ lib/
 ---
 
 ## 🧱 Funcionalidades Principales
+
+### 📌 Sprint 3 · Fase 3 (21/11/2025)
+
+- Implementado `AccessCodeGenerator` con validaciones alfanuméricas para códigos de 6 caracteres.
+- Nuevos servicios `ClassService` y `MembershipService` (Firestore + transacciones) listos para ser consumidos por los Cubits de la Fase 4.
+- Reglas de Firestore actualizadas para permitir que alumnos creen/reactiven membresías mediante códigos y para exigir `updatedAt` en `memberships`.
+- Índices compuestos extendidos (`classes.ownerTeacherId+createdAt`, `memberships.classId+isActive+joinedAt`) asegurando streams paginados en 400 ms.
+- Suite de pruebas dedicada (`test/features/classes/data/services`) usando `fake_cloud_firestore` y `mocktail`.
+- Documentación y roadmap sincronizados con el alcance real del Sprint 3.
 
 ### 👩‍🏫 Módulo Docente
 
@@ -373,6 +385,7 @@ memberships/{membershipId}
   teacherId: string,             // ID del docente (denormalizado)
   className: string,             // Nombre de la clase (denormalizado)
   joinedAt: Timestamp,          // Fecha de unión
+  updatedAt: Timestamp,         // Última modificación (re-activaciones)
   isActive: boolean              // Estado de la membresía
 }
 ```
