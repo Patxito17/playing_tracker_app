@@ -54,6 +54,7 @@ dependencies:
 
   # Utilidades
   intl: ^0.20.2                 # Internacionalización
+  uuid: ^4.5.1                  # Generación de IDs únicos y códigos de acceso
   # Autenticación
   firebase_auth: ^6.1.2
 
@@ -73,9 +74,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  build_runner: ^2.4.13         # Generación de código
-  json_serializable: ^6.8.0     # Serialización JSON
+  build_runner: ^2.7.1          # Generación de código
+  json_serializable: ^6.11.2    # Serialización JSON
   # Testing utilities
+  bloc_test: ^10.0.0            # Testing de Bloc/Cubit
   mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
