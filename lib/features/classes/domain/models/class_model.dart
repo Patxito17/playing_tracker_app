@@ -106,6 +106,12 @@ class ClassModel {
     );
   }
 
+  /// Indica si la clase puede recibir alumnos (alias semántico de [isActive]).
+  bool get canJoin => isActive;
+
+  /// Indica si la clase fue archivada o deshabilitada por el docente.
+  bool get isArchived => !isActive;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
