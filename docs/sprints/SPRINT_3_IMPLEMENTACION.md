@@ -5,7 +5,7 @@
 **Contexto:** Depende del cierre del Sprint 2 (infraestructura + autenticación)
 **Propósito:** Implementar toda la capa funcional de clases, membresías y fan-out inicial manteniendo arquitectura Domain → Repository → Service → UI y Material Design 3.
 **Estado:** 🚧 En progreso
-**Versión del documento:** 0.3
+**Versión del documento:** 0.4
 **Última actualización:** 21 de Noviembre 2025
 **Responsable:** Equipo de Desarrollo (documento apto para ejecución por IA-agents y desarrolladores humanos)
 
@@ -65,19 +65,18 @@ Implementar la lógica completa de **creación y gestión de clases**, el **sist
 
 > **Nota:** No se agregan nuevas dependencias respecto al Sprint 2, pero se documentan versiones mínimas en `pubspec.yaml` y se valida compatibilidad con Flutter 3.38.x / Dart 3.10.x.
 
-### Dependencias Descontinuadas (Transitivas)
+### Dependencias Descontinuadas (Resuelto)
 
-**Paquetes discontinuados detectados:**
+**Estado anterior (antes de actualizar a Dart 3.10.0):**
 - `build_resolvers` (descontinuado) - Dependencia transitiva de `build_runner 2.7.1`
 - `build_runner_core` (descontinuado) - Dependencia transitiva de `build_runner 2.7.1`
 
-**Análisis y estado:**
-- ✅ Estos paquetes son dependencias transitivas, no los usamos directamente en nuestro código
-- ✅ Su funcionalidad se ha movido al paquete `build` según la documentación oficial de Dart
-- ⚠️ No podemos actualizar `build_runner` a 2.10.4 porque requiere `analyzer >=8.0.0`, lo cual es incompatible con `bloc_test ^10.0.0` debido a restricciones del SDK Flutter actual (Dart 3.9.2)
-- ✅ **Estado actual:** Los paquetes siguen funcionando correctamente aunque estén marcados como descontinuados. El proyecto compila y funciona sin errores
-- 📅 **Acción futura:** Cuando se actualice el SDK a Dart 3.10.x+ y las dependencias mayores (`bloc_test`, `build_runner`) sean compatibles con versiones más recientes, se actualizará automáticamente y estos paquetes discontinuados dejarán de aparecer
-- ✅ **Impacto:** Ninguno en el funcionamiento actual del proyecto
+**Resolución:**
+- ✅ **Actualización completada:** Con la actualización a Dart 3.10.0 y Flutter 3.38.2, se pudo actualizar `build_runner` a 2.10.4
+- ✅ **Paquetes discontinuados eliminados:** Los paquetes `build_resolvers` y `build_runner_core` ya no aparecen en las dependencias
+- ✅ **Funcionalidad migrada:** Su funcionalidad está ahora en el paquete `build 4.0.3` (actualizado desde 3.1.0)
+- ✅ **Estado actual:** El proyecto compila y funciona sin errores, sin dependencias discontinuadas
+- ✅ **Impacto:** Resuelto completamente con la actualización del SDK
 
 ---
 
@@ -222,20 +221,27 @@ El sprint se considera listo respecto al fan-out cuando:
 
 **Checklist**
 - [x] Dependencias validadas.
-  - ✅ SDK mantenido en ^3.9.2 (compatible con Flutter 3.35.6 del entorno actual)
+  - ✅ SDK actualizado de ^3.9.2 a ^3.10.0 (Flutter 3.38.2 con Dart 3.10.0)
+  - ✅ Flutter actualizado de 3.35.6 a 3.38.2 (incluye Dart 3.10.0)
   - ✅ Agregada dependencia `uuid: ^4.5.1` para generación de códigos de acceso
   - ✅ Agregada dependencia `bloc_test: ^10.0.0` para testing de Cubits
-  - ✅ Actualizadas restricciones de dependencias de desarrollo:
-    - `build_runner: ^2.4.13` → `^2.7.1` (versión actual instalada)
-    - `json_serializable: ^6.8.0` → `^6.11.2` (versión actual instalada)
-  - ✅ Ejecutado `flutter pub outdated` y `flutter pub upgrade`: todas las dependencias están en las versiones más recientes compatibles
+  - ✅ Actualizadas dependencias de desarrollo a versiones más recientes:
+    - `build_runner: ^2.7.1` → `^2.10.4` (resuelve dependencias discontinuadas)
+    - `json_serializable: ^6.8.0` → `^6.11.2`
+  - ✅ Paquetes discontinuados eliminados:
+    - `build_resolvers` y `build_runner_core` ya no son dependencias (resuelto con actualización)
+  - ✅ Ejecutado `flutter pub outdated` y `flutter pub upgrade --major-versions`: todas las dependencias actualizadas
   - ✅ Todas las dependencias requeridas para Sprint 3 presentes y compatibles
 - [x] Proyecto compila en iOS/Android.
   - ✅ `flutter doctor` ejecutado sin problemas críticos
   - ✅ `flutter analyze` sin errores (0 issues found)
+  - ✅ `dart analyze --fatal-infos --fatal-warnings` sin errores ni warnings
   - ✅ `dart format .` ejecutado sin cambios necesarios (0 changed)
+  - ✅ `flutter test` ejecutado: 15 tests pasados exitosamente
 - [x] Documentación sincronizada (README + guía general).
   - ✅ Este documento actualizado con fecha de inicio y estado de Fase 1
+  - ✅ Sección de dependencias discontinuadas actualizada (resuelto)
+  - ✅ Historial de versiones actualizado con actualización del SDK
 
 ---
 
@@ -430,7 +436,8 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
-| 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade: todas las dependencias en versiones más recientes compatibles. Investigadas dependencias discontinuadas (build_resolvers, build_runner_core): son transitivas y no afectan el funcionamiento. Estado del sprint actualizado a "En progreso". |
+| 0.4 | 21/11/2025 | Actualización del SDK completada: Flutter 3.35.6 → 3.38.2, Dart 3.9.2 → 3.10.0. Actualizado build_runner a 2.10.4. Dependencias discontinuadas (build_resolvers, build_runner_core) resueltas y eliminadas. Todas las verificaciones de calidad pasadas: `flutter analyze` (0 issues), `dart analyze --fatal-infos --fatal-warnings` (0 issues), `dart format .` (0 changed), `flutter test` (15 tests pasados). |
+| 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade. Estado del sprint actualizado a "En progreso". |
 | 0.2 | 20/11/2025 | Añadidos file plan, reglas de no rotura, hooks, QA y guía para agentes. |
 | 0.1 | 20/11/2025 | Primera versión del plan del Sprint 3. |
 
