@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.2
+  sdk: ^3.10.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -74,7 +74,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  build_runner: ^2.7.1          # Generación de código
+  build_runner: ^2.10.4          # Generación de código
   json_serializable: ^6.11.2    # Serialización JSON
   # Testing utilities
   bloc_test: ^10.0.0            # Testing de Bloc/Cubit
