@@ -257,9 +257,16 @@ El sprint se considera listo respecto al fan-out cuando:
 - Documentar cada contrato con dartdoc.
 
 **Checklist**
-- [ ] Repositorio de dominio creado y documentado.
-- [ ] Typedefs con records definidos.
-- [ ] Tests base generados con mocks (aunque fallen) para guiar TDD.
+- [x] Repositorio de dominio creado y documentado.
+- [x] Typedefs con records definidos.
+- [x] Tests base generados con mocks (aunque fallen) para guiar TDD.
+
+**Actualización 21/11/2025**
+- Se añadieron getters derivados en `ClassModel` y `MembershipModel` para exponer estados de forma declarativa sin romper compatibilidad.
+- Se crearon los records `CreateClassInput`, `InviteStudentInput` y `JoinClassInput` con validaciones sincrónicas y ejemplos de uso.
+- Se definió el contrato `ClassRepository` con excepciones especializadas y nota explícita sobre paginación (20 ítems) y hook de fan-out.
+- Se agregaron pruebas base en `test/features/classes/domain/repositories/class_repository_test.dart` marcadas como pendientes para guiar las fases 4-7.
+- Riesgo registrado: falta definir índices de Firestore adicionales para consultas por `ownerTeacherId` antes de implementar `watchTeacherClasses`.
 
 ---
 

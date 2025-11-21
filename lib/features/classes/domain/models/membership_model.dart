@@ -102,6 +102,12 @@ class MembershipModel {
     );
   }
 
+  /// Indica si la membresía representa un alumno actualmente activo.
+  bool get isActiveMember => isActive;
+
+  /// Determina si el alumno fue removido o la membresía está suspendida.
+  bool get isInactiveMember => !isActive;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
