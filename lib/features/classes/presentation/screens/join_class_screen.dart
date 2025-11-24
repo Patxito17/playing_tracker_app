@@ -118,6 +118,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
     });
     final classCubit = _maybeReadClassCubit();
     classCubit?.refreshClasses();
+    if (!mounted) return;
     if (_navigationScheduled || !Navigator.of(context).canPop()) {
       return;
     }

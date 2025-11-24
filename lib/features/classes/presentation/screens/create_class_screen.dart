@@ -131,14 +131,15 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
         listener: (context, state) {
           if (state is ClassActionSuccess &&
               state.action == ClassAction.created) {
-            _clearForm();
             if (!mounted) return;
+            _clearForm();
             final navigator = Navigator.of(context);
             if (navigator.canPop()) {
               navigator.pop(true);
             }
           }
           if (state is ClassError) {
+            if (!mounted) return;
             setState(() {
               _formError = state.message;
             });
