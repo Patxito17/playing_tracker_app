@@ -1,7 +1,7 @@
 # Resumen Ejecutivo del Proyecto - Playing Tracker
 
 **Última actualización:** 24 de Noviembre 2025
-**Estado:** Sprint 3 - Sistema de Clases (Fase 5 completada)
+**Estado:** Sprint 3 - Sistema de Clases (Fase 7 completada)
 **Versión:** 1.2
 
 ---
@@ -45,19 +45,21 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita asignar t
 ## Estado Actual del Proyecto
 
 ### Sprint Actual: Sprint 3 - Sistema de Clases y Membresías
-**Estado:** Fase 5 completada (UI docente integrada)
-**Duración:** Noviembre 2025
+**Estado:** Fase 7 completada (gestión de alumnos funcional)
+**Duración:** Noviembre-Diciembre 2025
 
 **Completado recientemente:**
 - `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart` consume `ClassCubit` (loading/empty/success/error, `_EmptyState` reutilizable, `SelectableText.rich` para errores).
 - `lib/features/classes/presentation/screens/create_class_screen.dart` validado con `CustomTextField`, `CreateClassInput`, desactivación de botones y navegación segura (`Navigator.canPop`).
-- Nuevos strings operativos en `lib/core/constants/app_strings.dart` (mensajes de clases/membresías, estados activos/archivados).
-- Tests widget dedicados: `test/features/classes/presentation/screens/create_class_screen_test.dart` y `teacher_classes_list_screen_test.dart` (GoRouter embebido).
+- `lib/features/classes/presentation/screens/manage_students_screen.dart` ahora conectado a `MembershipCubit`, soporta paginación (botón `Cargar más`), encabezado con `ClassModel`, confirmaciones M3 para expulsar/regenerar y estados vacíos/errores accesibles.
+- `membership_service.dart` + `class_repository_impl.dart` exponen records `MembershipPage` para paginación y `getStudentsForClass` iterativo; `MembershipCubit` diferencia estados de lista vs. operaciones.
+- Nuevos strings operativos en `lib/core/constants/app_strings.dart` (regeneración de código, diálogos de alumno, labels de ID).
+- Tests widget dedicados: `test/features/classes/presentation/screens/manage_students_screen_test.dart` más suites existentes (`create_class_screen_test.dart`, `teacher_classes_list_screen_test.dart`); unit tests de servicios cubren paginación.
 - QA ejecutado: `dart format .`, `flutter analyze`, `flutter test`.
 
 **En progreso (Sprint 3):**
-- Flujo de unión de alumnos (`JoinClassScreen` + `MembershipCubit`)
-- Gestión de alumnos/fan-out inicial (Fase 7)
+- Documentación y QA final de Fase 8
+- Preparación de fan-out completo para Sprint 4 (helper + hooks documentados)
 
 **Siguientes sprints:** Tareas/Asignaciones, Cronómetro, Estadísticas, QA final
 

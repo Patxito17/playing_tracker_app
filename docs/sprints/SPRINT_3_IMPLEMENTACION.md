@@ -286,7 +286,7 @@ El sprint se considera listo respecto al fan-out cuando:
 - Se implementó `AccessCodeGenerator` con caracteres sin ambigüedad, reutilizado por `ClassService`.
 - `ClassService` cubre creación paginada, regeneración de códigos, observación en tiempo real y hook `fanOutTaskHook` con TODO para Sprint 4.
 - `MembershipService` soporta invitaciones manuales, unión por código, reactivación de membresías y obtención de alumnos para el futuro fan-out.
-- Reglas de Firestore permiten que alumnos creen/reactiven membresías verificadas por código y exigen `updatedAt`; los índices incluyen `classes.ownerTeacherId+createdAt` y `memberships.classId+isActive+joinedAt`.
+- Reglas de Firestore permiten que alumnos creen/reactiven membresías verificadas por código y exigen `updatedAt`; los índices incluyen `classes.ownerTeacherId+createdAt` y `memberships.classId+isActive+joinedAt+id`.
 - Nuevos tests en `test/features/classes/data/services/` usando `fake_cloud_firestore` + `mocktail`; ejecutados con `flutter test test/features/classes/data/services` (100% passing).
 - Documentación sincronizada (Guía del Proyecto, README, índice Cursor y análisis de requisitos) y registro de la nueva dependencia `fake_cloud_firestore`.
 - Se ejecutaron `flutter pub outdated` y `flutter pub upgrade`; sólo `built_value` avanzó a 8.12.1, mientras que `json_serializable >=6.11.3` permanece bloqueado por `bloc_test`/`flutter_test` (analyzer 9), documentándose la restricción para próximas migraciones de SDK.
@@ -362,9 +362,16 @@ El sprint se considera listo respecto al fan-out cuando:
 - Añadir métricas y TODO explícitos para Sprint 4.
 
 **Checklist**
-- [ ] Acciones protegidas con confirmaciones (`showDialog` M3).
-- [ ] Helper documentado con ejemplo de uso.
-- [ ] Tests de integración mínimos para expulsión/regeneración de código (mock services).
+- [x] Acciones protegidas con confirmaciones (`showDialog` M3).
+- [x] Helper documentado con ejemplo de uso.
+- [x] Tests de integración mínimos para expulsión/regeneración de código (mock services).
+
+**Actualización 24/11/2025**
+- `MembershipService` y `ClassRepository` ahora ofrecen paginación basada en records (`MembershipPage`) con cursores seguros y límites documentados.
+- `MembershipCubit` administra tanto operaciones como listados con estados dedicados (`MembershipListLoading`, `MembershipListSuccess`, etc.) reutilizados por `ManageStudentsScreen`.
+- La pantalla `ManageStudentsScreen` consume Cubits reales, muestra encabezado de clase, estados vacíos/errores con `SelectableText.rich`, paginación manual y confirmaciones Material 3 para expulsar alumnos o regenerar códigos.
+- Nuevos tests widget (`manage_students_screen_test.dart`) validan estados loading/empty/success utilizando `MockCubit`.
+- Fan-out mantiene TODOs explícitos en `FanOutHelper` y reutiliza `MembershipService.getStudentsForClass` paginado para Sprint 4.
 
 ---
 
@@ -438,7 +445,11 @@ flutter test --coverage
   ```
 - `class_service.dart`
   ```dart
-  Future<List<MembershipModel>> listClassMembers(String classId);
+  Future<MembershipPage> listClassMembers({
+    required String classId,
+    int limit,
+    String? startAfterId,
+  });
   ```
 
 Todos los métodos deben contener TODOs y logs si su implementación dependerá del Sprint 4.
@@ -474,6 +485,7 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 0.8 | 24/11/2025 | Fase 7 completada: `ManageStudentsScreen` integrado al repositorio real, paginación de memberships, confirmaciones M3, nuevas pruebas y TODOs de fan-out. |
 | 0.7 | 24/11/2025 | Fase 5 completada: UI docente conectada a Cubits, `_EmptyState` reutilizable, strings operativos, nuevos widget tests y QA completo. |
 | 0.6 | 24/11/2025 | Fase 4 completada: `ClassRepositoryImpl`, Cubits y estados sealed, helper de fan-out, pruebas unitarias y QA (`dart format`, `flutter analyze`, `flutter test`). |
 | 0.5 | 21/11/2025 | Fase 3 completada: helper de códigos, servicios de clases/membresías, reglas/índices de Firestore y suite de tests con `fake_cloud_firestore`. Documentación y README actualizados. |

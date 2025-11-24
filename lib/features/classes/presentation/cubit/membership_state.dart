@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:playing_tracker/core/constants/app_strings.dart';
+import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 
 /// Estados posibles para operaciones de membresías (alumnos).
 sealed class MembershipState extends Equatable {
@@ -20,12 +22,51 @@ final class MembershipLoading extends MembershipState {
 
 /// Estado que representa ausencia de resultados u operaciones pendientes.
 final class MembershipEmpty extends MembershipState {
-  const MembershipEmpty({this.message = 'Sin operaciones pendientes'});
+  const MembershipEmpty({this.message = StudentStrings.noStudentsInClass});
 
   final String message;
 
   @override
   List<Object?> get props => [message];
+}
+
+/// Estado de carga específico para la lista de miembros.
+final class MembershipListLoading extends MembershipState {
+  const MembershipListLoading({this.isRefresh = false});
+
+  final bool isRefresh;
+
+  @override
+  List<Object?> get props => [isRefresh];
+}
+
+/// Estado exitoso con los alumnos cargados.
+final class MembershipListSuccess extends MembershipState {
+  const MembershipListSuccess({
+    required this.members,
+    required this.hasMore,
+    this.lastDocumentId,
+    this.isPaginating = false,
+  });
+
+  final List<MembershipModel> members;
+  final bool hasMore;
+  final String? lastDocumentId;
+  final bool isPaginating;
+
+  @override
+  List<Object?> get props => [members, hasMore, lastDocumentId, isPaginating];
+}
+
+/// Estado de error para cargas de miembros.
+final class MembershipListError extends MembershipState {
+  const MembershipListError({required this.message, this.cause});
+
+  final String message;
+  final Object? cause;
+
+  @override
+  List<Object?> get props => [message, cause];
 }
 
 /// Estado de éxito que comunica la acción realizada.

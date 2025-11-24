@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
+import 'package:playing_tracker/features/classes/domain/value_objects/membership_page.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
 
@@ -15,7 +16,11 @@ abstract interface class MembershipServiceContract {
 
   Future<void> removeStudent(String membershipId);
 
-  Future<List<MembershipModel>> listClassMembers(String classId);
+  Future<MembershipPage> listClassMembers({
+    required String classId,
+    int limit,
+    String? startAfterId,
+  });
 
   Future<List<String>> getStudentsForClass(String classId);
 }
@@ -120,14 +125,48 @@ final class MembershipService implements MembershipServiceContract {
 
   /// Lista los alumnos activos de una clase específica.
   @override
-  Future<List<MembershipModel>> listClassMembers(String classId) async {
+  Future<MembershipPage> listClassMembers({
+    required String classId,
+    int limit = _defaultPaginationLimit,
+    String? startAfterId,
+  }) async {
+    if (classId.trim().isEmpty) {
+      throw ArgumentError('El identificador de la clase es obligatorio');
+    }
+    if (limit <= 0) {
+      throw ArgumentError('El límite de paginación debe ser mayor a cero');
+    }
     try {
-      final snapshot = await _membershipsCollection
+      Query<Map<String, dynamic>> query = _membershipsCollection
           .where('classId', isEqualTo: classId)
           .where('isActive', isEqualTo: true)
           .orderBy('joinedAt', descending: true)
-          .get();
-      return snapshot.docs.map(_mapMembershipSnapshot).toList();
+          .orderBy('id', descending: true)
+          .limit(limit);
+
+      if (startAfterId != null) {
+        final cursorSnapshot =
+            await _membershipsCollection.doc(startAfterId).get();
+        final cursorData = cursorSnapshot.data();
+        final joinedAtValue = cursorData?['joinedAt'];
+        final cursorId = cursorData?['id'];
+        if (!cursorSnapshot.exists || joinedAtValue == null || cursorId == null) {
+          throw FirebaseErrorMapperException(
+            'El cursor solicitado ya no es válido. Refresca la lista.',
+          );
+        }
+        query = query.startAfter([joinedAtValue, cursorId]);
+      }
+
+      final snapshot = await query.get();
+      final members = snapshot.docs.map(_mapMembershipSnapshot).toList();
+      final lastDocumentId = snapshot.docs.isEmpty
+          ? null
+          : snapshot.docs.last.id;
+
+      return (members: members, lastDocumentId: lastDocumentId);
+    } on FirebaseErrorMapperException {
+      rethrow;
     } on FirebaseException catch (error, stackTrace) {
       log(
         'MembershipService#listClassMembers FirebaseException: ${error.code}',
@@ -139,10 +178,29 @@ final class MembershipService implements MembershipServiceContract {
   }
 
   /// Obtiene únicamente los IDs de alumnos para preparar fan-outs.
+  ///
+  /// TODO(Sprint4): Optimizar para fan-outs masivos usando lotes paralelos.
   @override
   Future<List<String>> getStudentsForClass(String classId) async {
-    final memberships = await listClassMembers(classId);
-    return memberships.map((membership) => membership.studentId).toList();
+    final students = <String>[];
+    String? cursor;
+    while (true) {
+      final page = await listClassMembers(
+        classId: classId,
+        limit: _fanOutPaginationLimit,
+        startAfterId: cursor,
+      );
+      students.addAll(page.members.map((membership) => membership.studentId));
+      final reachedEnd =
+          page.lastDocumentId == null ||
+          page.members.length < _fanOutPaginationLimit;
+      if (reachedEnd) {
+        return students;
+      }
+      cursor = page.lastDocumentId;
+      // TODO(Sprint4): Considerar cortes de seguridad para evitar loops infinitos
+      // una vez que se implemente fan-out real.
+    }
   }
 
   /// Crea o re-activa (en caso de existir) la membresía del alumno.
@@ -200,3 +258,5 @@ String _buildMembershipDocId(String classId, String studentId) =>
 
 const _classesCollectionName = 'classes';
 const _membershipsCollectionName = 'memberships';
+const _defaultPaginationLimit = 20;
+const _fanOutPaginationLimit = 200;

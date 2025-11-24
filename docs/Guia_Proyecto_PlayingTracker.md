@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 24 de Noviembre 2025
-**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 5 completada) 🚧
+**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 7 completada) 🚧
 
 ---
 
@@ -646,8 +646,8 @@ service cloud.firestore {
 ---
 
 ### 📅 Sprint 3: Sistema de Clases y Membresías
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+**Duración:** Diciembre 2025 (2 semanas)
+**Estado:** 🚧 En progreso (Fases 1-7 completadas)
 
 **Objetivos:**
 - 📚 **Gestión de clases** (crear, editar, eliminar)
@@ -659,9 +659,15 @@ service cloud.firestore {
 **Entregables:**
 - 📚 CRUD de clases con códigos de acceso
 - 🔗 Sistema de membresías N:M
-- 👥 Gestión de alumnos por clase
-- 🔄 Lógica de fan-out para asignaciones
+- 👥 Gestión de alumnos por clase (ManageStudentsScreen integrada a Cubits reales)
+- 🔄 Lógica de fan-out para asignaciones (hooks y TODOs documentados)
 - 📱 Pantallas de gestión de clases
+
+**Avances recientes (24 nov 2025):**
+- `MembershipService` y `ClassRepositoryImpl` exponen paginación segura (`MembershipPage`) con cursores y validaciones de argumentos.
+- `MembershipCubit` separa estados para operaciones vs. listados, habilitando `loadMembers`, `refreshMembers`, confirmaciones M3 y reutilización en UI.
+- `ManageStudentsScreen` consume la capa real (header con `ClassModel`, listados paginados, `SelectableText.rich` para errores y diálogos de confirmación para expulsar o regenerar códigos).
+- Se añadieron tests widget (`manage_students_screen_test.dart`) y unitarios de servicios para cubrir paginación, junto a actualizaciones de documentación e índices.
 
 ---
 
@@ -751,13 +757,13 @@ service cloud.firestore {
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
 Sprint 2: ██████░░░░░░░░░░░░ 50% 🚧 Autenticación
-Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
+Sprint 3: ███████████░░░░░░░ 70% 🚧 Clases y Membresías (Fase 7 lista)
 Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
 Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
 Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
 Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
 
-Progreso Total: ███░░░░░░░░░░░░░░░░ 26% (2 sprints terminados + Sprint 2 en curso)
+Progreso Total: ████░░░░░░░░░░░░░░░ 33% (2 sprints terminados + Sprint 2 en curso + Sprint 3 Fase 7)
 ```
 
 ---

@@ -150,6 +150,9 @@ class ClassesStrings {
   static const String createClassButton = 'Crear clase';
   static const String classStatusActive = 'Clase activa';
   static const String classStatusArchived = 'Clase archivada';
+  static const String regenerateAccessCodeAction = 'Regenerar código';
+  static const String regenerateCodeConfirmation =
+      'Generaremos un nuevo código y el anterior dejará de funcionar.';
 
   // Unirse a clase
   static const String joinClassTitle = 'Unirse a una clase';
@@ -199,6 +202,8 @@ class CommonStrings {
   static const String delete = 'Eliminar';
   static const String edit = 'Editar';
   static const String retry = 'Reintentar';
+  static const String confirm = 'Confirmar';
+  static const String loadMore = 'Cargar más';
   static const String close = 'Cerrar';
   static const String back = 'Volver';
   static const String next = 'Siguiente';
@@ -326,6 +331,8 @@ class StudentStrings {
   static const String studentsListTitle = 'Alumnos de la clase';
 
   // Información de estudiantes
+  static const String studentIdLabel = 'ID del alumno';
+  static const String joinedAtLabel = 'Se unió el';
   static const String sessions = 'sesiones';
   static const String hours = 'horas';
   static const String sessionsHours = 'sesiones •';
@@ -333,6 +340,8 @@ class StudentStrings {
   // Acciones
   static const String viewProfile = 'Ver perfil';
   static const String removeStudent = 'Eliminar estudiante';
+  static const String removeStudentConfirmation =
+      'Esta acción quitará al alumno de la clase.';
 
   // Estados vacíos
   static const String noStudentsInClass = 'No hay estudiantes en esta clase';
