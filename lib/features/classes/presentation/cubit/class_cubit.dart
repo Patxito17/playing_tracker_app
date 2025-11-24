@@ -49,8 +49,8 @@ final class ClassCubit extends Cubit<ClassState> {
   }) async {
     _currentTeacherId = teacherId;
     _currentLimit = limit;
-    await _classesSubscription?.cancel();
     emit(const ClassLoading());
+    await _classesSubscription?.cancel();
 
     _classesSubscription = _repository
         .watchTeacherClasses(teacherId: teacherId, limit: limit)
