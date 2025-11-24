@@ -323,9 +323,16 @@ El sprint se considera listo respecto al fan-out cuando:
 - Actualizar navegación (`GoRouter`) para recibir `classId` real y refrescar tras creación.
 
 **Checklist**
-- [ ] UI refleja estados loading/empty/error/success.
-- [ ] Botón "Crear clase" deshabilitado mientras `ClassCubit` está cargando.
-- [ ] `dart format` y `flutter analyze` ejecutados.
+- [x] UI refleja estados loading/empty/error/success.
+- [x] Botón "Crear clase" deshabilitado mientras `ClassCubit` está cargando.
+- [x] `dart format`, `flutter analyze` y `flutter test` ejecutados.
+
+**Actualización 24/11/2025**
+- `TeacherClassesListScreen` ahora consume el `ClassCubit` real (stream + `refreshClasses()`), muestra `_EmptyState` reutilizable y errores con `SelectableText.rich`.
+- `CreateClassScreen` se integró con `CustomTextField`, validadores de dominio (`CreateClassInput`) y navegación segura (`Navigator.canPop()`).
+- GoRouter actualizado para compartir instancias del `ClassCubit` entre lista y creación; `AppRoutes` pasa el cubit vía `state.extra`.
+- Nuevos tests widget en `test/features/classes/presentation/screens/` cubren estados de UI, formularios y rutas; `widget_test.dart` injerta mocks de repositorio para evitar inicializar Firebase.
+- QA ejecutado: `dart format .`, `flutter analyze`, `flutter test` (suite completa, 0 fallos).
 
 ---
 
@@ -461,6 +468,7 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 0.7 | 24/11/2025 | Fase 5 completada: UI docente conectada a Cubits, `_EmptyState` reutilizable, strings operativos, nuevos widget tests y QA completo. |
 | 0.6 | 24/11/2025 | Fase 4 completada: `ClassRepositoryImpl`, Cubits y estados sealed, helper de fan-out, pruebas unitarias y QA (`dart format`, `flutter analyze`, `flutter test`). |
 | 0.5 | 21/11/2025 | Fase 3 completada: helper de códigos, servicios de clases/membresías, reglas/índices de Firestore y suite de tests con `fake_cloud_firestore`. Documentación y README actualizados. |
 | 0.4 | 21/11/2025 | Actualización del SDK completada: Flutter 3.35.6 → 3.38.2, Dart 3.9.2 → 3.10.0. Actualizado build_runner a 2.10.4. Dependencias discontinuadas (build_resolvers, build_runner_core) resueltas y eliminadas. Todas las verificaciones de calidad pasadas: `flutter analyze` (0 issues), `dart analyze --fatal-infos --fatal-warnings` (0 issues), `dart format .` (0 changed), `flutter test` (15 tests pasados). |

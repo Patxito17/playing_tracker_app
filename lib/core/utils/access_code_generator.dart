@@ -2,7 +2,7 @@ import 'dart:math';
 
 /// Helper responsable de generar y validar códigos de acceso alfanuméricos.
 ///
-/// Los códigos siguen el formato `A1B2C3` (seis caracteres en mayúsculas) para
+/// Los códigos siguen el formato `A2B3C4` (seis caracteres en mayúsculas) para
 /// facilitar su lectura en clase y minimizar errores de digitación. Se excluyen
 /// caracteres ambiguos como `0`, `O`, `I` o `1`.
 class AccessCodeGenerator {

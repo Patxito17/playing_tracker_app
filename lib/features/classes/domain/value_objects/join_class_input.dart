@@ -11,7 +11,7 @@ import 'package:playing_tracker/core/utils/access_code_generator.dart';
 /// ```dart
 /// final joinInput = (
 ///   studentId: 'student_uid_789',
-///   accessCode: 'ABC123',
+///   accessCode: 'ABC234',
 /// );
 /// validateJoinClassInput(joinInput);
 /// await classRepository.joinClassWithCode(joinInput);

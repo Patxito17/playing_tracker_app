@@ -165,14 +165,14 @@ InviteStudentInput _inviteInput() => (
   className: 'Clase demo',
 );
 
-JoinClassInput _joinInput() => (studentId: 'student-1', accessCode: 'ABC123');
+JoinClassInput _joinInput() => (studentId: 'student-1', accessCode: 'ABC234');
 
 ClassModel _classModel() => ClassModel(
   id: 'class-1',
   name: 'Clase demo',
   description: 'Descripción',
   ownerTeacherId: 'teacher-1',
-  accessCode: 'ABC123',
+  accessCode: 'ABC234',
   createdAt: Timestamp.now(),
   updatedAt: Timestamp.now(),
   isActive: true,

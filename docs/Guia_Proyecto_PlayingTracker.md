@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 24 de Noviembre 2025
-**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 4 completada) 🚧
+**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 5 completada) 🚧
 
 ---
 
@@ -145,14 +145,6 @@ lib/
 │   │           ├── join_class_screen.dart # Unirse a clase
 │   │           └── manage_students_screen.dart # Gestionar alumnos
 │   │
-│   │   #### Avance Sprint 3 · Fase 4 (24/11/2025)
-│   │   - Repositorio desacoplado (`ClassRepositoryImpl`) con contratos para mockear servicios en pruebas y hook de fan-out listo (logs + TODO Sprint 4).
-│   │   - Cubits `ClassCubit` y `MembershipCubit` consumiendo el repositorio, estados sealed documentados y validaciones sincrónicas (fail fast) para inputs.
-│   │   - `ClassCubit` expone estados de éxito puntuales (`ClassActionSuccess`) y maneja refrescos manuales mediante `_manualRefreshPending`, lo que simplifica la integración posterior en UI.
-│   │   - Helper `fan_out_helper.dart` integrado como stub reutilizable por `ClassRepositoryImpl.fanOutTask`.
-│   │   - Pruebas unitarias nuevas (`test/features/classes/data/repositories/class_repository_impl_test.dart`, `test/features/classes/presentation/cubit/`) con `bloc_test`, `mocktail` y streams controlados.
-│   │   - QA automatizado ejecutado (`dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`) con cero issues.
-│   │
 │   ├── tasks/                        # 📅 Gestión de tareas (Sprint 4)
 │   │   ├── domain/                  # 📅 Por implementar
 │   │   │   ├── models/
@@ -242,6 +234,22 @@ lib/
 - Índices compuestos extendidos (`classes.ownerTeacherId+createdAt`, `memberships.classId+isActive+joinedAt`) asegurando streams paginados en 400 ms.
 - Suite de pruebas dedicada (`test/features/classes/data/services`) usando `fake_cloud_firestore` y `mocktail`.
 - Documentación y roadmap sincronizados con el alcance real del Sprint 3.
+
+### 📌 Sprint 3 · Fase 4 (24/11/2025)
+
+- `ClassRepositoryImpl` implementado con contratos desacoplados (`ClassService`, `MembershipService`, `FanOutHelper`) y manejo exhaustivo de excepciones (`InvalidAccessCodeException`, `MembershipNotFoundException`, etc.).
+- `ClassCubit` y `MembershipCubit` consumen el repositorio, exponen estados sealed (`ClassActionSuccess`, `MembershipSuccess`) y soportan refrescos manuales (`_manualRefreshPending`).
+- `fan_out_helper.dart` documentado como stub para Sprint 4; `ClassRepositoryImpl.fanOutTask` delega en el helper + hook del servicio.
+- Pruebas unitarias (`test/features/classes/data/repositories/...`, `test/features/classes/presentation/cubit/...`) usando `bloc_test` + `mocktail`.
+- QA completo: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
+
+### 📌 Sprint 3 · Fase 5 (24/11/2025)
+
+- `TeacherClassesListScreen` conectado al `ClassCubit` real (estados loading/empty/error/success), `_EmptyState` reutilizable, chips de estado y errores con `SelectableText.rich`.
+- `CreateClassScreen` integra `CustomTextField`, `CreateClassInput`, validaciones de dominio y navegación segura (`Navigator.canPop()`) tras emitir `ClassActionSuccess`.
+- Strings operativos agregados en `app_strings.dart` (mensajes de clases/membresías, etiquetas de estado, textos de retry) y reutilizados en la UI.
+- Nuevos widget tests (`test/features/classes/presentation/screens/*.dart`) montan GoRouter embebido para validar navegación, formularios y estados.
+- QA completo: `dart format .`, `flutter analyze`, `flutter test`.
 
 ### 👩‍🏫 Módulo Docente
 
