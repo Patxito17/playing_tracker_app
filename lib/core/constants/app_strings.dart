@@ -156,6 +156,9 @@ class ClassesStrings {
   // Mensajes operativos
   static const String classGenericError =
       'Ocurrió un error al gestionar tus clases.';
+  static const String classCreateSuccess = 'Clase creada correctamente.';
+  static const String classStatusUpdatedSuccess =
+      'El estado de la clase se actualizó correctamente.';
   static const String membershipGenericError =
       'Ocurrió un error al gestionar las membresías.';
   static const String membershipInviteSuccess =

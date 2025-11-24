@@ -148,6 +148,7 @@ lib/
 │   │   #### Avance Sprint 3 · Fase 4 (24/11/2025)
 │   │   - Repositorio desacoplado (`ClassRepositoryImpl`) con contratos para mockear servicios en pruebas y hook de fan-out listo (logs + TODO Sprint 4).
 │   │   - Cubits `ClassCubit` y `MembershipCubit` consumiendo el repositorio, estados sealed documentados y validaciones sincrónicas (fail fast) para inputs.
+│   │   - `ClassCubit` expone estados de éxito puntuales (`ClassActionSuccess`) y maneja refrescos manuales mediante `_manualRefreshPending`, lo que simplifica la integración posterior en UI.
 │   │   - Helper `fan_out_helper.dart` integrado como stub reutilizable por `ClassRepositoryImpl.fanOutTask`.
 │   │   - Pruebas unitarias nuevas (`test/features/classes/data/repositories/class_repository_impl_test.dart`, `test/features/classes/presentation/cubit/`) con `bloc_test`, `mocktail` y streams controlados.
 │   │   - QA automatizado ejecutado (`dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`) con cero issues.

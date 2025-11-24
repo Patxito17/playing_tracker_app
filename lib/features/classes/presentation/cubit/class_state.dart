@@ -44,6 +44,17 @@ final class ClassSuccess extends ClassState {
   List<Object?> get props => [classes, source];
 }
 
+/// Estado de éxito para operaciones puntuales (crear/actualizar/etc.).
+final class ClassActionSuccess extends ClassState {
+  const ClassActionSuccess({required this.action, this.message});
+
+  final ClassAction action;
+  final String? message;
+
+  @override
+  List<Object?> get props => [action, message];
+}
+
 /// Estado que encapsula errores de negocio o de infraestructura.
 final class ClassError extends ClassState {
   const ClassError({required this.message, this.cause});
@@ -57,3 +68,6 @@ final class ClassError extends ClassState {
 
 /// Origen de los datos renderizados por [ClassCubit].
 enum ClassStateSource { stream, manualRefresh }
+
+/// Acciones que pueden reflejarse como éxito puntual.
+enum ClassAction { created, statusUpdated }

@@ -40,6 +40,7 @@ void main() {
       expect(snapshot.exists, isTrue);
       expect(snapshot.data()?['id'], membershipId);
       expect(snapshot.data()?['isActive'], true);
+      expect(snapshot.data()?['updatedAt'], isA<Timestamp>());
     });
 
     test('joinClassWithCode crea membresía usando código válido', () async {
@@ -57,6 +58,7 @@ void main() {
       expect(snapshot.exists, isTrue);
       expect(snapshot.data()?['teacherId'], 'teacher-1');
       expect(snapshot.data()?['className'], 'Clase Piano');
+      expect(snapshot.data()?['updatedAt'], isA<Timestamp>());
     });
 
     test('removeStudent marca la membresía como inactiva', () async {
@@ -74,6 +76,7 @@ void main() {
           .doc('class-1_student-3')
           .get();
       expect(snapshot.data()?['isActive'], false);
+      expect(snapshot.data()?['updatedAt'], isA<Timestamp>());
     });
 
     test('listClassMembers retorna solo alumnos activos', () async {
@@ -95,6 +98,7 @@ void main() {
 
       expect(members.length, 1);
       expect(members.first.studentId, 'student-5');
+      expect(members.first.updatedAt, isA<Timestamp>());
     });
   });
 }
