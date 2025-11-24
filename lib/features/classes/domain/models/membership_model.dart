@@ -86,7 +86,13 @@ class MembershipModel {
   /// deserialización.
   factory MembershipModel.fromJson(Map<String, dynamic> json) {
     final normalizedJson = Map<String, dynamic>.from(json);
-    normalizedJson['updatedAt'] ??= normalizedJson['joinedAt'];
+    final joinedAt = normalizedJson['joinedAt'];
+    if (joinedAt == null) {
+      throw ArgumentError(
+        'El documento de membresía carece del campo joinedAt requerido',
+      );
+    }
+    normalizedJson['updatedAt'] ??= joinedAt;
     return _$MembershipModelFromJson(normalizedJson);
   }
 
