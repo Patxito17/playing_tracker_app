@@ -13,6 +13,7 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/classes/domain/repositories/class_repository.dart';
 import '../../features/classes/presentation/cubit/class_cubit.dart';
+import '../../features/classes/presentation/cubit/membership_cubit.dart';
 import '../../features/classes/presentation/screens/create_class_screen.dart';
 import '../../features/classes/presentation/screens/join_class_screen.dart';
 import '../../features/classes/presentation/screens/manage_students_screen.dart';
@@ -301,7 +302,27 @@ class AppRoutes {
       GoRoute(
         path: joinClass,
         name: 'joinClass',
-        builder: (context, state) => const JoinClassScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          const screen = JoinClassScreen();
+          if (extraCubit is ClassCubit) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      MembershipCubit(context.read<ClassRepository>()),
+                ),
+                BlocProvider<ClassCubit>.value(value: extraCubit),
+              ],
+              child: screen,
+            );
+          }
+          return BlocProvider(
+            create: (context) =>
+                MembershipCubit(context.read<ClassRepository>()),
+            child: screen,
+          );
+        },
       ),
       GoRoute(
         path: '$manageStudents/:classId',

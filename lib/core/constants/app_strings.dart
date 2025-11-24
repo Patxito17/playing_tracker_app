@@ -145,6 +145,8 @@ class ClassesStrings {
   static const String accessCodeLabel = 'Código de acceso';
   static const String accessCodeGenerated = 'Se generará automáticamente';
   static const String accessCodeValueLabel = 'Código';
+  static const String accessCodeInvalidFormat =
+      'El código debe tener 6 caracteres válidos';
   static const String createClassButton = 'Crear clase';
   static const String classStatusActive = 'Clase activa';
   static const String classStatusArchived = 'Clase archivada';
