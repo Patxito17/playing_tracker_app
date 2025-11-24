@@ -1,3 +1,5 @@
+import 'package:playing_tracker/core/utils/access_code_generator.dart';
+
 /// Record que encapsula los datos necesarios para que un alumno se una
 /// a una clase utilizando un código de acceso.
 ///
@@ -22,9 +24,11 @@ void validateJoinClassInput(JoinClassInput input) {
     throw ArgumentError('El identificador del alumno es obligatorio');
   }
 
-  if (input.accessCode.trim().length != 6) {
+  final normalizedCode = input.accessCode.trim().toUpperCase();
+  if (!isValidAccessCode(normalizedCode)) {
     throw ArgumentError(
-      'El código de acceso debe tener exactamente 6 caracteres',
+      'El código de acceso debe tener exactamente 6 caracteres válidos '
+      '(sin letras ambiguas ni dígitos prohibidos)',
     );
   }
 }
