@@ -60,6 +60,10 @@ class MembershipModel {
   @TimestampConverter()
   final Timestamp joinedAt;
 
+  /// Fecha y hora de la última actualización de la membresía
+  @TimestampConverter()
+  final Timestamp updatedAt;
+
   /// Indica si la membresía está activa (true) o el alumno ha sido removido (false)
   final bool isActive;
 
@@ -71,6 +75,7 @@ class MembershipModel {
     required this.teacherId,
     required this.className,
     required this.joinedAt,
+    required this.updatedAt,
     this.isActive = true,
   });
 
@@ -89,6 +94,7 @@ class MembershipModel {
     String? teacherId,
     String? className,
     Timestamp? joinedAt,
+    Timestamp? updatedAt,
     bool? isActive,
   }) {
     return MembershipModel(
@@ -98,6 +104,7 @@ class MembershipModel {
       teacherId: teacherId ?? this.teacherId,
       className: className ?? this.className,
       joinedAt: joinedAt ?? this.joinedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
     );
   }
@@ -119,6 +126,7 @@ class MembershipModel {
           teacherId == other.teacherId &&
           className == other.className &&
           joinedAt == other.joinedAt &&
+          updatedAt == other.updatedAt &&
           isActive == other.isActive;
 
   @override
@@ -129,10 +137,11 @@ class MembershipModel {
       teacherId.hashCode ^
       className.hashCode ^
       joinedAt.hashCode ^
+      updatedAt.hashCode ^
       isActive.hashCode;
 
   @override
   String toString() =>
       'MembershipModel(id: $id, className: $className, '
-      'studentId: $studentId, isActive: $isActive)';
+      'studentId: $studentId, isActive: $isActive, updatedAt: $updatedAt)';
 }

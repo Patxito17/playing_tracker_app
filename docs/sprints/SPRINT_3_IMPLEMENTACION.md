@@ -311,6 +311,7 @@ El sprint se considera listo respecto al fan-out cuando:
 - Suite de pruebas en `test/features/classes/data/repositories/class_repository_impl_test.dart` y `test/features/classes/presentation/cubit/` usando `bloc_test` + `mocktail`.
 - Comandos QA ejecutados: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
 - Bloc observer global (`AppBlocObserver`) configurado en `main.dart` registrando métricas agregadas (`BlocMetricsRecorder`) para depurar cambios, transiciones y errores de todos los Cubits.
+- Se añadió el estado `ClassActionSuccess` y un flag `_manualRefreshPending` en `ClassCubit` para notificar éxitos puntuales y diferenciar refrescos manuales del stream en tiempo real.
 
 ---
 

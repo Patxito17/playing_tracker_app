@@ -17,12 +17,19 @@ final class ClassCubit extends Cubit<ClassState> {
   StreamSubscription<List<ClassModel>>? _classesSubscription;
   String? _currentTeacherId;
   int _currentLimit = _defaultPaginationLimit;
+  bool _manualRefreshPending = false;
 
   /// Crea una nueva clase y delega la persistencia al repositorio.
   Future<void> createClass(CreateClassInput input) async {
     emit(const ClassLoading());
     try {
       await _repository.createClass(input);
+      emit(
+        const ClassActionSuccess(
+          action: ClassAction.created,
+          message: ClassesStrings.classCreateSuccess,
+        ),
+      );
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));
     } catch (error) {
@@ -49,11 +56,17 @@ final class ClassCubit extends Cubit<ClassState> {
         .watchTeacherClasses(teacherId: teacherId, limit: limit)
         .listen(
           (classes) {
+            final source = _manualRefreshPending
+                ? ClassStateSource.manualRefresh
+                : ClassStateSource.stream;
+            _manualRefreshPending = false;
             if (classes.isEmpty) {
               emit(ClassEmpty(message: ClassesStrings.noClassesCreated));
               return;
             }
-            emit(ClassSuccess(classes: List.unmodifiable(classes)));
+            emit(
+              ClassSuccess(classes: List.unmodifiable(classes), source: source),
+            );
           },
           onError: (error, stackTrace) {
             addError(error, stackTrace);
@@ -83,16 +96,8 @@ final class ClassCubit extends Cubit<ClassState> {
       );
       return;
     }
+    _manualRefreshPending = true;
     await watchClasses(teacherId: teacherId, limit: _currentLimit);
-    final currentState = state;
-    if (currentState is ClassSuccess) {
-      emit(
-        ClassSuccess(
-          classes: currentState.classes,
-          source: ClassStateSource.manualRefresh,
-        ),
-      );
-    }
   }
 
   /// Cambia el estado activo/archivado de una clase específica.
@@ -103,6 +108,12 @@ final class ClassCubit extends Cubit<ClassState> {
     emit(const ClassLoading());
     try {
       await _repository.updateClassStatus(classId: classId, isActive: isActive);
+      emit(
+        ClassActionSuccess(
+          action: ClassAction.statusUpdated,
+          message: ClassesStrings.classStatusUpdatedSuccess,
+        ),
+      );
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));
     } catch (error) {

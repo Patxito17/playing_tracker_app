@@ -14,6 +14,9 @@ MembershipModel _$MembershipModelFromJson(Map<String, dynamic> json) =>
       teacherId: json['teacherId'] as String,
       className: json['className'] as String,
       joinedAt: const TimestampConverter().fromJson(json['joinedAt'] as Object),
+      updatedAt: const TimestampConverter().fromJson(
+        json['updatedAt'] as Object,
+      ),
       isActive: json['isActive'] as bool? ?? true,
     );
 
@@ -25,5 +28,6 @@ Map<String, dynamic> _$MembershipModelToJson(MembershipModel instance) =>
       'teacherId': instance.teacherId,
       'className': instance.className,
       'joinedAt': const TimestampConverter().toJson(instance.joinedAt),
+      'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
       'isActive': instance.isActive,
     };
