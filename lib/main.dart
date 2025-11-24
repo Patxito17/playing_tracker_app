@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
+import 'core/config/bloc/app_bloc_observer.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
@@ -34,6 +35,7 @@ void main() async {
 
   // Asignar storage globalmente y ejecutar la app
   HydratedBloc.storage = storage;
+  Bloc.observer = AppBlocObserver();
   runApp(const PlayingTrackerApp());
 }
 

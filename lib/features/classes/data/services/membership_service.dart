@@ -7,8 +7,21 @@ import 'package:playing_tracker/features/classes/domain/models/membership_model.
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
 
+/// Contrato para operaciones relacionadas con memberships.
+abstract interface class MembershipServiceContract {
+  Future<void> inviteStudent(InviteStudentInput input);
+
+  Future<void> joinClassWithCode(JoinClassInput input);
+
+  Future<void> removeStudent(String membershipId);
+
+  Future<List<MembershipModel>> listClassMembers(String classId);
+
+  Future<List<String>> getStudentsForClass(String classId);
+}
+
 /// Servicio responsable de gestionar la relación N:M entre clases y alumnos.
-final class MembershipService {
+final class MembershipService implements MembershipServiceContract {
   /// Crea una instancia con dependencias inyectables para pruebas.
   MembershipService({FirebaseFirestore? firestore})
     : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -22,6 +35,7 @@ final class MembershipService {
       _firestore.collection(_membershipsCollectionName);
 
   /// Invita o agrega manualmente un alumno a la clase indicada.
+  @override
   Future<void> inviteStudent(InviteStudentInput input) async {
     validateInviteStudentInput(input);
     try {
@@ -42,6 +56,7 @@ final class MembershipService {
   }
 
   /// Permite que un alumno se una mediante un código de acceso válido.
+  @override
   Future<void> joinClassWithCode(JoinClassInput input) async {
     validateJoinClassInput(input);
     final normalizedCode = input.accessCode.trim().toUpperCase();
@@ -80,6 +95,7 @@ final class MembershipService {
   }
 
   /// Marca una membresía como inactiva (soft delete).
+  @override
   Future<void> removeStudent(String membershipId) async {
     try {
       await _membershipsCollection.doc(membershipId).update({
@@ -97,6 +113,7 @@ final class MembershipService {
   }
 
   /// Lista los alumnos activos de una clase específica.
+  @override
   Future<List<MembershipModel>> listClassMembers(String classId) async {
     try {
       final snapshot = await _membershipsCollection
@@ -116,6 +133,7 @@ final class MembershipService {
   }
 
   /// Obtiene únicamente los IDs de alumnos para preparar fan-outs.
+  @override
   Future<List<String>> getStudentsForClass(String classId) async {
     final memberships = await listClassMembers(classId);
     return memberships.map((membership) => membership.studentId).toList();

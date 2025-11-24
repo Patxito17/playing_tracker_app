@@ -300,9 +300,17 @@ El sprint se considera listo respecto al fan-out cuando:
 - Escribir pruebas con `bloc_test` cubriendo escenarios felices y de error.
 
 **Checklist**
-- [ ] Cubits creados con métodos descritos (`createClass`, `watchClasses`, `joinClass`, `removeStudent`).
-- [ ] Bloc observer loggea transiciones relevantes.
+- [x] Cubits creados con métodos descritos (`createClass`, `watchClasses`, `joinClass`, `removeStudent`).
+- [x] Bloc observer loggea transiciones relevantes.
 - [ ] Cobertura ≥ 80% en `test/features/classes/presentation/cubit/`.
+
+**Actualización 24/11/2025**
+- Se implementó `ClassRepositoryImpl` con contratos desacoplados (`ClassServiceContract`, `MembershipServiceContract`, `FanOutHelperContract`) y manejo exhaustivo de excepciones específicas (`InvalidAccessCodeException`, `MembershipNotFoundException`, etc.).
+- Se añadieron los Cubits `ClassCubit` y `MembershipCubit` con estados sealed (`ClassState`, `MembershipState`) alineados a Material 3, validaciones sincrónicas y hooks para refresco manual.
+- Nuevo `FanOutHelper` documentado en `lib/features/classes/data/helpers/fan_out_helper.dart` con logs y TODO explícitos para Sprint 4.
+- Suite de pruebas en `test/features/classes/data/repositories/class_repository_impl_test.dart` y `test/features/classes/presentation/cubit/` usando `bloc_test` + `mocktail`.
+- Comandos QA ejecutados: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
+- Bloc observer global (`AppBlocObserver`) configurado en `main.dart` registrando métricas agregadas (`BlocMetricsRecorder`) para depurar cambios, transiciones y errores de todos los Cubits.
 
 ---
 
@@ -452,6 +460,7 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 0.6 | 24/11/2025 | Fase 4 completada: `ClassRepositoryImpl`, Cubits y estados sealed, helper de fan-out, pruebas unitarias y QA (`dart format`, `flutter analyze`, `flutter test`). |
 | 0.5 | 21/11/2025 | Fase 3 completada: helper de códigos, servicios de clases/membresías, reglas/índices de Firestore y suite de tests con `fake_cloud_firestore`. Documentación y README actualizados. |
 | 0.4 | 21/11/2025 | Actualización del SDK completada: Flutter 3.35.6 → 3.38.2, Dart 3.9.2 → 3.10.0. Actualizado build_runner a 2.10.4. Dependencias discontinuadas (build_resolvers, build_runner_core) resueltas y eliminadas. Todas las verificaciones de calidad pasadas: `flutter analyze` (0 issues), `dart analyze --fatal-infos --fatal-warnings` (0 issues), `dart format .` (0 changed), `flutter test` (15 tests pasados). |
 | 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade. Estado del sprint actualizado a "En progreso". |

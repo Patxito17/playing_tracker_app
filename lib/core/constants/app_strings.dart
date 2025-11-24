@@ -152,6 +152,20 @@ class ClassesStrings {
   static const String accessCodeInstructions =
       'Pide el código de acceso a tu profesor para unirte a la clase.';
   static const String joinButton = 'Unirse';
+
+  // Mensajes operativos
+  static const String classGenericError =
+      'Ocurrió un error al gestionar tus clases.';
+  static const String membershipGenericError =
+      'Ocurrió un error al gestionar las membresías.';
+  static const String membershipInviteSuccess =
+      'Alumno agregado correctamente.';
+  static const String membershipJoinSuccess =
+      'Te uniste a la clase correctamente.';
+  static const String membershipRemoveSuccess =
+      'Alumno removido correctamente.';
+  static const String membershipRegenerateSuccess =
+      'Código de acceso regenerado correctamente.';
 }
 
 /// Strings relacionados con navegación
