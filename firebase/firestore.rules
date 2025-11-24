@@ -129,11 +129,8 @@ service cloud.firestore {
                       ) &&
                       request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'updatedAt', 'isActive']);
 
-      // Actualización: teacher propietario o alumno dueño de la membresía
-      allow update: if isAuth() && (
-        resource.data.teacherId == request.auth.uid ||
-        resource.data.studentId == request.auth.uid
-      );
+      // Actualización: solo el teacher relacionado (previene reactivaciones no autorizadas)
+      allow update: if isAuth() && resource.data.teacherId == request.auth.uid;
 
       // Eliminación: solo el teacher relacionado
       allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
