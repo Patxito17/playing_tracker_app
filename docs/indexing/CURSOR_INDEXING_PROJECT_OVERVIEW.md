@@ -1,7 +1,7 @@
 # Resumen Ejecutivo del Proyecto - Playing Tracker
 
 **Última actualización:** 24 de Noviembre 2025
-**Estado:** Sprint 3 - Sistema de Clases (Fase 4 completada)
+**Estado:** Sprint 3 - Sistema de Clases (Fase 5 completada)
 **Versión:** 1.2
 
 ---
@@ -45,20 +45,19 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita asignar t
 ## Estado Actual del Proyecto
 
 ### Sprint Actual: Sprint 3 - Sistema de Clases y Membresías
-**Estado:** Fase 4 completada (repositorio y Cubits listos)
+**Estado:** Fase 5 completada (UI docente integrada)
 **Duración:** Noviembre 2025
 
 **Completado recientemente:**
-- `lib/features/classes/data/repositories/class_repository_impl.dart` con contratos desacoplados y hook `fanOutTask`.
-- `lib/features/classes/data/helpers/fan_out_helper.dart` (stub documentado).
-- Cubits/estados: `class_cubit.dart`, `class_state.dart`, `membership_cubit.dart`, `membership_state.dart`.
-- Observer global `core/config/bloc/app_bloc_observer.dart` + `BlocMetricsRecorder` para trazabilidad de transiciones.
-- Nuevos tests en `test/features/classes/data/repositories/...` y `test/features/classes/presentation/cubit/...`.
-- QA automatizado: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
+- `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart` consume `ClassCubit` (loading/empty/success/error, `_EmptyState` reutilizable, `SelectableText.rich` para errores).
+- `lib/features/classes/presentation/screens/create_class_screen.dart` validado con `CustomTextField`, `CreateClassInput`, desactivación de botones y navegación segura (`Navigator.canPop`).
+- Nuevos strings operativos en `lib/core/constants/app_strings.dart` (mensajes de clases/membresías, estados activos/archivados).
+- Tests widget dedicados: `test/features/classes/presentation/screens/create_class_screen_test.dart` y `teacher_classes_list_screen_test.dart` (GoRouter embebido).
+- QA ejecutado: `dart format .`, `flutter analyze`, `flutter test`.
 
 **En progreso (Sprint 3):**
-- Integración completa en UI docente/estudiante (Fases 5-7)
-- Implementación real del fan-out hacia `assignments` (Fase 7)
+- Flujo de unión de alumnos (`JoinClassScreen` + `MembershipCubit`)
+- Gestión de alumnos/fan-out inicial (Fase 7)
 
 **Siguientes sprints:** Tareas/Asignaciones, Cronómetro, Estadísticas, QA final
 

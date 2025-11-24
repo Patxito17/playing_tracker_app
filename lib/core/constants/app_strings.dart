@@ -144,7 +144,10 @@ class ClassesStrings {
   static const String classDescriptionHint = 'Descripción de la clase';
   static const String accessCodeLabel = 'Código de acceso';
   static const String accessCodeGenerated = 'Se generará automáticamente';
+  static const String accessCodeValueLabel = 'Código';
   static const String createClassButton = 'Crear clase';
+  static const String classStatusActive = 'Clase activa';
+  static const String classStatusArchived = 'Clase archivada';
 
   // Unirse a clase
   static const String joinClassTitle = 'Unirse a una clase';
@@ -193,6 +196,7 @@ class CommonStrings {
   static const String save = 'Guardar';
   static const String delete = 'Eliminar';
   static const String edit = 'Editar';
+  static const String retry = 'Reintentar';
   static const String close = 'Cerrar';
   static const String back = 'Volver';
   static const String next = 'Siguiente';

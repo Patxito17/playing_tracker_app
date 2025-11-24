@@ -10,19 +10,24 @@ import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/main.dart';
 
 import 'helpers/mock_hydrated_storage.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
+class _MockClassRepository extends Mock implements ClassRepository {}
+
 void main() {
   late _MockAuthRepository mockAuthRepository;
+  late _MockClassRepository mockClassRepository;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initHydratedStorage();
     mockAuthRepository = _MockAuthRepository();
+    mockClassRepository = _MockClassRepository();
     when(() => mockAuthRepository.currentUser).thenReturn(null);
   });
 
@@ -31,6 +36,7 @@ void main() {
       PlayingTrackerApp(
         authRepository: mockAuthRepository,
         authCubitBuilder: AuthCubit.new,
+        classRepository: mockClassRepository,
       ),
     );
 

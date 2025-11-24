@@ -68,4 +68,4 @@ InviteStudentInput _inviteInput() => (
   className: 'Clase demo',
 );
 
-JoinClassInput _joinInput() => (studentId: 'student-1', accessCode: 'ABC123');
+JoinClassInput _joinInput() => (studentId: 'student-1', accessCode: 'ABC234');

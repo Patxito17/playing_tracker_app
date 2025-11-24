@@ -161,7 +161,7 @@ ClassModel _classModel() => ClassModel(
   name: 'Demo',
   description: 'Descripción',
   ownerTeacherId: 'teacher-1',
-  accessCode: 'ABC123',
+  accessCode: 'ABC234',
   createdAt: Timestamp(0, 0),
   updatedAt: Timestamp(0, 0),
   isActive: true,

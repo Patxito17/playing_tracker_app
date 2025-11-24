@@ -77,7 +77,7 @@ void main() {
     test(
       'debe lanzar InvalidAccessCodeException cuando el código no existe',
       () {
-        final input = (studentId: 'student-1', accessCode: 'ABC123');
+        final input = (studentId: 'student-1', accessCode: 'ABC234');
         expect(() => validateJoinClassInput(input), returnsNormally);
         // TODO(sprint3-phase6): Validar flujo completo con código inexistente.
         fail('Not implemented yet');
@@ -94,7 +94,7 @@ void main() {
           id: 'class-1',
           name: 'Clase demo',
           ownerTeacherId: 'teacher-1',
-          accessCode: 'ABC123',
+          accessCode: 'ABC234',
           createdAt: Timestamp(0, 0),
           updatedAt: Timestamp(0, 0),
           isActive: true,

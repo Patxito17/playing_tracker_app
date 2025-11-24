@@ -16,7 +16,7 @@ void main() {
         'id': 'class-1',
         'name': 'Clase Piano',
         'ownerTeacherId': 'teacher-1',
-        'accessCode': 'ABC123',
+        'accessCode': 'ABC234',
         'createdAt': Timestamp.fromMillisecondsSinceEpoch(1),
         'updatedAt': Timestamp.fromMillisecondsSinceEpoch(1),
         'isActive': true,
@@ -46,7 +46,7 @@ void main() {
     test('joinClassWithCode crea membresía usando código válido', () async {
       await service.joinClassWithCode((
         studentId: 'student-2',
-        accessCode: 'abc123',
+        accessCode: 'abc234',
       ));
 
       final membershipId = 'class-1_student-2';

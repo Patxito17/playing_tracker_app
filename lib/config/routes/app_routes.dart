@@ -11,6 +11,8 @@ import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/classes/domain/repositories/class_repository.dart';
+import '../../features/classes/presentation/cubit/class_cubit.dart';
 import '../../features/classes/presentation/screens/create_class_screen.dart';
 import '../../features/classes/presentation/screens/join_class_screen.dart';
 import '../../features/classes/presentation/screens/manage_students_screen.dart';
@@ -182,7 +184,21 @@ class AppRoutes {
               GoRoute(
                 path: teacherClassesList,
                 name: 'teacherClassesList',
-                builder: (context, state) => const TeacherClassesListScreen(),
+                builder: (context, state) {
+                  final authState = context.read<AuthCubit>().state;
+                  if (authState is! AuthAuthenticated ||
+                      authState.role != UserRole.teacher) {
+                    return const ErrorScreen(
+                      errorMessage: 'No se pudo cargar las clases del docente.',
+                    );
+                  }
+                  return BlocProvider(
+                    create: (context) =>
+                        ClassCubit(context.read<ClassRepository>())
+                          ..watchClasses(teacherId: authState.userId),
+                    child: const TeacherClassesListScreen(),
+                  );
+                },
               ),
               GoRoute(
                 path: '$teacherClassDetail/:classId',
@@ -268,7 +284,19 @@ class AppRoutes {
       GoRoute(
         path: createClass,
         name: 'createClass',
-        builder: (context, state) => const CreateClassScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          if (extraCubit is ClassCubit) {
+            return BlocProvider<ClassCubit>.value(
+              value: extraCubit,
+              child: const CreateClassScreen(),
+            );
+          }
+          return BlocProvider(
+            create: (context) => ClassCubit(context.read<ClassRepository>()),
+            child: const CreateClassScreen(),
+          );
+        },
       ),
       GoRoute(
         path: joinClass,

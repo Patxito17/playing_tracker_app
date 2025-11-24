@@ -184,13 +184,13 @@ flutter build web
 
 ## 📊 Estado del Proyecto
 
-**Sprint Actual:** Sprint 3 - Sistema de Clases y Membresías (Fase 3 completada) 🚧
+**Sprint Actual:** Sprint 3 - Sistema de Clases y Membresías (Fase 5 completada) 🚧
 
-**Logros recientes (Fase 3 · 21/11/2025):**
-- ✅ Helper `AccessCodeGenerator` para códigos alfanuméricos seguros
-- ✅ Servicios `ClassService` y `MembershipService` operando contra Firestore
-- ✅ Reglas/índices de Firestore actualizados para docentes/alumnos y streams paginados
-- ✅ Tests con `fake_cloud_firestore` garantizando la lógica de clases y membresías
+**Logros recientes (Fase 5 · 24/11/2025):**
+- ✅ `TeacherClassesListScreen` consume el `ClassCubit` real, soporta loading/empty/error/success y refresco manual con `RefreshIndicator`
+- ✅ `CreateClassScreen` usa `CustomTextField`, validaciones del dominio y muestra feedback con `SelectableText.rich` + botones bloqueados en carga
+- ✅ `_EmptyState` ahora es reutilizable (acción opcional) y se añadieron strings operativos para estados y errores de clases/membresías
+- ✅ Nuevos widget tests en `test/features/classes/presentation/screens/` que validan rutas GoRouter, estados visuales y formularios docentes
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -361,10 +361,11 @@ La aplicación implementa **Material Design 3** completamente:
 ## 🧪 Testing
 
 - ✅ `test/features/classes/data/services/*_test.dart` cubre `ClassService` y `MembershipService` usando `fake_cloud_firestore` + `mocktail`.
-- ✅ Comando rápido para servicios:
+- ✅ `test/features/classes/presentation/screens/*_test.dart` valida estados loading/empty/error/success y formularios docentes.
+- ✅ Comando actual:
 
 ```bash
-flutter test test/features/classes/data/services
+flutter test
 ```
 
 - Roadmap de pruebas:

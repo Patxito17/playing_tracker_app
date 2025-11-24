@@ -21,7 +21,7 @@ class ClassInfoTab extends StatelessWidget {
     final className = 'Piano Nivel 1';
     final classDescription =
         'Curso de piano para principiantes. En este curso aprenderás los fundamentos del piano y desarrollarás habilidades básicas de lectura musical.';
-    final classCode = 'ABC123';
+    final classCode = 'ABC234';
     final teacherName = 'Prof. García';
     final teacherEmail = 'prof.garcia@ejemplo.com';
     final createdAt = 'Enero 2025';

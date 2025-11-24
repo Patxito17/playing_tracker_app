@@ -23,7 +23,7 @@ void main() {
     });
 
     test('createClass persiste datos y retorna modelo completo', () async {
-      when(() => accessCodeGenerator.generate()).thenReturn('ABC123');
+      when(() => accessCodeGenerator.generate()).thenReturn('ABC234');
 
       final result = await service.createClass((
         name: 'Clase Piano',
@@ -32,7 +32,7 @@ void main() {
       ));
 
       expect(result.name, 'Clase Piano');
-      expect(result.accessCode, 'ABC123');
+      expect(result.accessCode, 'ABC234');
       expect(result.ownerTeacherId, 'teacher-1');
       expect(result.description, 'Nivel 1');
 
@@ -40,7 +40,7 @@ void main() {
           .collection('classes')
           .doc(result.id)
           .get();
-      expect(storedDoc.data()?['accessCode'], 'ABC123');
+      expect(storedDoc.data()?['accessCode'], 'ABC234');
       expect(storedDoc.data()?['description'], 'Nivel 1');
       expect(storedDoc.data()?['isActive'], true);
     });
@@ -80,7 +80,7 @@ void main() {
     test(
       'regenerateAccessCode actualiza el código evitando duplicados',
       () async {
-        when(() => accessCodeGenerator.generate()).thenReturn('ABC123');
+        when(() => accessCodeGenerator.generate()).thenReturn('ABC234');
         final classModel = await service.createClass((
           name: 'Clase Piano',
           description: 'Intro',
