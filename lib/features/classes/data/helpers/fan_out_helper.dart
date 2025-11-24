@@ -16,10 +16,10 @@ abstract interface class FanOutHelperContract {
 /// dejar la infraestructura lista para el Sprint 4.
 final class FanOutHelper implements FanOutHelperContract {
   /// Crea una instancia permitiendo inyectar dependencias para pruebas.
-  FanOutHelper({MembershipService? membershipService})
+  FanOutHelper({MembershipServiceContract? membershipService})
     : _membershipService = membershipService ?? MembershipService();
 
-  final MembershipService _membershipService;
+  final MembershipServiceContract _membershipService;
 
   /// Prepara la información necesaria para un fan-out.
   ///
