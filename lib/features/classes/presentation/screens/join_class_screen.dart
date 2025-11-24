@@ -141,6 +141,9 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
   }
 
   void _handleError(MembershipError state) {
+    _successPopTimer?.cancel();
+    _successPopTimer = null;
+    _navigationScheduled = false;
     log(
       'JoinClassScreen error al unirse: ${state.message}',
       name: 'JoinClassScreen',
