@@ -328,7 +328,11 @@ class AppRoutes {
         name: 'manageStudents',
         builder: (context, state) {
           final classId = state.pathParameters['classId'] ?? '';
-          return ManageStudentsScreen(classId: classId);
+          return BlocProvider(
+            create: (context) =>
+                MembershipCubit(context.read<ClassRepository>()),
+            child: ManageStudentsScreen(classId: classId),
+          );
         },
       ),
 

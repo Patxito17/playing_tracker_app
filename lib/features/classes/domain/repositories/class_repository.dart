@@ -2,6 +2,9 @@ import 'package:playing_tracker/features/classes/domain/models/class_model.dart'
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
+import 'package:playing_tracker/features/classes/domain/value_objects/membership_page.dart';
+
+export 'package:playing_tracker/features/classes/domain/value_objects/membership_page.dart';
 
 /// Contrato de dominio responsable de orquestar la lógica de clases y membresías.
 ///
@@ -61,12 +64,23 @@ abstract interface class ClassRepository {
   /// Debe garantizar unicidad del código y propagar la actualización a la UI.
   Future<void> regenerateAccessCode(String classId);
 
+  /// Lista los alumnos activos de una clase aplicando paginación básica.
+  ///
+  /// Retorna un record con los miembros encontrados y el cursor del último
+  /// documento para continuar la paginación.
+  Future<MembershipPage> listClassMembers({
+    required String classId,
+    int limit = 20,
+    String? startAfterId,
+  });
+
   /// Hook para preparar el fan-out de tareas hacia asignaciones.
   ///
   /// La implementación de Sprint 3 únicamente debe dejar logs y TODOs,
   /// delegando la lógica real al helper de la Fase 4.
   Future<void> fanOutTask({required String taskId, required String classId});
 }
+
 
 /// Excepción base del repositorio de clases.
 sealed class ClassRepositoryException implements Exception {

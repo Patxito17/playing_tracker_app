@@ -94,11 +94,47 @@ void main() {
       ));
       await service.removeStudent('class-1_student-4');
 
-      final members = await service.listClassMembers('class-1');
+      final page = await service.listClassMembers(classId: 'class-1');
 
-      expect(members.length, 1);
-      expect(members.first.studentId, 'student-5');
-      expect(members.first.updatedAt, isA<Timestamp>());
+      expect(page.members.length, 1);
+      expect(page.members.first.studentId, 'student-5');
+      expect(page.members.first.updatedAt, isA<Timestamp>());
+    });
+
+    test('listClassMembers aplica paginación usando startAfterId', () async {
+      Future<void> seedMember(String id, int millis) async {
+        final membershipId = 'class-1_$id';
+        await firestore.collection('memberships').doc(membershipId).set({
+          'id': membershipId,
+          'classId': 'class-1',
+          'studentId': id,
+          'teacherId': 'teacher-1',
+          'className': 'Clase Piano',
+          'joinedAt': Timestamp.fromMillisecondsSinceEpoch(millis),
+          'updatedAt': Timestamp.fromMillisecondsSinceEpoch(millis),
+          'isActive': true,
+        });
+      }
+
+      await seedMember('student-page-0', 1);
+      await seedMember('student-page-1', 2);
+      await seedMember('student-page-2', 3);
+
+      final firstPage = await service.listClassMembers(
+        classId: 'class-1',
+        limit: 2,
+      );
+      expect(firstPage.members.length, 2);
+      expect(firstPage.lastDocumentId, isNotNull);
+
+      final secondPage = await service.listClassMembers(
+        classId: 'class-1',
+        limit: 2,
+        startAfterId: firstPage.lastDocumentId,
+      );
+      // `fake_cloud_firestore` no soporta startAfter con múltiples orderBy,
+      // por lo que solo verificamos que la llamar con cursor no falle.
+      expect(secondPage.members.length <= 1, isTrue);
     });
   });
 }

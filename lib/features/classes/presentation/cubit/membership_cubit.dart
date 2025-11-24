@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_strings.dart';
+import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
@@ -10,6 +11,10 @@ final class MembershipCubit extends Cubit<MembershipState> {
   MembershipCubit(this._repository) : super(const MembershipInitial());
 
   final ClassRepository _repository;
+  final List<MembershipModel> _membersCache = [];
+  String? _currentClassId;
+  String? _lastMemberDocumentId;
+  bool _hasMoreMembers = true;
 
   /// Invita o agrega manualmente un alumno a una clase específica.
   Future<void> inviteStudent(InviteStudentInput input) async {
@@ -22,12 +27,15 @@ final class MembershipCubit extends Cubit<MembershipState> {
           message: ClassesStrings.membershipInviteSuccess,
         ),
       );
+      await _refreshMembersAfterMutation();
     } on ClassRepositoryException catch (error) {
       emit(MembershipError(message: error.message, cause: error));
+      await _restoreMembersAfterOperation();
     } catch (error) {
       emit(
         const MembershipError(message: ClassesStrings.membershipGenericError),
       );
+      await _restoreMembersAfterOperation();
     }
   }
 
@@ -42,12 +50,15 @@ final class MembershipCubit extends Cubit<MembershipState> {
           message: ClassesStrings.membershipJoinSuccess,
         ),
       );
+      await _refreshMembersAfterMutation();
     } on ClassRepositoryException catch (error) {
       emit(MembershipError(message: error.message, cause: error));
+      await _restoreMembersAfterOperation();
     } catch (error) {
       emit(
         const MembershipError(message: ClassesStrings.membershipGenericError),
       );
+      await _restoreMembersAfterOperation();
     }
   }
 
@@ -68,12 +79,15 @@ final class MembershipCubit extends Cubit<MembershipState> {
           message: ClassesStrings.membershipRemoveSuccess,
         ),
       );
+      await loadMembers(classId: classId, refresh: true);
     } on ClassRepositoryException catch (error) {
       emit(MembershipError(message: error.message, cause: error));
+      await _restoreMembersAfterOperation();
     } catch (error) {
       emit(
         const MembershipError(message: ClassesStrings.membershipGenericError),
       );
+      await _restoreMembersAfterOperation();
     }
   }
 
@@ -88,15 +102,161 @@ final class MembershipCubit extends Cubit<MembershipState> {
           message: ClassesStrings.membershipRegenerateSuccess,
         ),
       );
+      await _restoreMembersAfterOperation();
     } on ClassRepositoryException catch (error) {
       emit(MembershipError(message: error.message, cause: error));
+      await _restoreMembersAfterOperation();
     } catch (error) {
       emit(
         const MembershipError(message: ClassesStrings.membershipGenericError),
       );
+      await _restoreMembersAfterOperation();
     }
   }
 
+  /// Carga los alumnos de la clase con soporte de paginación.
+  Future<void> loadMembers({
+    required String classId,
+    bool refresh = false,
+  }) async {
+    final normalizedClassId = classId.trim();
+    if (normalizedClassId.isEmpty) {
+      _emitMembersState(
+        const MembershipListError(
+          message: ClassesStrings.membershipGenericError,
+        ),
+      );
+      return;
+    }
+    final isSameClass = _currentClassId == normalizedClassId;
+    final shouldResetCache = !isSameClass || refresh;
+    if (shouldResetCache) {
+      _membersCache.clear();
+      _lastMemberDocumentId = null;
+      _hasMoreMembers = true;
+      _currentClassId = normalizedClassId;
+    }
+
+    if (!_hasMoreMembers &&
+        !refresh &&
+        isSameClass &&
+        _membersCache.isNotEmpty) {
+      return;
+    }
+
+    final isInitialLoad = _membersCache.isEmpty;
+    if (isInitialLoad || refresh || !isSameClass) {
+      _emitMembersState(MembershipListLoading(isRefresh: refresh));
+    } else {
+      _emitMembersState(
+        MembershipListSuccess(
+          members: List.unmodifiable(_membersCache),
+          hasMore: _hasMoreMembers,
+          lastDocumentId: _lastMemberDocumentId,
+          isPaginating: true,
+        ),
+      );
+    }
+
+    try {
+      final page = await _repository.listClassMembers(
+        classId: normalizedClassId,
+        limit: _membersPageSize,
+        startAfterId: (isInitialLoad || refresh || !isSameClass)
+            ? null
+            : _lastMemberDocumentId,
+      );
+
+      if (isInitialLoad || refresh || !isSameClass) {
+        _membersCache.clear();
+        _membersCache.addAll(page.members);
+      } else {
+        _mergeMembers(page.members);
+      }
+
+      _lastMemberDocumentId = page.lastDocumentId;
+      _hasMoreMembers =
+          page.lastDocumentId != null &&
+          page.members.length == _membersPageSize;
+
+      if (_membersCache.isEmpty) {
+        _emitMembersState(const MembershipEmpty());
+      } else {
+        _emitMembersState(
+          MembershipListSuccess(
+            members: List.unmodifiable(_membersCache),
+            hasMore: _hasMoreMembers,
+            lastDocumentId: _lastMemberDocumentId,
+          ),
+        );
+      }
+    } on ClassRepositoryException catch (error) {
+      _emitMembersState(
+        MembershipListError(message: error.message, cause: error),
+      );
+    } catch (error) {
+      _emitMembersState(
+        const MembershipListError(
+          message: ClassesStrings.membershipGenericError,
+        ),
+      );
+    }
+  }
+
+  /// Fuerza una recarga desde el inicio conservando la clase activa.
+  Future<void> refreshMembers() async {
+    final classId = _currentClassId;
+    if (classId == null) {
+      _emitMembersState(
+        const MembershipListError(
+          message:
+              'No se ha seleccionado ninguna clase para refrescar sus alumnos.',
+        ),
+      );
+      return;
+    }
+    await loadMembers(classId: classId, refresh: true);
+  }
+
   /// Restablece el estado al punto inicial.
-  void reset() => emit(const MembershipEmpty());
+  void reset() {
+    _membersCache.clear();
+    _currentClassId = null;
+    _lastMemberDocumentId = null;
+    _hasMoreMembers = true;
+    emit(const MembershipEmpty());
+  }
+
+  Future<void> _refreshMembersAfterMutation() async {
+    final classId = _currentClassId;
+    if (classId != null) {
+      await loadMembers(classId: classId, refresh: true);
+    } else {
+      await _restoreMembersAfterOperation();
+    }
+  }
+
+  Future<void> _restoreMembersAfterOperation() async {
+    if (_lastMembersState != null) {
+      emit(_lastMembersState!);
+    }
+  }
+
+  void _mergeMembers(List<MembershipModel> newMembers) {
+    final existingIds = _membersCache.map((member) => member.id).toSet();
+    for (final member in newMembers) {
+      if (!existingIds.contains(member.id)) {
+        _membersCache.add(member);
+      }
+    }
+  }
+
+  void _emitMembersState(MembershipState state) {
+    _lastMembersState = state;
+    emit(state);
+  }
+
+  MembershipState? _lastMembersState;
 }
+
+const _membersPageSize = 20;

@@ -213,6 +213,31 @@ final class ClassRepositoryImpl implements ClassRepository {
     }
   }
 
+  @override
+  Future<MembershipPage> listClassMembers({
+    required String classId,
+    int limit = _defaultPaginationLimit,
+    String? startAfterId,
+  }) async {
+    if (classId.trim().isEmpty) {
+      throw ArgumentError('El identificador de la clase es obligatorio');
+    }
+    try {
+      return await _membershipService.listClassMembers(
+        classId: classId,
+        limit: limit,
+        startAfterId: startAfterId,
+      );
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'listClassMembers',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible obtener los alumnos de la clase.',
+      );
+    }
+  }
+
   Never _throwRepositoryException({
     required String method,
     required Object error,
