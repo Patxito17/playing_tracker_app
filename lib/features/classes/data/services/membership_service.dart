@@ -84,6 +84,12 @@ final class MembershipService implements MembershipServiceContract {
         teacherId: classModel.ownerTeacherId,
         className: classModel.name,
       );
+    } on FirebaseErrorMapperException catch (error) {
+      log(
+        'MembershipService#joinClassWithCode ValidationException',
+        error: error,
+      );
+      rethrow;
     } on FirebaseException catch (error, stackTrace) {
       log(
         'MembershipService#joinClassWithCode FirebaseException: ${error.code}',

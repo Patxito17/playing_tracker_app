@@ -304,7 +304,6 @@ class AppRoutes {
         name: 'joinClass',
         builder: (context, state) {
           final extraCubit = state.extra;
-          const screen = JoinClassScreen();
           if (extraCubit is ClassCubit) {
             return MultiBlocProvider(
               providers: [
@@ -314,13 +313,13 @@ class AppRoutes {
                 ),
                 BlocProvider<ClassCubit>.value(value: extraCubit),
               ],
-              child: screen,
+              child: const JoinClassScreen(),
             );
           }
           return BlocProvider(
             create: (context) =>
                 MembershipCubit(context.read<ClassRepository>()),
-            child: screen,
+            child: const JoinClassScreen(),
           );
         },
       ),
