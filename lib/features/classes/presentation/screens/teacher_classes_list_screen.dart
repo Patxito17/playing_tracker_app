@@ -36,6 +36,11 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
     }
   }
 
+  Future<void> _openManageStudents(
+    BuildContext context,
+    ClassModel classModel,
+  ) => context.push('${AppRoutes.manageStudents}/${classModel.id}');
+
   Future<void> _handleRefresh(BuildContext context) =>
       context.read<ClassCubit>().refreshClasses();
 
@@ -63,6 +68,8 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
               state: state,
               onCreateClass: () => _openCreateClass(context),
               onRetry: () => _handleRefresh(context),
+              onClassSelected: (classModel) =>
+                  _openManageStudents(context, classModel),
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -82,11 +89,13 @@ class _StateAwareContent extends StatelessWidget {
     required this.state,
     required this.onCreateClass,
     required this.onRetry,
+    required this.onClassSelected,
   });
 
   final ClassState state;
   final VoidCallback onCreateClass;
   final VoidCallback onRetry;
+  final ValueChanged<ClassModel> onClassSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +112,10 @@ class _StateAwareContent extends StatelessWidget {
         message: message,
         onRetry: onRetry,
       ),
-      ClassSuccess(:final classes) => _ClassesList(classes: classes),
+      ClassSuccess(:final classes) => _ClassesList(
+        classes: classes,
+        onClassSelected: onClassSelected,
+      ),
       _ => _LoadingState(),
     };
   }
@@ -111,9 +123,10 @@ class _StateAwareContent extends StatelessWidget {
 
 /// Lista de clases utilizando `CustomCard` y navegación declarativa.
 class _ClassesList extends StatelessWidget {
-  const _ClassesList({required this.classes});
+  const _ClassesList({required this.classes, required this.onClassSelected});
 
   final List<ClassModel> classes;
+  final ValueChanged<ClassModel> onClassSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +139,12 @@ class _ClassesList extends StatelessWidget {
           style: context.headlineMediumBold,
         ),
         const SizedBox(height: AppSpacing.l),
-        ...classes.map((classModel) => _ClassCard(classModel: classModel)),
+        ...classes.map(
+          (classModel) => _ClassCard(
+            classModel: classModel,
+            onTap: () => onClassSelected(classModel),
+          ),
+        ),
         const SizedBox(height: AppSpacing.xxl),
       ],
     );
@@ -135,9 +153,10 @@ class _ClassesList extends StatelessWidget {
 
 /// Card individual que resume la clase y permite abrir el detalle.
 class _ClassCard extends StatelessWidget {
-  const _ClassCard({required this.classModel});
+  const _ClassCard({required this.classModel, required this.onTap});
 
   final ClassModel classModel;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +176,7 @@ class _ClassCard extends StatelessWidget {
         margin: EdgeInsets.zero,
         title: classModel.name,
         subtitle: classModel.description ?? '',
-        onTap: () =>
-            context.push('${AppRoutes.teacherClassDetail}/${classModel.id}'),
+        onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

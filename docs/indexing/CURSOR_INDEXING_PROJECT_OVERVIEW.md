@@ -55,6 +55,8 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita asignar t
 - `membership_service.dart` + `class_repository_impl.dart` exponen records `MembershipPage` para paginación y `getStudentsForClass` iterativo; `MembershipCubit` diferencia estados de lista vs. operaciones.
 - Nuevos strings operativos en `lib/core/constants/app_strings.dart` (regeneración de código, diálogos de alumno, labels de ID).
 - Tests widget dedicados: `test/features/classes/presentation/screens/manage_students_screen_test.dart` más suites existentes (`create_class_screen_test.dart`, `teacher_classes_list_screen_test.dart`); unit tests de servicios cubren paginación.
+- `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart` ahora navega directo a `ManageStudentsScreen`, dejando fuera las tabs mock heredadas del Sprint 0.
+- `lib/features/classes/presentation/screens/student_classes_list_screen.dart` elimina mocks y utiliza `StudentClassesCubit` + `ClassRepository.watchStudentMemberships` para listar memberships reales con pull-to-refresh y CTA para unirse con código.
 - QA ejecutado: `dart format .`, `flutter analyze`, `flutter test`.
 
 **En progreso (Sprint 3):**
