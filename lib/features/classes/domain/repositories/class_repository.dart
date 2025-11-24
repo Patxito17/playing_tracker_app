@@ -1,4 +1,5 @@
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
+import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
@@ -79,8 +80,12 @@ abstract interface class ClassRepository {
   /// La implementación de Sprint 3 únicamente debe dejar logs y TODOs,
   /// delegando la lógica real al helper de la Fase 4.
   Future<void> fanOutTask({required String taskId, required String classId});
-}
 
+  /// Observa las clases activas en las que está inscrito un alumno.
+  Stream<List<MembershipModel>> watchStudentMemberships({
+    required String studentId,
+  });
+}
 
 /// Excepción base del repositorio de clases.
 sealed class ClassRepositoryException implements Exception {

@@ -372,6 +372,10 @@ El sprint se considera listo respecto al fan-out cuando:
 - La pantalla `ManageStudentsScreen` consume Cubits reales, muestra encabezado de clase, estados vacíos/errores con `SelectableText.rich`, paginación manual y confirmaciones Material 3 para expulsar alumnos o regenerar códigos.
 - Nuevos tests widget (`manage_students_screen_test.dart`) validan estados loading/empty/success utilizando `MockCubit`.
 - Fan-out mantiene TODOs explícitos en `FanOutHelper` y reutiliza `MembershipService.getStudentsForClass` paginado para Sprint 4.
+- `TeacherClassesListScreen` abre directamente `ManageStudentsScreen`, eliminando el tab de detalle mock y alineando la navegación docente con los datos reales.
+- `TeacherHomeScreen`/`StudentHomeScreen` muestran únicamente acciones respaldadas por lógica real (mis clases, crear clase, unirse), evitando accesos a pantallas placeholder.
+- `StudentClassesListScreen` reemplaza los mocks por `StudentClassesCubit`, escucha los memberships activos del alumno y habilita pull-to-refresh + CTA para unirse con código.
+- QA adicional: `flutter analyze` y `flutter test` ejecutados tras la limpieza (100% passing, skips heredados documentados en la salida de pruebas).
 
 ---
 

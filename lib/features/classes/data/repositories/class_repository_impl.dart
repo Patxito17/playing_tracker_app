@@ -6,6 +6,7 @@ import 'package:playing_tracker/features/classes/data/helpers/fan_out_helper.dar
 import 'package:playing_tracker/features/classes/data/services/class_service.dart';
 import 'package:playing_tracker/features/classes/data/services/membership_service.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
+import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
@@ -261,6 +262,37 @@ final class ClassRepositoryImpl implements ClassRepository {
       throw exception;
     }
     throw UnknownClassRepositoryException(fallbackMessage, cause: error);
+  }
+
+  @override
+  Stream<List<MembershipModel>> watchStudentMemberships({
+    required String studentId,
+  }) {
+    final sanitizedStudentId = studentId.trim();
+    if (sanitizedStudentId.isEmpty) {
+      return Stream<List<MembershipModel>>.error(
+        const InvalidClassRepositoryArgumentException(
+          'El identificador del alumno es obligatorio',
+        ),
+      );
+    }
+
+    final stream = _membershipService.watchStudentMemberships(
+      sanitizedStudentId,
+    );
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (memberships, sink) => sink.add(memberships),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchStudentMemberships',
+            error: error,
+            fallbackMessage: 'No fue posible cargar tus clases.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
   }
 
   ClassRepositoryException _mapToRepositoryException({

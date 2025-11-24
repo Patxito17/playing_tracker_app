@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +24,8 @@ abstract interface class MembershipServiceContract {
   });
 
   Future<List<String>> getStudentsForClass(String classId);
+
+  Stream<List<MembershipModel>> watchStudentMemberships(String studentId);
 }
 
 /// Servicio responsable de gestionar la relación N:M entre clases y alumnos.
@@ -145,12 +148,15 @@ final class MembershipService implements MembershipServiceContract {
           .limit(limit);
 
       if (startAfterId != null) {
-        final cursorSnapshot =
-            await _membershipsCollection.doc(startAfterId).get();
+        final cursorSnapshot = await _membershipsCollection
+            .doc(startAfterId)
+            .get();
         final cursorData = cursorSnapshot.data();
         final joinedAtValue = cursorData?['joinedAt'];
         final cursorId = cursorData?['id'];
-        if (!cursorSnapshot.exists || joinedAtValue == null || cursorId == null) {
+        if (!cursorSnapshot.exists ||
+            joinedAtValue == null ||
+            cursorId == null) {
           throw FirebaseErrorMapperException(
             'El cursor solicitado ya no es válido. Refresca la lista.',
           );
@@ -201,6 +207,39 @@ final class MembershipService implements MembershipServiceContract {
       // TODO(Sprint4): Considerar cortes de seguridad para evitar loops infinitos
       // una vez que se implemente fan-out real.
     }
+  }
+
+  @override
+  Stream<List<MembershipModel>> watchStudentMemberships(String studentId) {
+    final normalizedId = studentId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<MembershipModel>>.error(
+        ArgumentError('El identificador del alumno es obligatorio'),
+      );
+    }
+
+    final snapshots = _membershipsCollection
+        .where('studentId', isEqualTo: normalizedId)
+        .where('isActive', isEqualTo: true)
+        .orderBy('joinedAt', descending: true)
+        .snapshots();
+
+    return snapshots.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (snapshot, sink) {
+          sink.add(snapshot.docs.map(_mapMembershipSnapshot).toList());
+        },
+        handleError: (error, stackTrace, sink) {
+          if (error is FirebaseException) {
+            sink.addError(
+              FirebaseErrorMapperException(FirebaseErrorMapper.map(error)),
+            );
+            return;
+          }
+          sink.addError(error);
+        },
+      ),
+    );
   }
 
   /// Crea o re-activa (en caso de existir) la membresía del alumno.

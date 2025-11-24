@@ -668,6 +668,8 @@ service cloud.firestore {
 - `MembershipCubit` separa estados para operaciones vs. listados, habilitando `loadMembers`, `refreshMembers`, confirmaciones M3 y reutilización en UI.
 - `ManageStudentsScreen` consume la capa real (header con `ClassModel`, listados paginados, `SelectableText.rich` para errores y diálogos de confirmación para expulsar o regenerar códigos).
 - Se añadieron tests widget (`manage_students_screen_test.dart`) y unitarios de servicios para cubrir paginación, junto a actualizaciones de documentación e índices.
+- `TeacherClassesListScreen` navega directo a `ManageStudentsScreen` (sin tabs mock heredados) y los HomeScreens muestran únicamente acciones respaldadas por lógica real.
+- `StudentClassesListScreen` incorpora `StudentClassesCubit`, escucha los memberships activos del alumno y ofrece pull-to-refresh + CTA para unirse usando códigos reales.
 
 ---
 

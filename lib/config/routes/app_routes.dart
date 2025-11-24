@@ -14,6 +14,7 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/classes/domain/repositories/class_repository.dart';
 import '../../features/classes/presentation/cubit/class_cubit.dart';
 import '../../features/classes/presentation/cubit/membership_cubit.dart';
+import '../../features/classes/presentation/cubit/student_classes_cubit.dart';
 import '../../features/classes/presentation/screens/create_class_screen.dart';
 import '../../features/classes/presentation/screens/join_class_screen.dart';
 import '../../features/classes/presentation/screens/manage_students_screen.dart';
@@ -248,7 +249,11 @@ class AppRoutes {
               GoRoute(
                 path: studentClassesList,
                 name: 'studentClassesList',
-                builder: (context, state) => const StudentClassesListScreen(),
+                builder: (context, state) => BlocProvider(
+                  create: (context) =>
+                      StudentClassesCubit(context.read<ClassRepository>()),
+                  child: const StudentClassesListScreen(),
+                ),
               ),
               GoRoute(
                 path: '$studentClassDetail/:classId',
