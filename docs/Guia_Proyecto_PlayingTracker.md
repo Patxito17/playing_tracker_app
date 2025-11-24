@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 21 de Noviembre 2025
-**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 3 completada) 🚧
+**Última actualización:** 24 de Noviembre 2025
+**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 4 completada) 🚧
 
 ---
 
@@ -53,6 +53,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **ForgotPasswordCubit** ✅ Añadido en Sprint 2 (Fase 5) para manejar recuperación de contraseña desacoplada del flujo principal.
 - **Equatable** ✅ Disponible para estados/entidades desde Sprint 1.
 - **BlocProvider** ✅ Configurado en ejemplos y listo para inyección en Sprint 2.
+- **AppBlocObserver** ✅ (Sprint 3 Fase 4) definido en `core/config/bloc/app_bloc_observer.dart`, registra métricas globales (`BlocMetricsRecorder`) y se inicializa en `main.dart` antes de correr la app.
 - **BlocBuilder/BlocConsumer** ✅ Utilizados en pantallas de autenticación (Sprint 0) como base.
 
 ### Diseño y Tema (Material Design 3)
@@ -128,16 +129,28 @@ lib/
 │   │   │   ├── services/
 │   │   │   │   ├── class_service.dart     # CRUD + generación de códigos (Sprint 3)
 │   │   │   │   └── membership_service.dart # Relación N:M (Sprint 3)
+│   │   │   ├── helpers/
+│   │   │   │   └── fan_out_helper.dart    # Hook preparado para assignments (Sprint 3 Fase 4)
 │   │   │   └── repositories/
-│   │   │       └── class_repository.dart # Orquestación
-│   │   └── presentation/            # 📅 Por implementar
+│   │   │       ├── class_repository.dart      # Contrato dominio
+│   │   │       └── class_repository_impl.dart # Implementación + mapping (Sprint 3 Fase 4)
+│   │   └── presentation/            # Sprint 3 - Cubits conectados a Firestore
 │   │       ├── cubit/
-│   │       │   ├── class_cubit.dart # Cubit de clases
-│   │   │       └── class_state.dart # Estados de clases
+│   │       │   ├── class_cubit.dart       # Cubit docente (streams + refresh)
+│   │       │   ├── class_state.dart       # Estados sealed (initial/loading/empty/success/error)
+│   │       │   ├── membership_cubit.dart  # Operaciones N:M (join/invite/remove/code)
+│   │       │   └── membership_state.dart  # Estados sealed para feedback inmediato
 │   │       └── screens/
 │   │           ├── create_class_screen.dart # Crear clase
 │   │           ├── join_class_screen.dart # Unirse a clase
 │   │           └── manage_students_screen.dart # Gestionar alumnos
+│   │
+│   │   #### Avance Sprint 3 · Fase 4 (24/11/2025)
+│   │   - Repositorio desacoplado (`ClassRepositoryImpl`) con contratos para mockear servicios en pruebas y hook de fan-out listo (logs + TODO Sprint 4).
+│   │   - Cubits `ClassCubit` y `MembershipCubit` consumiendo el repositorio, estados sealed documentados y validaciones sincrónicas (fail fast) para inputs.
+│   │   - Helper `fan_out_helper.dart` integrado como stub reutilizable por `ClassRepositoryImpl.fanOutTask`.
+│   │   - Pruebas unitarias nuevas (`test/features/classes/data/repositories/class_repository_impl_test.dart`, `test/features/classes/presentation/cubit/`) con `bloc_test`, `mocktail` y streams controlados.
+│   │   - QA automatizado ejecutado (`dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`) con cero issues.
 │   │
 │   ├── tasks/                        # 📅 Gestión de tareas (Sprint 4)
 │   │   ├── domain/                  # 📅 Por implementar

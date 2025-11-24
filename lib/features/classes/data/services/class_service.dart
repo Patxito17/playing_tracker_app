@@ -7,11 +7,35 @@ import 'package:playing_tracker/features/classes/domain/models/class_model.dart'
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 
+/// Contrato para permitir testear e intercambiar implementaciones.
+abstract interface class ClassServiceContract {
+  Future<ClassModel> createClass(CreateClassInput input);
+
+  Stream<List<ClassModel>> watchTeacherClasses({
+    required String teacherId,
+    int limit,
+  });
+
+  Future<ClassModel?> getClassById(String classId);
+
+  Future<void> updateClassStatus({
+    required String classId,
+    required bool isActive,
+  });
+
+  Future<void> regenerateAccessCode(String classId);
+
+  Future<void> fanOutTaskHook({
+    required String taskId,
+    required String classId,
+  });
+}
+
 /// Servicio dedicado a interactuar con la colección `classes` de Firestore.
 ///
 /// Se encarga de generar códigos de acceso, ejecutar transacciones básicas y
 /// entregar modelos tipados al repositorio.
-final class ClassService {
+final class ClassService implements ClassServiceContract {
   /// Crea una instancia del servicio con dependencias inyectables para tests.
   ClassService({
     FirebaseFirestore? firestore,
@@ -26,6 +50,7 @@ final class ClassService {
       _firestore.collection(_classesCollectionName);
 
   /// Crea una clase nueva persistiendo los metadatos requeridos.
+  @override
   Future<ClassModel> createClass(CreateClassInput input) async {
     validateCreateClassInput(input);
     try {
@@ -78,6 +103,7 @@ final class ClassService {
   }
 
   /// Observa en tiempo real las clases del docente autenticado.
+  @override
   Stream<List<ClassModel>> watchTeacherClasses({
     required String teacherId,
     int limit = _defaultPaginationLimit,
@@ -91,6 +117,7 @@ final class ClassService {
   }
 
   /// Obtiene una clase por su ID o retorna null si no existe.
+  @override
   Future<ClassModel?> getClassById(String classId) async {
     try {
       final snapshot = await _classesCollection.doc(classId).get();
@@ -109,6 +136,7 @@ final class ClassService {
   }
 
   /// Actualiza el estado `isActive` y la marca de tiempo de la clase.
+  @override
   Future<void> updateClassStatus({
     required String classId,
     required bool isActive,
@@ -129,6 +157,7 @@ final class ClassService {
   }
 
   /// Regenera el código de acceso garantizando que no exista duplicado.
+  @override
   Future<void> regenerateAccessCode(String classId) async {
     try {
       final newCode = await _generateUniqueAccessCode(ignoreClassId: classId);
@@ -149,6 +178,7 @@ final class ClassService {
   /// Hook que prepara el fan-out de tareas hacia `assignments`.
   ///
   /// Implementación parcial: únicamente registra logs para Sprint 3.
+  @override
   Future<void> fanOutTaskHook({
     required String taskId,
     required String classId,
