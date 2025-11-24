@@ -140,7 +140,11 @@ service cloud.firestore {
           request.resource.data.className == resource.data.className &&
           resource.data.isActive == false &&
           request.resource.data.isActive == true &&
-          request.resource.data.updatedAt > resource.data.updatedAt
+          request.resource.data.updatedAt is timestamp &&
+          (
+            resource.data.updatedAt == null ||
+            request.resource.data.updatedAt > resource.data.updatedAt
+          )
         )
       );
 
