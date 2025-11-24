@@ -106,3 +106,9 @@ final class MembershipNotFoundException extends ClassRepositoryException {
 final class UnknownClassRepositoryException extends ClassRepositoryException {
   const UnknownClassRepositoryException(super.message, {super.cause});
 }
+
+/// Excepción que indica parámetros inválidos al invocar métodos del repositorio.
+final class InvalidClassRepositoryArgumentException
+    extends ClassRepositoryException {
+  const InvalidClassRepositoryArgumentException(super.message, {super.cause});
+}

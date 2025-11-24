@@ -45,14 +45,23 @@ final class ClassRepositoryImpl implements ClassRepository {
     required String teacherId,
     int limit = _defaultPaginationLimit,
   }) {
-    if (teacherId.trim().isEmpty) {
-      throw ArgumentError('El identificador del docente es obligatorio');
+    final sanitizedTeacherId = teacherId.trim();
+    if (sanitizedTeacherId.isEmpty) {
+      return Stream<List<ClassModel>>.error(
+        const InvalidClassRepositoryArgumentException(
+          'El identificador del docente es obligatorio',
+        ),
+      );
     }
     if (limit <= 0) {
-      throw ArgumentError('El límite de paginación debe ser mayor a cero');
+      return Stream<List<ClassModel>>.error(
+        const InvalidClassRepositoryArgumentException(
+          'El límite de paginación debe ser mayor a cero',
+        ),
+      );
     }
     final stream = _classService.watchTeacherClasses(
-      teacherId: teacherId,
+      teacherId: sanitizedTeacherId,
       limit: limit,
     );
     return stream.transform(
