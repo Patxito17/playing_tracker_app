@@ -80,8 +80,15 @@ class MembershipModel {
   });
 
   /// Crea una instancia desde un mapa JSON
-  factory MembershipModel.fromJson(Map<String, dynamic> json) =>
-      _$MembershipModelFromJson(json);
+  ///
+  /// Para documentos creados antes de que `updatedAt` fuera obligatorio,
+  /// reutilizamos `joinedAt` como valor por defecto y evitamos fallos de
+  /// deserialización.
+  factory MembershipModel.fromJson(Map<String, dynamic> json) {
+    final normalizedJson = Map<String, dynamic>.from(json);
+    normalizedJson['updatedAt'] ??= normalizedJson['joinedAt'];
+    return _$MembershipModelFromJson(normalizedJson);
+  }
 
   /// Convierte la instancia a un mapa JSON
   Map<String, dynamic> toJson() => _$MembershipModelToJson(this);
