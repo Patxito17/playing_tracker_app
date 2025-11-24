@@ -234,7 +234,10 @@ final class ClassRepositoryImpl implements ClassRepository {
     required Object error,
     required String fallbackMessage,
   }) {
-    late final ClassRepositoryException mapped;
+    ClassRepositoryException mapped = UnknownClassRepositoryException(
+      fallbackMessage,
+      cause: error,
+    );
     try {
       _throwRepositoryException(
         method: method,
