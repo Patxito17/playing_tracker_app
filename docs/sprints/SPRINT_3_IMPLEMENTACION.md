@@ -343,9 +343,15 @@ El sprint se considera listo respecto al fan-out cuando:
 - Registrar métricas básicas (log() temporal) para depurar.
 
 **Checklist**
-- [ ] Formulario con `CustomTextField` y mensajes centralizados en `app_strings.dart`.
-- [ ] Estados visuales coherentes (carga, éxito, error).
-- [ ] Tests widget básicos para `JoinClassScreen`.
+- [x] Formulario con `CustomTextField` y mensajes centralizados en `app_strings.dart`.
+- [x] Estados visuales coherentes (carga, éxito, error).
+- [x] Tests widget básicos para `JoinClassScreen`.
+
+**Actualización 24/11/2025**
+- `JoinClassScreen` ahora consume `MembershipCubit` real, valida códigos mediante `class_validators.dart` y sincroniza la lista usando `ClassCubit.refreshClasses()` cuando es posible (fallback seguro sin provider).
+- Se añadió `_SuccessBanner` + `SelectableText.rich` para feedback, logs con `dart:developer` y un temporizador cancelable antes de navegar con `context.pop()`.
+- Nuevos tests: `class_validators_test.dart`, `join_class_screen_test.dart` y escenarios adicionales en `membership_cubit_test.dart` cubren validaciones, flujo feliz y mensajes de error.
+- QA ejecutado para esta fase: `dart format .`, `flutter analyze`, `flutter test` (100% passing, skips heredados documentados).
 
 ---
 

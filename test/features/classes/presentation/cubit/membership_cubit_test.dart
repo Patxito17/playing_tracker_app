@@ -59,6 +59,23 @@ void main() {
           ),
     ],
   );
+
+  blocTest<MembershipCubit, MembershipState>(
+    'joinClass emite success cuando el repositorio completa la unión',
+    build: () => MembershipCubit(repository),
+    act: (cubit) {
+      when(() => repository.joinClassWithCode(any())).thenAnswer((_) async {});
+      return cubit.joinClass(_joinInput());
+    },
+    expect: () => const [
+      MembershipLoading(),
+      MembershipSuccess(
+        action: MembershipAction.joinedClass,
+        message: ClassesStrings.membershipJoinSuccess,
+      ),
+    ],
+    verify: (_) => verify(() => repository.joinClassWithCode(any())).called(1),
+  );
 }
 
 InviteStudentInput _inviteInput() => (
