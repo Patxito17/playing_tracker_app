@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -28,9 +32,13 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
   String? _nameError;
   String? _descriptionError;
   String? _formError;
+  String? _successMessage;
+  Timer? _autoPopTimer;
+  bool _navigationScheduled = false;
 
   @override
   void dispose() {
+    _autoPopTimer?.cancel();
     _nameController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -98,6 +106,11 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
       return;
     }
 
+    setState(() {
+      _formError = null;
+      _successMessage = null;
+    });
+
     await context.read<ClassCubit>().createClass(input);
   }
 
@@ -121,6 +134,28 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
   bool _shouldDisplayError(ClassState state) =>
       _formError != null || state is ClassError;
 
+  bool _isFormValid() {
+    final name = _nameController.text.trim();
+    final description = _descriptionController.text.trim();
+    return name.length >= 3 && description.isNotEmpty;
+  }
+
+  void _handleSuccess(ClassActionSuccess state) {
+    setState(() {
+      _successMessage = state.message ?? ClassesStrings.classCreateSuccess;
+      _formError = null;
+    });
+    _clearForm();
+    if (!mounted || _navigationScheduled) {
+      return;
+    }
+    _navigationScheduled = true;
+    _autoPopTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (!mounted) return;
+      context.go(AppRoutes.teacherClassesList);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,12 +166,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
         listener: (context, state) {
           if (state is ClassActionSuccess &&
               state.action == ClassAction.created) {
-            if (!mounted) return;
-            _clearForm();
-            final navigator = Navigator.of(context);
-            if (navigator.canPop()) {
-              navigator.pop(true);
-            }
+            _handleSuccess(state);
           }
           if (state is ClassError) {
             if (!mounted) return;
@@ -148,8 +178,10 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
         buildWhen: (previous, current) => current is! ClassActionSuccess,
         builder: (context, state) {
           final isLoading = state is ClassLoading;
-          final showError = _shouldDisplayError(state);
+          final showError = !isLoading && _shouldDisplayError(state);
           final errorText = _resolveErrorMessage(state);
+          final hasSuccess = _successMessage != null;
+          final isFormValid = _isFormValid();
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.m),
@@ -172,6 +204,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                     if (_nameError != null) {
                       setState(() => _nameError = null);
                     }
+                    setState(() {});
                   },
                 ),
                 const SizedBox(height: AppSpacing.m),
@@ -187,6 +220,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                     if (_descriptionError != null) {
                       setState(() => _descriptionError = null);
                     }
+                    setState(() {});
                   },
                 ),
                 const SizedBox(height: AppSpacing.l),
@@ -225,18 +259,56 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ],
+                if (hasSuccess) ...[
+                  const SizedBox(height: AppSpacing.l),
+                  _SuccessBanner(message: _successMessage!),
+                ],
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
                   label: ClassesStrings.createClassButton,
                   variant: CustomButtonVariant.filled,
                   icon: Icons.add,
-                  onPressed: isLoading ? null : _handleCreate,
+                  onPressed: (isLoading || !isFormValid) ? null : _handleCreate,
                   isLoading: isLoading,
                 ),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SuccessBanner extends StatelessWidget {
+  const _SuccessBanner({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.m),
+      decoration: BoxDecoration(
+        color: context.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_circle,
+            color: context.colorScheme.onPrimaryContainer,
+          ),
+          const SizedBox(width: AppSpacing.s),
+          Expanded(
+            child: Text(
+              message,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

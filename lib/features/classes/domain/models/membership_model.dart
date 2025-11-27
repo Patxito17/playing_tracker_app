@@ -50,11 +50,26 @@ class MembershipModel {
   /// ID del alumno que pertenece a la clase
   final String studentId;
 
+  /// Nombre completo del alumno (denormalizado para listados)
+  final String? studentName;
+
+  /// Correo electrónico del alumno (para contacto rápido)
+  final String? studentEmail;
+
   /// ID del docente dueño de la clase (campo denormalizado)
   final String teacherId;
 
+  /// Nombre completo del docente (denormalizado para evitar joins)
+  final String? teacherName;
+
+  /// Correo electrónico del docente (útil para contactos rápidos)
+  final String? teacherEmail;
+
   /// Nombre de la clase (campo denormalizado para optimizar consultas)
   final String className;
+
+  /// Indica si la clase relacionada sigue activa.
+  final bool classIsActive;
 
   /// Fecha y hora en que el alumno se unió a la clase
   @TimestampConverter()
@@ -72,8 +87,13 @@ class MembershipModel {
     required this.id,
     required this.classId,
     required this.studentId,
+    this.studentName,
+    this.studentEmail,
     required this.teacherId,
+    this.teacherName,
+    this.teacherEmail,
     required this.className,
+    this.classIsActive = true,
     required this.joinedAt,
     required this.updatedAt,
     this.isActive = true,
@@ -104,8 +124,13 @@ class MembershipModel {
     String? id,
     String? classId,
     String? studentId,
+    String? studentName,
+    String? studentEmail,
     String? teacherId,
+    String? teacherName,
+    String? teacherEmail,
     String? className,
+    bool? classIsActive,
     Timestamp? joinedAt,
     Timestamp? updatedAt,
     bool? isActive,
@@ -114,8 +139,13 @@ class MembershipModel {
       id: id ?? this.id,
       classId: classId ?? this.classId,
       studentId: studentId ?? this.studentId,
+      studentName: studentName ?? this.studentName,
+      studentEmail: studentEmail ?? this.studentEmail,
       teacherId: teacherId ?? this.teacherId,
+      teacherName: teacherName ?? this.teacherName,
+      teacherEmail: teacherEmail ?? this.teacherEmail,
       className: className ?? this.className,
+      classIsActive: classIsActive ?? this.classIsActive,
       joinedAt: joinedAt ?? this.joinedAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
@@ -136,8 +166,13 @@ class MembershipModel {
           id == other.id &&
           classId == other.classId &&
           studentId == other.studentId &&
+          studentName == other.studentName &&
+          studentEmail == other.studentEmail &&
           teacherId == other.teacherId &&
+          teacherName == other.teacherName &&
+          teacherEmail == other.teacherEmail &&
           className == other.className &&
+          classIsActive == other.classIsActive &&
           joinedAt == other.joinedAt &&
           updatedAt == other.updatedAt &&
           isActive == other.isActive;
@@ -147,8 +182,13 @@ class MembershipModel {
       id.hashCode ^
       classId.hashCode ^
       studentId.hashCode ^
+      studentName.hashCode ^
+      studentEmail.hashCode ^
       teacherId.hashCode ^
+      teacherName.hashCode ^
+      teacherEmail.hashCode ^
       className.hashCode ^
+      classIsActive.hashCode ^
       joinedAt.hashCode ^
       updatedAt.hashCode ^
       isActive.hashCode;
@@ -156,5 +196,7 @@ class MembershipModel {
   @override
   String toString() =>
       'MembershipModel(id: $id, className: $className, '
-      'studentId: $studentId, isActive: $isActive, updatedAt: $updatedAt)';
+      'studentId: $studentId, teacherName: $teacherName, '
+      'classIsActive: $classIsActive, isActive: $isActive, '
+      'updatedAt: $updatedAt)';
 }

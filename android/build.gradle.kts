@@ -1,10 +1,5 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
+// Configuración del directorio de build personalizado
+// (se mantiene para compatibilidad con Flutter)
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory
         .dir("../../build")
@@ -15,10 +10,8 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
-subprojects {
-    project.evaluationDependsOn(":app")
-}
 
+// Tarea de limpieza personalizada
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

@@ -5,8 +5,8 @@
 **Contexto:** Depende del cierre del Sprint 2 (infraestructura + autenticación)
 **Propósito:** Implementar toda la capa funcional de clases, membresías y fan-out inicial manteniendo arquitectura Domain → Repository → Service → UI y Material Design 3.
 **Estado:** 🚧 En progreso
-**Versión del documento:** 0.5
-**Última actualización:** 21 de Noviembre 2025
+**Versión del documento:** 0.9
+**Última actualización:** 27 de Noviembre 2025
 **Responsable:** Equipo de Desarrollo (documento apto para ejecución por IA-agents y desarrolladores humanos)
 
 ---
@@ -377,6 +377,12 @@ El sprint se considera listo respecto al fan-out cuando:
 - `StudentClassesListScreen` reemplaza los mocks por `StudentClassesCubit`, escucha los memberships activos del alumno y habilita pull-to-refresh + CTA para unirse con código.
 - QA adicional: `flutter analyze` y `flutter test` ejecutados tras la limpieza (100% passing, skips heredados documentados en la salida de pruebas).
 
+**Actualización 27/11/2025**
+- `ClassService` expone `watchClassById` y `ClassRepository` lo propaga para que tanto docentes como alumnos reaccionen cuando un documento `classes/{id}` se elimina o archiva.
+- `StudentClassDetailScreen` escucha el estado del documento y de la membresía activa; si la clase se archiva/elimina o el alumno es dado de baja, muestra un `SnackBar` contextual y regresa automáticamente a la lista.
+- `StudentClassesCubit` ahora sincroniza watchers por cada clase visible: filtra memberships zombis (clases borradas) en tiempo real y cancela los listeners cuando ya no son necesarios para mantener el consumo de Firestore bajo control.
+- Nuevos strings operativos en `app_strings.dart` (“La clase fue eliminada…”, “Tu acceso fue revocado…”) y documentación de los índices necesarios para `watchClassById`.
+
 ---
 
 ### Fase 8 · Testing, QA y documentación (0.5 día)
@@ -489,6 +495,7 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 0.9 | 27/11/2025 | Sincronización en tiempo real: `watchClassById`, expulsión automática en detalle de clase y depuración de “clases zombis” en el listado del alumno. |
 | 0.8 | 24/11/2025 | Fase 7 completada: `ManageStudentsScreen` integrado al repositorio real, paginación de memberships, confirmaciones M3, nuevas pruebas y TODOs de fan-out. |
 | 0.7 | 24/11/2025 | Fase 5 completada: UI docente conectada a Cubits, `_EmptyState` reutilizable, strings operativos, nuevos widget tests y QA completo. |
 | 0.6 | 24/11/2025 | Fase 4 completada: `ClassRepositoryImpl`, Cubits y estados sealed, helper de fan-out, pruebas unitarias y QA (`dart format`, `flutter analyze`, `flutter test`). |

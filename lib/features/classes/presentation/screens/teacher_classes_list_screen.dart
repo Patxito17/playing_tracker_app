@@ -36,10 +36,8 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
     }
   }
 
-  Future<void> _openManageStudents(
-    BuildContext context,
-    ClassModel classModel,
-  ) => context.push('${AppRoutes.manageStudents}/${classModel.id}');
+  Future<void> _openClassDetail(BuildContext context, ClassModel classModel) =>
+      context.push('${AppRoutes.teacherClassDetail}/${classModel.id}');
 
   Future<void> _handleRefresh(BuildContext context) =>
       context.read<ClassCubit>().refreshClasses();
@@ -50,11 +48,20 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
       buildWhen: (previous, current) => current is! ClassActionSuccess,
       builder: (context, state) {
         final isLoading = state is ClassLoading;
+        final navigationShell = StatefulNavigationShell.maybeOf(context);
+        final VoidCallback? goHome = navigationShell == null
+            ? null
+            : () => navigationShell.goBranch(0);
 
         return Scaffold(
           appBar: CustomAppBar(
             title: ClassesStrings.myClassesTitle,
             actions: [
+              IconButton(
+                icon: const Icon(Icons.home_rounded),
+                tooltip: HomeStrings.teacherHomeTitle,
+                onPressed: goHome,
+              ),
               IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: isLoading ? null : () => _openCreateClass(context),
@@ -69,7 +76,7 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
               onCreateClass: () => _openCreateClass(context),
               onRetry: () => _handleRefresh(context),
               onClassSelected: (classModel) =>
-                  _openManageStudents(context, classModel),
+                  _openClassDetail(context, classModel),
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -101,12 +108,27 @@ class _StateAwareContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (state) {
       ClassLoading() => _LoadingState(),
-      ClassEmpty(:final message) => _EmptyState(
-        icon: Icons.class_outlined,
-        title: message,
-        subtitle: ClassesStrings.createFirstClass,
-        actionLabel: ClassesStrings.createClass,
-        onAction: onCreateClass,
+      ClassEmpty(:final message) => LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
+                  child: _EmptyState(
+                    icon: Icons.class_outlined,
+                    title: message,
+                    subtitle: ClassesStrings.createFirstClass,
+                    actionLabel: ClassesStrings.createClass,
+                    onAction: onCreateClass,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
       ClassError(:final message) => _ErrorState(
         message: message,
@@ -160,51 +182,60 @@ class _ClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusLabel = classModel.canJoin
+    final isActive = classModel.canJoin;
+    final statusLabel = isActive
         ? ClassesStrings.classStatusActive
         : ClassesStrings.classStatusArchived;
-    final statusColor = classModel.canJoin
+    final statusColor = isActive
         ? context.colorScheme.primary
-        : context.colorScheme.error;
+        : context.colorScheme.outline;
     final creationDate = DateFormat(
       'dd/MM/yyyy',
     ).format(classModel.createdAt.toDate());
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
-      child: CustomCard(
-        margin: EdgeInsets.zero,
-        title: classModel.name,
-        subtitle: classModel.description ?? '',
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.class_, color: context.colorScheme.primary),
-                const Spacer(),
-                Icon(
-                  Icons.chevron_right,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.m),
-            Wrap(
-              spacing: AppSpacing.s,
-              runSpacing: AppSpacing.s,
-              children: [
-                _StatusChip(label: statusLabel, color: statusColor),
-                _InfoChip(
-                  icon: Icons.password_rounded,
-                  label:
-                      '${ClassesStrings.accessCodeValueLabel}: ${classModel.accessCode}',
-                ),
-                _InfoChip(icon: Icons.calendar_month, label: creationDate),
-              ],
-            ),
-          ],
+      child: Opacity(
+        opacity: isActive ? 1 : 0.65,
+        child: CustomCard(
+          margin: EdgeInsets.zero,
+          title: classModel.name,
+          subtitle: classModel.description ?? '',
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.class_,
+                    color: isActive
+                        ? context.colorScheme.primary
+                        : context.colorScheme.outline,
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.chevron_right,
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.m),
+              Wrap(
+                spacing: AppSpacing.s,
+                runSpacing: AppSpacing.s,
+                children: [
+                  _StatusChip(label: statusLabel, color: statusColor),
+                  _InfoChip(
+                    icon: Icons.password_rounded,
+                    label:
+                        '${ClassesStrings.accessCodeValueLabel}: ${classModel.accessCode}',
+                  ),
+                  _InfoChip(icon: Icons.calendar_month, label: creationDate),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

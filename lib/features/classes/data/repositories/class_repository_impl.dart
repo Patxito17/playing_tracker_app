@@ -81,6 +81,31 @@ final class ClassRepositoryImpl implements ClassRepository {
   }
 
   @override
+  Stream<ClassModel?> watchClassById(String classId) {
+    final sanitizedId = classId.trim();
+    if (sanitizedId.isEmpty) {
+      return Stream<ClassModel?>.error(
+        const InvalidClassRepositoryArgumentException(
+          'El identificador de la clase es obligatorio',
+        ),
+      );
+    }
+    final stream = _classService.watchClassById(sanitizedId);
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchClassById',
+            error: error,
+            fallbackMessage: 'No fue posible observar la clase solicitada.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
+  @override
   Future<ClassModel?> getClassById(String classId) async {
     if (classId.trim().isEmpty) {
       throw ArgumentError('El identificador de la clase es obligatorio');
@@ -142,6 +167,10 @@ final class ClassRepositoryImpl implements ClassRepository {
         classId: classId,
         isActive: isActive,
       );
+      await _membershipService.updateMembershipsClassStatus(
+        classId: classId,
+        isActive: isActive,
+      );
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'updateClassStatus',
@@ -173,6 +202,74 @@ final class ClassRepositoryImpl implements ClassRepository {
         fallbackMessage: 'No fue posible remover al alumno de la clase.',
         exceptionFactory: (message, cause) =>
             MembershipNotFoundException(message, cause: cause),
+      );
+    }
+  }
+
+  @override
+  Future<void> updateStudentMembershipStatus({
+    required String classId,
+    required String studentId,
+    required bool isActive,
+  }) async {
+    if (classId.trim().isEmpty || studentId.trim().isEmpty) {
+      throw ArgumentError(
+        'Los identificadores de clase y alumno son obligatorios',
+      );
+    }
+    final membershipId = _buildMembershipId(classId, studentId);
+    try {
+      await _membershipService.updateMembershipStatus(
+        membershipId: membershipId,
+        isActive: isActive,
+      );
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'updateStudentMembershipStatus',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible actualizar al alumno.',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteStudentMembershipPermanent({
+    required String classId,
+    required String studentId,
+  }) async {
+    if (classId.trim().isEmpty || studentId.trim().isEmpty) {
+      throw ArgumentError(
+        'Los identificadores de clase y alumno son obligatorios',
+      );
+    }
+    final membershipId = _buildMembershipId(classId, studentId);
+    try {
+      await _membershipService.deleteMembership(membershipId);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'deleteStudentMembershipPermanent',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible eliminar al alumno.',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteClassPermanent(String classId) async {
+    if (classId.trim().isEmpty) {
+      throw ArgumentError('El identificador de la clase es obligatorio');
+    }
+    try {
+      await _membershipService.deleteMembershipsByClass(classId);
+      await _classService.deleteClass(classId);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'deleteClassPermanent',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible eliminar la clase.',
       );
     }
   }
@@ -219,6 +316,7 @@ final class ClassRepositoryImpl implements ClassRepository {
     required String classId,
     int limit = _defaultPaginationLimit,
     String? startAfterId,
+    bool includeInactive = false,
   }) async {
     if (classId.trim().isEmpty) {
       throw ArgumentError('El identificador de la clase es obligatorio');
@@ -228,6 +326,7 @@ final class ClassRepositoryImpl implements ClassRepository {
         classId: classId,
         limit: limit,
         startAfterId: startAfterId,
+        includeInactive: includeInactive,
       );
     } catch (error, stackTrace) {
       _throwRepositoryException(

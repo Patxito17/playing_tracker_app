@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -12,18 +13,44 @@ import '../../../../features/classes/presentation/cubit/membership_cubit.dart';
 import '../../../../features/classes/presentation/cubit/membership_state.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../widgets/teacher_class_overview_card.dart';
 
 /// Pantalla para gestionar alumnos de una clase conectada al [MembershipCubit].
-class ManageStudentsScreen extends StatefulWidget {
+class ManageStudentsScreen extends StatelessWidget {
   const ManageStudentsScreen({super.key, required this.classId});
 
   final String classId;
 
   @override
-  State<ManageStudentsScreen> createState() => _ManageStudentsScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: ClassDetailStrings.manageStudentsTitle,
+        actions: const [],
+      ),
+      body: ManageStudentsView(classId: classId),
+    );
+  }
 }
 
-class _ManageStudentsScreenState extends State<ManageStudentsScreen> {
+/// Vista reutilizable para listar y administrar los alumnos de una clase.
+class ManageStudentsView extends StatefulWidget {
+  const ManageStudentsView({
+    super.key,
+    required this.classId,
+    this.showOverview = true,
+    this.showStudentsHint = true,
+  });
+
+  final String classId;
+  final bool showOverview;
+  final bool showStudentsHint;
+
+  @override
+  State<ManageStudentsView> createState() => _ManageStudentsViewState();
+}
+
+class _ManageStudentsViewState extends State<ManageStudentsView> {
   late final MembershipCubit _membershipCubit;
   late final Future<ClassModel?> _classFuture;
 
@@ -51,35 +78,6 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen> {
         content: Text(state.message),
         backgroundColor: context.colorScheme.error,
       ),
-    );
-  }
-
-  Future<void> _confirmRemoveStudent(MembershipModel member) async {
-    final shouldRemove =
-        await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(StudentStrings.removeStudent),
-            content: Text(StudentStrings.removeStudentConfirmation),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(CommonStrings.cancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(CommonStrings.confirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-    if (!shouldRemove) {
-      return;
-    }
-    await _membershipCubit.removeStudent(
-      classId: widget.classId,
-      studentId: member.studentId,
     );
   }
 
@@ -111,129 +109,131 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen> {
 
   Future<void> _handleRefresh() => _membershipCubit.refreshMembers();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: ClassDetailStrings.manageStudentsTitle,
-        actions: [
-          IconButton(
-            onPressed: _confirmRegenerateCode,
-            icon: const Icon(Icons.refresh),
-            tooltip: ClassesStrings.regenerateAccessCodeAction,
-          ),
-        ],
-      ),
-      body: BlocConsumer<MembershipCubit, MembershipState>(
-        listenWhen: (previous, current) =>
-            current is MembershipSuccess || current is MembershipError,
-        buildWhen: (previous, current) =>
-            current is MembershipListLoading ||
-            current is MembershipListSuccess ||
-            current is MembershipListError ||
-            current is MembershipEmpty ||
-            current is MembershipInitial,
-        listener: (context, state) {
-          if (state is MembershipSuccess) {
-            _handleOperationSuccess(context, state);
-          }
-          if (state is MembershipError) {
-            _handleOperationError(context, state);
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            children: [
-              _ClassSummaryHeader(classFuture: _classFuture),
-              Expanded(
-                child: _StateAwareMembersContent(
-                  state,
-                  _handleRefresh,
-                  (member) => _confirmRemoveStudent(member),
-                  () {
-                    _membershipCubit.loadMembers(classId: widget.classId);
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+  void _copyAccessCode(String code) {
+    Clipboard.setData(ClipboardData(text: code));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(CommonStrings.copied),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
-}
 
-class _ClassSummaryHeader extends StatelessWidget {
-  const _ClassSummaryHeader({required this.classFuture});
+  void _toggleStudentStatus(MembershipModel member) {
+    _membershipCubit.updateStudentMembershipStatus(
+      classId: widget.classId,
+      studentId: member.studentId,
+      isActive: !member.isActive,
+    );
+  }
 
-  final Future<ClassModel?> classFuture;
+  Future<void> _confirmDeleteStudentPermanent(MembershipModel member) async {
+    final shouldDelete =
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(StudentStrings.removeStudent),
+            content: Text(ClassesStrings.membershipDeleteConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(CommonStrings.cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.colorScheme.error,
+                  foregroundColor: context.colorScheme.onError,
+                ),
+                child: Text(CommonStrings.confirm),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!shouldDelete) {
+      return;
+    }
+    await _membershipCubit.deleteStudentMembership(
+      classId: widget.classId,
+      studentId: member.studentId,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ClassModel?>(
-      future: classFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Padding(
-            padding: EdgeInsets.all(AppSpacing.m),
-            child: LinearProgressIndicator(),
-          );
+    return BlocConsumer<MembershipCubit, MembershipState>(
+      listenWhen: (previous, current) =>
+          current is MembershipSuccess || current is MembershipError,
+      buildWhen: (previous, current) =>
+          current is MembershipListLoading ||
+          current is MembershipListSuccess ||
+          current is MembershipListError ||
+          current is MembershipEmpty ||
+          current is MembershipInitial,
+      listener: (context, state) {
+        if (state is MembershipSuccess) {
+          _handleOperationSuccess(context, state);
         }
-        if (snapshot.hasError || !snapshot.hasData) {
-          return Padding(
-            padding: const EdgeInsets.all(AppSpacing.m),
-            child: SelectableText.rich(
-              TextSpan(
-                text: ClassesStrings.classGenericError,
-                style: context.bodyMediumOnSurfaceVariant,
+        if (state is MembershipError) {
+          _handleOperationError(context, state);
+        }
+      },
+      builder: (context, state) {
+        final membersCount = switch (state) {
+          MembershipListSuccess(:final members) =>
+            members.where((member) => member.isActive).length,
+          MembershipEmpty() => 0,
+          _ => null,
+        };
+        return Column(
+          children: [
+            if (widget.showOverview)
+              FutureBuilder<ClassModel?>(
+                future: _classFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.all(AppSpacing.m),
+                      child: LinearProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError || !snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(AppSpacing.m),
+                      child: SelectableText.rich(
+                        TextSpan(
+                          text: ClassesStrings.classGenericError,
+                          style: context.bodyMediumOnSurfaceVariant,
+                        ),
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(AppSpacing.m),
+                    child: TeacherClassOverviewCard(
+                      classModel: snapshot.data!,
+                      studentsCount: membersCount,
+                      activeTasksCount: null,
+                      showStudentsHint: widget.showStudentsHint,
+                      onCopyCode: _copyAccessCode,
+                      onRegenerateCode: _confirmRegenerateCode,
+                    ),
+                  );
+                },
+              ),
+            Expanded(
+              child: _StateAwareMembersContent(
+                state,
+                _handleRefresh,
+                (member) => _toggleStudentStatus(member),
+                (member) => _confirmDeleteStudentPermanent(member),
+                () {
+                  _membershipCubit.loadMembers(classId: widget.classId);
+                },
               ),
             ),
-          );
-        }
-
-        final classModel = snapshot.data!;
-        final statusLabel = classModel.canJoin
-            ? ClassesStrings.classStatusActive
-            : ClassesStrings.classStatusArchived;
-        final statusColor = classModel.canJoin
-            ? context.colorScheme.primary
-            : context.colorScheme.error;
-
-        return Padding(
-          padding: const EdgeInsets.all(AppSpacing.m),
-          child: CustomCard(
-            title: classModel.name,
-            subtitle: classModel.description ?? '',
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: AppSpacing.s,
-                  runSpacing: AppSpacing.s,
-                  children: [
-                    Chip(
-                      label: Text(statusLabel),
-                      backgroundColor: statusColor.withValues(alpha: 0.12),
-                      labelStyle: context.textTheme.bodySmall?.copyWith(
-                        color: statusColor,
-                      ),
-                    ),
-                    Chip(
-                      avatar: const Icon(Icons.password_rounded, size: 16),
-                      label: Text(
-                        '${ClassesStrings.accessCodeValueLabel}: ${classModel.accessCode}',
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.s),
-                Text(
-                  StudentStrings.studentsJoinWithCode,
-                  style: context.bodySmallOnSurfaceVariant,
-                ),
-              ],
-            ),
-          ),
+          ],
         );
       },
     );
@@ -244,13 +244,15 @@ class _StateAwareMembersContent extends StatelessWidget {
   const _StateAwareMembersContent(
     this.state,
     this.onRefresh,
-    this.onRemoveStudent,
+    this.onToggleStatus,
+    this.onDeleteStudent,
     this.onLoadMore,
   );
 
   final MembershipState state;
   final Future<void> Function() onRefresh;
-  final void Function(MembershipModel member) onRemoveStudent;
+  final void Function(MembershipModel member) onToggleStatus;
+  final void Function(MembershipModel member) onDeleteStudent;
   final VoidCallback onLoadMore;
 
   @override
@@ -272,7 +274,8 @@ class _StateAwareMembersContent extends StatelessWidget {
       MembershipListSuccess() => _StudentsList(
         state: state as MembershipListSuccess,
         onRefresh: onRefresh,
-        onRemoveStudent: onRemoveStudent,
+        onToggleStatus: onToggleStatus,
+        onDeleteStudent: onDeleteStudent,
         onLoadMore: onLoadMore,
       ),
       _ => const Center(child: CircularProgressIndicator()),
@@ -284,13 +287,15 @@ class _StudentsList extends StatelessWidget {
   const _StudentsList({
     required this.state,
     required this.onRefresh,
-    required this.onRemoveStudent,
+    required this.onToggleStatus,
+    required this.onDeleteStudent,
     required this.onLoadMore,
   });
 
   final MembershipListSuccess state;
   final Future<void> Function() onRefresh;
-  final void Function(MembershipModel member) onRemoveStudent;
+  final void Function(MembershipModel member) onToggleStatus;
+  final void Function(MembershipModel member) onDeleteStudent;
   final VoidCallback onLoadMore;
 
   @override
@@ -314,7 +319,8 @@ class _StudentsList extends StatelessWidget {
           final member = members[index];
           return _StudentTile(
             member: member,
-            onRemove: () => onRemoveStudent(member),
+            onToggleStatus: () => onToggleStatus(member),
+            onDelete: () => onDeleteStudent(member),
           );
         },
       ),
@@ -347,28 +353,95 @@ class _LoadMoreTile extends StatelessWidget {
 }
 
 class _StudentTile extends StatelessWidget {
-  const _StudentTile({required this.member, required this.onRemove});
+  const _StudentTile({
+    required this.member,
+    required this.onToggleStatus,
+    required this.onDelete,
+  });
 
   final MembershipModel member;
-  final VoidCallback onRemove;
+  final VoidCallback onToggleStatus;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     final joinedAt = DateFormat(
       'dd/MM/yyyy - HH:mm',
     ).format(member.joinedAt.toDate());
+    final studentName = member.studentName?.trim();
+    final title = studentName?.isNotEmpty == true
+        ? studentName!
+        : member.studentId;
+    final studentEmail = member.studentEmail?.trim();
+    final subtitle = studentEmail?.isNotEmpty == true
+        ? studentEmail
+        : '${StudentStrings.studentIdLabel}: ${member.studentId}';
+    final isActive = member.isActive;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
-      child: CustomCard(
-        title: '${StudentStrings.studentIdLabel}: ${member.studentId}',
-        subtitle: '${StudentStrings.joinedAtLabel} $joinedAt',
-        trailingAction: IconButton(
-          icon: const Icon(Icons.delete_outline),
-          tooltip: StudentStrings.removeStudent,
-          color: context.colorScheme.error,
-          onPressed: onRemove,
+      child: Opacity(
+        opacity: isActive ? 1 : 0.6,
+        child: CustomCard(
+          title: title,
+          subtitle: subtitle,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${StudentStrings.joinedAtLabel} $joinedAt',
+                      style: context.bodySmallOnSurfaceVariant,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Chip(
+                      label: Text(
+                        isActive
+                            ? ClassesStrings.classStatusActive
+                            : StudentStrings.inactiveStudentLabel,
+                      ),
+                      backgroundColor: isActive
+                          ? context.colorScheme.primary.withValues(alpha: 0.12)
+                          : context.colorScheme.outline.withValues(alpha: 0.2),
+                      labelStyle: context.textTheme.bodySmall?.copyWith(
+                        color: isActive
+                            ? context.colorScheme.primary
+                            : context.colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.m),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: onToggleStatus,
+                    tooltip: isActive
+                        ? StudentStrings.deactivateStudentAction
+                        : StudentStrings.activateStudentAction,
+                    icon: Icon(
+                      isActive ? Icons.visibility_off : Icons.visibility,
+                      color: isActive
+                          ? context.colorScheme.secondary
+                          : context.colorScheme.primary,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: onDelete,
+                    tooltip: StudentStrings.deleteStudentAction,
+                    icon: const Icon(Icons.delete_forever_outlined),
+                    color: context.colorScheme.error,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        child: const SizedBox.shrink(),
       ),
     );
   }

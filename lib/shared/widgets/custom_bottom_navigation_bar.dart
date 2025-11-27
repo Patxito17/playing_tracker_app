@@ -2,37 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 
-/// Índices de tabs para BottomNavigationBar
-enum BottomNavTab {
-  /// Tab de Clases (índice 0)
-  classes,
-
-  /// Tab de Estadísticas (índice 1)
-  statistics,
-
-  /// Tab de Configuración (índice 2)
-  settings,
-}
-
-/// Extensión para obtener el índice de BottomNavTab
-extension BottomNavTabExtension on BottomNavTab {
-  /// Obtiene el índice del tab
-  int get index {
-    switch (this) {
-      case BottomNavTab.classes:
-        return 0;
-      case BottomNavTab.statistics:
-        return 1;
-      case BottomNavTab.settings:
-        return 2;
-    }
-  }
-}
-
 /// BottomNavigationBar personalizado con Material Design 3
 ///
-/// Proporciona navegación persistente con 3 tabs principales usando
+/// Proporciona navegación persistente con 4 tabs principales usando
 /// StatefulNavigationShell para mantener el estado de cada tab independientemente:
+/// - Inicio: Pantalla principal con acciones rápidas
 /// - Clases: Lista de clases (según rol)
 /// - Estadísticas: Estadísticas generales
 /// - Configuración: Ajustes de la aplicación
@@ -65,6 +39,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
         );
       },
       destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: NavigationStrings.homeTab,
+        ),
         NavigationDestination(
           icon: Icon(Icons.class_outlined),
           selectedIcon: Icon(Icons.class_),

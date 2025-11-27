@@ -11,6 +11,7 @@ import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/classes/domain/models/membership_model.dart';
 import '../../features/classes/domain/repositories/class_repository.dart';
 import '../../features/classes/presentation/cubit/class_cubit.dart';
 import '../../features/classes/presentation/cubit/membership_cubit.dart';
@@ -158,18 +159,6 @@ class AppRoutes {
         ),
       ),
 
-      // Rutas de home simples
-      GoRoute(
-        path: teacherHome,
-        name: 'teacherHome',
-        builder: (context, state) => const TeacherHomeScreen(),
-      ),
-      GoRoute(
-        path: studentHome,
-        name: 'studentHome',
-        builder: (context, state) => const StudentHomeScreen(),
-      ),
-
       // StatefulShellRoute para docente con BottomNavigationBar
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -181,6 +170,15 @@ class AppRoutes {
           );
         },
         branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: teacherHome,
+                name: 'teacherHome',
+                builder: (context, state) => const TeacherHomeScreen(),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -207,7 +205,11 @@ class AppRoutes {
                 name: 'teacherClassDetail',
                 builder: (context, state) {
                   final classId = state.pathParameters['classId'] ?? '';
-                  return TeacherClassDetailScreen(classId: classId);
+                  return BlocProvider(
+                    create: (context) =>
+                        MembershipCubit(context.read<ClassRepository>()),
+                    child: TeacherClassDetailScreen(classId: classId),
+                  );
                 },
               ),
             ],
@@ -247,6 +249,15 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: studentHome,
+                name: 'studentHome',
+                builder: (context, state) => const StudentHomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: studentClassesList,
                 name: 'studentClassesList',
                 builder: (context, state) => BlocProvider(
@@ -260,7 +271,13 @@ class AppRoutes {
                 name: 'studentClassDetail',
                 builder: (context, state) {
                   final classId = state.pathParameters['classId'] ?? '';
-                  return StudentClassDetailScreen(classId: classId);
+                  final membership = state.extra is MembershipModel
+                      ? state.extra as MembershipModel
+                      : null;
+                  return StudentClassDetailScreen(
+                    classId: classId,
+                    membership: membership,
+                  );
                 },
               ),
             ],

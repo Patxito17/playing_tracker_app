@@ -27,6 +27,13 @@ class StudentClassesListScreen extends StatefulWidget {
 }
 
 class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
+  void _openClassDetail(BuildContext context, MembershipModel membership) {
+    context.push(
+      '${AppRoutes.studentClassDetail}/${membership.classId}',
+      extra: membership,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,10 +55,20 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final navigationShell = StatefulNavigationShell.maybeOf(context);
+    final VoidCallback? goHome = navigationShell == null
+        ? null
+        : () => navigationShell.goBranch(0);
+
     return Scaffold(
       appBar: CustomAppBar(
         title: ClassesStrings.myClassesTitle,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.home_rounded),
+            onPressed: goHome,
+            tooltip: HomeStrings.studentHomeTitle,
+          ),
           IconButton(
             icon: const Icon(Icons.group_add_rounded),
             onPressed: () => _openJoinClass(context),
@@ -75,6 +92,8 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
             StudentClassesSuccess(:final memberships) => _ClassesList(
               memberships: memberships,
               onRefresh: _handleRefresh,
+              onClassSelected: (membership) =>
+                  _openClassDetail(context, membership),
             ),
             _ => _LoadingState(onRefresh: _handleRefresh),
           };
@@ -137,10 +156,15 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _ClassesList extends StatelessWidget {
-  const _ClassesList({required this.memberships, required this.onRefresh});
+  const _ClassesList({
+    required this.memberships,
+    required this.onRefresh,
+    required this.onClassSelected,
+  });
 
   final List<MembershipModel> memberships;
   final Future<void> Function() onRefresh;
+  final void Function(MembershipModel membership) onClassSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +178,16 @@ class _ClassesList extends StatelessWidget {
         itemBuilder: (context, index) {
           final membership = memberships[index];
           final joinedAt = dateFormat.format(membership.joinedAt.toDate());
+          final teacherName = membership.teacherName?.trim();
+          final teacherSubtitle =
+              '${ClassesStrings.teacherLabel}'
+              '${teacherName?.isNotEmpty == true ? teacherName : membership.teacherId}';
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.m),
             child: CustomCard(
               title: membership.className,
-              subtitle: '${ClassesStrings.teacherLabel}${membership.teacherId}',
+              subtitle: teacherSubtitle,
+              onTap: () => onClassSelected(membership),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
