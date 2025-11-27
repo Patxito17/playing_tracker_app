@@ -611,7 +611,7 @@ final originalClass = ClassModel(
   name: 'Piano Nivel 1',
   description: 'Clase para principiantes',
   ownerTeacherId: 'teacher_456',
-  accessCode: 'ABC123',
+  accessCode: 'ABC234',
   createdAt: Timestamp.now(),
   updatedAt: Timestamp.now(),
   isActive: true,
@@ -627,7 +627,7 @@ final updatedClass = originalClass.copyWith(
 // El resto de campos se mantienen iguales
 print(updatedClass.id); // 'class_123' (sin cambios)
 print(updatedClass.name); // 'Piano Nivel Intermedio' (actualizado)
-print(updatedClass.accessCode); // 'ABC123' (sin cambios)
+print(updatedClass.accessCode); // 'ABC234' (sin cambios)
 ```
 
 ### Ejemplo 4: Uso de Validadores
@@ -652,7 +652,7 @@ if (emailError == null) {
 }
 
 // Validar código de acceso de clase
-final codeError = validateAccessCode('ABC123');
+final codeError = validateAccessCode('ABC234');
 if (codeError == null) {
   print('Código válido ✓');
 } else {

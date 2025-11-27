@@ -20,6 +20,12 @@ El sistema Playing Tracker debe proporcionar un conjunto completo de funcionalid
 4.	Cronómetro y registro de sesiones (RF-004). Los alumnos usan un cronómetro persistente para registrar sesiones de estudio (iniciar, pausar, reiniciar, finalizar). El sistema registra automáticamente duración, pausas y notas opcionales. Funciona en segundo plano, incluso al cambiar de app o recibir llamadas.
 5.	Estadísticas y reportes (RF-005). El sistema genera estadísticas y visualizaciones del progreso de estudio para docentes y alumnos. Los docentes acceden a dashboards con filtros por fecha, tarea o clase. Los alumnos ven su progreso personal con gráficos.
 
+#### Nota de avance · Sprint 3 (21/11/2025)
+- RF-002 quedó respaldado por `AccessCodeGenerator`, `ClassService` y `MembershipService`, asegurando generación única de códigos y transacciones idempotentes para membresías (`lib/features/classes/data/services/`).
+- Se documentaron los hooks de fan-out requeridos en Sprint 4: `ClassService.fanOutTaskHook` y `MembershipService.getStudentsForClass` funcionan como base para `FanOutHelper`.
+- `firebase/firestore.rules` ahora permite que estudiantes creen/reactiven membresías solo cuando ellos mismos son los solicitantes, manteniendo la trazabilidad para docentes.
+- Nuevos índices (`classes.ownerTeacherId+createdAt`, `memberships.classId+isActive+joinedAt`) garantizan paginación y fan-out eficiente para RF-004/RF-005.
+
 ### 1.3	Requisitos no funcionales
 Los requisitos no funcionales establecen las características de calidad, rendimiento y restricciones técnicas que el sistema debe cumplir para garantizar una experiencia de usuario óptima y un funcionamiento seguro en entornos educativos reales.
 1.	Rendimiento y eficiencia (RNF-001). El sistema garantiza tiempos de respuesta inferiores a 2 segundos para todas las operaciones CRUD, soportando 1000 usuarios concurrentes sin degradación. Implementa índices compuestos en Firestore, cache inteligente y paginación para listas extensas. El cronómetro mantiene precisión de milisegundos y actualiza la interfaz cada segundo sin afectar el rendimiento.

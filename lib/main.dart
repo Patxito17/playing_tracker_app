@@ -7,9 +7,12 @@ import 'package:path_provider/path_provider.dart';
 
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
+import 'core/config/bloc/app_bloc_observer.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/classes/data/repositories/class_repository_impl.dart';
+import 'features/classes/domain/repositories/class_repository.dart';
 import 'firebase_options.dart';
 
 /// Punto de entrada de la aplicación Playing Tracker
@@ -34,6 +37,7 @@ void main() async {
 
   // Asignar storage globalmente y ejecutar la app
   HydratedBloc.storage = storage;
+  Bloc.observer = AppBlocObserver();
   runApp(const PlayingTrackerApp());
 }
 
@@ -46,6 +50,7 @@ class PlayingTrackerApp extends StatefulWidget {
     super.key,
     this.authRepository,
     this.authCubitBuilder,
+    this.classRepository,
   });
 
   /// Permite inyectar un repositorio custom (por ejemplo en tests).
@@ -53,6 +58,9 @@ class PlayingTrackerApp extends StatefulWidget {
 
   /// Builder opcional para crear el [AuthCubit] con configuraciones especiales.
   final AuthCubit Function(AuthRepository repository)? authCubitBuilder;
+
+  /// Permite inyectar un repositorio custom de clases (útil en pruebas).
+  final ClassRepository? classRepository;
 
   @override
   State<PlayingTrackerApp> createState() => _PlayingTrackerAppState();
@@ -68,9 +76,13 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
   @override
   Widget build(BuildContext context) {
     final repository = widget.authRepository ?? AuthRepositoryImpl();
+    final classRepository = widget.classRepository ?? ClassRepositoryImpl();
 
-    return RepositoryProvider<AuthRepository>.value(
-      value: repository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>.value(value: repository),
+        RepositoryProvider<ClassRepository>.value(value: classRepository),
+      ],
       child: BlocProvider(
         create: (_) =>
             widget.authCubitBuilder?.call(repository) ?? AuthCubit(repository),

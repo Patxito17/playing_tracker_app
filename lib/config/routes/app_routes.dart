@@ -11,6 +11,11 @@ import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/classes/domain/models/membership_model.dart';
+import '../../features/classes/domain/repositories/class_repository.dart';
+import '../../features/classes/presentation/cubit/class_cubit.dart';
+import '../../features/classes/presentation/cubit/membership_cubit.dart';
+import '../../features/classes/presentation/cubit/student_classes_cubit.dart';
 import '../../features/classes/presentation/screens/create_class_screen.dart';
 import '../../features/classes/presentation/screens/join_class_screen.dart';
 import '../../features/classes/presentation/screens/manage_students_screen.dart';
@@ -154,18 +159,6 @@ class AppRoutes {
         ),
       ),
 
-      // Rutas de home simples
-      GoRoute(
-        path: teacherHome,
-        name: 'teacherHome',
-        builder: (context, state) => const TeacherHomeScreen(),
-      ),
-      GoRoute(
-        path: studentHome,
-        name: 'studentHome',
-        builder: (context, state) => const StudentHomeScreen(),
-      ),
-
       // StatefulShellRoute para docente con BottomNavigationBar
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -180,16 +173,43 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: teacherHome,
+                name: 'teacherHome',
+                builder: (context, state) => const TeacherHomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: teacherClassesList,
                 name: 'teacherClassesList',
-                builder: (context, state) => const TeacherClassesListScreen(),
+                builder: (context, state) {
+                  final authState = context.read<AuthCubit>().state;
+                  if (authState is! AuthAuthenticated ||
+                      authState.role != UserRole.teacher) {
+                    return const ErrorScreen(
+                      errorMessage: 'No se pudo cargar las clases del docente.',
+                    );
+                  }
+                  return BlocProvider(
+                    create: (context) =>
+                        ClassCubit(context.read<ClassRepository>())
+                          ..watchClasses(teacherId: authState.userId),
+                    child: const TeacherClassesListScreen(),
+                  );
+                },
               ),
               GoRoute(
                 path: '$teacherClassDetail/:classId',
                 name: 'teacherClassDetail',
                 builder: (context, state) {
                   final classId = state.pathParameters['classId'] ?? '';
-                  return TeacherClassDetailScreen(classId: classId);
+                  return BlocProvider(
+                    create: (context) =>
+                        MembershipCubit(context.read<ClassRepository>()),
+                    child: TeacherClassDetailScreen(classId: classId),
+                  );
                 },
               ),
             ],
@@ -229,16 +249,35 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: studentHome,
+                name: 'studentHome',
+                builder: (context, state) => const StudentHomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: studentClassesList,
                 name: 'studentClassesList',
-                builder: (context, state) => const StudentClassesListScreen(),
+                builder: (context, state) => BlocProvider(
+                  create: (context) =>
+                      StudentClassesCubit(context.read<ClassRepository>()),
+                  child: const StudentClassesListScreen(),
+                ),
               ),
               GoRoute(
                 path: '$studentClassDetail/:classId',
                 name: 'studentClassDetail',
                 builder: (context, state) {
                   final classId = state.pathParameters['classId'] ?? '';
-                  return StudentClassDetailScreen(classId: classId);
+                  final membership = state.extra is MembershipModel
+                      ? state.extra as MembershipModel
+                      : null;
+                  return StudentClassDetailScreen(
+                    classId: classId,
+                    membership: membership,
+                  );
                 },
               ),
             ],
@@ -268,19 +307,54 @@ class AppRoutes {
       GoRoute(
         path: createClass,
         name: 'createClass',
-        builder: (context, state) => const CreateClassScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          if (extraCubit is ClassCubit) {
+            return BlocProvider<ClassCubit>.value(
+              value: extraCubit,
+              child: const CreateClassScreen(),
+            );
+          }
+          return BlocProvider(
+            create: (context) => ClassCubit(context.read<ClassRepository>()),
+            child: const CreateClassScreen(),
+          );
+        },
       ),
       GoRoute(
         path: joinClass,
         name: 'joinClass',
-        builder: (context, state) => const JoinClassScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          if (extraCubit is ClassCubit) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      MembershipCubit(context.read<ClassRepository>()),
+                ),
+                BlocProvider<ClassCubit>.value(value: extraCubit),
+              ],
+              child: const JoinClassScreen(),
+            );
+          }
+          return BlocProvider(
+            create: (context) =>
+                MembershipCubit(context.read<ClassRepository>()),
+            child: const JoinClassScreen(),
+          );
+        },
       ),
       GoRoute(
         path: '$manageStudents/:classId',
         name: 'manageStudents',
         builder: (context, state) {
           final classId = state.pathParameters['classId'] ?? '';
-          return ManageStudentsScreen(classId: classId);
+          return BlocProvider(
+            create: (context) =>
+                MembershipCubit(context.read<ClassRepository>()),
+            child: ManageStudentsScreen(classId: classId),
+          );
         },
       ),
 

@@ -35,9 +35,7 @@ Playing Tracker facilita la gestión del estudio musical mediante:
 
 ---
 
-## 🛠️ Tecnologías
-
-- **Frontend:** Flutter 3.x (Dart 3.9.2+)
+- **Frontend:** Flutter 3.38.x (Dart 3.10.x)
 - **Backend:** Firebase
   - Firebase Authentication (Email/Password)
   - Cloud Firestore (Base de datos NoSQL)
@@ -48,10 +46,8 @@ Playing Tracker facilita la gestión del estudio musical mediante:
 
 ---
 
-## 📦 Requisitos Previos
-
-- **Flutter SDK:** 3.x o superior
-- **Dart:** 3.9.2 o superior
+- **Flutter SDK:** 3.38.x
+- **Dart:** 3.10.x
 - **IDE:** VS Code o Android Studio con extensiones de Flutter
 - **Dispositivos:** Simulador iOS y/o emulador Android configurados
 
@@ -188,9 +184,13 @@ flutter build web
 
 ## 📊 Estado del Proyecto
 
-**Sprint Actual:** Sprint 2 - Autenticación y Gestión de Usuarios ✅ COMPLETADO
+**Sprint Actual:** Sprint 3 - Sistema de Clases y Membresías (Fase 5 completada) 🚧
 
-**Progreso Sprint 2:** 100% completado (8/8 fases) ✅
+**Logros recientes (Fase 5 · 24/11/2025):**
+- ✅ `TeacherClassesListScreen` consume el `ClassCubit` real, soporta loading/empty/error/success y refresco manual con `RefreshIndicator`
+- ✅ `CreateClassScreen` usa `CustomTextField`, validaciones del dominio y muestra feedback con `SelectableText.rich` + botones bloqueados en carga
+- ✅ `_EmptyState` ahora es reutilizable (acción opcional) y se añadieron strings operativos para estados y errores de clases/membresías
+- ✅ Nuevos widget tests en `test/features/classes/presentation/screens/` que validan rutas GoRouter, estados visuales y formularios docentes
 
 ### ✅ Sprint 0 - Diseño UI/UX (Completado)
 
@@ -282,7 +282,7 @@ flutter build web
 
 ### 📋 Sprints Futuros
 
-- Sprint 3: Sistema de Clases y Membresías (siguiente backlog)
+- Sprint 3: Sistema de Clases y Membresías (en curso)
 - Sprint 4: Gestión de Tareas y Asignaciones
 - Sprint 5: Cronómetro y Sesiones de Estudio
 - Sprint 6: Estadísticas y Dashboards
@@ -360,13 +360,18 @@ La aplicación implementa **Material Design 3** completamente:
 
 ## 🧪 Testing
 
-El testing se implementará en el Sprint 7. La estrategia incluirá:
+- ✅ `test/features/classes/data/services/*_test.dart` cubre `ClassService` y `MembershipService` usando `fake_cloud_firestore` + `mocktail`.
+- ✅ `test/features/classes/presentation/screens/*_test.dart` valida estados loading/empty/error/success y formularios docentes.
+- ✅ Comando actual:
 
-- Unit tests para lógica de negocio (Cubits, funciones puras)
-- Widget tests para componentes críticos
-- Integration tests para flujos completos
-- Golden tests para validación visual
-- Testing de accesibilidad (TalkBack, VoiceOver)
+```bash
+flutter test
+```
+
+- Roadmap de pruebas:
+  - Unit tests adicionales para Cubits (Sprint 4-5)
+  - Widget tests para pantallas críticas
+  - Golden tests y pruebas de accesibilidad
 
 ---
 

@@ -81,18 +81,6 @@ class TeacherHomeScreen extends StatelessWidget {
         backgroundColor: colorScheme.secondaryContainer,
         foregroundColor: colorScheme.onSecondaryContainer,
       ),
-      HomeQuickActionConfig(
-        icon: Icons.assignment_rounded,
-        title: HomeStrings.teacherTasksAction,
-        description: HomeStrings.teacherTasksDescription,
-        onTap: () => context.go(AppRoutes.taskList),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.bar_chart_rounded,
-        title: HomeStrings.teacherStatsAction,
-        description: HomeStrings.teacherStatsDescription,
-        onTap: () => context.go(AppRoutes.teacherStatistics),
-      ),
     ];
   }
 }

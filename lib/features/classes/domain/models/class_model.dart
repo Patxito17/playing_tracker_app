@@ -24,7 +24,7 @@ part 'class_model.g.dart';
 ///   name: 'Piano Nivel Intermedio',
 ///   description: 'Clase de piano para alumnos de nivel intermedio',
 ///   ownerTeacherId: 'teacher_uid_456',
-///   accessCode: 'ABC123',
+///   accessCode: 'ABC234',
 ///   createdAt: Timestamp.now(),
 ///   updatedAt: Timestamp.now(),
 ///   isActive: true,
@@ -105,6 +105,12 @@ class ClassModel {
       isActive: isActive ?? this.isActive,
     );
   }
+
+  /// Indica si la clase puede recibir alumnos (alias semántico de [isActive]).
+  bool get canJoin => isActive;
+
+  /// Indica si la clase fue archivada o deshabilitada por el docente.
+  bool get isArchived => !isActive;
 
   @override
   bool operator ==(Object other) =>
