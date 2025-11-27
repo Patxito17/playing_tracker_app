@@ -1,96 +1,203 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../domain/models/class_model.dart';
+import '../../domain/models/membership_model.dart';
 
-/// Tab de información de la clase (para estudiante)
-///
-/// Muestra información detallada de la clase: nombre, descripción, código de acceso, datos del docente.
-/// Sprint 0 - Fase 7: UI completa con Material Design 3 y funcionalidad de copiar código
-class ClassInfoTab extends StatelessWidget {
+/// Tab de información de la clase para estudiantes con datos reales.
+class StudentClassInfoTab extends StatefulWidget {
+  const StudentClassInfoTab({
+    super.key,
+    required this.classId,
+    required this.classFuture,
+    required this.onRefreshRequested,
+    this.membership,
+  });
+
   final String classId;
+  final Future<ClassModel?> classFuture;
+  final Future<void> Function() onRefreshRequested;
+  final MembershipModel? membership;
 
-  const ClassInfoTab({super.key, required this.classId});
+  @override
+  State<StudentClassInfoTab> createState() => _StudentClassInfoTabState();
+}
+
+class _StudentClassInfoTabState extends State<StudentClassInfoTab> {
+  ClassModel? _lastClassModel;
 
   @override
   Widget build(BuildContext context) {
-    // Datos mock de la clase
-    final className = 'Piano Nivel 1';
-    final classDescription =
-        'Curso de piano para principiantes. En este curso aprenderás los fundamentos del piano y desarrollarás habilidades básicas de lectura musical.';
-    final classCode = 'ABC123';
-    final teacherName = 'Prof. García';
-    final teacherEmail = 'prof.garcia@ejemplo.com';
-    final createdAt = 'Enero 2025';
-    final studentsCount = 12;
+    return FutureBuilder<ClassModel?>(
+      future: widget.classFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          _lastClassModel = snapshot.data;
+        }
+        final classModel = snapshot.data ?? _lastClassModel;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.m),
+        if (classModel == null) {
+          if (snapshot.hasError) {
+            return Center(
+              child: SelectableText.rich(
+                TextSpan(
+                  text: ClassesStrings.classGenericError,
+                  style: context.bodyMediumOnSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return RefreshIndicator(
+          onRefresh: widget.onRefreshRequested,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(AppSpacing.m),
+            children: [
+              _ClassSummaryCard(
+                classModel: classModel,
+                membership: widget.membership,
+                onCopyCode: () => _copyAccessCode(classModel.accessCode),
+              ),
+              const SizedBox(height: AppSpacing.m),
+              _TeacherInformationCard(
+                membership: widget.membership,
+                teacherId: classModel.ownerTeacherId,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _copyAccessCode(String code) {
+    Clipboard.setData(ClipboardData(text: code));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(CommonStrings.copied),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+}
+
+class _ClassSummaryCard extends StatelessWidget {
+  const _ClassSummaryCard({
+    required this.classModel,
+    required this.membership,
+    required this.onCopyCode,
+  });
+
+  final ClassModel classModel;
+  final MembershipModel? membership;
+  final VoidCallback onCopyCode;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final statusLabel = classModel.canJoin
+        ? ClassesStrings.classStatusActive
+        : ClassesStrings.classStatusArchived;
+    final statusColor = classModel.canJoin
+        ? colorScheme.primary
+        : colorScheme.error;
+    final createdAt = DateFormat(
+      'dd/MM/yyyy – HH:mm',
+    ).format(classModel.createdAt.toDate());
+    final joinedAt = membership == null
+        ? null
+        : DateFormat(
+            'dd/MM/yyyy – HH:mm',
+          ).format(membership!.joinedAt.toDate());
+
+    return CustomCard(
+      title: classModel.name,
+      subtitle: '${ClassDetailStrings.accessCode}: ${classModel.accessCode}',
+      trailingAction: IconButton(
+        icon: const Icon(Icons.copy_outlined),
+        tooltip: CommonStrings.copy,
+        onPressed: onCopyCode,
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomCard(
-            title: className,
-            subtitle: '${ClassDetailStrings.accessCode}: $classCode',
-            trailingAction: IconButton(
-              icon: const Icon(Icons.copy_outlined),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: classCode));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(CommonStrings.copied),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              tooltip: CommonStrings.copy,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  ClassDetailStrings.classDescription,
-                  style: context.textTheme.titleMedium,
+          Wrap(
+            spacing: AppSpacing.s,
+            runSpacing: AppSpacing.s,
+            children: [
+              Chip(
+                label: Text(statusLabel),
+                backgroundColor: statusColor.withValues(alpha: 0.16),
+                labelStyle: TextStyle(color: statusColor),
+              ),
+              Chip(
+                avatar: const Icon(Icons.event, size: 16),
+                label: Text('${ClassDetailStrings.created}: $createdAt'),
+              ),
+              if (joinedAt != null)
+                Chip(
+                  avatar: const Icon(Icons.calendar_month, size: 16),
+                  label: Text('${StudentStrings.joinedAtLabel} $joinedAt'),
                 ),
-                const SizedBox(height: AppSpacing.s),
-                Text(classDescription, style: context.textTheme.bodyMedium),
-              ],
-            ),
+            ],
           ),
           const SizedBox(height: AppSpacing.m),
-          CustomCard(
-            title: ClassDetailStrings.teacherInfo,
-            subtitle: teacherName,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${ClassDetailStrings.email}: $teacherEmail',
-                  style: context.textTheme.bodyMedium,
-                ),
-              ],
-            ),
+          Text(
+            ClassDetailStrings.classDescription,
+            style: context.textTheme.titleMedium,
           ),
-          const SizedBox(height: AppSpacing.m),
-          CustomCard(
-            title: ClassDetailStrings.classInfo,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${ClassDetailStrings.created}: $createdAt',
-                  style: context.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.s),
-                Text(
-                  '${ClassDetailStrings.students}: $studentsCount',
-                  style: context.textTheme.bodyMedium,
-                ),
-              ],
-            ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            classModel.description?.trim().isNotEmpty == true
+                ? classModel.description!
+                : ClassesStrings.classDescriptionHint,
+            style: context.textTheme.bodyMedium,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TeacherInformationCard extends StatelessWidget {
+  const _TeacherInformationCard({
+    required this.membership,
+    required this.teacherId,
+  });
+
+  final MembershipModel? membership;
+  final String teacherId;
+
+  @override
+  Widget build(BuildContext context) {
+    final teacherName = membership?.teacherName?.trim();
+    final teacherDisplayName = teacherName?.isNotEmpty == true
+        ? teacherName
+        : '${ClassesStrings.teacherLabel}$teacherId';
+    final studentName = membership?.studentName?.trim();
+    final studentDisplayName = studentName?.isNotEmpty == true
+        ? studentName
+        : membership?.studentId ?? '—';
+
+    return CustomCard(
+      title: ClassDetailStrings.teacherInfo,
+      subtitle: teacherDisplayName,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${StudentStrings.studentNameLabel}: $studentDisplayName',
+            style: context.bodySmallOnSurfaceVariant,
           ),
         ],
       ),

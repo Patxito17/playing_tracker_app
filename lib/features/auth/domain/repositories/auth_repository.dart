@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
+import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
+import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
 
 /// Contrato que abstrae las operaciones de autenticación y perfil de usuario.
 abstract class AuthRepository {
@@ -17,6 +19,12 @@ abstract class AuthRepository {
 
   /// Obtiene el rol (`teacher` o `student`) de un usuario dado su UID.
   Future<UserRole> getUserRole(String userId);
+
+  /// Obtiene el perfil del docente desde Firestore.
+  Future<TeacherModel?> getTeacherProfile(String userId);
+
+  /// Obtiene el perfil del alumno desde Firestore.
+  Future<StudentModel?> getStudentProfile(String userId);
 
   /// Crea el documento del docente en Firestore.
   Future<void> createTeacher({

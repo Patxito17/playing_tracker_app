@@ -121,13 +121,35 @@ service cloud.firestore {
         resource.data.teacherId == request.auth.uid
       );
 
-      // Creación: solo el teacher relacionado
+      // Creación: teacher propietario o alumno autenticado (código de acceso)
       allow create: if isAuth() &&
-                      request.resource.data.teacherId == request.auth.uid &&
-                      request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'isActive']);
+                      (
+                        (isTeacher() && request.resource.data.teacherId == request.auth.uid) ||
+                        request.resource.data.studentId == request.auth.uid
+                      ) &&
+                      request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'updatedAt', 'isActive']);
 
-      // Actualización y eliminación: solo el teacher relacionado
-      allow update, delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+      // Actualización: teacher relacionado o student para reactivar su propia membresía
+      allow update: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        (
+          resource.data.studentId == request.auth.uid &&
+          request.resource.data.studentId == resource.data.studentId &&
+          request.resource.data.teacherId == resource.data.teacherId &&
+          request.resource.data.classId == resource.data.classId &&
+          request.resource.data.className == resource.data.className &&
+          resource.data.isActive == false &&
+          request.resource.data.isActive == true &&
+          request.resource.data.updatedAt is timestamp &&
+          (
+            resource.data.updatedAt == null ||
+            request.resource.data.updatedAt > resource.data.updatedAt
+          )
+        )
+      );
+
+      // Eliminación: solo el teacher relacionado
+      allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
     }
 
     // ==========================================================================

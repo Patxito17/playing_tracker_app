@@ -112,7 +112,7 @@ String? validateEmail(String? email) {
 ///
 /// Ejemplo de uso:
 /// ```dart
-/// final error = validateAccessCode('ABC123');
+/// final error = validateAccessCode('ABC234');
 /// // error = null (válido)
 ///
 /// final error2 = validateAccessCode('AB12');
