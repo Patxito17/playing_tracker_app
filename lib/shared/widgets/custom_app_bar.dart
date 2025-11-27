@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_strings.dart';
+
 /// AppBar personalizado con título, acciones configurables y navegación hacia atrás
 ///
 /// Encapsula un AppBar de Material Design 3 con estilos consistentes y
@@ -97,8 +99,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading = IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: onBackPressed ?? () => context.pop(),
-        tooltip:
-            'Volver', // TODO: Usar CommonStrings.back cuando esté disponible
+        tooltip: CommonStrings.back,
       );
     } else if (!automaticallyImplyLeading) {
       leading = const SizedBox.shrink();

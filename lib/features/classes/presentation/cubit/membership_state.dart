@@ -95,6 +95,8 @@ final class MembershipError extends MembershipState {
 enum MembershipAction {
   invitedStudent,
   joinedClass,
-  removedStudent,
+  activatedStudent,
+  deactivatedStudent,
+  deletedStudent,
   regeneratedAccessCode,
 }

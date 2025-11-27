@@ -16,12 +16,16 @@ abstract interface class ClassServiceContract {
     int limit,
   });
 
+  Stream<ClassModel?> watchClassById(String classId);
+
   Future<ClassModel?> getClassById(String classId);
 
   Future<void> updateClassStatus({
     required String classId,
     required bool isActive,
   });
+
+  Future<void> deleteClass(String classId);
 
   Future<void> regenerateAccessCode(String classId);
 
@@ -116,6 +120,24 @@ final class ClassService implements ClassServiceContract {
         .map((snapshot) => snapshot.docs.map(_mapSnapshot).toList());
   }
 
+  @override
+  Stream<ClassModel?> watchClassById(String classId) {
+    final sanitizedId = classId.trim();
+    if (sanitizedId.isEmpty) {
+      return Stream<ClassModel?>.error(
+        FirebaseErrorMapperException(
+          'El identificador de la clase es obligatorio.',
+        ),
+      );
+    }
+    return _classesCollection.doc(sanitizedId).snapshots().map((snapshot) {
+      if (!snapshot.exists) {
+        return null;
+      }
+      return _mapSnapshot(snapshot);
+    });
+  }
+
   /// Obtiene una clase por su ID o retorna null si no existe.
   @override
   Future<ClassModel?> getClassById(String classId) async {
@@ -149,6 +171,20 @@ final class ClassService implements ClassServiceContract {
     } on FirebaseException catch (error, stackTrace) {
       log(
         'ClassService#updateClassStatus FirebaseException: ${error.code}',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> deleteClass(String classId) async {
+    try {
+      await _classesCollection.doc(classId).delete();
+    } on FirebaseException catch (error, stackTrace) {
+      log(
+        'ClassService#deleteClass FirebaseException: ${error.code}',
         error: error,
         stackTrace: stackTrace,
       );
@@ -223,6 +259,10 @@ final class ClassService implements ClassServiceContract {
       );
     }
     data['id'] = data['id'] ?? snapshot.id;
+    final createdAt = data['createdAt'];
+    final fallbackTimestamp = Timestamp.now();
+    data['createdAt'] = createdAt ?? fallbackTimestamp;
+    data['updatedAt'] = data['updatedAt'] ?? createdAt ?? fallbackTimestamp;
     return ClassModel.fromJson(data);
   }
 

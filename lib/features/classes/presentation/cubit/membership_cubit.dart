@@ -67,16 +67,63 @@ final class MembershipCubit extends Cubit<MembershipState> {
     required String classId,
     required String studentId,
   }) async {
+    await updateStudentMembershipStatus(
+      classId: classId,
+      studentId: studentId,
+      isActive: false,
+    );
+  }
+
+  /// Activa o inactiva una membresía existente.
+  Future<void> updateStudentMembershipStatus({
+    required String classId,
+    required String studentId,
+    required bool isActive,
+  }) async {
     emit(const MembershipLoading());
     try {
-      await _repository.removeStudentFromClass(
+      await _repository.updateStudentMembershipStatus(
+        classId: classId,
+        studentId: studentId,
+        isActive: isActive,
+      );
+      emit(
+        MembershipSuccess(
+          action: isActive
+              ? MembershipAction.activatedStudent
+              : MembershipAction.deactivatedStudent,
+          message: isActive
+              ? ClassesStrings.membershipActivateSuccess
+              : ClassesStrings.membershipDeactivateSuccess,
+        ),
+      );
+      await loadMembers(classId: classId, refresh: true);
+    } on ClassRepositoryException catch (error) {
+      emit(MembershipError(message: error.message, cause: error));
+      await _restoreMembersAfterOperation();
+    } catch (error) {
+      emit(
+        const MembershipError(message: ClassesStrings.membershipGenericError),
+      );
+      await _restoreMembersAfterOperation();
+    }
+  }
+
+  /// Elimina permanentemente la membresía del alumno.
+  Future<void> deleteStudentMembership({
+    required String classId,
+    required String studentId,
+  }) async {
+    emit(const MembershipLoading());
+    try {
+      await _repository.deleteStudentMembershipPermanent(
         classId: classId,
         studentId: studentId,
       );
       emit(
         const MembershipSuccess(
-          action: MembershipAction.removedStudent,
-          message: ClassesStrings.membershipRemoveSuccess,
+          action: MembershipAction.deletedStudent,
+          message: ClassesStrings.membershipDeleteSuccess,
         ),
       );
       await loadMembers(classId: classId, refresh: true);
@@ -165,6 +212,7 @@ final class MembershipCubit extends Cubit<MembershipState> {
         startAfterId: (isInitialLoad || refresh || !isSameClass)
             ? null
             : _lastMemberDocumentId,
+        includeInactive: true,
       );
 
       if (isInitialLoad || refresh || !isSameClass) {

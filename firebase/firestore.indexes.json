@@ -8,6 +8,23 @@
           "order": "ASCENDING"
         },
         {
+          "fieldPath": "joinedAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "id",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "memberships",
+      "fields": [
+        {
+          "fieldPath": "classId",
+          "order": "ASCENDING"
+        },
+        {
           "fieldPath": "isActive",
           "order": "ASCENDING"
         }

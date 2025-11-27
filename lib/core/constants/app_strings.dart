@@ -150,6 +150,11 @@ class ClassesStrings {
   static const String createClassButton = 'Crear clase';
   static const String classStatusActive = 'Clase activa';
   static const String classStatusArchived = 'Clase archivada';
+  static const String archiveClassAction = 'Archivar clase';
+  static const String activateClassAction = 'Activar clase';
+  static const String deleteClassAction = 'Eliminar clase';
+  static const String deleteClassConfirmation =
+      'Esta acción eliminará definitivamente la clase y todas sus membresías.';
   static const String regenerateAccessCodeAction = 'Regenerar código';
   static const String regenerateCodeConfirmation =
       'Generaremos un nuevo código y el anterior dejará de funcionar.';
@@ -167,6 +172,8 @@ class ClassesStrings {
   static const String classCreateSuccess = 'Clase creada correctamente.';
   static const String classStatusUpdatedSuccess =
       'El estado de la clase se actualizó correctamente.';
+  static const String classDeleteSuccess =
+      'La clase fue eliminada correctamente.';
   static const String membershipGenericError =
       'Ocurrió un error al gestionar las membresías.';
   static const String membershipInviteSuccess =
@@ -175,13 +182,22 @@ class ClassesStrings {
       'Te uniste a la clase correctamente.';
   static const String membershipRemoveSuccess =
       'Alumno removido correctamente.';
+  static const String membershipActivateSuccess =
+      'Alumno activado correctamente.';
+  static const String membershipDeactivateSuccess =
+      'Alumno inactivado correctamente.';
+  static const String membershipDeleteSuccess =
+      'La membresía se eliminó definitivamente.';
   static const String membershipRegenerateSuccess =
       'Código de acceso regenerado correctamente.';
+  static const String membershipDeleteConfirmation =
+      'Esta acción eliminará de forma permanente al alumno de la clase.';
 }
 
 /// Strings relacionados con navegación
 class NavigationStrings {
   // Tabs del BottomNavigationBar
+  static const String homeTab = 'Inicio';
   static const String classesTab = 'Clases';
   static const String statisticsTab = 'Estadísticas';
   static const String settingsTab = 'Configuración';
@@ -249,6 +265,13 @@ class ClassDetailStrings {
   static const String created = 'Creada';
   static const String students = 'Estudiantes';
   static const String email = 'Email';
+
+  static const String classArchivedExitMessage =
+      'Esta clase fue archivada y ya no está disponible.';
+  static const String classDeletedExitMessage =
+      'La clase fue eliminada y volveremos a la lista.';
+  static const String membershipRevokedExitMessage =
+      'Tu acceso a esta clase fue revocado.';
 }
 
 /// Strings relacionados con tareas
@@ -331,6 +354,8 @@ class StudentStrings {
   static const String studentsListTitle = 'Alumnos de la clase';
 
   // Información de estudiantes
+  static const String studentNameLabel = 'Alumno';
+  static const String studentEmailLabel = 'Correo del alumno';
   static const String studentIdLabel = 'ID del alumno';
   static const String joinedAtLabel = 'Se unió el';
   static const String sessions = 'sesiones';
@@ -342,6 +367,10 @@ class StudentStrings {
   static const String removeStudent = 'Eliminar estudiante';
   static const String removeStudentConfirmation =
       'Esta acción quitará al alumno de la clase.';
+  static const String activateStudentAction = 'Activar alumno';
+  static const String deactivateStudentAction = 'Inactivar alumno';
+  static const String deleteStudentAction = 'Eliminar alumno';
+  static const String inactiveStudentLabel = 'Alumno inactivo';
 
   // Estados vacíos
   static const String noStudentsInClass = 'No hay estudiantes en esta clase';

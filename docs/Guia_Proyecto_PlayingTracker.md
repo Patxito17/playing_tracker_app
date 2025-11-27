@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 24 de Noviembre 2025
-**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (Fase 7 completada) 🚧
+**Última actualización:** 27 de Noviembre 2025
+**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (real-time sync en detalle/listados) 🚧
 
 ---
 
@@ -294,6 +294,10 @@ lib/
 - ✅ Detalle de clase con 3 tabs: Tareas (clickeables para iniciar sesión), Información de clase, Estadísticas de clase
 - ✅ Estadísticas generales (todas las clases del estudiante)
 - ✅ Pantalla de configuración (placeholder)
+
+**⚡ Actualización 27/11/2025**
+- `StudentClassesListScreen` depura en tiempo real las “clases zombis”: elimina de la lista las clases eliminadas/archivadas por el docente mediante watchers individuales y mantiene la UI sincronizada sin reiniciar la app.
+- `StudentClassDetailScreen` se cierra automáticamente cuando la clase se archiva/elimina o la membresía es revocada, mostrando un `SnackBar` contextual y regresando a la lista del alumno.
 
 **📅 Próximamente (Sprint 3+):**
 - 📅 Visualización de tareas asignadas
@@ -670,6 +674,11 @@ service cloud.firestore {
 - Se añadieron tests widget (`manage_students_screen_test.dart`) y unitarios de servicios para cubrir paginación, junto a actualizaciones de documentación e índices.
 - `TeacherClassesListScreen` navega directo a `ManageStudentsScreen` (sin tabs mock heredados) y los HomeScreens muestran únicamente acciones respaldadas por lógica real.
 - `StudentClassesListScreen` incorpora `StudentClassesCubit`, escucha los memberships activos del alumno y ofrece pull-to-refresh + CTA para unirse usando códigos reales.
+
+**Avances recientes (27 nov 2025):**
+- `ClassService.watchClassById` y `ClassRepository.watchClassById` permiten reaccionar a archivados/eliminaciones sin necesidad de refrescar manualmente.
+- `TeacherClassDetailScreen` y `StudentClassDetailScreen` escuchan el documento en tiempo real; si la clase se elimina o la membresía se revoca, muestran un mensaje y regresan a la lista correspondiente.
+- `StudentClassesCubit` administra un watcher por clase visible para depurar registros huérfanos (clases borradas) y mantener la lista del alumno consistente en todo momento.
 
 ---
 

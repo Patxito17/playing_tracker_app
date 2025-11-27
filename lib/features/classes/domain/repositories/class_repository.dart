@@ -28,6 +28,9 @@ abstract interface class ClassRepository {
     int limit = 20,
   });
 
+  /// Observa en tiempo real una clase específica para detectar eliminaciones.
+  Stream<ClassModel?> watchClassById(String classId);
+
   /// Obtiene una clase específica por su identificador.
   ///
   /// Retorna null cuando la clase no existe o el usuario no tiene permisos.
@@ -60,6 +63,22 @@ abstract interface class ClassRepository {
     required String studentId,
   });
 
+  /// Actualiza el estado `isActive` de una membresía (activar/inactivar).
+  Future<void> updateStudentMembershipStatus({
+    required String classId,
+    required String studentId,
+    required bool isActive,
+  });
+
+  /// Elimina permanentemente una membresía de Firestore.
+  Future<void> deleteStudentMembershipPermanent({
+    required String classId,
+    required String studentId,
+  });
+
+  /// Elimina permanentemente una clase y todas sus membresías.
+  Future<void> deleteClassPermanent(String classId);
+
   /// Regenera el código de acceso de una clase e invalida el anterior.
   ///
   /// Debe garantizar unicidad del código y propagar la actualización a la UI.
@@ -73,6 +92,7 @@ abstract interface class ClassRepository {
     required String classId,
     int limit = 20,
     String? startAfterId,
+    bool includeInactive = false,
   });
 
   /// Hook para preparar el fan-out de tareas hacia asignaciones.
