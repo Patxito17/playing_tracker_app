@@ -330,12 +330,21 @@ class TaskStrings {
 
   // Filtros
   static const String filters = 'Filtros';
+  static const String filterByActiveStatus = 'Filtrar por estado activo';
   static const String filterByStatus = 'Filtrar por estado';
   static const String filterByDate = 'Filtrar por fecha';
   static const String filterByClass = 'Filtrar por clase';
   static const String allStatuses = 'Todos los estados';
   static const String allDates = 'Todas las fechas';
   static const String allClasses = 'Todas las clases';
+  static const String showActiveOnly = 'Mostrar solo tareas activas';
+  static const String showArchivedOnly = 'Mostrar solo tareas archivadas';
+  static const String selectDueDate = 'Fecha de vencimiento';
+  static const String selectCreatedDate = 'Fecha de creación';
+  static const String applyFilters = 'Aplicar filtros';
+  static const String clearFilters = 'Limpiar filtros';
+  static const String fromLabel = 'Desde';
+  static const String toLabel = 'Hasta';
 
   // Estados vacíos
   static const String noTasksInClass = 'No hay tareas en esta clase';
@@ -351,6 +360,12 @@ class TaskStrings {
   static const String taskUpdateSuccess = 'Tarea actualizada correctamente.';
   static const String taskDeleteSuccess = 'Tarea eliminada correctamente.';
   static const String taskAssignSuccess = 'Tarea asignada correctamente.';
+  static const String confirmDeleteTask = 'Confirmar eliminación de tarea';
+  static const String confirmDeleteTaskMessage =
+      'Esta acción eliminará la tarea para todos los alumnos. '
+      'Podrás crear una nueva más adelante si lo necesitas.';
+  static const String selectClassToAssign = 'Selecciona la clase destino';
+  static const String assigningTask = 'Asignando tarea...';
 
   // Errores genéricos
   static const String taskGenericError =
@@ -361,6 +376,12 @@ class TaskStrings {
       'Todavía no has creado ninguna tarea para tus clases.';
   static const String noAssignmentsReceived =
       'Aún no tienes tareas asignadas. Tu profesor las verá aquí cuando las publique.';
+
+  /// Formatea una fecha corta en formato dd/MM/yyyy para usar en filtros.
+  static String formatShortDate(DateTime date) =>
+      '${date.day.toString().padLeft(2, '0')}/'
+      '${date.month.toString().padLeft(2, '0')}/'
+      '${date.year}';
 }
 
 /// Strings relacionados con estudiantes
