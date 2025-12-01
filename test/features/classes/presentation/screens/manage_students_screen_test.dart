@@ -119,6 +119,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining(member.studentId), findsWidgets);
+    expect(find.textContaining(member.studentId), findsOneWidget);
   });
 }
