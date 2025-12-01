@@ -194,7 +194,7 @@ class AssignmentModel {
       classId.hashCode ^
       teacherId.hashCode ^
       (taskTitle?.hashCode ?? 0) ^
-      (durationSuggested ?? 0) ^
+      (durationSuggested?.hashCode ?? 0) ^
       status.hashCode ^
       assignedAt.hashCode ^
       completedAt.hashCode ^
