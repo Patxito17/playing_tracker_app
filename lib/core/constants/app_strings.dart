@@ -345,6 +345,22 @@ class TaskStrings {
   static const String noTasksFound = 'No se encontraron tareas';
   static const String adjustFilters =
       'Ajusta los filtros para ver más resultados';
+
+  // Mensajes de acciones
+  static const String taskCreateSuccess = 'Tarea creada correctamente.';
+  static const String taskUpdateSuccess = 'Tarea actualizada correctamente.';
+  static const String taskDeleteSuccess = 'Tarea eliminada correctamente.';
+  static const String taskAssignSuccess = 'Tarea asignada correctamente.';
+
+  // Errores genéricos
+  static const String taskGenericError =
+      'Ocurrió un error al procesar la tarea. Intenta nuevamente.';
+
+  // Estados vacíos específicos
+  static const String noTasksCreated =
+      'Todavía no has creado ninguna tarea para tus clases.';
+  static const String noAssignmentsReceived =
+      'Aún no tienes tareas asignadas. Tu profesor las verá aquí cuando las publique.';
 }
 
 /// Strings relacionados con estudiantes
