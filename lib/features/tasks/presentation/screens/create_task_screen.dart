@@ -41,7 +41,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   String? _formError;
   String? _successMessage;
   Timer? _autoPopTimer;
-  bool _navigationScheduled = false;
 
   // Datos mock de estudiantes disponibles
   final List<Map<String, String>> _availableStudents = [
@@ -130,10 +129,12 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       _formError = null;
     });
     _clearForm();
-    if (!mounted || _navigationScheduled) {
+    if (!mounted) {
       return;
     }
-    _navigationScheduled = true;
+    // Cancelamos cualquier navegación previa programada para evitar
+    // múltiples timers activos y programamos una nueva.
+    _autoPopTimer?.cancel();
     _autoPopTimer = Timer(const Duration(milliseconds: 1500), () {
       if (!mounted) return;
       context.go(AppRoutes.taskList);
