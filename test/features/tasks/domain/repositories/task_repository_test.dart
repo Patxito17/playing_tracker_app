@@ -6,10 +6,6 @@ import 'package:playing_tracker/features/tasks/domain/models/assignment_model.da
 import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
-import 'package:playing_tracker/features/tasks/domain/value_objects/assign_task_input.dart';
-import 'package:playing_tracker/features/tasks/domain/value_objects/create_task_input.dart';
-import 'package:playing_tracker/features/tasks/domain/value_objects/task_filters.dart';
-import 'package:playing_tracker/features/tasks/domain/value_objects/update_task_input.dart';
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -17,49 +13,41 @@ void main() {
   late _MockTaskRepository repository;
 
   setUpAll(() {
-    registerFallbackValue(
-      (
-        title: 'Título demo',
-        description: 'Descripción demo',
-        createdBy: 'teacher-1',
-        durationSuggested: 1800,
-        attachments: <AttachmentModel>[],
-        dueDate: DateTime(2025, 1, 1),
-      ),
-    );
+    registerFallbackValue((
+      title: 'Título demo',
+      description: 'Descripción demo',
+      createdBy: 'teacher-1',
+      durationSuggested: 1800,
+      attachments: <AttachmentModel>[],
+      dueDate: DateTime(2025, 1, 1),
+    ));
 
-    registerFallbackValue(
-      (
-        taskId: 'task-1',
-        title: 'Nuevo título',
-        description: 'Nueva descripción',
-        durationSuggested: 1200,
-        attachments: <AttachmentModel>[],
-        dueDate: DateTime(2025, 2, 1),
-        isActive: true,
-      ),
-    );
+    registerFallbackValue((
+      taskId: 'task-1',
+      title: 'Nuevo título',
+      description: 'Nueva descripción',
+      durationSuggested: 1200,
+      attachments: <AttachmentModel>[],
+      dueDate: DateTime(2025, 2, 1),
+      isActive: true,
+    ));
 
-    registerFallbackValue(
-      (
-        taskId: 'task-1',
-        classId: 'class-1',
-        teacherId: 'teacher-1',
-      ),
-    );
+    registerFallbackValue((
+      taskId: 'task-1',
+      classId: 'class-1',
+      teacherId: 'teacher-1',
+    ));
 
-    registerFallbackValue(
-      (
-        isActive: true,
-        createdFrom: DateTime(2025, 1, 1),
-        createdTo: DateTime(2025, 1, 31),
-        dueFrom: null,
-        dueTo: null,
-        status: TaskStatus.pending,
-        assignedFrom: null,
-        assignedTo: null,
-      ),
-    );
+    registerFallbackValue((
+      isActive: true,
+      createdFrom: DateTime(2025, 1, 1),
+      createdTo: DateTime(2025, 1, 31),
+      dueFrom: null,
+      dueTo: null,
+      status: TaskStatus.pending,
+      assignedFrom: null,
+      assignedTo: null,
+    ));
   });
 
   setUp(() {
@@ -167,10 +155,7 @@ void main() {
         assignedTo: null,
       );
 
-      expect(
-        () => validateTaskFilters(filters),
-        throwsA(isA<ArgumentError>()),
-      );
+      expect(() => validateTaskFilters(filters), throwsA(isA<ArgumentError>()));
     });
 
     test('no lanza error con rango de creación válido', () {
@@ -215,9 +200,7 @@ void main() {
           isActive: true,
         );
 
-        when(() => repository.createTask(input)).thenAnswer(
-          (_) async => task,
-        );
+        when(() => repository.createTask(input)).thenAnswer((_) async => task);
 
         final result = await repository.createTask(input);
 
@@ -254,10 +237,7 @@ void main() {
         );
 
         when(
-          () => repository.watchTeacherTasks(
-            'teacher-1',
-            filters: filters,
-          ),
+          () => repository.watchTeacherTasks('teacher-1', filters: filters),
         ).thenAnswer((_) => Stream.value(<TaskModel>[task]));
 
         final stream = repository.watchTeacherTasks(
@@ -288,7 +268,10 @@ void main() {
           id: AssignmentModel.generateId('task-1', 'student-1'),
           taskId: 'task-1',
           studentId: 'student-1',
+          classId: 'class-1',
           teacherId: 'teacher-1',
+          taskTitle: 'Escalas',
+          durationSuggested: 900,
           status: TaskStatus.pending,
           assignedAt: now,
           completedAt: null,
@@ -298,10 +281,8 @@ void main() {
         );
 
         when(
-          () => repository.watchStudentAssignments(
-            'student-1',
-            filters: filters,
-          ),
+          () =>
+              repository.watchStudentAssignments('student-1', filters: filters),
         ).thenAnswer((_) => Stream.value(<AssignmentModel>[assignment]));
 
         final stream = repository.watchStudentAssignments(
@@ -315,5 +296,3 @@ void main() {
     );
   });
 }
-
-

@@ -1,0 +1,251 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
+import 'package:playing_tracker/features/classes/data/helpers/fan_out_helper.dart';
+import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
+import 'package:playing_tracker/features/tasks/data/services/task_service.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
+
+/// Implementación concreta de [TaskRepository] que orquesta servicios de
+/// Firestore y el helper de fan-out respetando la arquitectura
+/// Domain → Repository → Service.
+final class TaskRepositoryImpl implements TaskRepository {
+  /// Crea una instancia con dependencias inyectables para facilitar las pruebas.
+  TaskRepositoryImpl({
+    TaskServiceContract? taskService,
+    AssignmentServiceContract? assignmentService,
+    FanOutHelperContract? fanOutHelper,
+  }) : _taskService = taskService ?? TaskService(),
+       _assignmentService = assignmentService ?? AssignmentService(),
+       _fanOutHelper = fanOutHelper ?? FanOutHelper();
+
+  final TaskServiceContract _taskService;
+  final AssignmentServiceContract _assignmentService;
+  final FanOutHelperContract _fanOutHelper;
+
+  @override
+  Future<TaskModel> createTask(CreateTaskInput input) async {
+    validateCreateTaskInput(input);
+    try {
+      return await _taskService.createTask(input);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'createTask',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible crear la tarea.',
+      );
+    }
+  }
+
+  @override
+  Future<void> updateTask(UpdateTaskInput input) async {
+    validateUpdateTaskInput(input);
+    try {
+      await _taskService.updateTask(input);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'updateTask',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible actualizar la tarea.',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteTask(String taskId) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw const InvalidTaskArgumentException(
+        'El identificador de la tarea es obligatorio',
+      );
+    }
+    try {
+      await _taskService.deleteTask(sanitizedId, hardDelete: false);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'deleteTask',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible eliminar la tarea.',
+      );
+    }
+  }
+
+  @override
+  Stream<List<TaskModel>> watchTeacherTasks(
+    String teacherId, {
+    TaskFilters? filters,
+  }) {
+    final normalizedId = teacherId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<TaskModel>>.error(
+        const InvalidTaskArgumentException(
+          'El identificador del docente es obligatorio',
+        ),
+      );
+    }
+    if (filters != null) {
+      validateTaskFilters(filters);
+    }
+
+    final stream = _taskService.watchTeacherTasks(
+      teacherId: normalizedId,
+      filters: filters,
+      limit: _defaultPaginationLimit,
+    );
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (tasks, sink) => sink.add(tasks),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchTeacherTasks',
+            error: error,
+            fallbackMessage: 'No fue posible cargar las tareas del docente.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
+  @override
+  Stream<List<AssignmentModel>> watchStudentAssignments(
+    String studentId, {
+    TaskFilters? filters,
+  }) {
+    final normalizedId = studentId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        const InvalidTaskArgumentException(
+          'El identificador del alumno es obligatorio',
+        ),
+      );
+    }
+    if (filters != null) {
+      validateTaskFilters(filters);
+    }
+
+    final stream = _assignmentService.watchStudentAssignments(
+      studentId: normalizedId,
+      filters: filters,
+      limit: _defaultPaginationLimit,
+    );
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (assignments, sink) => sink.add(assignments),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchStudentAssignments',
+            error: error,
+            fallbackMessage: 'No fue posible cargar tus tareas asignadas.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<void> assignTaskToClass(AssignTaskInput input) async {
+    validateAssignTaskInput(input);
+    try {
+      await _fanOutHelper.prepareFanOut(input.taskId, input.classId);
+      await _fanOutHelper.propagateToAssignments(input.taskId, input.classId);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'assignTaskToClass',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible asignar la tarea a la clase.',
+      );
+    }
+  }
+
+  @override
+  Future<TaskModel?> getTaskById(String taskId) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw const InvalidTaskArgumentException(
+        'El identificador de la tarea es obligatorio',
+      );
+    }
+    try {
+      return await _taskService.getTaskById(sanitizedId);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'getTaskById',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible obtener la tarea solicitada.',
+      );
+    }
+  }
+
+  @override
+  Future<AssignmentModel?> getAssignmentById(String assignmentId) async {
+    final sanitizedId = assignmentId.trim();
+    if (sanitizedId.isEmpty) {
+      throw const InvalidTaskArgumentException(
+        'El identificador de la asignación es obligatorio',
+      );
+    }
+    try {
+      return await _assignmentService.getAssignmentById(sanitizedId);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'getAssignmentById',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible obtener la asignación solicitada.',
+      );
+    }
+  }
+
+  Never _throwRepositoryException({
+    required String method,
+    required Object error,
+    required String fallbackMessage,
+    StackTrace? stackTrace,
+  }) {
+    log(
+      'TaskRepositoryImpl#$method error',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    if (error is TaskRepositoryException) {
+      throw error;
+    }
+    if (error is FirebaseErrorMapperException) {
+      throw UnknownTaskRepositoryException(error.message, cause: error);
+    }
+    throw UnknownTaskRepositoryException(fallbackMessage, cause: error);
+  }
+
+  TaskRepositoryException _mapToRepositoryException({
+    required String method,
+    required Object error,
+    required String fallbackMessage,
+  }) {
+    TaskRepositoryException mapped = UnknownTaskRepositoryException(
+      fallbackMessage,
+      cause: error,
+    );
+    try {
+      _throwRepositoryException(
+        method: method,
+        error: error,
+        fallbackMessage: fallbackMessage,
+      );
+    } on TaskRepositoryException catch (repositoryException) {
+      mapped = repositoryException;
+    }
+    return mapped;
+  }
+}
+
+const _defaultPaginationLimit = 50;

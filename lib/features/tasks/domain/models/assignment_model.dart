@@ -175,10 +175,10 @@ class AssignmentModel {
           id == other.id &&
           taskId == other.taskId &&
           studentId == other.studentId &&
-      classId == other.classId &&
+          classId == other.classId &&
           teacherId == other.teacherId &&
-      taskTitle == other.taskTitle &&
-      durationSuggested == other.durationSuggested &&
+          taskTitle == other.taskTitle &&
+          durationSuggested == other.durationSuggested &&
           status == other.status &&
           assignedAt == other.assignedAt &&
           completedAt == other.completedAt &&
