@@ -136,7 +136,11 @@ final class TaskService implements TaskServiceContract {
       );
     }
     if (filters != null) {
-      validateTaskFilters(filters);
+      try {
+        validateTaskFilters(filters);
+      } on ArgumentError catch (error) {
+        return Stream<List<TaskModel>>.error(error);
+      }
     }
     Query<Map<String, dynamic>> query = _tasksCollection.where(
       'createdBy',

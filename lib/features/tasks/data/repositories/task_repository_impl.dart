@@ -90,7 +90,13 @@ final class TaskRepositoryImpl implements TaskRepository {
       );
     }
     if (filters != null) {
-      validateTaskFilters(filters);
+      try {
+        validateTaskFilters(filters);
+      } on ArgumentError catch (error) {
+        return Stream<List<TaskModel>>.error(
+          InvalidTaskArgumentException(error.message, cause: error),
+        );
+      }
     }
 
     final stream = _taskService.watchTeacherTasks(
@@ -127,7 +133,13 @@ final class TaskRepositoryImpl implements TaskRepository {
       );
     }
     if (filters != null) {
-      validateTaskFilters(filters);
+      try {
+        validateTaskFilters(filters);
+      } on ArgumentError catch (error) {
+        return Stream<List<AssignmentModel>>.error(
+          InvalidTaskArgumentException(error.message, cause: error),
+        );
+      }
     }
 
     final stream = _assignmentService.watchStudentAssignments(
