@@ -53,8 +53,17 @@ class AssignmentModel {
   /// ID del alumno al que se asignó la tarea
   final String studentId;
 
+  /// ID de la clase a la que pertenece la asignación (denormalizado)
+  final String classId;
+
   /// ID del docente que creó/asignó la tarea (campo denormalizado)
   final String teacherId;
+
+  /// Título de la tarea (denormalizado)
+  final String? taskTitle;
+
+  /// Duración sugerida de la tarea (denormalizado)
+  final int? durationSuggested;
 
   /// Estado actual de la asignación (pending, inProgress, completed)
   final TaskStatus status;
@@ -82,7 +91,10 @@ class AssignmentModel {
     required this.id,
     required this.taskId,
     required this.studentId,
+    required this.classId,
     required this.teacherId,
+    this.taskTitle,
+    this.durationSuggested,
     required this.status,
     required this.assignedAt,
     this.completedAt,
@@ -127,7 +139,10 @@ class AssignmentModel {
     String? id,
     String? taskId,
     String? studentId,
+    String? classId,
     String? teacherId,
+    String? taskTitle,
+    int? durationSuggested,
     TaskStatus? status,
     Timestamp? assignedAt,
     Timestamp? completedAt,
@@ -139,7 +154,10 @@ class AssignmentModel {
       id: id ?? this.id,
       taskId: taskId ?? this.taskId,
       studentId: studentId ?? this.studentId,
+      classId: classId ?? this.classId,
       teacherId: teacherId ?? this.teacherId,
+      taskTitle: taskTitle ?? this.taskTitle,
+      durationSuggested: durationSuggested ?? this.durationSuggested,
       status: status ?? this.status,
       assignedAt: assignedAt ?? this.assignedAt,
       completedAt: completedAt ?? this.completedAt,
@@ -157,7 +175,10 @@ class AssignmentModel {
           id == other.id &&
           taskId == other.taskId &&
           studentId == other.studentId &&
+      classId == other.classId &&
           teacherId == other.teacherId &&
+      taskTitle == other.taskTitle &&
+      durationSuggested == other.durationSuggested &&
           status == other.status &&
           assignedAt == other.assignedAt &&
           completedAt == other.completedAt &&
@@ -170,7 +191,10 @@ class AssignmentModel {
       id.hashCode ^
       taskId.hashCode ^
       studentId.hashCode ^
+      classId.hashCode ^
       teacherId.hashCode ^
+      (taskTitle?.hashCode ?? 0) ^
+      (durationSuggested ?? 0) ^
       status.hashCode ^
       assignedAt.hashCode ^
       completedAt.hashCode ^
