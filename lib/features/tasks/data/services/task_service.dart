@@ -78,7 +78,7 @@ final class TaskService implements TaskServiceContract {
       updates['title'] = input.title!.trim();
     }
     if (input.description != null) {
-      updates['description'] = input.description?.trim();
+      updates['description'] = input.description!.trim();
     }
     if (input.durationSuggested != null) {
       updates['durationSuggested'] = input.durationSuggested;
