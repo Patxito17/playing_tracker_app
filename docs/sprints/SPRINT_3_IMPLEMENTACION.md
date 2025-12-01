@@ -4,9 +4,9 @@
 **Temporalidad:** Diciembre 2025 (2 semanas)
 **Contexto:** Depende del cierre del Sprint 2 (infraestructura + autenticación)
 **Propósito:** Implementar toda la capa funcional de clases, membresías y fan-out inicial manteniendo arquitectura Domain → Repository → Service → UI y Material Design 3.
-**Estado:** 🚧 En progreso
-**Versión del documento:** 0.9
-**Última actualización:** 27 de Noviembre 2025
+**Estado:** ✅ Completado
+**Versión del documento:** 1.0
+**Última actualización:** 01 de Diciembre 2025
 **Responsable:** Equipo de Desarrollo (documento apto para ejecución por IA-agents y desarrolladores humanos)
 
 ---
@@ -392,9 +392,9 @@ El sprint se considera listo respecto al fan-out cuando:
 - Preparar changelog del sprint (`docs/sprints/SPRINT_3_IMPLEMENTACION.md` → Versión 1.0).
 
 **Checklist**
-- [ ] Comandos de QA ejecutados sin errores.
-- [ ] Documentación sincronizada (README, guía, sprint doc, tablero).
-- [ ] Capturas de pantalla nuevas si cambió la UI.
+- [x] Comandos de QA ejecutados sin errores.
+- [x] Documentación sincronizada (README, guía, sprint doc, tablero).
+- [x] Capturas de pantalla nuevas si cambió la UI.
 
 ---
 
@@ -417,12 +417,12 @@ El sprint se considera listo respecto al fan-out cuando:
 
 ## ✅ Checklist de cierre del Sprint
 
-- [ ] `flutter analyze` sin errores.
-- [ ] `flutter test` con cobertura ≥ 80% en lógica de clases.
-- [ ] `dart format .` ejecutado.
-- [ ] Documentación actualizada (README, guía, sprint).
-- [ ] Capturas de pantalla nuevas (si aplica).
-- [ ] Registro en `docs/sprints/SPRINT_3_IMPLEMENTACION.md` con resultados finales.
+- [x] `flutter analyze` sin errores.
+- [x] `flutter test` con cobertura ≥ 80% en lógica de clases.
+- [x] `dart format .` ejecutado.
+- [x] Documentación actualizada (README, guía, sprint).
+- [x] Capturas de pantalla nuevas (si aplica).
+- [x] Registro en `docs/sprints/SPRINT_3_IMPLEMENTACION.md` con resultados finales.
 
 ---
 
@@ -495,13 +495,14 @@ Todos los métodos deben contener TODOs y logs si su implementación dependerá 
 
 | Versión | Fecha | Descripción |
 |---------|-------|-------------|
+| 1.0 | 01/12/2025 | Sprint 3 completado: checklist de cierre marcado, documentación sincronizada y estado actualizado a Completado. |
 | 0.9 | 27/11/2025 | Sincronización en tiempo real: `watchClassById`, expulsión automática en detalle de clase y depuración de “clases zombis” en el listado del alumno. |
 | 0.8 | 24/11/2025 | Fase 7 completada: `ManageStudentsScreen` integrado al repositorio real, paginación de memberships, confirmaciones M3, nuevas pruebas y TODOs de fan-out. |
 | 0.7 | 24/11/2025 | Fase 5 completada: UI docente conectada a Cubits, `_EmptyState` reutilizable, strings operativos, nuevos widget tests y QA completo. |
 | 0.6 | 24/11/2025 | Fase 4 completada: `ClassRepositoryImpl`, Cubits y estados sealed, helper de fan-out, pruebas unitarias y QA (`dart format`, `flutter analyze`, `flutter test`). |
 | 0.5 | 21/11/2025 | Fase 3 completada: helper de códigos, servicios de clases/membresías, reglas/índices de Firestore y suite de tests con `fake_cloud_firestore`. Documentación y README actualizados. |
 | 0.4 | 21/11/2025 | Actualización del SDK completada: Flutter 3.35.6 → 3.38.2, Dart 3.9.2 → 3.10.0. Actualizado build_runner a 2.10.4. Dependencias discontinuadas (build_resolvers, build_runner_core) resueltas y eliminadas. Todas las verificaciones de calidad pasadas: `flutter analyze` (0 issues), `dart analyze --fatal-infos --fatal-warnings` (0 issues), `dart format .` (0 changed), `flutter test` (15 tests pasados). |
-| 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade. Estado del sprint actualizado a "En progreso". |
+| 0.3 | 21/11/2025 | Fase 1 completada: kickoff y saneamiento técnico. Dependencias validadas y agregadas (uuid, bloc_test). Actualizadas restricciones de build_runner y json_serializable. Ejecutado flutter pub outdated/upgrade. Estado del sprint actualizado a \"En progreso\". |
 | 0.2 | 20/11/2025 | Añadidos file plan, reglas de no rotura, hooks, QA y guía para agentes. |
 | 0.1 | 20/11/2025 | Primera versión del plan del Sprint 3. |
 
