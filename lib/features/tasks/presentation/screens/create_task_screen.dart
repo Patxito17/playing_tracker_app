@@ -75,15 +75,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       return;
     }
 
-    final minutes = int.tryParse(_estimatedTimeController.text.trim());
-    if (minutes == null || minutes <= 0) {
-      setState(() {
-        _formError = ValidationStrings.required(
-          TaskStrings.estimatedTimeLabel,
-        );
-      });
-      return;
-    }
+    // En este punto el formulario ya fue validado, por lo que el valor
+    // debe ser un entero positivo. Usamos int.parse directamente.
+    final minutes = int.parse(_estimatedTimeController.text.trim());
 
     final input = (
       title: _titleController.text.trim(),
@@ -285,6 +279,19 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     ),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      if (text.isEmpty) {
+                        return ValidationStrings.required(
+                          TaskStrings.estimatedTimeLabel,
+                        );
+                      }
+                      final minutes = int.tryParse(text);
+                      if (minutes == null || minutes <= 0) {
+                        return 'El tiempo estimado debe ser un número entero mayor que 0';
+                      }
+                      return null;
+                    },
                     onChanged: (_) {
                       if (_formError != null) {
                         setState(() => _formError = null);
@@ -300,8 +307,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     subtitle: Text(
                       _dueDate != null
                           ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
-                              '${_dueDate!.month.toString().padLeft(2, '0')}/'
-                              '${_dueDate!.year}'
+                                '${_dueDate!.month.toString().padLeft(2, '0')}/'
+                                '${_dueDate!.year}'
                           : TaskStrings.estimatedTimeHint,
                     ),
                     onTap: _pickDueDate,
@@ -421,7 +428,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     label: TaskStrings.createTaskButton,
                     variant: CustomButtonVariant.filled,
                     icon: Icons.add,
-                    onPressed: (isLoading || !isFormValid) ? null : _handleCreate,
+                    onPressed: (isLoading || !isFormValid)
+                        ? null
+                        : _handleCreate,
                     isLoading: isLoading,
                   ),
                 ],
