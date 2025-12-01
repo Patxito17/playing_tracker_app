@@ -152,7 +152,6 @@ final class TaskService implements TaskServiceContract {
     final usesDueRange = filters?.dueFrom != null || filters?.dueTo != null;
 
     if (usesCreatedRange) {
-      query = query.orderBy('createdAt', descending: true);
       if (filters?.createdFrom != null) {
         query = query.where(
           'createdAt',
@@ -165,8 +164,8 @@ final class TaskService implements TaskServiceContract {
           isLessThanOrEqualTo: Timestamp.fromDate(filters!.createdTo!),
         );
       }
+      query = query.orderBy('createdAt', descending: true);
     } else if (usesDueRange) {
-      query = query.orderBy('dueDate', descending: true);
       if (filters?.dueFrom != null) {
         query = query.where(
           'dueDate',
@@ -179,6 +178,7 @@ final class TaskService implements TaskServiceContract {
           isLessThanOrEqualTo: Timestamp.fromDate(filters!.dueTo!),
         );
       }
+      query = query.orderBy('dueDate', descending: true);
     } else {
       query = query.orderBy('createdAt', descending: true);
     }

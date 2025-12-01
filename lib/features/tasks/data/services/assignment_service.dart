@@ -101,8 +101,6 @@ final class AssignmentService implements AssignmentServiceContract {
       query = query.where('status', isEqualTo: _statusToJson(filters!.status!));
     }
 
-    query = query.orderBy('assignedAt', descending: true);
-
     if (filters?.assignedFrom != null) {
       query = query.where(
         'assignedAt',
@@ -115,6 +113,8 @@ final class AssignmentService implements AssignmentServiceContract {
         isLessThanOrEqualTo: Timestamp.fromDate(filters!.assignedTo!),
       );
     }
+
+    query = query.orderBy('assignedAt', descending: true);
 
     if (limit > 0) {
       query = query.limit(limit);
