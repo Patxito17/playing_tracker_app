@@ -51,7 +51,9 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
   /// Construye el record [TaskFilters] a partir del estado local.
   TaskFilters _buildFilters() {
     return (
-      isActive: _showOnlyActive ? true : null,
+      // Cuando el switch está activo mostramos solo tareas activas; cuando
+      // está desactivado mostramos solo archivadas.
+      isActive: _showOnlyActive ? true : false,
       createdFrom: _useCreatedRange ? _createdFrom : null,
       createdTo: _useCreatedRange ? _createdTo : null,
       dueFrom: _useCreatedRange ? null : _dueFrom,
