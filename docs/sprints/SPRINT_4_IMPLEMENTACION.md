@@ -124,6 +124,12 @@ abstract class TaskRepository {
 3. Completar `firestore.indexes.json` y validar con `firebase emulators`.
 4. Tests unitarios con `fake_cloud_firestore`.
 
+**Actualización 01/12/2025**
+- ✅ `TaskService` y `AssignmentService` implementados con contratos desacoplados, CRUD/streams reales y manejo de errores via `FirebaseErrorMapper`.
+- ✅ `FanOutHelper` ahora ejecuta el fan-out real usando `MembershipService`, nuevos servicios y lotes de 500 assignments máximo.
+- ✅ `firebase/firestore.indexes.json` actualizado con los índices requeridos (`tasks` y `assignments`).
+- ✅ Tests unitarios (`task_service_test.dart`, `assignment_service_test.dart`, `fan_out_helper_test.dart`) ejecutados con `fake_cloud_firestore` + `mocktail`.
+
 ### Fase 4 · Repositorio + Cubits (1½ días)
 1. Implementar `task_repository_impl` (inyección de servicios + helper).
 2. Crear `task_cubit` (docente) y `assignment_cubit` (alumno) con estados sealed.
