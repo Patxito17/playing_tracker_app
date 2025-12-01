@@ -37,57 +37,63 @@ class TaskDetailScreen extends StatelessWidget {
       text: task.description ?? '',
     );
 
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(TaskStrings.editTask),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  labelText: TaskStrings.taskTitleLabel,
+    try {
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: Text(TaskStrings.editTask),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: TaskStrings.taskTitleLabel,
+                  ),
                 ),
+                const SizedBox(height: AppSpacing.m),
+                TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    labelText: TaskStrings.taskDescriptionLabel,
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(CommonStrings.cancel),
               ),
-              const SizedBox(height: AppSpacing.m),
-              TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(
-                  labelText: TaskStrings.taskDescriptionLabel,
-                ),
-                maxLines: 3,
+              FilledButton(
+                onPressed: () {
+                  final input = (
+                    taskId: task.id,
+                    title: titleController.text.trim(),
+                    description: descriptionController.text.trim().isEmpty
+                        ? null
+                        : descriptionController.text.trim(),
+                    durationSuggested: null,
+                    attachments: null,
+                    dueDate: null,
+                    isActive: null,
+                  );
+                  context.read<TaskCubit>().updateTask(input);
+                  Navigator.of(dialogContext).pop();
+                },
+                child: Text(CommonStrings.save),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(CommonStrings.cancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                final input = (
-                  taskId: task.id,
-                  title: titleController.text.trim(),
-                  description: descriptionController.text.trim().isEmpty
-                      ? null
-                      : descriptionController.text.trim(),
-                  durationSuggested: null,
-                  attachments: null,
-                  dueDate: null,
-                  isActive: null,
-                );
-                context.read<TaskCubit>().updateTask(input);
-                Navigator.of(dialogContext).pop();
-              },
-              child: Text(CommonStrings.save),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        },
+      );
+    } finally {
+      // Liberamos explícitamente los controladores usados solo en este diálogo.
+      titleController.dispose();
+      descriptionController.dispose();
+    }
   }
 
   Future<void> _showAssignDialog(BuildContext context, TaskModel task) async {
