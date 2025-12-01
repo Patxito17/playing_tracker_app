@@ -12,259 +12,291 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../domain/models/task_model.dart';
+import '../../presentation/cubit/task_cubit.dart';
+import '../../presentation/cubit/task_state.dart';
+import '../widgets/assign_task_dialog.dart';
 
-/// Pantalla de detalle de tarea
+/// Pantalla de detalle de tarea conectada a [TaskCubit].
 ///
-/// Muestra información completa de una tarea y acciones según el rol.
-/// Sprint 0 - Fase 8: UI completa con Material Design 3
+/// Muestra información completa de una tarea y permite al docente editarla,
+/// asignarla a una clase o eliminarla usando diálogos Material 3.
 class TaskDetailScreen extends StatelessWidget {
   final String taskId;
 
   const TaskDetailScreen({super.key, required this.taskId});
 
-  // Datos mock de tarea
-  Map<String, dynamic> _getMockTaskData() {
-    return {
-      'id': taskId,
-      'title': 'Escala de Do Mayor',
-      'description':
-          'Practicar la escala de Do Mayor en todas las octavas. Enfocarse en mantener un tempo constante y una técnica correcta.',
-      'status': 'pending',
-      'estimatedTime': 30,
-      'createdDate': '2025-11-01',
-      'dueDate': '2025-11-15',
-      'recipients': [
-        {'id': 'student1', 'name': 'Juan Pérez'},
-        {'id': 'student2', 'name': 'María García'},
-        {'id': 'student3', 'name': 'Carlos López'},
-      ],
-      'attachments': ['escala_do_mayor.pdf', 'ejercicios_complementarios.pdf'],
-    };
+  String _formatDate(DateTime date) =>
+      '${date.day.toString().padLeft(2, '0')}/'
+      '${date.month.toString().padLeft(2, '0')}/'
+      '${date.year}';
+
+  Future<void> _showEditDialog(BuildContext context, TaskModel task) async {
+    final titleController = TextEditingController(text: task.title);
+    final descriptionController = TextEditingController(
+      text: task.description ?? '',
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(TaskStrings.editTask),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: TaskStrings.taskTitleLabel,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  labelText: TaskStrings.taskDescriptionLabel,
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(CommonStrings.cancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                final input = (
+                  taskId: task.id,
+                  title: titleController.text.trim(),
+                  description: descriptionController.text.trim().isEmpty
+                      ? null
+                      : descriptionController.text.trim(),
+                  durationSuggested: null,
+                  attachments: null,
+                  dueDate: null,
+                  isActive: null,
+                );
+                context.read<TaskCubit>().updateTask(input);
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text(CommonStrings.save),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  String _getStatusText(String status) {
-    switch (status) {
-      case 'pending':
-        return TaskStrings.pending;
-      case 'in_progress':
-        return TaskStrings.inProgress;
-      case 'completed':
-        return TaskStrings.completed;
-      default:
-        return TaskStrings.pending;
-    }
+  Future<void> _showAssignDialog(BuildContext context, TaskModel task) async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AssignTaskDialog(task: task),
+    );
   }
 
-  Color _getStatusColor(BuildContext context, String status) {
-    final colorScheme = Theme.of(context).colorScheme;
-    switch (status) {
-      case 'pending':
-        return colorScheme.outline;
-      case 'in_progress':
-        return colorScheme.primary;
-      case 'completed':
-        return colorScheme.tertiary;
-      default:
-        return colorScheme.outline;
-    }
-  }
-
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case 'pending':
-        return Icons.pending_outlined;
-      case 'in_progress':
-        return Icons.play_circle_outline;
-      case 'completed':
-        return Icons.check_circle_outline;
-      default:
-        return Icons.pending_outlined;
-    }
+  Future<void> _confirmDelete(BuildContext context, TaskModel task) async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(TaskStrings.confirmDeleteTask),
+          content: Text(TaskStrings.confirmDeleteTaskMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(CommonStrings.cancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                context.read<TaskCubit>().deleteTask(task.id);
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text(TaskStrings.deleteTask),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final taskData = _getMockTaskData();
-    final status = taskData['status'] as String;
-    final statusText = _getStatusText(status);
-    final statusColor = _getStatusColor(context, status);
     final authState = context.watch<AuthCubit>().state;
     final isTeacher =
         authState is AuthAuthenticated && authState.role == UserRole.teacher;
 
     return Scaffold(
       appBar: const CustomAppBar(title: TaskStrings.taskDetailTitle),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.m),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Información principal
-            CustomCard(
-              title: taskData['title'] as String,
-              subtitle: taskData['description'] as String,
-              trailingAction: Chip(
-                label: Text(statusText),
-                backgroundColor: statusColor.withValues(alpha: 0.2),
-                labelStyle: TextStyle(
-                  color: statusColor,
-                  fontWeight: FontWeight.w600,
-                ),
-                avatar: Icon(
-                  _getStatusIcon(status),
-                  size: 16,
-                  color: statusColor,
+      body: BlocConsumer<TaskCubit, TaskState>(
+        listenWhen: (previous, current) =>
+            current is TaskActionSuccess || current is TaskError,
+        listener: (context, state) {
+          if (state is TaskActionSuccess &&
+              state.action == TaskAction.deleted) {
+            context.go(AppRoutes.taskList);
+          }
+        },
+        builder: (context, state) {
+          if (state is TaskLoading || state is TaskInitial) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is TaskError) {
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.l),
+              child: Center(
+                child: SelectableText.rich(
+                  TextSpan(text: state.message, style: context.textError),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppSpacing.s),
-                  _InfoRow(
-                    icon: Icons.access_time,
-                    label: TaskStrings.estimatedTime,
-                    value:
-                        '${taskData['estimatedTime']} ${TaskStrings.minutes}',
+            );
+          }
+
+          if (state is! TaskSuccess) {
+            return const SizedBox.shrink();
+          }
+
+          final matching = state.tasks.where((task) => task.id == taskId);
+          if (matching.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: SelectableText.rich(
+                  TextSpan(
+                    text: TaskStrings.noTasksFound,
+                    style: context.bodyMediumOnSurfaceVariant,
                   ),
-                  const SizedBox(height: AppSpacing.s),
-                  _InfoRow(
-                    icon: Icons.calendar_today,
-                    label: TaskStrings.createdDate,
-                    value: taskData['createdDate'] as String,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+
+          final selectedTask = matching.first;
+          final createdDate = selectedTask.createdAt.toDate();
+          final dueDate = selectedTask.dueDate?.toDate();
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.m),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomCard(
+                  title: selectedTask.title,
+                  subtitle: selectedTask.description ?? '',
+                  trailingAction: Chip(
+                    label: Text(TaskStrings.pending),
+                    backgroundColor: context.colorScheme.outline.withValues(
+                      alpha: 0.2,
+                    ),
+                    labelStyle: TextStyle(
+                      color: context.colorScheme.outline,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    avatar: Icon(
+                      Icons.pending_outlined,
+                      size: 16,
+                      color: context.colorScheme.outline,
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.s),
-                  _InfoRow(
-                    icon: Icons.event,
-                    label: TaskStrings.dueDate,
-                    value: taskData['dueDate'] as String,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: AppSpacing.s),
+                      _InfoRow(
+                        icon: Icons.access_time,
+                        label: TaskStrings.estimatedTime,
+                        value: selectedTask.durationFormatted,
+                      ),
+                      const SizedBox(height: AppSpacing.s),
+                      _InfoRow(
+                        icon: Icons.calendar_today,
+                        label: TaskStrings.createdDate,
+                        value: _formatDate(createdDate),
+                      ),
+                      if (dueDate != null) ...[
+                        const SizedBox(height: AppSpacing.s),
+                        _InfoRow(
+                          icon: Icons.event,
+                          label: TaskStrings.dueDate,
+                          value: _formatDate(dueDate),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.m),
+                CustomCard(
+                  title: TaskStrings.recipients,
+                  subtitle: TaskStrings.noRecipients,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.m),
+                    child: Text(
+                      TaskStrings.noRecipients,
+                      style: context.bodyMediumOnSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.m),
+                CustomCard(
+                  title: TaskStrings.attachments,
+                  subtitle: TaskStrings.noAttachments,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.m),
+                    child: Text(
+                      TaskStrings.noAttachments,
+                      style: context.bodyMediumOnSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                if (isTeacher) ...[
+                  CustomButton(
+                    label: TaskStrings.editTask,
+                    variant: CustomButtonVariant.filled,
+                    icon: Icons.edit,
+                    onPressed: () => _showEditDialog(context, selectedTask),
+                  ),
+                  const SizedBox(height: AppSpacing.m),
+                  CustomButton(
+                    label: TaskStrings.assignTask,
+                    variant: CustomButtonVariant.outlined,
+                    icon: Icons.person_add,
+                    onPressed: () => _showAssignDialog(context, selectedTask),
+                  ),
+                  const SizedBox(height: AppSpacing.m),
+                  OutlinedButton.icon(
+                    onPressed: () => _confirmDelete(context, selectedTask),
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: context.colorScheme.error,
+                    ),
+                    label: Text(
+                      TaskStrings.deleteTask,
+                      style: TextStyle(color: context.colorScheme.error),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.colorScheme.error,
+                    ),
+                  ),
+                ] else ...[
+                  CustomButton(
+                    label: TaskStrings.startTimer,
+                    variant: CustomButtonVariant.filled,
+                    icon: Icons.play_arrow,
+                    onPressed: () => context.push(
+                      AppRoutes.timer.replaceAll(':taskId', selectedTask.id),
+                    ),
                   ),
                 ],
-              ),
+              ],
             ),
-            const SizedBox(height: AppSpacing.m),
-            // Destinatarios
-            CustomCard(
-              title: TaskStrings.recipients,
-              subtitle:
-                  '${(taskData['recipients'] as List).length} ${TaskStrings.studentsLabel}',
-              child: (taskData['recipients'] as List).isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(AppSpacing.m),
-                      child: Text(
-                        TaskStrings.noRecipients,
-                        style: context.bodyMediumOnSurfaceVariant,
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: (taskData['recipients'] as List).map<Widget>((
-                        recipient,
-                      ) {
-                        return ListTile(
-                          dense: true,
-                          leading: CircleAvatar(
-                            child: Text(
-                              (recipient['name'] as String)[0].toUpperCase(),
-                            ),
-                          ),
-                          title: Text(recipient['name'] as String),
-                        );
-                      }).toList(),
-                    ),
-            ),
-            const SizedBox(height: AppSpacing.m),
-            // Adjuntos
-            CustomCard(
-              title: TaskStrings.attachments,
-              subtitle: '${(taskData['attachments'] as List).length} archivos',
-              child: (taskData['attachments'] as List).isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(AppSpacing.m),
-                      child: Text(
-                        TaskStrings.noAttachments,
-                        style: context.bodyMediumOnSurfaceVariant,
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: (taskData['attachments'] as List).map<Widget>((
-                        attachment,
-                      ) {
-                        return ListTile(
-                          dense: true,
-                          leading: const Icon(Icons.insert_drive_file),
-                          title: Text(attachment as String),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.download_outlined),
-                            onPressed: () {
-                              // Placeholder: descargar adjunto
-                            },
-                            tooltip: CommonStrings.download,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            // Acciones según rol
-            if (isTeacher) ...[
-              CustomButton(
-                label: TaskStrings.editTask,
-                variant: CustomButtonVariant.filled,
-                icon: Icons.edit,
-                onPressed: () {
-                  // Placeholder: editar tarea
-                },
-              ),
-              const SizedBox(height: AppSpacing.m),
-              CustomButton(
-                label: TaskStrings.assignTask,
-                variant: CustomButtonVariant.outlined,
-                icon: Icons.person_add,
-                onPressed: () {
-                  // Placeholder: asignar tarea
-                },
-              ),
-              const SizedBox(height: AppSpacing.m),
-              OutlinedButton.icon(
-                onPressed: () {
-                  // Placeholder: eliminar tarea
-                  context.pop();
-                },
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: context.colorScheme.error,
-                ),
-                label: Text(
-                  TaskStrings.deleteTask,
-                  style: TextStyle(color: context.colorScheme.error),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.colorScheme.error,
-                ),
-              ),
-            ] else ...[
-              if (status != 'completed')
-                CustomButton(
-                  label: TaskStrings.startTimer,
-                  variant: CustomButtonVariant.filled,
-                  icon: Icons.play_arrow,
-                  onPressed: () => context.push(
-                    AppRoutes.timer.replaceAll(':taskId', taskId),
-                  ),
-                ),
-              const SizedBox(height: AppSpacing.m),
-              CustomButton(
-                label: TaskStrings.viewDetails,
-                variant: CustomButtonVariant.outlined,
-                icon: Icons.info_outline,
-                onPressed: () {
-                  // Placeholder: ver más detalles
-                },
-              ),
-            ],
-          ],
-        ),
+          );
+        },
       ),
     );
   }

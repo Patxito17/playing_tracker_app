@@ -29,6 +29,8 @@ import '../../features/sessions/presentation/screens/session_history_screen.dart
 import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
+import '../../features/tasks/data/repositories/task_repository_impl.dart';
+import '../../features/tasks/presentation/cubit/task_cubit.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../../features/tasks/presentation/screens/task_list_screen.dart';
@@ -362,19 +364,62 @@ class AppRoutes {
       GoRoute(
         path: taskList,
         name: 'taskList',
-        builder: (context, state) => const TaskListScreen(),
+        builder: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.teacher) {
+            return const ErrorScreen(
+              errorMessage: 'No se pudieron cargar las tareas del docente.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => TaskCubit(TaskRepositoryImpl())
+              ..watchTasks(teacherId: authState.userId),
+            child: const TaskListScreen(),
+          );
+        },
       ),
       GoRoute(
         path: createTask,
         name: 'createTask',
-        builder: (context, state) => const CreateTaskScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          if (extraCubit is TaskCubit) {
+            return BlocProvider<TaskCubit>.value(
+              value: extraCubit,
+              child: const CreateTaskScreen(),
+            );
+          }
+          return BlocProvider(
+            create: (context) => TaskCubit(TaskRepositoryImpl()),
+            child: const CreateTaskScreen(),
+          );
+        },
       ),
       GoRoute(
         path: taskDetail,
         name: 'taskDetail',
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          return TaskDetailScreen(taskId: taskId);
+          final extraCubit = state.extra;
+          if (extraCubit is TaskCubit) {
+            return BlocProvider<TaskCubit>.value(
+              value: extraCubit,
+              child: TaskDetailScreen(taskId: taskId),
+            );
+          }
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.teacher) {
+            return const ErrorScreen(
+              errorMessage: 'No se pudo cargar el detalle de la tarea.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => TaskCubit(TaskRepositoryImpl())
+              ..watchTasks(teacherId: authState.userId),
+            child: TaskDetailScreen(taskId: taskId),
+          );
         },
       ),
 
