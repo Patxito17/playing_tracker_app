@@ -19,13 +19,18 @@ final class TaskCubit extends Cubit<TaskState> {
     required String teacherId,
     TaskFilters? filters,
   }) async {
-    _currentTeacherId = teacherId;
+    final sanitizedId = teacherId.trim();
+    if (sanitizedId.isEmpty) {
+      emit(const TaskError(message: TaskStrings.taskGenericError));
+      return;
+    }
+    _currentTeacherId = sanitizedId;
     _currentFilters = filters;
     emit(const TaskLoading());
     await _tasksSubscription?.cancel();
 
     _tasksSubscription = _repository
-        .watchTeacherTasks(teacherId, filters: filters)
+        .watchTeacherTasks(sanitizedId, filters: filters)
         .listen(
           (tasks) {
             if (tasks.isEmpty) {
