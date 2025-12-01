@@ -5,8 +5,8 @@
 | Proyecto | Playing Tracker |
 | Alcance | Backend + UI (docentes/alumnos) |
 | Duración | 2 semanas (dic 2025) |
-| Estado | 📅 Planificado |
-| Última actualización | 27/11/2025 |
+| Estado | 🚧 En progreso |
+| Última actualización | 01/12/2025 |
 | Responsable | Equipo de desarrollo |
 
 ---
@@ -34,6 +34,11 @@
 - Clases y memberships productivos (Sprint 3 completado).
 - FanOutHelper existente (Sprint 3) listo para extender.
 - Credenciales Firebase y emuladores operativos.
+- Sprint 3 cerrado (documento actualizado a versión 1.0 y estado Completado).
+- QA baseline ejecutado el 01/12/2025:
+  - `dart format --set-exit-if-changed .`
+  - `flutter analyze --fatal-infos --fatal-warnings`
+  - `flutter test` (todas las pruebas pasan, con tests pendientes marcados como `skip`).
 
 ## 4. Entregables por Capa
 ### Dominio
@@ -157,5 +162,6 @@ abstract class TaskRepository {
 ## 10. Historial de Versiones
 | Versión | Fecha | Comentario |
 | --- | --- | --- |
+| 2.1 | 01/12/2025 | Fase 1 iniciada: Sprint 3 cerrado, prerequisitos validados y QA baseline ejecutado. |
 | 2.0 | 27/11/2025 | Documento reducido y optimizado para Cursor (25 % del tamaño anterior). |
 | 1.0 | 27/11/2025 | Versión inicial detallada (reemplazada). |
