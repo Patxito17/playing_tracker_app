@@ -75,9 +75,16 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       return;
     }
 
-    // En este punto el formulario ya fue validado, por lo que el valor
-    // debe ser un entero positivo. Usamos int.parse directamente.
-    final minutes = int.parse(_estimatedTimeController.text.trim());
+    // En teoría el formulario ya fue validado y el valor debe ser un entero
+    // positivo, pero usamos int.tryParse por seguridad ante cambios de última
+    // hora en el campo entre la validación y este punto.
+    final minutes = int.tryParse(_estimatedTimeController.text.trim());
+    if (minutes == null || minutes <= 0) {
+      setState(() {
+        _formError = 'El tiempo estimado debe ser un número entero mayor que 0';
+      });
+      return;
+    }
 
     final input = (
       title: _titleController.text.trim(),
