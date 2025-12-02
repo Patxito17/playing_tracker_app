@@ -7,6 +7,8 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/enums/task_status.dart';
 import '../cubit/assignment_cubit.dart';
 import '../cubit/assignment_state.dart';
@@ -37,6 +39,25 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
       return '$hours h ${minutes > 0 ? "$minutes min" : ""}';
     }
     return '$minutes min';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializamos la suscripción al stream de asignaciones en initState para
+    // garantizar que se establezca correctamente antes del primer build.
+    // Esto evita que la pantalla se quede en estado de carga indefinidamente
+    // cuando el Cubit es recién creado por el router.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cubit = context.read<AssignmentCubit>();
+      final state = cubit.state;
+      if (state is AssignmentInitial) {
+        final authState = context.read<AuthCubit>().state;
+        if (authState is AuthAuthenticated) {
+          cubit.watchAssignments(studentId: authState.userId);
+        }
+      }
+    });
   }
 
   @override
