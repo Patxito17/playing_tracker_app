@@ -21,15 +21,37 @@ import '../widgets/assign_task_dialog.dart';
 ///
 /// Muestra información completa de una tarea y permite al docente editarla,
 /// asignarla a una clase o eliminarla usando diálogos Material 3.
-class TaskDetailScreen extends StatelessWidget {
+class TaskDetailScreen extends StatefulWidget {
   final String taskId;
 
   const TaskDetailScreen({super.key, required this.taskId});
 
+  @override
+  State<TaskDetailScreen> createState() => _TaskDetailScreenState();
+}
+
+class _TaskDetailScreenState extends State<TaskDetailScreen> {
   String _formatDate(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}/'
       '${date.month.toString().padLeft(2, '0')}/'
       '${date.year}';
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializamos la suscripción al stream de tareas en initState si el cubit
+    // está en estado inicial, para garantizar que se establezca correctamente.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cubit = context.read<TaskCubit>();
+      final state = cubit.state;
+      if (state is TaskInitial) {
+        final authState = context.read<AuthCubit>().state;
+        if (authState is AuthAuthenticated) {
+          cubit.watchTasks(teacherId: authState.userId);
+        }
+      }
+    });
+  }
 
   Future<void> _showEditDialog(BuildContext context, TaskModel task) async {
     final titleController = TextEditingController(text: task.title);
@@ -166,7 +188,7 @@ class TaskDetailScreen extends StatelessWidget {
             return const SizedBox.shrink();
           }
 
-          final matching = state.tasks.where((task) => task.id == taskId);
+          final matching = state.tasks.where((task) => task.id == widget.taskId);
           if (matching.isEmpty) {
             return Center(
               child: Padding(

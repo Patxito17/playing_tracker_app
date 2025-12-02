@@ -373,8 +373,7 @@ class AppRoutes {
             );
           }
           return BlocProvider(
-            create: (context) => TaskCubit(TaskRepositoryImpl())
-              ..watchTasks(teacherId: authState.userId),
+            create: (context) => TaskCubit(TaskRepositoryImpl()),
             child: const TaskListScreen(),
           );
         },
@@ -416,8 +415,7 @@ class AppRoutes {
             );
           }
           return BlocProvider(
-            create: (context) => TaskCubit(TaskRepositoryImpl())
-              ..watchTasks(teacherId: authState.userId),
+            create: (context) => TaskCubit(TaskRepositoryImpl()),
             child: TaskDetailScreen(taskId: taskId),
           );
         },

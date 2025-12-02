@@ -6,6 +6,8 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../domain/models/task_model.dart';
@@ -25,6 +27,18 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Inicializamos la suscripción al stream de tareas en initState para
+    // garantizar que se establezca correctamente antes del primer build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = context.read<AuthCubit>().state;
+      if (authState is AuthAuthenticated) {
+        context.read<TaskCubit>().watchTasks(teacherId: authState.userId);
+      }
+    });
+  }
   List<TaskModel> _applyFilters(List<TaskModel> tasks) {
     // Por ahora la pantalla no aplica filtros adicionales en memoria; el
     // filtrado real se realiza a nivel de repositorio usando [TaskFilters]
