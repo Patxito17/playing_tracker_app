@@ -327,6 +327,8 @@ class TaskStrings {
   static const String pending = 'Pendiente';
   static const String inProgress = 'En progreso';
   static const String completed = 'Completada';
+  static const String active = 'Activa';
+  static const String archived = 'Archivada';
 
   // Filtros
   static const String filters = 'Filtros';
