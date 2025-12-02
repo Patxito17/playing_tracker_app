@@ -112,6 +112,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   }
 
   void _clearForm() {
+    // Verificar que el widget esté montado antes de modificar el estado
+    if (!mounted) {
+      return;
+    }
     _titleController.clear();
     _descriptionController.clear();
     _estimatedTimeController.clear();
@@ -124,14 +128,17 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
 
   /// Maneja el estado de éxito tras crear una tarea.
   void _handleSuccess(TaskActionSuccess state) {
+    // Verificar que el widget esté montado antes de cualquier modificación de estado
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _successMessage = state.message ?? TaskStrings.taskCreateSuccess;
       _formError = null;
     });
     _clearForm();
-    if (!mounted) {
-      return;
-    }
+
     // Cancelamos cualquier navegación previa programada para evitar
     // múltiples timers activos y programamos una nueva.
     _autoPopTimer?.cancel();
