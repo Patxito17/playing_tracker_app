@@ -111,7 +111,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     await context.read<TaskCubit>().createTask(input);
   }
 
-  void _clearForm() {
+  /// Limpia solo los campos del formulario sin borrar el mensaje de éxito.
+  /// Útil cuando queremos mantener el feedback visual del éxito mientras
+  /// limpiamos los campos para una nueva entrada.
+  void _clearFormFields() {
     // Verificar que el widget esté montado antes de modificar el estado
     if (!mounted) {
       return;
@@ -121,7 +124,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     _estimatedTimeController.clear();
     setState(() {
       _formError = null;
-      _successMessage = null;
+      // NO borramos _successMessage aquí para que el banner se pueda mostrar
       _dueDate = null;
     });
   }
@@ -137,7 +140,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       _successMessage = state.message ?? TaskStrings.taskCreateSuccess;
       _formError = null;
     });
-    _clearForm();
+    // Limpiamos solo los campos del formulario, manteniendo el mensaje de éxito
+    // para que el usuario pueda ver el feedback antes de la navegación automática
+    _clearFormFields();
 
     // Cancelamos cualquier navegación previa programada para evitar
     // múltiples timers activos y programamos una nueva.
