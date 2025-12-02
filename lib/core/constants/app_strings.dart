@@ -379,6 +379,18 @@ class TaskStrings {
   static const String noAssignmentsReceived =
       'Aún no tienes tareas asignadas. Tu profesor las verá aquí cuando las publique.';
 
+  // UI de alumno
+  static const String myAssignmentsTitle = 'Mis tareas';
+  static const String assignmentDetailTitle = 'Detalle de tarea';
+  static const String startPractice = 'Iniciar práctica';
+  static const String practiceAvailableSoon =
+      'El cronómetro estará disponible en la próxima versión';
+  static const String filterByAssignmentStatus = 'Filtrar por estado';
+  static const String sessionsCompleted = 'Sesiones completadas';
+  static const String totalPracticeTime = 'Tiempo total practicado';
+  static const String assignedAt = 'Asignada el';
+  static const String durationSuggested = 'Duración sugerida';
+
   /// Formatea una fecha corta en formato dd/MM/yyyy para usar en filtros.
   static String formatShortDate(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}/'
