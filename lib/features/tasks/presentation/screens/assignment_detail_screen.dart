@@ -70,12 +70,33 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
             return const SizedBox.shrink();
           }
 
-          final assignment = state.assignments.firstWhere(
+          // Buscar la asignación de forma segura para evitar crashes si no existe
+          // Esto puede ocurrir si el estado cambia, se aplican filtros o hay
+          // condiciones de carrera durante la navegación
+          final matchingAssignments = state.assignments.where(
             (a) => a.id == widget.assignmentId,
-            orElse: () => throw StateError(
-              'Assignment ${widget.assignmentId} not found',
-            ),
           );
+          final assignment = matchingAssignments.isEmpty
+              ? null
+              : matchingAssignments.first;
+
+          // Si no se encontró la asignación, mostrar mensaje de error
+          if (assignment == null) {
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.l),
+              child: Center(
+                child: SelectableText.rich(
+                  TextSpan(
+                    text: TaskStrings.taskGenericError,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.error,
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
 
           final statusColor = assignment.status.color;
           final statusText = assignment.status.displayName;
@@ -182,4 +203,3 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
     };
   }
 }
-
