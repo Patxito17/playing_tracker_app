@@ -101,6 +101,9 @@ final class AssignmentService implements AssignmentServiceContract {
       query = query.where('status', isEqualTo: _statusToJson(filters!.status!));
     }
 
+    final hasDateRangeFilters =
+        filters?.assignedFrom != null || filters?.assignedTo != null;
+
     if (filters?.assignedFrom != null) {
       query = query.where(
         'assignedAt',
@@ -114,15 +117,34 @@ final class AssignmentService implements AssignmentServiceContract {
       );
     }
 
-    query = query.orderBy('assignedAt', descending: true);
+    // Cuando hay filtros de rango de fecha, el orderBy debe ser ASCENDING para
+    // coincidir con el índice compuesto de Firestore. Cuando no hay filtros de
+    // rango, podemos usar DESCENDING para obtener los más recientes primero.
+    query = query.orderBy('assignedAt', descending: !hasDateRangeFilters);
 
-    if (limit > 0) {
-      query = query.limit(limit);
+    // Si hay filtros de fecha y un límite, necesitamos obtener más resultados
+    // para poder invertir y luego aplicar el límite correctamente (obtener los
+    // N más recientes en lugar de los N más antiguos).
+    final effectiveLimit = hasDateRangeFilters && limit > 0 ? limit * 2 : limit;
+
+    if (effectiveLimit > 0) {
+      query = query.limit(effectiveLimit);
     }
 
-    return query.snapshots().map(
-      (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),
-    );
+    return query.snapshots().map((snapshot) {
+      final assignments = snapshot.docs.map(_mapSnapshot).toList();
+      // Si usamos orden ascendente por los filtros de fecha, invertimos la
+      // lista para mantener la consistencia (más recientes primero) y luego
+      // aplicamos el límite original.
+      if (hasDateRangeFilters) {
+        final reversed = assignments.reversed.toList();
+        if (limit > 0 && reversed.length > limit) {
+          return reversed.take(limit).toList();
+        }
+        return reversed;
+      }
+      return assignments;
+    });
   }
 
   @override

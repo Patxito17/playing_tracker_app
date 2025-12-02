@@ -237,6 +237,49 @@
       ]
     },
     {
+      "collectionId": "assignments",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "assignedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "assignments",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "assignedAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "assignments",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "assignedAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionId": "classes",
       "fields": [
         {
