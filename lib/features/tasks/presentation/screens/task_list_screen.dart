@@ -6,10 +6,10 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../auth/presentation/cubit/auth_cubit.dart';
-import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/models/task_model.dart';
 import '../cubit/task_cubit.dart';
 import '../cubit/task_state.dart';
@@ -39,6 +39,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       }
     });
   }
+
   List<TaskModel> _applyFilters(List<TaskModel> tasks) {
     // Por ahora la pantalla no aplica filtros adicionales en memoria; el
     // filtrado real se realiza a nivel de repositorio usando [TaskFilters]
@@ -55,22 +56,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  String _getStatusText(String status) {
-    switch (status) {
-      case 'pending':
-        return TaskStrings.pending;
-      case 'in_progress':
-        return TaskStrings.inProgress;
-      case 'completed':
-        return TaskStrings.completed;
-      default:
-        return TaskStrings.pending;
-    }
+  String _getStatusText(bool isActive) {
+    return isActive ? TaskStrings.active : TaskStrings.archived;
   }
 
-  Color _getStatusColor() {
+  Color _getStatusColor(bool isActive) {
     final colorScheme = Theme.of(context).colorScheme;
-    return colorScheme.outline;
+    return isActive ? colorScheme.primary : colorScheme.outline;
   }
 
   @override
@@ -166,9 +158,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     )
                   else
                     ...tasks.map((task) {
-                      const status = 'pending';
-                      final statusText = _getStatusText(status);
-                      final statusColor = _getStatusColor();
+                      final statusText = _getStatusText(task.isActive);
+                      final statusColor = _getStatusColor(task.isActive);
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.m),
@@ -177,23 +168,21 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           subtitle: task.description ?? '',
                           trailingAction: Chip(
                             label: Text(statusText),
-                            backgroundColor:
-                                statusColor.withValues(alpha: 0.2),
+                            backgroundColor: statusColor.withValues(alpha: 0.2),
                             labelStyle: TextStyle(
                               color: statusColor,
                               fontWeight: FontWeight.w600,
                             ),
                             avatar: Icon(
-                              Icons.pending_outlined,
+                              task.isActive
+                                  ? Icons.check_circle_outline
+                                  : Icons.archive_outlined,
                               size: 16,
                               color: statusColor,
                             ),
                           ),
                           onTap: () => context.push(
-                            AppRoutes.taskDetail.replaceAll(
-                              ':taskId',
-                              task.id,
-                            ),
+                            AppRoutes.taskDetail.replaceAll(':taskId', task.id),
                             extra: context.read<TaskCubit>(),
                           ),
                           child: Column(
@@ -205,14 +194,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                   Icon(
                                     Icons.access_time,
                                     size: 16,
-                                    color: context
-                                        .colorScheme.onSurfaceVariant,
+                                    color: context.colorScheme.onSurfaceVariant,
                                   ),
                                   const SizedBox(width: AppSpacing.xs),
                                   Text(
                                     task.durationFormatted,
-                                    style:
-                                        context.bodySmallOnSurfaceVariant,
+                                    style: context.bodySmallOnSurfaceVariant,
                                   ),
                                 ],
                               ),
