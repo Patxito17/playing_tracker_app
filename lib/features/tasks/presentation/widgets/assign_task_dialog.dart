@@ -59,6 +59,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
       taskId: widget.task.id,
       classId: classId,
       teacherId: authState.userId,
+      studentIds: null,
     );
 
     await context.read<TaskCubit>().assignTaskToClass(input);

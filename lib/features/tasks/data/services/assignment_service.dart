@@ -13,6 +13,7 @@ typedef AssignmentFanOutData = ({
   String teacherId,
   String classId,
   String taskTitle,
+  String? taskDescription,
   int durationSuggested,
 });
 
@@ -26,7 +27,15 @@ abstract interface class AssignmentServiceContract {
     int limit,
   });
 
+  Stream<List<AssignmentModel>> watchClassAssignments({
+    required String classId,
+    String? teacherId,
+    int limit,
+  });
+
   Future<AssignmentModel?> getAssignmentById(String assignmentId);
+
+  Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
 }
 
 /// Servicio centrado en operaciones de la colección `assignments`.
@@ -63,6 +72,7 @@ final class AssignmentService implements AssignmentServiceContract {
             'teacherId': assignment.teacherId,
             'classId': assignment.classId,
             'taskTitle': assignment.taskTitle,
+            'taskDescription': assignment.taskDescription,
             'durationSuggested': assignment.durationSuggested,
             'status': _statusToJson(TaskStatus.pending),
             'assignedAt': FieldValue.serverTimestamp(),
@@ -148,6 +158,39 @@ final class AssignmentService implements AssignmentServiceContract {
   }
 
   @override
+  Stream<List<AssignmentModel>> watchClassAssignments({
+    required String classId,
+    String? teacherId,
+    int limit = _defaultPaginationLimit,
+  }) {
+    final normalizedId = classId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        ArgumentError('El identificador de la clase es obligatorio'),
+      );
+    }
+    Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+      'classId',
+      isEqualTo: normalizedId,
+    );
+
+    if (teacherId != null && teacherId.isNotEmpty) {
+      query = query.where('teacherId', isEqualTo: teacherId);
+    }
+
+    // Ordenar por fecha de asignación descendente
+    query = query.orderBy('assignedAt', descending: true);
+
+    if (limit > 0) {
+      query = query.limit(limit);
+    }
+
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),
+    );
+  }
+
+  @override
   Future<AssignmentModel?> getAssignmentById(String assignmentId) async {
     final sanitizedId = assignmentId.trim();
     if (sanitizedId.isEmpty) {
@@ -161,6 +204,47 @@ final class AssignmentService implements AssignmentServiceContract {
       return _mapSnapshot(snapshot);
     } on FirebaseException catch (error, stackTrace) {
       _logError('getAssignmentById', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> deleteAssignmentsByTaskId(
+    String taskId, {
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      // Necessary regarding 'Rules are not filters'
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      // Batch delete in chunks of 500
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('deleteAssignmentsByTaskId', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }

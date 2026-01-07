@@ -72,6 +72,7 @@ void main() {
             ).captured.single
             as List<AssignmentFanOutData>;
     expect(captured.length, 2);
+    expect(captured.first.taskDescription, 'Practicar escalas');
   });
 
   test('propagateToAssignments sin prepare no ejecuta batch', () async {

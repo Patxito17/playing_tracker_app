@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -19,130 +25,147 @@ class StudentClassTasksTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Datos mock de tareas
-    final mockTasks = [
-      {'id': 'task1', 'title': 'Escala de Do Mayor', 'status': 'pending'},
-      {'id': 'task2', 'title': 'Arpegios de Do Menor', 'status': 'in_progress'},
-      {'id': 'task3', 'title': 'Ejercicio de velocidad', 'status': 'completed'},
-    ];
+    final authState = context.read<AuthCubit>().state;
+    if (authState is! AuthAuthenticated) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final studentId = authState.userId;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (mockTasks.isEmpty)
-            _EmptyTasksState(
-              icon: Icons.assignment_outlined,
-              title: TaskStrings.noTasksAssigned,
-              subtitle: TaskStrings.waitForTasks,
-              actionLabel: CommonStrings.close,
-              onAction: () => context.pop(),
-            )
-          else
-            ...mockTasks.map((taskData) {
-              final status = taskData['status'] as String;
-              final statusText = _getStatusText(status);
-              final statusColor = _getStatusColor(context, status);
+    return StreamBuilder<List<AssignmentModel>>(
+      stream: context.read<TaskRepository>().watchStudentAssignments(studentId),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              TaskStrings.taskGenericError,
+              style: context.bodyMediumOnSurfaceVariant,
+            ),
+          );
+        }
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                child: CustomCard(
-                  title: taskData['title'] as String,
-                  subtitle: '${TaskStrings.status}: $statusText',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Badge de estado
-                      Chip(
-                        label: Text(statusText),
-                        backgroundColor: statusColor.withValues(alpha: 0.2),
-                        labelStyle: TextStyle(
-                          color: statusColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        avatar: Icon(
-                          _getStatusIcon(status),
-                          size: 16,
-                          color: statusColor,
-                        ),
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final allAssignments = snapshot.data ?? [];
+        final classAssignments = allAssignments
+            .where((a) => a.classId == classId)
+            .toList();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.m),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (classAssignments.isEmpty)
+                _EmptyTasksState(
+                  icon: Icons.assignment_outlined,
+                  title: TaskStrings.noTasksAssigned,
+                  subtitle: TaskStrings.waitForTasks,
+                  actionLabel: CommonStrings.close,
+                  onAction: () => context.pop(),
+                )
+              else
+                ...classAssignments.map((assignment) {
+                  final status = assignment.status;
+                  final statusText = _getStatusText(status);
+                  final statusColor = _getStatusColor(context, status);
+                  final title = assignment.taskTitle ?? 'Sin título';
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                    child: CustomCard(
+                      title: title,
+                      subtitle: '${TaskStrings.status}: $statusText',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Badge de estado
+                          Chip(
+                            label: Text(statusText),
+                            backgroundColor: statusColor.withValues(alpha: 0.2),
+                            labelStyle: TextStyle(
+                              color: statusColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            avatar: Icon(
+                              _getStatusIcon(status),
+                              size: 16,
+                              color: statusColor,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.m),
+                          CustomButton(
+                            label: status == TaskStatus.completed
+                                ? TaskStrings.viewDetails
+                                : TaskStrings.startStudySession,
+                            variant: status == TaskStatus.completed
+                                ? CustomButtonVariant.outlined
+                                : CustomButtonVariant.filled,
+                            icon: status == TaskStatus.completed
+                                ? Icons.visibility_outlined
+                                : Icons.play_arrow,
+                            onPressed: () {
+                              if (status == TaskStatus.completed) {
+                                context.push(
+                                  AppRoutes.taskDetail.replaceAll(
+                                    ':taskId',
+                                    assignment.taskId,
+                                  ),
+                                );
+                              } else {
+                                context.push(
+                                  AppRoutes.timer.replaceAll(
+                                    ':taskId',
+                                    assignment.taskId,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppSpacing.m),
-                      CustomButton(
-                        label: status == 'completed'
-                            ? TaskStrings.viewDetails
-                            : TaskStrings.startStudySession,
-                        variant: status == 'completed'
-                            ? CustomButtonVariant.outlined
-                            : CustomButtonVariant.filled,
-                        icon: status == 'completed'
-                            ? Icons.visibility_outlined
-                            : Icons.play_arrow,
-                        onPressed: () {
-                          if (status == 'completed') {
-                            context.push(
-                              AppRoutes.taskDetail.replaceAll(
-                                ':taskId',
-                                taskData['id'] as String,
-                              ),
-                            );
-                          } else {
-                            context.push(
-                              AppRoutes.timer.replaceAll(
-                                ':taskId',
-                                taskData['id'] as String,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-        ],
-      ),
+                    ),
+                  );
+                }),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  String _getStatusText(String status) {
+  String _getStatusText(TaskStatus status) {
     switch (status) {
-      case 'pending':
+      case TaskStatus.pending:
         return TaskStrings.pending;
-      case 'in_progress':
+      case TaskStatus.inProgress:
         return TaskStrings.inProgress;
-      case 'completed':
+      case TaskStatus.completed:
         return TaskStrings.completed;
-      default:
-        return TaskStrings.pending;
     }
   }
 
-  Color _getStatusColor(BuildContext context, String status) {
+  Color _getStatusColor(BuildContext context, TaskStatus status) {
     final colorScheme = Theme.of(context).colorScheme;
     switch (status) {
-      case 'pending':
+      case TaskStatus.pending:
         return colorScheme.outline;
-      case 'in_progress':
+      case TaskStatus.inProgress:
         return colorScheme.primary;
-      case 'completed':
+      case TaskStatus.completed:
         return colorScheme.tertiary;
-      default:
-        return colorScheme.outline;
     }
   }
 
-  IconData _getStatusIcon(String status) {
+  IconData _getStatusIcon(TaskStatus status) {
     switch (status) {
-      case 'pending':
+      case TaskStatus.pending:
         return Icons.pending_outlined;
-      case 'in_progress':
+      case TaskStatus.inProgress:
         return Icons.play_circle_outline;
-      case 'completed':
+      case TaskStatus.completed:
         return Icons.check_circle_outline;
-      default:
-        return Icons.pending_outlined;
     }
   }
 }

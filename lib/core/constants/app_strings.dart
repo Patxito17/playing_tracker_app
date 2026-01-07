@@ -318,6 +318,7 @@ class TaskStrings {
   static const String createdDate = 'Fecha de creación';
   static const String dueDate = 'Fecha límite';
   static const String recipients = 'Destinatarios';
+  static const String description = 'Descripción';
   static const String attachments = 'Adjuntos';
   static const String minutes = 'minutos';
   static const String hours = 'horas';

@@ -43,6 +43,8 @@ class FirebaseErrorMapper {
     switch (error.code) {
       case 'permission-denied':
         return 'No tienes permisos para realizar esta acción.';
+      case 'failed-precondition':
+        return 'Falta un índice requerido en la base de datos (consulta la consola).';
       case 'unavailable':
         return 'El servicio no está disponible temporalmente.';
       default:

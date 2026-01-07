@@ -390,14 +390,23 @@ class AppRoutes {
         name: 'createTask',
         builder: (context, state) {
           final extraCubit = state.extra;
-          if (extraCubit is TaskCubit) {
-            return BlocProvider<TaskCubit>.value(
-              value: extraCubit,
-              child: const CreateTaskScreen(),
-            );
-          }
-          return BlocProvider(
-            create: (context) => TaskCubit(TaskRepositoryImpl()),
+          return MultiBlocProvider(
+            providers: [
+              if (extraCubit is TaskCubit)
+                BlocProvider<TaskCubit>.value(value: extraCubit)
+              else
+                BlocProvider(
+                  create: (context) => TaskCubit(TaskRepositoryImpl()),
+                ),
+              BlocProvider(
+                create: (context) =>
+                    ClassCubit(context.read<ClassRepository>()),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    MembershipCubit(context.read<ClassRepository>()),
+              ),
+            ],
             child: const CreateTaskScreen(),
           );
         },
@@ -437,7 +446,8 @@ class AppRoutes {
           if (authState is! AuthAuthenticated ||
               authState.role != UserRole.student) {
             return const ErrorScreen(
-              errorMessage: 'No se pudieron cargar las asignaciones del alumno.',
+              errorMessage:
+                  'No se pudieron cargar las asignaciones del alumno.',
             );
           }
           return BlocProvider(

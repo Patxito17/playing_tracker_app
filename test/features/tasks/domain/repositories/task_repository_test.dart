@@ -36,6 +36,7 @@ void main() {
       taskId: 'task-1',
       classId: 'class-1',
       teacherId: 'teacher-1',
+      studentIds: null,
     ));
 
     registerFallbackValue((
@@ -123,7 +124,12 @@ void main() {
 
   group('AssignTaskInput validation', () {
     test('lanza error si falta taskId', () {
-      final input = (taskId: ' ', classId: 'class-1', teacherId: 'teacher-1');
+      final input = (
+        taskId: ' ',
+        classId: 'class-1',
+        teacherId: 'teacher-1',
+        studentIds: null,
+      );
 
       expect(
         () => validateAssignTaskInput(input),
@@ -136,6 +142,7 @@ void main() {
         taskId: 'task-1',
         classId: 'class-1',
         teacherId: 'teacher-1',
+        studentIds: null,
       );
 
       expect(() => validateAssignTaskInput(input), returnsNormally);

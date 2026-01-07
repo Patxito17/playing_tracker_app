@@ -7,7 +7,11 @@ import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 
 /// Contrato para helpers de fan-out.
 abstract interface class FanOutHelperContract {
-  Future<void> prepareFanOut(String taskId, String classId);
+  Future<void> prepareFanOut(
+    String taskId,
+    String classId, {
+    List<String>? studentIds,
+  });
 
   Future<void> propagateToAssignments(String taskId, String classId);
 }
@@ -36,7 +40,11 @@ final class FanOutHelper implements FanOutHelperContract {
   ///
   /// Actualmente sólo valida los parámetros y registra logs explicativos.
   @override
-  Future<void> prepareFanOut(String taskId, String classId) async {
+  Future<void> prepareFanOut(
+    String taskId,
+    String classId, {
+    List<String>? studentIds,
+  }) async {
     _assertIds(taskId, classId);
     final task = await _taskService.getTaskById(taskId);
     if (task == null) {
@@ -44,16 +52,22 @@ final class FanOutHelper implements FanOutHelperContract {
         'La tarea $taskId no existe o no está disponible para fan-out.',
       );
     }
-    final studentIds = await _membershipService.getStudentsForClass(classId);
+    final allParams = await _membershipService.getStudentsForClass(classId);
+
+    // Si se especifican studentIds, filtramos. Si es null/vacío, son todos.
+    final targetIds = (studentIds != null && studentIds.isNotEmpty)
+        ? allParams.where((id) => studentIds.contains(id)).toList()
+        : allParams;
+
     final contextKey = _buildContextKey(taskId, classId);
     _pendingFanOuts[contextKey] = _FanOutContext(
       task: task,
-      studentIds: studentIds,
+      studentIds: targetIds,
       classId: classId,
     );
     log(
       'Fan-out preparado para tarea $taskId y clase $classId. '
-      'Alumnos detectados: ${studentIds.length}',
+      'Alumnos objetivo: ${targetIds.length} (de ${allParams.length} totales)',
       name: 'FanOutHelper',
     );
   }
@@ -89,6 +103,7 @@ final class FanOutHelper implements FanOutHelperContract {
           teacherId: context.task.createdBy,
           classId: context.classId,
           taskTitle: context.task.title,
+          taskDescription: context.task.description,
           durationSuggested: context.task.durationSuggested,
         ),
     ];

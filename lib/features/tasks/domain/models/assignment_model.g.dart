@@ -14,6 +14,7 @@ AssignmentModel _$AssignmentModelFromJson(Map<String, dynamic> json) =>
       classId: json['classId'] as String,
       teacherId: json['teacherId'] as String,
       taskTitle: json['taskTitle'] as String?,
+      taskDescription: json['taskDescription'] as String?,
       durationSuggested: (json['durationSuggested'] as num?)?.toInt(),
       status: $enumDecode(_$TaskStatusEnumMap, json['status']),
       assignedAt: const TimestampConverter().fromJson(
@@ -39,6 +40,7 @@ Map<String, dynamic> _$AssignmentModelToJson(AssignmentModel instance) =>
       'classId': instance.classId,
       'teacherId': instance.teacherId,
       'taskTitle': instance.taskTitle,
+      'taskDescription': instance.taskDescription,
       'durationSuggested': instance.durationSuggested,
       'status': _$TaskStatusEnumMap[instance.status]!,
       'assignedAt': const TimestampConverter().toJson(instance.assignedAt),

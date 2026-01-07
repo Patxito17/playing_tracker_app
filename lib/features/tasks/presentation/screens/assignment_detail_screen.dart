@@ -147,6 +147,17 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                   ),
                   child: const SizedBox.shrink(),
                 ),
+                if (assignment.taskDescription != null &&
+                    assignment.taskDescription!.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.m),
+                  CustomCard(
+                    title: TaskStrings.description,
+                    child: Text(
+                      assignment.taskDescription!,
+                      style: context.textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.m),
                 CustomCard(
                   title: TaskStrings.status,

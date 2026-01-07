@@ -25,6 +25,7 @@ void main() {
           teacherId: 'teacher-1',
           classId: 'class-1',
           taskTitle: 'Escalas',
+          taskDescription: 'Descripción 1',
           durationSuggested: 900,
         ),
         (
@@ -33,6 +34,7 @@ void main() {
           teacherId: 'teacher-1',
           classId: 'class-1',
           taskTitle: 'Escalas',
+          taskDescription: 'Descripción 1',
           durationSuggested: 900,
         ),
       ];
