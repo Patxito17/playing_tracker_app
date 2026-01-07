@@ -53,6 +53,12 @@ service cloud.firestore {
              exists(/databases/$(database)/documents/students/$(request.auth.uid));
     }
 
+    /// Verifica si el usuario es el creador de la clase
+    function isClassOwner(classId) {
+      let classData = get(/databases/$(database)/documents/classes/$(classId)).data;
+      return isAuth() && classData.ownerTeacherId == request.auth.uid;
+    }
+
     // ==========================================================================
     // COLECCIÓN: teachers
     // ==========================================================================
@@ -62,9 +68,8 @@ service cloud.firestore {
     // - IDs: UID de Firebase Authentication
 
     match /teachers/{teacherId} {
-      allow read: if isOwner(teacherId);
-      allow create: if isOwner(teacherId) &&
-                      request.resource.data.keys().hasAll(['id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'isActive']);
+      allow read: if isAuth();
+      allow create: if isOwner(teacherId);
       allow update: if isOwner(teacherId);
       allow delete: if isOwner(teacherId);
     }
@@ -78,9 +83,8 @@ service cloud.firestore {
     // - IDs: UID de Firebase Authentication
 
     match /students/{studentId} {
-      allow read: if isOwner(studentId);
-      allow create: if isOwner(studentId) &&
-                      request.resource.data.keys().hasAll(['id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'isActive']);
+      allow read: if isAuth();
+      allow create: if isOwner(studentId);
       allow update: if isOwner(studentId);
       allow delete: if isOwner(studentId);
     }
@@ -117,8 +121,10 @@ service cloud.firestore {
     match /memberships/{membershipId} {
       // Lectura: alumno involucrado o teacher relacionado
       allow read: if isAuth() && (
+        resource == null ||
         resource.data.studentId == request.auth.uid ||
-        resource.data.teacherId == request.auth.uid
+        resource.data.teacherId == request.auth.uid ||
+        isClassOwner(resource.data.classId)
       );
 
       // Creación: teacher propietario o alumno autenticado (código de acceso)
@@ -129,24 +135,8 @@ service cloud.firestore {
                       ) &&
                       request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'updatedAt', 'isActive']);
 
-      // Actualización: teacher relacionado o student para reactivar su propia membresía
-      allow update: if isAuth() && (
-        resource.data.teacherId == request.auth.uid ||
-        (
-          resource.data.studentId == request.auth.uid &&
-          request.resource.data.studentId == resource.data.studentId &&
-          request.resource.data.teacherId == resource.data.teacherId &&
-          request.resource.data.classId == resource.data.classId &&
-          request.resource.data.className == resource.data.className &&
-          resource.data.isActive == false &&
-          request.resource.data.isActive == true &&
-          request.resource.data.updatedAt is timestamp &&
-          (
-            resource.data.updatedAt == null ||
-            request.resource.data.updatedAt > resource.data.updatedAt
-          )
-        )
-      );
+      // Actualización: Solo el teacher relacionado puede actualizar
+      allow update: if isAuth() && resource.data.teacherId == request.auth.uid;
 
       // Eliminación: solo el teacher relacionado
       allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;

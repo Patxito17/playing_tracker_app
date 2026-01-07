@@ -192,6 +192,8 @@ class ClassesStrings {
       'Código de acceso regenerado correctamente.';
   static const String membershipDeleteConfirmation =
       'Esta acción eliminará de forma permanente al alumno de la clase.';
+  static const String membershipRevokedError =
+      'Fuiste eliminado de esta clase. Contacta al profesor para reingresar.';
 }
 
 /// Strings relacionados con navegación

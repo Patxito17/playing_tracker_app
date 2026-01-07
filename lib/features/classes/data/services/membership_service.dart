@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
@@ -406,25 +407,18 @@ final class MembershipService implements MembershipServiceContract {
     await _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(membershipRef);
       if (snapshot.exists) {
-        final updateData = <String, dynamic>{
-          'isActive': true,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'classIsActive': classIsActive,
-        };
-        if (studentName != null) {
-          updateData['studentName'] = studentName;
+        final data = snapshot.data();
+        final isActive = data?['isActive'] ?? true;
+
+        // Si ya es miembro activo, no hacemos nada (idempotente)
+        if (isActive) {
+          return;
         }
-        if (studentEmail != null) {
-          updateData['studentEmail'] = studentEmail;
-        }
-        if (teacherName != null) {
-          updateData['teacherName'] = teacherName;
-        }
-        if (teacherEmail != null) {
-          updateData['teacherEmail'] = teacherEmail;
-        }
-        transaction.update(membershipRef, updateData);
-        return;
+
+        // Si existe pero está inactivo, el alumno NO puede reactivarse solo
+        throw FirebaseErrorMapperException(
+          ClassesStrings.membershipRevokedError,
+        );
       }
 
       transaction.set(membershipRef, {
