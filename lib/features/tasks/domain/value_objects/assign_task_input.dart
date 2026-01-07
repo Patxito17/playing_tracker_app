@@ -9,7 +9,13 @@
 /// - [taskId]: Identificador único de la tarea a asignar.
 /// - [classId]: Identificador único de la clase destino.
 /// - [teacherId]: Identificador del docente que realiza la asignación.
-typedef AssignTaskInput = ({String taskId, String classId, String teacherId});
+/// - [studentIds]: Lista opcional de IDs de alumnos. Si es null o vacío, se asigna a todos.
+typedef AssignTaskInput = ({
+  String taskId,
+  String classId,
+  String teacherId,
+  List<String>? studentIds,
+});
 
 /// Valida de forma sincrónica los campos requeridos para asignar una tarea.
 ///

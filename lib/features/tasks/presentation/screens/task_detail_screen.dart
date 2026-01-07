@@ -125,19 +125,39 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     );
   }
 
+  Future<void> _toggleStatus(bool value) async {
+    final input = (
+      taskId: widget.taskId,
+      title: null,
+      description: null,
+      durationSuggested: null,
+      attachments: null,
+      dueDate: null,
+      isActive: value,
+    );
+    await context.read<TaskCubit>().updateTask(input);
+  }
+
   Future<void> _confirmDelete(BuildContext context, TaskModel task) async {
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(TaskStrings.confirmDeleteTask),
-          content: Text(TaskStrings.confirmDeleteTaskMessage),
+          content: const Text(
+            'ATENCIÓN: Esta acción eliminará PERMANENTEMENTE la tarea y todas las asignaciones de los alumnos. '
+            'No se podrá recuperar ninguna información. ¿Deseas continuar?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(CommonStrings.cancel),
             ),
             FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colorScheme.error,
+                foregroundColor: context.colorScheme.onError,
+              ),
               onPressed: () {
                 context.read<TaskCubit>().deleteTask(task.id);
                 Navigator.of(dialogContext).pop();
@@ -188,7 +208,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             return const SizedBox.shrink();
           }
 
-          final matching = state.tasks.where((task) => task.id == widget.taskId);
+          final matching = state.tasks.where(
+            (task) => task.id == widget.taskId,
+          );
           if (matching.isEmpty) {
             return Center(
               child: Padding(
@@ -283,6 +305,29 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 if (isTeacher) ...[
+                  CustomCard(
+                    padding: EdgeInsets.zero,
+                    child: SwitchListTile(
+                      value: selectedTask.isActive,
+                      onChanged: _toggleStatus,
+                      title: const Text('Tarea activa'),
+                      subtitle: Text(
+                        selectedTask.isActive
+                            ? 'Visible para los estudiantes'
+                            : 'No visible para los estudiantes',
+                        style: context.bodySmallOnSurfaceVariant,
+                      ),
+                      secondary: Icon(
+                        selectedTask.isActive
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: selectedTask.isActive
+                            ? context.colorScheme.primary
+                            : context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.m),
                   CustomButton(
                     label: TaskStrings.editTask,
                     variant: CustomButtonVariant.filled,

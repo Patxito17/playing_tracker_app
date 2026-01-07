@@ -182,8 +182,12 @@ TaskFilters _filters() => (
   assignedTo: null,
 );
 
-AssignTaskInput _assignInput() =>
-    (taskId: 'task-1', classId: 'class-1', teacherId: 'teacher-1');
+AssignTaskInput _assignInput() => (
+  taskId: 'task-1',
+  classId: 'class-1',
+  teacherId: 'teacher-1',
+  studentIds: null,
+);
 
 TaskModel _taskModel() {
   final now = Timestamp.now();

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/classes/data/helpers/fan_out_helper.dart';
 import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
@@ -57,7 +58,7 @@ final class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<void> deleteTask(String taskId) async {
+  Future<void> archiveTask(String taskId) async {
     final sanitizedId = taskId.trim();
     if (sanitizedId.isEmpty) {
       throw const InvalidTaskArgumentException(
@@ -66,6 +67,41 @@ final class TaskRepositoryImpl implements TaskRepository {
     }
     try {
       await _taskService.deleteTask(sanitizedId, hardDelete: false);
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'archiveTask',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible archivar la tarea.',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteTask(String taskId) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw const InvalidTaskArgumentException(
+        'El identificador de la tarea es obligatorio',
+      );
+    }
+    try {
+      // 1. Obtener la tarea para conocer el dueño (teacherId)
+      // Esto es necesario para filtrar las asignaciones y eliminar solo las propias,
+      // cumpliendo con las reglas de seguridad de Firestore ("Rules are not filters").
+      final task = await _taskService.getTaskById(sanitizedId);
+      final teacherId = task?.createdBy;
+
+      // 2. Eliminación física de todas las asignaciones asociadas (si se encontró el owner)
+      // Lo hacemos ANTES de borrar la tarea para evitar inconsistencias si esto falla,
+      // aunque es una preferencia de diseño (limpiar hijos primero).
+      await _assignmentService.deleteAssignmentsByTaskId(
+        sanitizedId,
+        teacherId: teacherId,
+      );
+
+      // 3. Eliminación física de la tarea
+      await _taskService.deleteTask(sanitizedId, hardDelete: true);
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'deleteTask',
@@ -163,10 +199,48 @@ final class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
+  Stream<List<AssignmentModel>> watchClassAssignments(
+    String classId, {
+    String? teacherId,
+    int limit = _defaultPaginationLimit,
+  }) {
+    final normalizedId = classId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        const InvalidTaskArgumentException(
+          'El identificador de la clase es obligatorio',
+        ),
+      );
+    }
+    final stream = _assignmentService.watchClassAssignments(
+      classId: normalizedId,
+      teacherId: teacherId,
+      limit: limit,
+    );
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (assignments, sink) => sink.add(assignments),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchClassAssignments',
+            error: error,
+            fallbackMessage: 'No fue posible cargar las tareas asignadas.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
+  @override
   Future<void> assignTaskToClass(AssignTaskInput input) async {
     validateAssignTaskInput(input);
     try {
-      await _fanOutHelper.prepareFanOut(input.taskId, input.classId);
+      await _fanOutHelper.prepareFanOut(
+        input.taskId,
+        input.classId,
+        studentIds: input.studentIds,
+      );
       await _fanOutHelper.propagateToAssignments(input.taskId, input.classId);
     } catch (error, stackTrace) {
       _throwRepositoryException(
@@ -234,6 +308,10 @@ final class TaskRepositoryImpl implements TaskRepository {
     }
     if (error is FirebaseErrorMapperException) {
       throw UnknownTaskRepositoryException(error.message, cause: error);
+    }
+    if (error is FirebaseException) {
+      final message = FirebaseErrorMapper.map(error);
+      throw UnknownTaskRepositoryException(message, cause: error);
     }
     throw UnknownTaskRepositoryException(fallbackMessage, cause: error);
   }

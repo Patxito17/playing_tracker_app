@@ -62,6 +62,9 @@ class AssignmentModel {
   /// Título de la tarea (denormalizado)
   final String? taskTitle;
 
+  /// Descripción de la tarea (denormalizado)
+  final String? taskDescription;
+
   /// Duración sugerida de la tarea (denormalizado)
   final int? durationSuggested;
 
@@ -94,6 +97,7 @@ class AssignmentModel {
     required this.classId,
     required this.teacherId,
     this.taskTitle,
+    this.taskDescription,
     this.durationSuggested,
     required this.status,
     required this.assignedAt,
@@ -142,6 +146,7 @@ class AssignmentModel {
     String? classId,
     String? teacherId,
     String? taskTitle,
+    String? taskDescription,
     int? durationSuggested,
     TaskStatus? status,
     Timestamp? assignedAt,
@@ -157,6 +162,7 @@ class AssignmentModel {
       classId: classId ?? this.classId,
       teacherId: teacherId ?? this.teacherId,
       taskTitle: taskTitle ?? this.taskTitle,
+      taskDescription: taskDescription ?? this.taskDescription,
       durationSuggested: durationSuggested ?? this.durationSuggested,
       status: status ?? this.status,
       assignedAt: assignedAt ?? this.assignedAt,
@@ -178,6 +184,7 @@ class AssignmentModel {
           classId == other.classId &&
           teacherId == other.teacherId &&
           taskTitle == other.taskTitle &&
+          taskDescription == other.taskDescription &&
           durationSuggested == other.durationSuggested &&
           status == other.status &&
           assignedAt == other.assignedAt &&
@@ -194,6 +201,7 @@ class AssignmentModel {
       classId.hashCode ^
       teacherId.hashCode ^
       (taskTitle?.hashCode ?? 0) ^
+      (taskDescription?.hashCode ?? 0) ^
       (durationSuggested?.hashCode ?? 0) ^
       status.hashCode ^
       assignedAt.hashCode ^

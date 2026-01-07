@@ -47,13 +47,14 @@ enum TaskAction { created, updated, deleted, assigned }
 
 /// Estado de éxito para operaciones puntuales (crear/actualizar/asignar).
 final class TaskActionSuccess extends TaskState {
-  const TaskActionSuccess({required this.action, this.message});
+  const TaskActionSuccess({required this.action, this.message, this.taskId});
 
   final TaskAction action;
   final String? message;
+  final String? taskId;
 
   @override
-  List<Object?> get props => [action, message];
+  List<Object?> get props => [action, message, taskId];
 }
 
 /// Estado que encapsula errores de negocio o de infraestructura.

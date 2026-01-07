@@ -32,10 +32,15 @@ abstract interface class TaskRepository {
   /// - Aplicar únicamente los campos presentes en [UpdateTaskInput].
   Future<void> updateTask(UpdateTaskInput input);
 
-  /// Elimina (o archiva) una tarea existente.
+  /// Archiva una tarea existente (eliminación lógica).
   ///
-  /// Dependiendo de las reglas de negocio, esta operación puede ser un borrado
-  /// físico o un archivado lógico mediante `isActive = false`.
+  /// Establece `isActive = false` para que la tarea no aparezca en listas activas,
+  /// pero mantiene los datos y asignaciones para histórico.
+  Future<void> archiveTask(String taskId);
+
+  /// Elimina una tarea permanentemente y todas sus asignaciones asociadas.
+  ///
+  /// Esta es una operación destructiva e irreversible.
   Future<void> deleteTask(String taskId);
 
   /// Observa en tiempo real las tareas creadas por un docente.
@@ -55,6 +60,13 @@ abstract interface class TaskRepository {
   Stream<List<AssignmentModel>> watchStudentAssignments(
     String studentId, {
     TaskFilters? filters,
+  });
+
+  /// Observa en tiempo real las tareas asignadas a una clase (assignments).
+  Stream<List<AssignmentModel>> watchClassAssignments(
+    String classId, {
+    String? teacherId,
+    int limit,
   });
 
   /// Asigna una tarea a una clase concreta utilizando fan-out.

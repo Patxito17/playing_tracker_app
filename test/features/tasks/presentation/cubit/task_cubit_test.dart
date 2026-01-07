@@ -166,8 +166,12 @@ UpdateTaskInput _updateTaskInput() => (
   isActive: null,
 );
 
-AssignTaskInput _assignInput() =>
-    (taskId: 'task-1', classId: 'class-1', teacherId: 'teacher-1');
+AssignTaskInput _assignInput() => (
+  taskId: 'task-1',
+  classId: 'class-1',
+  teacherId: 'teacher-1',
+  studentIds: null,
+);
 
 TaskFilters _filters() => (
   isActive: true,

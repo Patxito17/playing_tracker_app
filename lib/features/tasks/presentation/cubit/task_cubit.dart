@@ -82,11 +82,12 @@ final class TaskCubit extends Cubit<TaskState> {
   Future<void> createTask(CreateTaskInput input) async {
     emit(const TaskLoading());
     try {
-      await _repository.createTask(input);
+      final task = await _repository.createTask(input);
       emit(
-        const TaskActionSuccess(
+        TaskActionSuccess(
           action: TaskAction.created,
           message: TaskStrings.taskCreateSuccess,
+          taskId: task.id,
         ),
       );
     } on TaskRepositoryException catch (error) {
@@ -114,7 +115,25 @@ final class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  /// Elimina (o archiva) una tarea existente.
+  /// Archiva una tarea.
+  Future<void> archiveTask(String taskId) async {
+    emit(const TaskLoading());
+    try {
+      await _repository.archiveTask(taskId);
+      emit(
+        const TaskActionSuccess(
+          action: TaskAction.updated,
+          message: 'Tarea archivada correctamente',
+        ),
+      );
+    } on TaskRepositoryException catch (error) {
+      emit(TaskError(message: error.message, cause: error));
+    } catch (error) {
+      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+    }
+  }
+
+  /// Elimina una tarea permanentemente.
   Future<void> deleteTask(String taskId) async {
     emit(const TaskLoading());
     try {
