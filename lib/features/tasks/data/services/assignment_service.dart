@@ -15,6 +15,7 @@ typedef AssignmentFanOutData = ({
   String taskTitle,
   String? taskDescription,
   int durationSuggested,
+  Timestamp? dueDate,
 });
 
 /// Contrato para interactuar con la colección `assignments`.
@@ -88,6 +89,7 @@ final class AssignmentService implements AssignmentServiceContract {
             'totalDurationLogged': 0,
             'lastSessionDate': null,
             'isActive': true,
+            'dueDate': assignment.dueDate,
           }, SetOptions(merge: false));
         }
         await batch.commit();

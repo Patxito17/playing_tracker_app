@@ -27,6 +27,7 @@ void main() {
           taskTitle: 'Escalas',
           taskDescription: 'Descripción 1',
           durationSuggested: 900,
+          dueDate: Timestamp.fromDate(DateTime(2026, 1, 30)),
         ),
         (
           taskId: 'task-1',
@@ -36,6 +37,7 @@ void main() {
           taskTitle: 'Escalas',
           taskDescription: 'Descripción 1',
           durationSuggested: 900,
+          dueDate: null,
         ),
       ];
 
@@ -44,6 +46,10 @@ void main() {
       final snapshot = await fakeFirestore.collection('assignments').get();
       expect(snapshot.docs.length, 2);
       expect(snapshot.docs.first.data()['taskTitle'], 'Escalas');
+      expect(
+        snapshot.docs.first.data()['dueDate'],
+        isNotNull,
+      ); // Verificar persistencia de fecha
     },
   );
 
