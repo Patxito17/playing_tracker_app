@@ -30,6 +30,7 @@ AssignmentModel _$AssignmentModelFromJson(Map<String, dynamic> json) =>
         json['lastSessionDate'],
         const TimestampConverter().fromJson,
       ),
+      isActive: json['isActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$AssignmentModelToJson(AssignmentModel instance) =>
@@ -54,6 +55,7 @@ Map<String, dynamic> _$AssignmentModelToJson(AssignmentModel instance) =>
         instance.lastSessionDate,
         const TimestampConverter().toJson,
       ),
+      'isActive': instance.isActive,
     };
 
 const _$TaskStatusEnumMap = {

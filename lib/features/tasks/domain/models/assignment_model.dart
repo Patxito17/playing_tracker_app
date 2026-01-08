@@ -89,6 +89,10 @@ class AssignmentModel {
   @TimestampConverter()
   final Timestamp? lastSessionDate;
 
+  /// Indica si la tarea está activa (denormalizado desde TaskModel)
+  /// Cuando false, la tarea está archivada y no debe mostrarse al estudiante
+  final bool isActive;
+
   /// Constructor del modelo de asignación
   const AssignmentModel({
     required this.id,
@@ -105,6 +109,7 @@ class AssignmentModel {
     this.sessionsCount = 0,
     this.totalDurationLogged = 0,
     this.lastSessionDate,
+    this.isActive = true,
   });
 
   /// Crea una instancia desde un mapa JSON
@@ -154,6 +159,7 @@ class AssignmentModel {
     int? sessionsCount,
     int? totalDurationLogged,
     Timestamp? lastSessionDate,
+    bool? isActive,
   }) {
     return AssignmentModel(
       id: id ?? this.id,
@@ -170,6 +176,7 @@ class AssignmentModel {
       sessionsCount: sessionsCount ?? this.sessionsCount,
       totalDurationLogged: totalDurationLogged ?? this.totalDurationLogged,
       lastSessionDate: lastSessionDate ?? this.lastSessionDate,
+      isActive: isActive ?? this.isActive,
     );
   }
 
@@ -191,7 +198,8 @@ class AssignmentModel {
           completedAt == other.completedAt &&
           sessionsCount == other.sessionsCount &&
           totalDurationLogged == other.totalDurationLogged &&
-          lastSessionDate == other.lastSessionDate;
+          lastSessionDate == other.lastSessionDate &&
+          isActive == other.isActive;
 
   @override
   int get hashCode =>
@@ -208,7 +216,8 @@ class AssignmentModel {
       completedAt.hashCode ^
       sessionsCount.hashCode ^
       totalDurationLogged.hashCode ^
-      lastSessionDate.hashCode;
+      lastSessionDate.hashCode ^
+      isActive.hashCode;
 
   @override
   String toString() =>

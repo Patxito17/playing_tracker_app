@@ -77,6 +77,7 @@ void main() {
       sessionsCount: 0,
       totalDurationLogged: 0,
       lastSessionDate: null,
+      isActive: true,
     );
 
     assignmentCubit.emit(AssignmentSuccess(assignments: [assignment]));
@@ -99,4 +100,3 @@ void main() {
     expect(find.text(TaskStrings.filters), findsOneWidget);
   });
 }
-
