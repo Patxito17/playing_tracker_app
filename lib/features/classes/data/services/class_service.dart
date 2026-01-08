@@ -28,11 +28,6 @@ abstract interface class ClassServiceContract {
   Future<void> deleteClass(String classId);
 
   Future<void> regenerateAccessCode(String classId);
-
-  Future<void> fanOutTaskHook({
-    required String taskId,
-    required String classId,
-  });
 }
 
 /// Servicio dedicado a interactuar con la colección `classes` de Firestore.
@@ -214,19 +209,6 @@ final class ClassService implements ClassServiceContract {
   /// Hook que prepara el fan-out de tareas hacia `assignments`.
   ///
   /// Implementación parcial: únicamente registra logs para Sprint 3.
-  @override
-  Future<void> fanOutTaskHook({
-    required String taskId,
-    required String classId,
-  }) async {
-    log(
-      'ClassService#fanOutTaskHook invoked',
-      name: 'FanOutHelper',
-      error: {'taskId': taskId, 'classId': classId, 'status': 'pending'},
-    );
-    // TODO(Sprint4): delegar a FanOutHelper.prepareFanOut y
-    // propagateToAssignments cuando estén implementados.
-  }
 
   Future<String> _generateUniqueAccessCode({
     String? ignoreClassId,
