@@ -211,13 +211,22 @@ void main() {
   });
 
   group('fanOutTask', () {
-    test(
-      'debe delegar en FanOutHelper y registrar TODO para Sprint 4',
-      () {
-        // TODO(sprint4): Integrar con helper fan-out y assignments.
-        fail('Not implemented yet');
-      },
-      skip: 'Pendiente de implementación',
-    );
+    test('debe delegar en FanOutHelper', () async {
+      when(
+        () => fanOutHelper.prepareFanOut(any(), any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => fanOutHelper.propagateToAssignments(any(), any()),
+      ).thenAnswer((_) async {});
+
+      await repository.fanOutTask(taskId: 'task-123', classId: 'class-456');
+
+      verify(
+        () => fanOutHelper.prepareFanOut('task-123', 'class-456'),
+      ).called(1);
+      verify(
+        () => fanOutHelper.propagateToAssignments('task-123', 'class-456'),
+      ).called(1);
+    });
   });
 }

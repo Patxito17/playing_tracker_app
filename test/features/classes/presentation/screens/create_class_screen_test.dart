@@ -95,7 +95,7 @@ void main() {
       find.widgetWithText(CustomButton, ClassesStrings.createClassButton),
     );
     await tester.pump();
-  }, skip: true);
+  });
 
   testWidgets('muestra mensaje de error cuando el estado es ClassError', (
     tester,

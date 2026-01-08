@@ -146,20 +146,32 @@ void main() {
       ),
     );
 
+    // Configurar estado de clases para evitar loading infinito
+    when(
+      () => mockClassCubit.state,
+    ).thenReturn(const ClassSuccess(classes: []));
+
     await tester.pumpWidget(buildTestScreen());
 
+    // Asegurar que el widget esté listo
+    await tester.pumpAndSettle();
+
+    // Rellenar formulario
     await tester.enterText(
-      find.bySemanticsLabel(TaskStrings.taskTitleLabel),
+      find.widgetWithText(TextFormField, TaskStrings.taskTitleLabel),
       'Escalas mayores',
     );
     await tester.enterText(
-      find.bySemanticsLabel(TaskStrings.taskDescriptionLabel),
+      find.widgetWithText(TextFormField, TaskStrings.taskDescriptionLabel),
       'Practicar escalas',
     );
     await tester.enterText(
-      find.bySemanticsLabel(TaskStrings.estimatedTimeLabel),
+      find.widgetWithText(TextFormField, TaskStrings.estimatedTimeLabel),
       '30',
     );
+
+    // Forzar actualización del estado del formulario
+    await tester.pump();
 
     final button = find.widgetWithText(
       CustomButton,
@@ -167,6 +179,10 @@ void main() {
     );
     await tester.ensureVisible(button);
     await tester.tap(button);
+
+    // Esperar a que se procese la acción
     await tester.pumpAndSettle();
-  }, skip: true);
+
+    verify(() => mockTaskRepository.createTask(any())).called(1);
+  });
 }

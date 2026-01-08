@@ -326,14 +326,22 @@ final class MembershipService implements MembershipServiceContract {
     }
   }
 
-  /// Obtiene únicamente los IDs de alumnos para preparar fan-outs.
-  ///
-  /// TODO(Sprint4): Optimizar para fan-outs masivos usando lotes paralelos.
   @override
   Future<List<String>> getStudentsForClass(String classId) async {
     final students = <String>[];
     String? cursor;
+    var loopCount = 0;
+    const maxLoops = 50; // Safety break for ~10k students limit
+
     while (true) {
+      if (loopCount >= maxLoops) {
+        log(
+          'getStudentsForClass: safety break reached after $maxLoops iterations',
+          name: 'MembershipService',
+        );
+        break;
+      }
+
       final page = await listClassMembers(
         classId: classId,
         limit: _fanOutPaginationLimit,
@@ -347,9 +355,9 @@ final class MembershipService implements MembershipServiceContract {
         return students;
       }
       cursor = page.lastDocumentId;
-      // TODO(Sprint4): Considerar cortes de seguridad para evitar loops infinitos
-      // una vez que se implemente fan-out real.
+      loopCount++;
     }
+    return students;
   }
 
   @override

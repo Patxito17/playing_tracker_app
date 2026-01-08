@@ -11,6 +11,7 @@ import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/main.dart';
 
 import 'helpers/mock_hydrated_storage.dart';
@@ -19,15 +20,19 @@ class _MockAuthRepository extends Mock implements AuthRepository {}
 
 class _MockClassRepository extends Mock implements ClassRepository {}
 
+class _MockTaskRepository extends Mock implements TaskRepository {}
+
 void main() {
   late _MockAuthRepository mockAuthRepository;
   late _MockClassRepository mockClassRepository;
+  late _MockTaskRepository mockTaskRepository;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initHydratedStorage();
     mockAuthRepository = _MockAuthRepository();
     mockClassRepository = _MockClassRepository();
+    mockTaskRepository = _MockTaskRepository();
     when(() => mockAuthRepository.currentUser).thenReturn(null);
   });
 
@@ -37,6 +42,7 @@ void main() {
         authRepository: mockAuthRepository,
         authCubitBuilder: AuthCubit.new,
         classRepository: mockClassRepository,
+        taskRepository: mockTaskRepository,
       ),
     );
 

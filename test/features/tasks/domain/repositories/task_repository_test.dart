@@ -213,49 +213,44 @@ void main() {
 
         expect(result, task);
       },
-      skip: 'Se implementará en Fase 3 (infraestructura)',
     );
 
-    test(
-      'watchTeacherTasks devuelve stream de TaskModel',
-      () async {
-        final filters = (
-          isActive: true,
-          createdFrom: null,
-          createdTo: null,
-          dueFrom: null,
-          dueTo: null,
-          status: null,
-          assignedFrom: null,
-          assignedTo: null,
-        );
-        final now = Timestamp.now();
-        final task = TaskModel(
-          id: 'task-1',
-          title: 'Escalas',
-          description: 'Practicar escalas',
-          createdBy: 'teacher-1',
-          durationSuggested: 1800,
-          attachments: const [],
-          createdAt: now,
-          updatedAt: now,
-          dueDate: null,
-          isActive: true,
-        );
+    test('watchTeacherTasks devuelve stream de TaskModel', () async {
+      final filters = (
+        isActive: true,
+        createdFrom: null,
+        createdTo: null,
+        dueFrom: null,
+        dueTo: null,
+        status: null,
+        assignedFrom: null,
+        assignedTo: null,
+      );
+      final now = Timestamp.now();
+      final task = TaskModel(
+        id: 'task-1',
+        title: 'Escalas',
+        description: 'Practicar escalas',
+        createdBy: 'teacher-1',
+        durationSuggested: 1800,
+        attachments: const [],
+        createdAt: now,
+        updatedAt: now,
+        dueDate: null,
+        isActive: true,
+      );
 
-        when(
-          () => repository.watchTeacherTasks('teacher-1', filters: filters),
-        ).thenAnswer((_) => Stream.value(<TaskModel>[task]));
+      when(
+        () => repository.watchTeacherTasks('teacher-1', filters: filters),
+      ).thenAnswer((_) => Stream.value(<TaskModel>[task]));
 
-        final stream = repository.watchTeacherTasks(
-          'teacher-1',
-          filters: filters,
-        );
+      final stream = repository.watchTeacherTasks(
+        'teacher-1',
+        filters: filters,
+      );
 
-        expect(stream, emits(<TaskModel>[task]));
-      },
-      skip: 'Se implementará en Fase 3 (infraestructura)',
-    );
+      expect(stream, emits(<TaskModel>[task]));
+    });
 
     test(
       'watchStudentAssignments devuelve stream de AssignmentModel',
@@ -300,7 +295,6 @@ void main() {
 
         expect(stream, emits(<AssignmentModel>[assignment]));
       },
-      skip: 'Se implementará en Fase 3 (infraestructura)',
     );
   });
 }
