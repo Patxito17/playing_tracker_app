@@ -47,9 +47,9 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
       final authState = context.read<AuthCubit>().state;
       if (authState is AuthAuthenticated) {
         context.read<AssignmentCubit>().watchAssignments(
-              studentId: authState.userId,
-              filters: _activeFilters,
-            );
+          studentId: authState.userId,
+          filters: _activeFilters,
+        );
       }
     });
   }
@@ -69,11 +69,10 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                   initialFilters: _activeFilters,
                 ),
               );
-              if (result != null) {
+              if (result != null && context.mounted) {
                 setState(() {
                   _activeFilters = result;
                 });
-                if (!mounted) return;
                 context.read<AssignmentCubit>().applyFilters(result);
               }
             },
@@ -106,7 +105,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
 
           if (state is AssignmentEmpty) {
             return RefreshIndicator(
-              onRefresh: () => context.read<AssignmentCubit>().refreshAssignments(),
+              onRefresh: () =>
+                  context.read<AssignmentCubit>().refreshAssignments(),
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(AppSpacing.l),
@@ -128,7 +128,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
           final assignments = state.assignments;
 
           return RefreshIndicator(
-            onRefresh: () => context.read<AssignmentCubit>().refreshAssignments(),
+            onRefresh: () =>
+                context.read<AssignmentCubit>().refreshAssignments(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(AppSpacing.l),
@@ -185,11 +186,7 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 64,
-            color: context.colorScheme.onSurfaceVariant,
-          ),
+          Icon(icon, size: 64, color: context.colorScheme.onSurfaceVariant),
           const SizedBox(height: AppSpacing.m),
           Text(
             title,
@@ -211,4 +208,3 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
-

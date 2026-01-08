@@ -5,8 +5,8 @@
 | Proyecto | Playing Tracker |
 | Alcance | Backend + UI (docentes/alumnos) |
 | Duración | 2 semanas (Enero 2026) |
-| Estado | 🚧 En fase final de UI y QA |
-| Última actualización | 07/01/2026 |
+| Estado | ✅ Completado |
+| Última actualización | 08/01/2026 |
 | Responsable | Equipo de desarrollo |
 
 ---
@@ -80,13 +80,13 @@
     - Docente elimina tarea -> Alumno deja de verla (o la ve archivada, según lógica).
 
 ### Fase 7: Calidad y Tests
-- [ ] **Unit Tests**:
+- [x] **Unit Tests**:
     - `task_cubit_test.dart`
     - `assignment_cubit_test.dart`
-- [ ] **Widget Tests**:
+- [x] **Widget Tests**:
     - Smoke test de `TaskListScreen`.
     - Smoke test de `AssignmentListScreen`.
-- [ ] **Linting Final**: Ejecutar `flutter analyze` y corregir warnings residuales.
+- [x] **Linting Final**: Ejecutar `flutter analyze` y corregir warnings residuales.
 
 ---
 
@@ -97,6 +97,6 @@
 | **Lista Tareas (Docente)** | `lib/features/tasks/presentation/screens/task_list_screen.dart` | ✅ Listo |
 | **Crear Tarea** | `lib/features/tasks/presentation/screens/create_task_screen.dart` | ✅ Listo |
 | **Cubit Docente** | `lib/features/tasks/presentation/cubit/task_cubit.dart` | ✅ Listo |
-| **Lista Asignaciones (Alumno)** | `lib/features/tasks/presentation/screens/assignment_list_screen.dart` | ❓ Revisar |
-| **Detalle Asignación** | `lib/features/tasks/presentation/screens/assignment_detail_screen.dart` | ❓ Revisar |
+| **Lista Asignaciones (Alumno)** | `lib/features/tasks/presentation/screens/assignment_list_screen.dart` | ✅ Listo |
+| **Detalle Asignación** | `lib/features/tasks/presentation/screens/assignment_detail_screen.dart` | ✅ Listo |
 | **Fan Out** | `lib/features/classes/data/helpers/fan_out_helper.dart` | ✅ Listo |
