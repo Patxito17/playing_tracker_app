@@ -73,6 +73,7 @@ void main() {
       TaskActionSuccess(
         action: TaskAction.created,
         message: TaskStrings.taskCreateSuccess,
+        taskId: 'task-1',
       ),
     ],
   );

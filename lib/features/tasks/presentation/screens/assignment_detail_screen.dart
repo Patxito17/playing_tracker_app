@@ -134,7 +134,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                       : null,
                   trailingAction: Chip(
                     label: Text(statusText),
-                    backgroundColor: statusColor.withOpacity(0.2),
+                    backgroundColor: statusColor.withValues(alpha: 0.2),
                     labelStyle: TextStyle(
                       color: statusColor,
                       fontWeight: FontWeight.w600,
