@@ -36,6 +36,13 @@ abstract interface class AssignmentServiceContract {
   Future<AssignmentModel?> getAssignmentById(String assignmentId);
 
   Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
+
+  /// Actualiza el campo isActive de todas las asignaciones de una tarea
+  Future<void> updateAssignmentsIsActiveByTaskId(
+    String taskId,
+    bool isActive, {
+    String? teacherId,
+  });
 }
 
 /// Servicio centrado en operaciones de la colección `assignments`.
@@ -80,6 +87,7 @@ final class AssignmentService implements AssignmentServiceContract {
             'sessionsCount': 0,
             'totalDurationLogged': 0,
             'lastSessionDate': null,
+            'isActive': true,
           }, SetOptions(merge: false));
         }
         await batch.commit();
@@ -106,6 +114,11 @@ final class AssignmentService implements AssignmentServiceContract {
       'studentId',
       isEqualTo: normalizedId,
     );
+
+    // Filtrar solo asignaciones activas (tareas no archivadas)
+    // Si el filtro isActive está explícitamente configurado, usarlo; sino, mostrar solo activas
+    final shouldShowActive = filters?.isActive ?? true;
+    query = query.where('isActive', isEqualTo: shouldShowActive);
 
     if (filters?.status != null) {
       query = query.where('status', isEqualTo: _statusToJson(filters!.status!));
@@ -245,6 +258,48 @@ final class AssignmentService implements AssignmentServiceContract {
       }
     } on FirebaseException catch (error, stackTrace) {
       _logError('deleteAssignmentsByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> updateAssignmentsIsActiveByTaskId(
+    String taskId,
+    bool isActive, {
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      // Filtrar por teacherId si se proporciona (necesario por reglas de seguridad)
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      // Actualizar en lotes de 500
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.update(doc.reference, {'isActive': isActive});
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('updateAssignmentsIsActiveByTaskId', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }

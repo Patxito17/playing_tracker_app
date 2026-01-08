@@ -61,6 +61,7 @@ void main() {
       'assignedAt': Timestamp.fromDate(DateTime(2025, 1, 5)),
       'sessionsCount': 0,
       'totalDurationLogged': 0,
+      'isActive': true,
     });
     await collection.doc('a2').set({
       'id': 'a2',
@@ -74,6 +75,7 @@ void main() {
       'assignedAt': Timestamp.fromDate(DateTime(2024, 12, 20)),
       'sessionsCount': 0,
       'totalDurationLogged': 0,
+      'isActive': true,
     });
 
     final TaskFilters filters = (
@@ -118,6 +120,7 @@ void main() {
       'assignedAt': now,
       'sessionsCount': 0,
       'totalDurationLogged': 0,
+      'isActive': true,
     });
 
     final assignment = await service.getAssignmentById('a3');

@@ -95,5 +95,6 @@ AssignmentModel _assignmentModel() {
     sessionsCount: 0,
     totalDurationLogged: 0,
     lastSessionDate: null,
+    isActive: true,
   );
 }

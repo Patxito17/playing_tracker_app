@@ -46,7 +46,22 @@ final class TaskRepositoryImpl implements TaskRepository {
   Future<void> updateTask(UpdateTaskInput input) async {
     validateUpdateTaskInput(input);
     try {
+      // 1. Actualizar la tarea
       await _taskService.updateTask(input);
+
+      // 2. Si se está cambiando el campo isActive, propagar el cambio a las asignaciones
+      if (input.isActive != null) {
+        // Obtener la tarea para conocer el teacherId
+        final task = await _taskService.getTaskById(input.taskId);
+        final teacherId = task?.createdBy;
+
+        // Propagar el cambio a todas las asignaciones de esta tarea
+        await _assignmentService.updateAssignmentsIsActiveByTaskId(
+          input.taskId,
+          input.isActive!,
+          teacherId: teacherId,
+        );
+      }
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'updateTask',
