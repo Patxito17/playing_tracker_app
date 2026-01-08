@@ -39,16 +39,28 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicializamos la suscripción al stream de tareas en initState si el cubit
-    // está en estado inicial, para garantizar que se establezca correctamente.
+    // En el detalle de tarea, necesitamos asegurarnos de que el docente pueda ver
+    // TODAS las tareas (activas e inactivas), ya que puede querer activar/desactivar
+    // cualquier tarea desde aquí.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final cubit = context.read<TaskCubit>();
-      final state = cubit.state;
-      if (state is TaskInitial) {
-        final authState = context.read<AuthCubit>().state;
-        if (authState is AuthAuthenticated) {
-          cubit.watchTasks(teacherId: authState.userId);
-        }
+      final authState = context.read<AuthCubit>().state;
+      if (authState is AuthAuthenticated) {
+        final cubit = context.read<TaskCubit>();
+
+        // Aplicar filtros para mostrar todas las tareas sin importar si están activas
+        cubit.watchTasks(
+          teacherId: authState.userId,
+          filters: (
+            isActive: null, // null = mostrar tanto activas como inactivas
+            createdFrom: null,
+            createdTo: null,
+            dueFrom: null,
+            dueTo: null,
+            status: null,
+            assignedFrom: null,
+            assignedTo: null,
+          ),
+        );
       }
     });
   }
@@ -186,6 +198,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               state.action == TaskAction.deleted) {
             context.go(AppRoutes.taskList);
           }
+        },
+        buildWhen: (previous, current) {
+          // No reconstruir cuando es TaskActionSuccess (excepto deleted)
+          // Esto mantiene la UI visible mientras el stream actualiza los datos
+          if (current is TaskActionSuccess) {
+            return current.action == TaskAction.deleted;
+          }
+          return true;
         },
         builder: (context, state) {
           if (state is TaskLoading || state is TaskInitial) {
