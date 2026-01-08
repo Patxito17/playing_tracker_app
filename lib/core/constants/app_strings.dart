@@ -394,6 +394,25 @@ class TaskStrings {
   static const String assignedAt = 'Asignada el';
   static const String durationSuggested = 'Duración sugerida';
 
+  // Mensajes de fecha límite
+  static String daysRemaining(int days) => 'Faltan $days días';
+  static const String dueTomorrow = '¡Vence mañana!';
+  static const String dueToday = '¡Vence hoy!';
+  static String overdueDays(int days) => 'Vencida hace $days días';
+  static const String noDueDate = 'Sin fecha límite';
+
+  // Mensajes motivadores de tiempo de estudio
+  static String studyTimeRemaining(String time) =>
+      '¡Ánimo! Te quedan $time para alcanzar tu objetivo';
+  static String extraStudyTime(String time) =>
+      '🎉 ¡Increíble! Has estudiado $time extra. ¡Sigue así!';
+  static const String studyGoalReached =
+      '✅ ¡Objetivo cumplido! Has completado el tiempo sugerido';
+
+  // Diálogo de progreso
+  static const String taskProgressTitle = 'Tu progreso';
+  static const String keepGoing = '¡Tú puedes!';
+
   /// Formatea una fecha corta en formato dd/MM/yyyy para usar en filtros.
   static String formatShortDate(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}/'

@@ -93,6 +93,10 @@ class AssignmentModel {
   /// Cuando false, la tarea está archivada y no debe mostrarse al estudiante
   final bool isActive;
 
+  /// Fecha límite de la tarea (denormalizado desde TaskModel)
+  @TimestampConverter()
+  final Timestamp? dueDate;
+
   /// Constructor del modelo de asignación
   const AssignmentModel({
     required this.id,
@@ -110,6 +114,7 @@ class AssignmentModel {
     this.totalDurationLogged = 0,
     this.lastSessionDate,
     this.isActive = true,
+    this.dueDate,
   });
 
   /// Crea una instancia desde un mapa JSON
@@ -160,6 +165,7 @@ class AssignmentModel {
     int? totalDurationLogged,
     Timestamp? lastSessionDate,
     bool? isActive,
+    Timestamp? dueDate,
   }) {
     return AssignmentModel(
       id: id ?? this.id,
@@ -177,8 +183,29 @@ class AssignmentModel {
       totalDurationLogged: totalDurationLogged ?? this.totalDurationLogged,
       lastSessionDate: lastSessionDate ?? this.lastSessionDate,
       isActive: isActive ?? this.isActive,
+      dueDate: dueDate ?? this.dueDate,
     );
   }
+
+  /// Calcula los días restantes hasta la fecha límite
+  /// Retorna null si no hay fecha límite definida
+  int? get daysRemaining {
+    if (dueDate == null) return null;
+    final now = DateTime.now();
+    final due = dueDate!.toDate();
+    final difference = due.difference(now);
+    return difference.inDays;
+  }
+
+  /// Calcula el tiempo de estudio restante en segundos
+  /// Puede ser negativo si el alumno ha estudiado más del tiempo sugerido
+  int get studyTimeRemaining {
+    final suggested = durationSuggested ?? 0;
+    return suggested - totalDurationLogged;
+  }
+
+  /// Indica si el alumno ha estudiado más del tiempo sugerido
+  bool get hasExtraStudyTime => studyTimeRemaining < 0;
 
   @override
   bool operator ==(Object other) =>
@@ -199,7 +226,8 @@ class AssignmentModel {
           sessionsCount == other.sessionsCount &&
           totalDurationLogged == other.totalDurationLogged &&
           lastSessionDate == other.lastSessionDate &&
-          isActive == other.isActive;
+          isActive == other.isActive &&
+          dueDate == other.dueDate;
 
   @override
   int get hashCode =>
@@ -217,7 +245,8 @@ class AssignmentModel {
       sessionsCount.hashCode ^
       totalDurationLogged.hashCode ^
       lastSessionDate.hashCode ^
-      isActive.hashCode;
+      isActive.hashCode ^
+      (dueDate?.hashCode ?? 0);
 
   @override
   String toString() =>

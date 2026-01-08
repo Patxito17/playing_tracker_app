@@ -105,6 +105,7 @@ final class FanOutHelper implements FanOutHelperContract {
           taskTitle: context.task.title,
           taskDescription: context.task.description,
           durationSuggested: context.task.durationSuggested,
+          dueDate: context.task.dueDate,
         ),
     ];
     await _assignmentService.createAssignmentsBatch(payloads);

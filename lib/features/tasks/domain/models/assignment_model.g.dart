@@ -31,6 +31,10 @@ AssignmentModel _$AssignmentModelFromJson(Map<String, dynamic> json) =>
         const TimestampConverter().fromJson,
       ),
       isActive: json['isActive'] as bool? ?? true,
+      dueDate: _$JsonConverterFromJson<Object, Timestamp>(
+        json['dueDate'],
+        const TimestampConverter().fromJson,
+      ),
     );
 
 Map<String, dynamic> _$AssignmentModelToJson(AssignmentModel instance) =>
@@ -56,6 +60,10 @@ Map<String, dynamic> _$AssignmentModelToJson(AssignmentModel instance) =>
         const TimestampConverter().toJson,
       ),
       'isActive': instance.isActive,
+      'dueDate': _$JsonConverterToJson<Object, Timestamp>(
+        instance.dueDate,
+        const TimestampConverter().toJson,
+      ),
     };
 
 const _$TaskStatusEnumMap = {
