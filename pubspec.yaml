@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # UI y Tema
-  google_fonts: ^6.2.1          # Fuentes personalizadas
+  google_fonts: ^7.0.0          # Fuentes personalizadas
 
   # Navegación
   go_router: ^17.0.0            # Navegación declarativa
