@@ -16,6 +16,7 @@ typedef AssignmentFanOutData = ({
   String? taskDescription,
   int durationSuggested,
   Timestamp? dueDate,
+  TaskStatus? status,
 });
 
 /// Contrato para interactuar con la colección `assignments`.
@@ -34,15 +35,37 @@ abstract interface class AssignmentServiceContract {
     int limit,
   });
 
+  Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
+    required String taskId,
+    required String classId,
+    String? teacherId,
+  });
+
   Future<AssignmentModel?> getAssignmentById(String assignmentId);
 
   Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
+
+  /// Actualiza la información básica de todas las asignaciones de una tarea
+  Future<void> updateAssignmentsInfoByTaskId(
+    String taskId, {
+    String? title,
+    String? description,
+    int? durationSuggested,
+    Timestamp? dueDate,
+    String? teacherId,
+  });
 
   /// Actualiza el campo isActive de todas las asignaciones de una tarea
   Future<void> updateAssignmentsIsActiveByTaskId(
     String taskId,
     bool isActive, {
     String? teacherId,
+  });
+
+  Future<void> deleteSpecificAssignments({
+    required String taskId,
+    required String classId,
+    required List<String> studentIds,
   });
 }
 
@@ -73,7 +96,10 @@ final class AssignmentService implements AssignmentServiceContract {
             assignment.studentId,
           );
           final docRef = _assignmentsCollection.doc(assignmentId);
-          batch.set(docRef, {
+
+          // Usamos set con merge: true para CREAR si no existe o ACTUALIZAR info básica
+          // sin machacar el progreso del alumno (status, completedAt, etc.)
+          final payload = {
             'id': assignmentId,
             'taskId': assignment.taskId,
             'studentId': assignment.studentId,
@@ -82,15 +108,16 @@ final class AssignmentService implements AssignmentServiceContract {
             'taskTitle': assignment.taskTitle,
             'taskDescription': assignment.taskDescription,
             'durationSuggested': assignment.durationSuggested,
-            'status': _statusToJson(TaskStatus.pending),
             'assignedAt': FieldValue.serverTimestamp(),
-            'completedAt': null,
-            'sessionsCount': 0,
-            'totalDurationLogged': 0,
-            'lastSessionDate': null,
             'isActive': true,
             'dueDate': assignment.dueDate,
-          }, SetOptions(merge: false));
+          };
+
+          if (assignment.status != null) {
+            payload['status'] = _statusToJson(assignment.status!);
+          }
+
+          batch.set(docRef, payload, SetOptions(merge: true));
         }
         await batch.commit();
       }
@@ -206,6 +233,47 @@ final class AssignmentService implements AssignmentServiceContract {
   }
 
   @override
+  Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
+    required String taskId,
+    required String classId,
+    String? teacherId,
+  }) async {
+    final sanitizedTaskId = taskId.trim();
+    final sanitizedClassId = classId.trim();
+    if (sanitizedTaskId.isEmpty || sanitizedClassId.isEmpty) {
+      throw ArgumentError('Tarea y Clase son obligatorias');
+    }
+    try {
+      log(
+        'AssignmentService: Consultando asignaciones. Task: $sanitizedTaskId, Class: $sanitizedClassId, Teacher: $teacherId',
+        name: 'AssignmentService',
+      );
+      Query<Map<String, dynamic>> query = _assignmentsCollection
+          .where('taskId', isEqualTo: sanitizedTaskId)
+          .where('classId', isEqualTo: sanitizedClassId);
+
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+      log(
+        'AssignmentService: Consulta exitosa. Encontrados: ${snapshot.docs.length}',
+        name: 'AssignmentService',
+      );
+      return snapshot.docs.map(_mapSnapshot).toList();
+    } on FirebaseException catch (error, stackTrace) {
+      log(
+        'AssignmentService: ERROR de permisos o consulta. Code: ${error.code}, Message: ${error.message}',
+        name: 'AssignmentService',
+        error: error,
+      );
+      _logError('getAssignmentsByTaskAndClass', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
   Future<AssignmentModel?> getAssignmentById(String assignmentId) async {
     final sanitizedId = assignmentId.trim();
     if (sanitizedId.isEmpty) {
@@ -265,6 +333,58 @@ final class AssignmentService implements AssignmentServiceContract {
   }
 
   @override
+  Future<void> updateAssignmentsInfoByTaskId(
+    String taskId, {
+    String? title,
+    String? description,
+    int? durationSuggested,
+    Timestamp? dueDate,
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+      if (snapshot.docs.isEmpty) return;
+
+      final updates = <String, dynamic>{};
+      if (title != null) updates['taskTitle'] = title;
+      if (description != null) updates['taskDescription'] = description;
+      if (durationSuggested != null) {
+        updates['durationSuggested'] = durationSuggested;
+      }
+      if (dueDate != null) updates['dueDate'] = dueDate;
+
+      if (updates.isEmpty) return;
+
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.update(doc.reference, updates);
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('updateAssignmentsInfoByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
   Future<void> updateAssignmentsIsActiveByTaskId(
     String taskId,
     bool isActive, {
@@ -302,6 +422,27 @@ final class AssignmentService implements AssignmentServiceContract {
       }
     } on FirebaseException catch (error, stackTrace) {
       _logError('updateAssignmentsIsActiveByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> deleteSpecificAssignments({
+    required String taskId,
+    required String classId,
+    required List<String> studentIds,
+  }) async {
+    if (studentIds.isEmpty) return;
+
+    try {
+      final batch = _firestore.batch();
+      for (final studentId in studentIds) {
+        final assignmentId = AssignmentModel.generateId(taskId, studentId);
+        batch.delete(_assignmentsCollection.doc(assignmentId));
+      }
+      await batch.commit();
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('deleteSpecificAssignments', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_strings.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_state.dart';
 
@@ -167,6 +168,19 @@ final class TaskCubit extends Cubit<TaskState> {
     } catch (error) {
       emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
     }
+  }
+
+  /// Obtiene las asignaciones actuales de una tarea para una clase.
+  Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
+    required String taskId,
+    required String classId,
+    String? teacherId,
+  }) async {
+    return _repository.getAssignmentsByTaskAndClass(
+      taskId: taskId,
+      classId: classId,
+      teacherId: teacherId,
+    );
   }
 
   @override

@@ -28,6 +28,7 @@ void main() {
           taskDescription: 'Descripción 1',
           durationSuggested: 900,
           dueDate: Timestamp.fromDate(DateTime(2026, 1, 30)),
+          status: TaskStatus.pending,
         ),
         (
           taskId: 'task-1',
@@ -38,6 +39,7 @@ void main() {
           taskDescription: 'Descripción 1',
           durationSuggested: 900,
           dueDate: null,
+          status: null,
         ),
       ];
 

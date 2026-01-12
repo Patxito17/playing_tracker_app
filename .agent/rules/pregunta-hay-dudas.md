@@ -1,0 +1,5 @@
+---
+trigger: always_on
+---
+
+Si hay algo que genere dudas con respecto al prompt que te he dado, pregunta siempre para que puedas ser lo más eficaz posible y lo más exacto con lo que te quiera pedir.
