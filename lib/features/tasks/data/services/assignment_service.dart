@@ -38,6 +38,16 @@ abstract interface class AssignmentServiceContract {
 
   Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
 
+  /// Actualiza la información básica de todas las asignaciones de una tarea
+  Future<void> updateAssignmentsInfoByTaskId(
+    String taskId, {
+    String? title,
+    String? description,
+    int? durationSuggested,
+    Timestamp? dueDate,
+    String? teacherId,
+  });
+
   /// Actualiza el campo isActive de todas las asignaciones de una tarea
   Future<void> updateAssignmentsIsActiveByTaskId(
     String taskId,
@@ -260,6 +270,58 @@ final class AssignmentService implements AssignmentServiceContract {
       }
     } on FirebaseException catch (error, stackTrace) {
       _logError('deleteAssignmentsByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> updateAssignmentsInfoByTaskId(
+    String taskId, {
+    String? title,
+    String? description,
+    int? durationSuggested,
+    Timestamp? dueDate,
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+      if (snapshot.docs.isEmpty) return;
+
+      final updates = <String, dynamic>{};
+      if (title != null) updates['taskTitle'] = title;
+      if (description != null) updates['taskDescription'] = description;
+      if (durationSuggested != null) {
+        updates['durationSuggested'] = durationSuggested;
+      }
+      if (dueDate != null) updates['dueDate'] = dueDate;
+
+      if (updates.isEmpty) return;
+
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.update(doc.reference, updates);
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('updateAssignmentsInfoByTaskId', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }
