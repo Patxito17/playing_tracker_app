@@ -29,6 +29,11 @@ import '../../features/sessions/presentation/screens/session_history_screen.dart
 import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
+import '../../features/tasks/data/repositories/task_repository_impl.dart';
+import '../../features/tasks/presentation/cubit/assignment_cubit.dart';
+import '../../features/tasks/presentation/cubit/task_cubit.dart';
+import '../../features/tasks/presentation/screens/assignment_detail_screen.dart';
+import '../../features/tasks/presentation/screens/assignment_list_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../../features/tasks/presentation/screens/task_list_screen.dart';
@@ -77,6 +82,10 @@ class AppRoutes {
   static const String taskList = '/tasks';
   static const String createTask = '/tasks/create';
   static const String taskDetail = '/tasks/:taskId';
+
+  // Rutas de Asignaciones (Alumno)
+  static const String assignmentList = '/assignments';
+  static const String assignmentDetail = '/assignments/:assignmentId';
 
   // Rutas de Sesiones
   static const String timer = '/timer/:taskId';
@@ -362,19 +371,114 @@ class AppRoutes {
       GoRoute(
         path: taskList,
         name: 'taskList',
-        builder: (context, state) => const TaskListScreen(),
+        builder: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.teacher) {
+            return const ErrorScreen(
+              errorMessage: 'No se pudieron cargar las tareas del docente.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => TaskCubit(TaskRepositoryImpl()),
+            child: const TaskListScreen(),
+          );
+        },
       ),
       GoRoute(
         path: createTask,
         name: 'createTask',
-        builder: (context, state) => const CreateTaskScreen(),
+        builder: (context, state) {
+          final extraCubit = state.extra;
+          return MultiBlocProvider(
+            providers: [
+              if (extraCubit is TaskCubit)
+                BlocProvider<TaskCubit>.value(value: extraCubit)
+              else
+                BlocProvider(
+                  create: (context) => TaskCubit(TaskRepositoryImpl()),
+                ),
+              BlocProvider(
+                create: (context) =>
+                    ClassCubit(context.read<ClassRepository>()),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    MembershipCubit(context.read<ClassRepository>()),
+              ),
+            ],
+            child: const CreateTaskScreen(),
+          );
+        },
       ),
       GoRoute(
         path: taskDetail,
         name: 'taskDetail',
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          return TaskDetailScreen(taskId: taskId);
+          final extraCubit = state.extra;
+          if (extraCubit is TaskCubit) {
+            return BlocProvider<TaskCubit>.value(
+              value: extraCubit,
+              child: TaskDetailScreen(taskId: taskId),
+            );
+          }
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.teacher) {
+            return const ErrorScreen(
+              errorMessage: 'No se pudo cargar el detalle de la tarea.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => TaskCubit(TaskRepositoryImpl()),
+            child: TaskDetailScreen(taskId: taskId),
+          );
+        },
+      ),
+
+      // Rutas de asignaciones (alumno)
+      GoRoute(
+        path: assignmentList,
+        name: 'assignmentList',
+        builder: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.student) {
+            return const ErrorScreen(
+              errorMessage:
+                  'No se pudieron cargar las asignaciones del alumno.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => AssignmentCubit(TaskRepositoryImpl()),
+            child: const AssignmentListScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: assignmentDetail,
+        name: 'assignmentDetail',
+        builder: (context, state) {
+          final assignmentId = state.pathParameters['assignmentId'] ?? '';
+          final extraCubit = state.extra;
+          if (extraCubit is AssignmentCubit) {
+            return BlocProvider<AssignmentCubit>.value(
+              value: extraCubit,
+              child: AssignmentDetailScreen(assignmentId: assignmentId),
+            );
+          }
+          final authState = context.read<AuthCubit>().state;
+          if (authState is! AuthAuthenticated ||
+              authState.role != UserRole.student) {
+            return const ErrorScreen(
+              errorMessage: 'No se pudo cargar el detalle de la asignación.',
+            );
+          }
+          return BlocProvider(
+            create: (context) => AssignmentCubit(TaskRepositoryImpl()),
+            child: AssignmentDetailScreen(assignmentId: assignmentId),
+          );
         },
       ),
 

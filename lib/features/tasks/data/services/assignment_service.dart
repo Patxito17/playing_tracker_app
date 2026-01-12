@@ -1,0 +1,357 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/value_objects/task_filters.dart';
+
+/// Datos necesarios para crear asignaciones durante un fan-out.
+typedef AssignmentFanOutData = ({
+  String taskId,
+  String studentId,
+  String teacherId,
+  String classId,
+  String taskTitle,
+  String? taskDescription,
+  int durationSuggested,
+  Timestamp? dueDate,
+});
+
+/// Contrato para interactuar con la colección `assignments`.
+abstract interface class AssignmentServiceContract {
+  Future<void> createAssignmentsBatch(List<AssignmentFanOutData> assignments);
+
+  Stream<List<AssignmentModel>> watchStudentAssignments({
+    required String studentId,
+    TaskFilters? filters,
+    int limit,
+  });
+
+  Stream<List<AssignmentModel>> watchClassAssignments({
+    required String classId,
+    String? teacherId,
+    int limit,
+  });
+
+  Future<AssignmentModel?> getAssignmentById(String assignmentId);
+
+  Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
+
+  /// Actualiza el campo isActive de todas las asignaciones de una tarea
+  Future<void> updateAssignmentsIsActiveByTaskId(
+    String taskId,
+    bool isActive, {
+    String? teacherId,
+  });
+}
+
+/// Servicio centrado en operaciones de la colección `assignments`.
+final class AssignmentService implements AssignmentServiceContract {
+  AssignmentService({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
+
+  final FirebaseFirestore _firestore;
+
+  CollectionReference<Map<String, dynamic>> get _assignmentsCollection =>
+      _firestore.collection(_assignmentsCollectionName);
+
+  @override
+  Future<void> createAssignmentsBatch(
+    List<AssignmentFanOutData> assignments,
+  ) async {
+    if (assignments.isEmpty) {
+      return;
+    }
+    try {
+      final chunks = _chunkAssignments(assignments, _batchWriteLimit);
+      for (final chunk in chunks) {
+        final batch = _firestore.batch();
+        for (final assignment in chunk) {
+          final assignmentId = AssignmentModel.generateId(
+            assignment.taskId,
+            assignment.studentId,
+          );
+          final docRef = _assignmentsCollection.doc(assignmentId);
+          batch.set(docRef, {
+            'id': assignmentId,
+            'taskId': assignment.taskId,
+            'studentId': assignment.studentId,
+            'teacherId': assignment.teacherId,
+            'classId': assignment.classId,
+            'taskTitle': assignment.taskTitle,
+            'taskDescription': assignment.taskDescription,
+            'durationSuggested': assignment.durationSuggested,
+            'status': _statusToJson(TaskStatus.pending),
+            'assignedAt': FieldValue.serverTimestamp(),
+            'completedAt': null,
+            'sessionsCount': 0,
+            'totalDurationLogged': 0,
+            'lastSessionDate': null,
+            'isActive': true,
+            'dueDate': assignment.dueDate,
+          }, SetOptions(merge: false));
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('createAssignmentsBatch', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Stream<List<AssignmentModel>> watchStudentAssignments({
+    required String studentId,
+    TaskFilters? filters,
+    int limit = _defaultPaginationLimit,
+  }) {
+    final normalizedId = studentId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        ArgumentError('El identificador del alumno es obligatorio'),
+      );
+    }
+    Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+      'studentId',
+      isEqualTo: normalizedId,
+    );
+
+    // Filtrar solo asignaciones activas (tareas no archivadas)
+    // Si el filtro isActive está explícitamente configurado, usarlo; sino, mostrar solo activas
+    final shouldShowActive = filters?.isActive ?? true;
+    query = query.where('isActive', isEqualTo: shouldShowActive);
+
+    if (filters?.status != null) {
+      query = query.where('status', isEqualTo: _statusToJson(filters!.status!));
+    }
+
+    final hasDateRangeFilters =
+        filters?.assignedFrom != null || filters?.assignedTo != null;
+
+    if (filters?.assignedFrom != null) {
+      query = query.where(
+        'assignedAt',
+        isGreaterThanOrEqualTo: Timestamp.fromDate(filters!.assignedFrom!),
+      );
+    }
+    if (filters?.assignedTo != null) {
+      query = query.where(
+        'assignedAt',
+        isLessThanOrEqualTo: Timestamp.fromDate(filters!.assignedTo!),
+      );
+    }
+
+    // Cuando hay filtros de rango de fecha, el orderBy debe ser ASCENDING para
+    // coincidir con el índice compuesto de Firestore. Cuando no hay filtros de
+    // rango, podemos usar DESCENDING para obtener los más recientes primero.
+    query = query.orderBy('assignedAt', descending: !hasDateRangeFilters);
+
+    // Si hay filtros de fecha y un límite, necesitamos obtener más resultados
+    // para poder invertir y luego aplicar el límite correctamente (obtener los
+    // N más recientes en lugar de los N más antiguos).
+    final effectiveLimit = hasDateRangeFilters && limit > 0 ? limit * 2 : limit;
+
+    if (effectiveLimit > 0) {
+      query = query.limit(effectiveLimit);
+    }
+
+    return query.snapshots().map((snapshot) {
+      final assignments = snapshot.docs.map(_mapSnapshot).toList();
+      // Si usamos orden ascendente por los filtros de fecha, invertimos la
+      // lista para mantener la consistencia (más recientes primero) y luego
+      // aplicamos el límite original.
+      if (hasDateRangeFilters) {
+        final reversed = assignments.reversed.toList();
+        if (limit > 0 && reversed.length > limit) {
+          return reversed.take(limit).toList();
+        }
+        return reversed;
+      }
+      return assignments;
+    });
+  }
+
+  @override
+  Stream<List<AssignmentModel>> watchClassAssignments({
+    required String classId,
+    String? teacherId,
+    int limit = _defaultPaginationLimit,
+  }) {
+    final normalizedId = classId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        ArgumentError('El identificador de la clase es obligatorio'),
+      );
+    }
+    Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+      'classId',
+      isEqualTo: normalizedId,
+    );
+
+    if (teacherId != null && teacherId.isNotEmpty) {
+      query = query.where('teacherId', isEqualTo: teacherId);
+    }
+
+    // Ordenar por fecha de asignación descendente
+    query = query.orderBy('assignedAt', descending: true);
+
+    if (limit > 0) {
+      query = query.limit(limit);
+    }
+
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),
+    );
+  }
+
+  @override
+  Future<AssignmentModel?> getAssignmentById(String assignmentId) async {
+    final sanitizedId = assignmentId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la asignación es obligatorio');
+    }
+    try {
+      final snapshot = await _assignmentsCollection.doc(sanitizedId).get();
+      if (!snapshot.exists) {
+        return null;
+      }
+      return _mapSnapshot(snapshot);
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('getAssignmentById', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> deleteAssignmentsByTaskId(
+    String taskId, {
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      // Necessary regarding 'Rules are not filters'
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      // Batch delete in chunks of 500
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('deleteAssignmentsByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> updateAssignmentsIsActiveByTaskId(
+    String taskId,
+    bool isActive, {
+    String? teacherId,
+  }) async {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      throw ArgumentError('El identificador de la tarea es obligatorio');
+    }
+    try {
+      Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+        'taskId',
+        isEqualTo: sanitizedId,
+      );
+
+      // Filtrar por teacherId si se proporciona (necesario por reglas de seguridad)
+      if (teacherId != null && teacherId.isNotEmpty) {
+        query = query.where('teacherId', isEqualTo: teacherId);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      // Actualizar en lotes de 500
+      for (var i = 0; i < snapshot.docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit)
+            .clamp(0, snapshot.docs.length)
+            .toInt();
+        final batch = _firestore.batch();
+        for (final doc in snapshot.docs.sublist(i, end)) {
+          batch.update(doc.reference, {'isActive': isActive});
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('updateAssignmentsIsActiveByTaskId', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  Iterable<List<AssignmentFanOutData>> _chunkAssignments(
+    List<AssignmentFanOutData> assignments,
+    int size,
+  ) sync* {
+    for (var i = 0; i < assignments.length; i += size) {
+      final end = (i + size).clamp(0, assignments.length).toInt();
+      yield assignments.sublist(i, end);
+    }
+  }
+
+  AssignmentModel _mapSnapshot(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final data = snapshot.data();
+    if (data == null) {
+      throw FirebaseErrorMapperException(
+        'La asignación solicitada no contiene datos.',
+      );
+    }
+    data['id'] = data['id'] ?? snapshot.id;
+    data['assignedAt'] =
+        data['assignedAt'] ?? Timestamp.fromDate(DateTime.now());
+    return AssignmentModel.fromJson(data);
+  }
+
+  String _statusToJson(TaskStatus status) {
+    return switch (status) {
+      TaskStatus.pending => 'pending',
+      TaskStatus.inProgress => 'in_progress',
+      TaskStatus.completed => 'completed',
+    };
+  }
+
+  void _logError(
+    String method,
+    FirebaseException error,
+    StackTrace stackTrace,
+  ) {
+    log(
+      'AssignmentService#$method FirebaseException: ${error.code}',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+}
+
+const _assignmentsCollectionName = 'assignments';
+const _batchWriteLimit = 500;
+const _defaultPaginationLimit = 50;

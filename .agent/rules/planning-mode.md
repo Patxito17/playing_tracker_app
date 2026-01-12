@@ -1,0 +1,5 @@
+---
+trigger: always_on
+---
+
+Cuando te pida que hagas un plan de desarrollo, siempre debe de estar todo en español para que pueda entenderte mejor.

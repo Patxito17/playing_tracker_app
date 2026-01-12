@@ -7,7 +7,7 @@ import 'package:playing_tracker/features/classes/domain/value_objects/join_class
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_state.dart';
 
 /// Cubit encargado de las operaciones de membresías (alumnos en clases).
-final class MembershipCubit extends Cubit<MembershipState> {
+class MembershipCubit extends Cubit<MembershipState> {
   MembershipCubit(this._repository) : super(const MembershipInitial());
 
   final ClassRepository _repository;

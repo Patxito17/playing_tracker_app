@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -19,53 +24,83 @@ class ClassTasksTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Datos mock de tareas
-    final mockTasks = [
-      {'id': 'task1', 'title': 'Escala de Do Mayor', 'assignedTo': 12},
-      {'id': 'task2', 'title': 'Arpegios de Do Menor', 'assignedTo': 8},
-      {'id': 'task3', 'title': 'Ejercicio de velocidad', 'assignedTo': 15},
-    ];
+    final authState = context.read<AuthCubit>().state;
+    final teacherId = authState is AuthAuthenticated ? authState.userId : null;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CustomButton(
-            label: TaskStrings.createTask,
-            variant: CustomButtonVariant.filled,
-            icon: Icons.add,
-            onPressed: () => context.push(AppRoutes.createTask),
-          ),
-          const SizedBox(height: AppSpacing.m),
-          if (mockTasks.isEmpty)
-            _EmptyState(
-              icon: Icons.assignment_outlined,
-              title: TaskStrings.noTasksInClass,
-              subtitle: TaskStrings.createFirstTask,
-              actionLabel: TaskStrings.createTask,
-              onAction: () => context.push(AppRoutes.createTask),
-            )
-          else
-            ...mockTasks.map((taskData) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                child: CustomCard(
-                  title: taskData['title'] as String,
-                  subtitle:
-                      '${TaskStrings.assignedTo} ${taskData['assignedTo']} ${TaskStrings.studentsLabel}',
-                  onTap: () => context.push(
-                    AppRoutes.taskDetail.replaceAll(
-                      ':taskId',
-                      taskData['id'] as String,
-                    ),
-                  ),
-                  child: const SizedBox.shrink(),
-                ),
-              );
-            }),
-        ],
+    return StreamBuilder<List<AssignmentModel>>(
+      stream: context.read<TaskRepository>().watchClassAssignments(
+        classId,
+        teacherId: teacherId,
       ),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              TaskStrings.taskGenericError,
+              style: context.bodyMediumOnSurfaceVariant,
+            ),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final assignments = snapshot.data ?? [];
+
+        // Agrupar asignaciones por taskId
+        final tasksGrouped = <String, List<AssignmentModel>>{};
+        for (final assignment in assignments) {
+          tasksGrouped.putIfAbsent(assignment.taskId, () => []).add(assignment);
+        }
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.m),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomButton(
+                label: TaskStrings.createTask,
+                variant: CustomButtonVariant.filled,
+                icon: Icons.add,
+                onPressed: () => context.push(AppRoutes.createTask),
+              ),
+              const SizedBox(height: AppSpacing.m),
+              if (tasksGrouped.isEmpty)
+                _EmptyState(
+                  icon: Icons.assignment_outlined,
+                  title: TaskStrings.noTasksInClass,
+                  subtitle: TaskStrings.createFirstTask,
+                  actionLabel: TaskStrings.createTask,
+                  onAction: () => context.push(AppRoutes.createTask),
+                )
+              else
+                ...tasksGrouped.entries.map((entry) {
+                  final taskId = entry.key;
+                  final taskAssignments = entry.value;
+                  // Usamos el título del primer assignment (todos deberían ser iguales para la misma task)
+                  final taskTitle =
+                      taskAssignments.first.taskTitle ?? 'Sin título';
+                  final count = taskAssignments.length;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                    child: CustomCard(
+                      title: taskTitle,
+                      subtitle:
+                          '${TaskStrings.assignedTo} $count ${TaskStrings.studentsLabel}',
+                      onTap: () => context.pushNamed(
+                        'taskDetail',
+                        pathParameters: {'taskId': taskId},
+                      ),
+                      child: const SizedBox.shrink(),
+                    ),
+                  );
+                }),
+            ],
+          ),
+        );
+      },
     );
   }
 }

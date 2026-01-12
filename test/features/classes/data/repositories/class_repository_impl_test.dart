@@ -125,18 +125,12 @@ void main() {
     },
   );
 
-  test('fanOutTask delega en FanOutHelper y ClassService', () async {
+  test('fanOutTask delega en FanOutHelper', () async {
     when(
       () => fanOutHelper.prepareFanOut(any(), any()),
     ).thenAnswer((_) async {});
     when(
       () => fanOutHelper.propagateToAssignments(any(), any()),
-    ).thenAnswer((_) async {});
-    when(
-      () => classService.fanOutTaskHook(
-        taskId: any(named: 'taskId'),
-        classId: any(named: 'classId'),
-      ),
     ).thenAnswer((_) async {});
 
     await repository.fanOutTask(taskId: 'task-123', classId: 'class-456');
@@ -144,10 +138,6 @@ void main() {
     verify(() => fanOutHelper.prepareFanOut('task-123', 'class-456')).called(1);
     verify(
       () => fanOutHelper.propagateToAssignments('task-123', 'class-456'),
-    ).called(1);
-    verify(
-      () =>
-          classService.fanOutTaskHook(taskId: 'task-123', classId: 'class-456'),
     ).called(1);
   });
 }
