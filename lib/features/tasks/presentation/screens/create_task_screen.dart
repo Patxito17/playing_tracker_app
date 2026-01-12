@@ -148,6 +148,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       }
     }
 
+    if (!mounted) return;
     await context.read<TaskCubit>().createTask(input);
   }
 
