@@ -192,6 +192,8 @@ class ClassesStrings {
       'Código de acceso regenerado correctamente.';
   static const String membershipDeleteConfirmation =
       'Esta acción eliminará de forma permanente al alumno de la clase.';
+  static const String membershipRevokedError =
+      'Fuiste eliminado de esta clase. Contacta al profesor para reingresar.';
 }
 
 /// Strings relacionados con navegación
@@ -316,6 +318,7 @@ class TaskStrings {
   static const String createdDate = 'Fecha de creación';
   static const String dueDate = 'Fecha límite';
   static const String recipients = 'Destinatarios';
+  static const String description = 'Descripción';
   static const String attachments = 'Adjuntos';
   static const String minutes = 'minutos';
   static const String hours = 'horas';
@@ -327,15 +330,26 @@ class TaskStrings {
   static const String pending = 'Pendiente';
   static const String inProgress = 'En progreso';
   static const String completed = 'Completada';
+  static const String active = 'Activa';
+  static const String archived = 'Archivada';
 
   // Filtros
   static const String filters = 'Filtros';
+  static const String filterByActiveStatus = 'Filtrar por estado activo';
   static const String filterByStatus = 'Filtrar por estado';
   static const String filterByDate = 'Filtrar por fecha';
   static const String filterByClass = 'Filtrar por clase';
   static const String allStatuses = 'Todos los estados';
   static const String allDates = 'Todas las fechas';
   static const String allClasses = 'Todas las clases';
+  static const String showActiveOnly = 'Mostrar solo tareas activas';
+  static const String showArchivedOnly = 'Mostrar solo tareas archivadas';
+  static const String selectDueDate = 'Fecha de vencimiento';
+  static const String selectCreatedDate = 'Fecha de creación';
+  static const String applyFilters = 'Aplicar filtros';
+  static const String clearFilters = 'Limpiar filtros';
+  static const String fromLabel = 'Desde';
+  static const String toLabel = 'Hasta';
 
   // Estados vacíos
   static const String noTasksInClass = 'No hay tareas en esta clase';
@@ -345,6 +359,65 @@ class TaskStrings {
   static const String noTasksFound = 'No se encontraron tareas';
   static const String adjustFilters =
       'Ajusta los filtros para ver más resultados';
+
+  // Mensajes de acciones
+  static const String taskCreateSuccess = 'Tarea creada correctamente.';
+  static const String taskUpdateSuccess = 'Tarea actualizada correctamente.';
+  static const String taskDeleteSuccess = 'Tarea eliminada correctamente.';
+  static const String taskAssignSuccess = 'Tarea asignada correctamente.';
+  static const String confirmDeleteTask = 'Confirmar eliminación de tarea';
+  static const String confirmDeleteTaskMessage =
+      'Esta acción eliminará la tarea para todos los alumnos. '
+      'Podrás crear una nueva más adelante si lo necesitas.';
+  static const String selectClassToAssign = 'Selecciona la clase destino';
+  static const String assigningTask = 'Asignando tarea...';
+
+  // Errores genéricos
+  static const String taskGenericError =
+      'Ocurrió un error al procesar la tarea. Intenta nuevamente.';
+
+  // Estados vacíos específicos
+  static const String noTasksCreated =
+      'Todavía no has creado ninguna tarea para tus clases.';
+  static const String noAssignmentsReceived =
+      'Aún no tienes tareas asignadas. Tu profesor las verá aquí cuando las publique.';
+
+  // UI de alumno
+  static const String myAssignmentsTitle = 'Mis tareas';
+  static const String assignmentDetailTitle = 'Detalle de tarea';
+  static const String startPractice = 'Iniciar práctica';
+  static const String practiceAvailableSoon =
+      'El cronómetro estará disponible en la próxima versión';
+  static const String filterByAssignmentStatus = 'Filtrar por estado';
+  static const String sessionsCompleted = 'Sesiones completadas';
+  static const String totalPracticeTime = 'Tiempo total practicado';
+  static const String assignedAt = 'Asignada el';
+  static const String durationSuggested = 'Duración sugerida';
+
+  // Mensajes de fecha límite
+  static String daysRemaining(int days) => 'Faltan $days días';
+  static const String dueTomorrow = '¡Vence mañana!';
+  static const String dueToday = '¡Vence hoy!';
+  static String overdueDays(int days) => 'Vencida hace $days días';
+  static const String noDueDate = 'Sin fecha límite';
+
+  // Mensajes motivadores de tiempo de estudio
+  static String studyTimeRemaining(String time) =>
+      '¡Ánimo! Te quedan $time para alcanzar tu objetivo';
+  static String extraStudyTime(String time) =>
+      '🎉 ¡Increíble! Has estudiado $time extra. ¡Sigue así!';
+  static const String studyGoalReached =
+      '✅ ¡Objetivo cumplido! Has completado el tiempo sugerido';
+
+  // Diálogo de progreso
+  static const String taskProgressTitle = 'Tu progreso';
+  static const String keepGoing = '¡Tú puedes!';
+
+  /// Formatea una fecha corta en formato dd/MM/yyyy para usar en filtros.
+  static String formatShortDate(DateTime date) =>
+      '${date.day.toString().padLeft(2, '0')}/'
+      '${date.month.toString().padLeft(2, '0')}/'
+      '${date.year}';
 }
 
 /// Strings relacionados con estudiantes

@@ -53,8 +53,20 @@ class AssignmentModel {
   /// ID del alumno al que se asignó la tarea
   final String studentId;
 
+  /// ID de la clase a la que pertenece la asignación (denormalizado)
+  final String classId;
+
   /// ID del docente que creó/asignó la tarea (campo denormalizado)
   final String teacherId;
+
+  /// Título de la tarea (denormalizado)
+  final String? taskTitle;
+
+  /// Descripción de la tarea (denormalizado)
+  final String? taskDescription;
+
+  /// Duración sugerida de la tarea (denormalizado)
+  final int? durationSuggested;
 
   /// Estado actual de la asignación (pending, inProgress, completed)
   final TaskStatus status;
@@ -77,18 +89,32 @@ class AssignmentModel {
   @TimestampConverter()
   final Timestamp? lastSessionDate;
 
+  /// Indica si la tarea está activa (denormalizado desde TaskModel)
+  /// Cuando false, la tarea está archivada y no debe mostrarse al estudiante
+  final bool isActive;
+
+  /// Fecha límite de la tarea (denormalizado desde TaskModel)
+  @TimestampConverter()
+  final Timestamp? dueDate;
+
   /// Constructor del modelo de asignación
   const AssignmentModel({
     required this.id,
     required this.taskId,
     required this.studentId,
+    required this.classId,
     required this.teacherId,
+    this.taskTitle,
+    this.taskDescription,
+    this.durationSuggested,
     required this.status,
     required this.assignedAt,
     this.completedAt,
     this.sessionsCount = 0,
     this.totalDurationLogged = 0,
     this.lastSessionDate,
+    this.isActive = true,
+    this.dueDate,
   });
 
   /// Crea una instancia desde un mapa JSON
@@ -127,27 +153,59 @@ class AssignmentModel {
     String? id,
     String? taskId,
     String? studentId,
+    String? classId,
     String? teacherId,
+    String? taskTitle,
+    String? taskDescription,
+    int? durationSuggested,
     TaskStatus? status,
     Timestamp? assignedAt,
     Timestamp? completedAt,
     int? sessionsCount,
     int? totalDurationLogged,
     Timestamp? lastSessionDate,
+    bool? isActive,
+    Timestamp? dueDate,
   }) {
     return AssignmentModel(
       id: id ?? this.id,
       taskId: taskId ?? this.taskId,
       studentId: studentId ?? this.studentId,
+      classId: classId ?? this.classId,
       teacherId: teacherId ?? this.teacherId,
+      taskTitle: taskTitle ?? this.taskTitle,
+      taskDescription: taskDescription ?? this.taskDescription,
+      durationSuggested: durationSuggested ?? this.durationSuggested,
       status: status ?? this.status,
       assignedAt: assignedAt ?? this.assignedAt,
       completedAt: completedAt ?? this.completedAt,
       sessionsCount: sessionsCount ?? this.sessionsCount,
       totalDurationLogged: totalDurationLogged ?? this.totalDurationLogged,
       lastSessionDate: lastSessionDate ?? this.lastSessionDate,
+      isActive: isActive ?? this.isActive,
+      dueDate: dueDate ?? this.dueDate,
     );
   }
+
+  /// Calcula los días restantes hasta la fecha límite
+  /// Retorna null si no hay fecha límite definida
+  int? get daysRemaining {
+    if (dueDate == null) return null;
+    final now = DateTime.now();
+    final due = dueDate!.toDate();
+    final difference = due.difference(now);
+    return difference.inDays;
+  }
+
+  /// Calcula el tiempo de estudio restante en segundos
+  /// Puede ser negativo si el alumno ha estudiado más del tiempo sugerido
+  int get studyTimeRemaining {
+    final suggested = durationSuggested ?? 0;
+    return suggested - totalDurationLogged;
+  }
+
+  /// Indica si el alumno ha estudiado más del tiempo sugerido
+  bool get hasExtraStudyTime => studyTimeRemaining < 0;
 
   @override
   bool operator ==(Object other) =>
@@ -157,26 +215,38 @@ class AssignmentModel {
           id == other.id &&
           taskId == other.taskId &&
           studentId == other.studentId &&
+          classId == other.classId &&
           teacherId == other.teacherId &&
+          taskTitle == other.taskTitle &&
+          taskDescription == other.taskDescription &&
+          durationSuggested == other.durationSuggested &&
           status == other.status &&
           assignedAt == other.assignedAt &&
           completedAt == other.completedAt &&
           sessionsCount == other.sessionsCount &&
           totalDurationLogged == other.totalDurationLogged &&
-          lastSessionDate == other.lastSessionDate;
+          lastSessionDate == other.lastSessionDate &&
+          isActive == other.isActive &&
+          dueDate == other.dueDate;
 
   @override
   int get hashCode =>
       id.hashCode ^
       taskId.hashCode ^
       studentId.hashCode ^
+      classId.hashCode ^
       teacherId.hashCode ^
+      (taskTitle?.hashCode ?? 0) ^
+      (taskDescription?.hashCode ?? 0) ^
+      (durationSuggested?.hashCode ?? 0) ^
       status.hashCode ^
       assignedAt.hashCode ^
       completedAt.hashCode ^
       sessionsCount.hashCode ^
       totalDurationLogged.hashCode ^
-      lastSessionDate.hashCode;
+      lastSessionDate.hashCode ^
+      isActive.hashCode ^
+      (dueDate?.hashCode ?? 0);
 
   @override
   String toString() =>

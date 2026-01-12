@@ -13,6 +13,8 @@ import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/classes/data/repositories/class_repository_impl.dart';
 import 'features/classes/domain/repositories/class_repository.dart';
+import 'features/tasks/data/repositories/task_repository_impl.dart';
+import 'features/tasks/domain/repositories/task_repository.dart';
 import 'firebase_options.dart';
 
 /// Punto de entrada de la aplicación Playing Tracker
@@ -51,6 +53,7 @@ class PlayingTrackerApp extends StatefulWidget {
     this.authRepository,
     this.authCubitBuilder,
     this.classRepository,
+    this.taskRepository,
   });
 
   /// Permite inyectar un repositorio custom (por ejemplo en tests).
@@ -61,6 +64,9 @@ class PlayingTrackerApp extends StatefulWidget {
 
   /// Permite inyectar un repositorio custom de clases (útil en pruebas).
   final ClassRepository? classRepository;
+
+  /// Permite inyectar un repositorio custom de tareas.
+  final TaskRepository? taskRepository;
 
   @override
   State<PlayingTrackerApp> createState() => _PlayingTrackerAppState();
@@ -77,11 +83,13 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
   Widget build(BuildContext context) {
     final repository = widget.authRepository ?? AuthRepositoryImpl();
     final classRepository = widget.classRepository ?? ClassRepositoryImpl();
+    final taskRepository = widget.taskRepository ?? TaskRepositoryImpl();
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>.value(value: repository),
         RepositoryProvider<ClassRepository>.value(value: classRepository),
+        RepositoryProvider<TaskRepository>.value(value: taskRepository),
       ],
       child: BlocProvider(
         create: (_) =>

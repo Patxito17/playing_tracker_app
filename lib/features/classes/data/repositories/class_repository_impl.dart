@@ -299,7 +299,6 @@ final class ClassRepositoryImpl implements ClassRepository {
     try {
       await _fanOutHelper.prepareFanOut(taskId, classId);
       await _fanOutHelper.propagateToAssignments(taskId, classId);
-      await _classService.fanOutTaskHook(taskId: taskId, classId: classId);
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'fanOutTask',

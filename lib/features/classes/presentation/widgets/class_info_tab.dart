@@ -122,12 +122,6 @@ class _ClassSummaryCard extends StatelessWidget {
 
     return CustomCard(
       title: classModel.name,
-      subtitle: '${ClassDetailStrings.accessCode}: ${classModel.accessCode}',
-      trailingAction: IconButton(
-        icon: const Icon(Icons.copy_outlined),
-        tooltip: CommonStrings.copy,
-        onPressed: onCopyCode,
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

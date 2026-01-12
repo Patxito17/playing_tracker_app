@@ -50,6 +50,7 @@ void main() {
         classId: any(named: 'classId'),
         limit: any(named: 'limit'),
         startAfterId: any(named: 'startAfterId'),
+        includeInactive: any(named: 'includeInactive'),
       ),
     ).thenAnswer(listMembersAnswer);
 
@@ -118,6 +119,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining(member.studentId), findsOneWidget);
+    expect(find.text('ID del alumno: ${member.studentId}'), findsOneWidget);
   });
 }

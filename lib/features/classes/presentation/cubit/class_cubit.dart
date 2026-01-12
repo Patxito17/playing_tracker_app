@@ -9,8 +9,7 @@ import 'package:playing_tracker/features/classes/presentation/cubit/class_state.
 
 /// Cubit encargado de gestionar la lógica de clases para docentes.
 ///
-/// TODO(Sprint4): evaluar migración a [HydratedCubit] para preservar cache local.
-final class ClassCubit extends Cubit<ClassState> {
+class ClassCubit extends Cubit<ClassState> {
   ClassCubit(this._repository) : super(const ClassInitial());
 
   final ClassRepository _repository;

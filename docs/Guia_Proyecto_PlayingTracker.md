@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 27 de Noviembre 2025
-**Estado del proyecto:** Sprint 3 - Sistema de Clases y Membresías (real-time sync en detalle/listados) 🚧
+**Última actualización:** 08 de Enero 2026
+**Estado del proyecto:** Sprint 5 - Cronómetro y Sesiones de Estudio (Inicio) 🚀
 
 ---
 
@@ -682,9 +682,9 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 4: Gestión de Tareas y Asignaciones
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### ✅ Sprint 4: Gestión de Tareas y Asignaciones
+**Duración:** Diciembre 2025 - Enero 2026
+**Estado:** ✅ Finalizado (Validación de calidad completada)
 
 **Objetivos:**
 - 🎯 **CRUD de tareas** con asignaciones masivas
@@ -702,9 +702,9 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 5: Cronómetro y Sesiones de Estudio
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### 🚀 Sprint 5: Cronómetro y Sesiones de Estudio
+**Duración:** Enero 2026
+**Estado:** 🚧 En progreso
 
 **Objetivos:**
 - ⏱️ **Cronómetro funcional** con controles completos
@@ -767,14 +767,14 @@ service cloud.firestore {
 ```
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
-Sprint 2: ██████░░░░░░░░░░░░ 50% 🚧 Autenticación
-Sprint 3: ███████████░░░░░░░ 70% 🚧 Clases y Membresías (Fase 7 lista)
-Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
-Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
+Sprint 2: ████████████████████ 100% ✅ Autenticación
+Sprint 3: ████████████████████ 100% ✅ Clases y Membresías
+Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
+Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 🚧 Cronómetro y Sesiones
 Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
 Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
 
-Progreso Total: ████░░░░░░░░░░░░░░░ 33% (2 sprints terminados + Sprint 2 en curso + Sprint 3 Fase 7)
+Progreso Total: ███████████░░░░░░░░░ 55% (Sprints 0-4 completados, Sprint 5 iniciando)
 ```
 
 ---

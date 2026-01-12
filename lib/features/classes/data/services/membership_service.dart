@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
@@ -325,14 +326,22 @@ final class MembershipService implements MembershipServiceContract {
     }
   }
 
-  /// Obtiene únicamente los IDs de alumnos para preparar fan-outs.
-  ///
-  /// TODO(Sprint4): Optimizar para fan-outs masivos usando lotes paralelos.
   @override
   Future<List<String>> getStudentsForClass(String classId) async {
     final students = <String>[];
     String? cursor;
+    var loopCount = 0;
+    const maxLoops = 50; // Safety break for ~10k students limit
+
     while (true) {
+      if (loopCount >= maxLoops) {
+        log(
+          'getStudentsForClass: safety break reached after $maxLoops iterations',
+          name: 'MembershipService',
+        );
+        break;
+      }
+
       final page = await listClassMembers(
         classId: classId,
         limit: _fanOutPaginationLimit,
@@ -346,9 +355,9 @@ final class MembershipService implements MembershipServiceContract {
         return students;
       }
       cursor = page.lastDocumentId;
-      // TODO(Sprint4): Considerar cortes de seguridad para evitar loops infinitos
-      // una vez que se implemente fan-out real.
+      loopCount++;
     }
+    return students;
   }
 
   @override
@@ -406,25 +415,18 @@ final class MembershipService implements MembershipServiceContract {
     await _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(membershipRef);
       if (snapshot.exists) {
-        final updateData = <String, dynamic>{
-          'isActive': true,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'classIsActive': classIsActive,
-        };
-        if (studentName != null) {
-          updateData['studentName'] = studentName;
+        final data = snapshot.data();
+        final isActive = data?['isActive'] ?? true;
+
+        // Si ya es miembro activo, no hacemos nada (idempotente)
+        if (isActive) {
+          return;
         }
-        if (studentEmail != null) {
-          updateData['studentEmail'] = studentEmail;
-        }
-        if (teacherName != null) {
-          updateData['teacherName'] = teacherName;
-        }
-        if (teacherEmail != null) {
-          updateData['teacherEmail'] = teacherEmail;
-        }
-        transaction.update(membershipRef, updateData);
-        return;
+
+        // Si existe pero está inactivo, el alumno NO puede reactivarse solo
+        throw FirebaseErrorMapperException(
+          ClassesStrings.membershipRevokedError,
+        );
       }
 
       transaction.set(membershipRef, {
