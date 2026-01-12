@@ -106,6 +106,10 @@ class ValidationStrings {
   static String nameInvalidCharacters(String fieldName) =>
       '$fieldName solo puede contener letras y espacios';
 
+  // Validación de clases
+  static const String atLeastOneClassRequired =
+      'Debes seleccionar al menos una clase';
+
   // Nombres de campos para validación
   static const String firstNameField = 'El nombre';
   static const String lastNameField = 'Los apellidos';
@@ -302,6 +306,7 @@ class TaskStrings {
   static const String taskDescriptionHint = 'Descripción detallada de la tarea';
   static const String estimatedTimeLabel = 'Tiempo estimado';
   static const String estimatedTimeHint = 'Ej: 30 minutos';
+  static const String dueDateHint = 'Selecciona una fecha límite';
   static const String recipientsLabel = 'Destinatarios';
   static const String recipientsHint = 'Selecciona los estudiantes';
   static const String attachmentsLabel = 'Adjuntos';
@@ -371,10 +376,16 @@ class TaskStrings {
       'Podrás crear una nueva más adelante si lo necesitas.';
   static const String selectClassToAssign = 'Selecciona la clase destino';
   static const String assigningTask = 'Asignando tarea...';
+  static const String recipientsTitle = 'Seleccionar alumnos';
+  static const String assignToAllStudents = 'Asignar a todos los alumnos';
+  static const String assignToSelectedStudents =
+      'Asignar a alumnos seleccionados';
 
   // Errores genéricos
   static const String taskGenericError =
       'Ocurrió un error al procesar la tarea. Intenta nuevamente.';
+  static const String noStudentsInClassError =
+      'No se puede crear la tarea porque no hay estudiantes en la(s) clase(s) seleccionada(s).';
 
   // Estados vacíos específicos
   static const String noTasksCreated =

@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:playing_tracker/features/classes/data/services/membership_service.dart';
 import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
 import 'package:playing_tracker/features/tasks/data/services/task_service.dart';
+import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 
 /// Contrato para helpers de fan-out.
@@ -88,13 +90,56 @@ final class FanOutHelper implements FanOutHelperContract {
       );
       return;
     }
+
+    // 1. Obtener asignaciones actuales para identificar desasignaciones
+    List<AssignmentModel> currentAssignments = [];
+    try {
+      currentAssignments = await _assignmentService
+          .getAssignmentsByTaskAndClass(
+            taskId: taskId,
+            classId: classId,
+            teacherId: context.task.createdBy,
+          );
+    } catch (e) {
+      log(
+        'FanOutHelper: Error no crítico recuperando asignaciones actuales: $e',
+        name: 'FanOutHelper',
+        level: 900,
+      );
+    }
+
+    final currentStudentIds = currentAssignments
+        .map((a) => a.studentId)
+        .toSet();
+    final targetStudentIds = context.studentIds.toSet();
+
+    // 2. Eliminar alumnos que ya no están en la lista (desasignación)
+    final studentsToRemove = currentStudentIds.difference(targetStudentIds);
+    if (studentsToRemove.isNotEmpty) {
+      try {
+        await _assignmentService.deleteSpecificAssignments(
+          taskId: taskId,
+          classId: classId,
+          studentIds: studentsToRemove.toList(),
+        );
+      } catch (e) {
+        log(
+          'FanOutHelper: Error eliminando asignaciones antiguas: $e',
+          name: 'FanOutHelper',
+          level: 900,
+        );
+      }
+    }
+
+    // 3. Crear o actualizar asignaciones para los seleccionados
     if (context.studentIds.isEmpty) {
       log(
-        'Fan-out omitido: la clase $classId no tiene alumnos activos.',
+        'Fan-out omitido: no hay alumnos seleccionados para la clase $classId.',
         name: 'FanOutHelper',
       );
       return;
     }
+
     final payloads = <AssignmentFanOutData>[
       for (final studentId in context.studentIds)
         (
@@ -106,11 +151,16 @@ final class FanOutHelper implements FanOutHelperContract {
           taskDescription: context.task.description,
           durationSuggested: context.task.durationSuggested,
           dueDate: context.task.dueDate,
+          // Si el alumno NO tenía la tarea asignada previamente, establecemos status: pending.
+          // Si YA la tenía, enviamos status: null para NO sobreescribir su progreso real.
+          status: currentStudentIds.contains(studentId)
+              ? null
+              : TaskStatus.pending,
         ),
     ];
     await _assignmentService.createAssignmentsBatch(payloads);
     log(
-      'Fan-out completado: ${payloads.length} assignments creadas para '
+      'Fan-out completado: ${payloads.length} assignments procesadas para '
       'task $taskId / class $classId',
       name: 'FanOutHelper',
     );

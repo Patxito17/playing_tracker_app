@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -12,6 +13,9 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../classes/domain/repositories/class_repository.dart';
+import '../../../classes/presentation/cubit/class_cubit.dart';
+import '../../../classes/presentation/cubit/membership_cubit.dart';
 import '../../domain/models/task_model.dart';
 import '../../presentation/cubit/task_cubit.dart';
 import '../../presentation/cubit/task_state.dart';
@@ -66,75 +70,38 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }
 
   Future<void> _showEditDialog(BuildContext context, TaskModel task) async {
-    final titleController = TextEditingController(text: task.title);
-    final descriptionController = TextEditingController(
-      text: task.description ?? '',
+    final taskCubit = context.read<TaskCubit>();
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => BlocProvider.value(
+        value: taskCubit,
+        child: _EditTaskDialog(task: task),
+      ),
     );
-
-    try {
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            title: Text(TaskStrings.editTask),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: TaskStrings.taskTitleLabel,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.m),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    labelText: TaskStrings.taskDescriptionLabel,
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(CommonStrings.cancel),
-              ),
-              FilledButton(
-                onPressed: () {
-                  final input = (
-                    taskId: task.id,
-                    title: titleController.text.trim(),
-                    description: descriptionController.text.trim().isEmpty
-                        ? null
-                        : descriptionController.text.trim(),
-                    durationSuggested: null,
-                    attachments: null,
-                    dueDate: null,
-                    isActive: null,
-                  );
-                  context.read<TaskCubit>().updateTask(input);
-                  Navigator.of(dialogContext).pop();
-                },
-                child: Text(CommonStrings.save),
-              ),
-            ],
-          );
-        },
-      );
-    } finally {
-      // Liberamos explícitamente los controladores usados solo en este diálogo.
-      titleController.dispose();
-      descriptionController.dispose();
-    }
   }
 
   Future<void> _showAssignDialog(BuildContext context, TaskModel task) async {
+    final taskCubit = context.read<TaskCubit>();
+    final classRepository = context.read<ClassRepository>();
+
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) => AssignTaskDialog(task: task),
+      builder: (dialogContext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: taskCubit),
+          BlocProvider(create: (context) => ClassCubit(classRepository)),
+          BlocProvider(create: (context) => MembershipCubit(classRepository)),
+        ],
+        child: AssignTaskDialog(task: task),
+      ),
     );
+  }
+
+  Future<void> _refreshTask(BuildContext context) async {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthAuthenticated) {
+      await context.read<TaskCubit>().refreshTasks();
+    }
   }
 
   Future<void> _toggleStatus(bool value) async {
@@ -151,6 +118,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }
 
   Future<void> _confirmDelete(BuildContext context, TaskModel task) async {
+    final taskCubit = context.read<TaskCubit>();
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -171,7 +139,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 foregroundColor: context.colorScheme.onError,
               ),
               onPressed: () {
-                context.read<TaskCubit>().deleteTask(task.id);
+                taskCubit.deleteTask(task.id);
                 Navigator.of(dialogContext).pop();
               },
               child: Text(TaskStrings.deleteTask),
@@ -194,17 +162,54 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
         listenWhen: (previous, current) =>
             current is TaskActionSuccess || current is TaskError,
         listener: (context, state) {
-          if (state is TaskActionSuccess &&
-              state.action == TaskAction.deleted) {
-            context.go(AppRoutes.taskList);
+          if (state is TaskActionSuccess) {
+            if (state.action == TaskAction.deleted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(TaskStrings.taskDeleteSuccess),
+                  backgroundColor: context.colorScheme.primary,
+                ),
+              );
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(AppRoutes.taskList);
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message ?? TaskStrings.taskUpdateSuccess),
+                  backgroundColor: context.colorScheme.primary,
+                ),
+              );
+            }
+          } else if (state is TaskError) {
+            // Si ya tenemos una tarea cargada (o una acción exitosa previa),
+            // mostramos el error como un SnackBar en lugar de romper la pantalla.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: context.colorScheme.error,
+              ),
+            );
           }
         },
         buildWhen: (previous, current) {
-          // No reconstruir cuando es TaskActionSuccess (excepto deleted)
-          // Esto mantiene la UI visible mientras el stream actualiza los datos
+          // Si es una acción exitosa y no es borrado, NO reconstruimos el body.
           if (current is TaskActionSuccess) {
             return current.action == TaskAction.deleted;
           }
+
+          // Si estamos cargando o hay un error, pero ya teníamos datos (Success o ActionSuccess),
+          // o venimos de un Loading que a su vez venía de datos...
+          // En definitiva: si ya hay algo bueno en pantalla, no reconstruyas para Error/Loading.
+          if ((current is TaskLoading || current is TaskError) &&
+              (previous is TaskSuccess ||
+                  previous is TaskActionSuccess ||
+                  previous is TaskLoading)) {
+            return false;
+          }
+
           return true;
         },
         builder: (context, state) {
@@ -213,19 +218,32 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           }
 
           if (state is TaskError) {
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Center(
-                child: SelectableText.rich(
-                  TextSpan(text: state.message, style: context.textError),
-                  textAlign: TextAlign.center,
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: context.colorScheme.error,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Text(state.message, textAlign: TextAlign.center),
+                    const SizedBox(height: AppSpacing.m),
+                    TextButton(
+                      onPressed: () => _refreshTask(context),
+                      child: const Text('Reintentar carga'),
+                    ),
+                  ],
                 ),
               ),
             );
           }
 
           if (state is! TaskSuccess) {
-            return const SizedBox.shrink();
+            return const Center(child: Text('Cargando tarea...'));
           }
 
           final matching = state.tasks.where(
@@ -391,6 +409,136 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+class _EditTaskDialog extends StatefulWidget {
+  const _EditTaskDialog({required this.task});
+
+  final TaskModel task;
+
+  @override
+  State<_EditTaskDialog> createState() => _EditTaskDialogState();
+}
+
+class _EditTaskDialogState extends State<_EditTaskDialog> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _durationController;
+  DateTime? _dueDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.task.title);
+    _descriptionController = TextEditingController(
+      text: widget.task.description ?? '',
+    );
+    _durationController = TextEditingController(
+      text: (widget.task.durationSuggested ~/ 60).toString(),
+    );
+    _dueDate = widget.task.dueDate?.toDate();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _durationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDueDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dueDate ?? now,
+      firstDate: now.subtract(const Duration(days: 365)),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        _dueDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(TaskStrings.editTask),
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _titleController,
+            decoration: InputDecoration(labelText: TaskStrings.taskTitleLabel),
+            textCapitalization: TextCapitalization.sentences,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          TextField(
+            controller: _descriptionController,
+            decoration: InputDecoration(
+              labelText: TaskStrings.taskDescriptionLabel,
+            ),
+            maxLines: 3,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          TextField(
+            controller: _durationController,
+            decoration: InputDecoration(
+              labelText: TaskStrings.estimatedTimeLabel,
+              suffixText: ' min',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.event),
+            title: Text(TaskStrings.dueDate),
+            subtitle: Text(
+              _dueDate != null
+                  ? DateFormat('dd/MM/yyyy').format(_dueDate!)
+                  : TaskStrings.dueDateHint,
+            ),
+            onTap: _pickDueDate,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(CommonStrings.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final title = _titleController.text.trim();
+            final description = _descriptionController.text.trim();
+            final minutes = int.tryParse(_durationController.text.trim());
+
+            if (title.isEmpty || minutes == null || minutes <= 0) {
+              return;
+            }
+
+            final input = (
+              taskId: widget.task.id,
+              title: title,
+              description: description.isEmpty ? null : description,
+              durationSuggested: minutes * 60,
+              attachments: null,
+              dueDate: _dueDate,
+              isActive: null,
+            );
+            context.read<TaskCubit>().updateTask(input);
+            Navigator.of(context).pop();
+          },
+          child: Text(CommonStrings.save),
+        ),
+      ],
     );
   }
 }

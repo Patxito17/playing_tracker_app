@@ -14,14 +14,15 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../classes/domain/models/class_model.dart';
+import '../../../classes/domain/repositories/class_repository.dart';
 import '../../../classes/presentation/cubit/class_cubit.dart';
 import '../../../classes/presentation/cubit/class_state.dart';
 import '../../../classes/presentation/cubit/membership_cubit.dart';
-import '../../../classes/presentation/cubit/membership_state.dart';
 import '../../domain/models/attachment_model.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../cubit/task_cubit.dart';
 import '../cubit/task_state.dart';
+import '../widgets/student_selection_modal.dart';
 
 /// Pantalla para crear una tarea conectada al [TaskCubit].
 ///
@@ -49,7 +50,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   String? _successMessage;
 
   Timer? _autoPopTimer;
-  bool _hasAutoSelectedClass = false;
 
   @override
   void initState() {
@@ -115,6 +115,40 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       return;
     }
 
+    if (_selectedClasses.isEmpty) {
+      setState(() {
+        _formError = ValidationStrings.atLeastOneClassRequired;
+      });
+      return;
+    }
+
+    // Verificar que todas las clases seleccionadas tengan al menos un alumno
+    // para evitar crear tareas "huérfanas" sin asignaciones.
+    final classRepo = context.read<ClassRepository>();
+    for (final classId in _selectedClasses) {
+      try {
+        final membersPage = await classRepo.listClassMembers(
+          classId: classId,
+          limit: 1,
+        );
+        if (membersPage.members.isEmpty) {
+          if (!mounted) return;
+          setState(() {
+            _formError = TaskStrings.noStudentsInClassError;
+          });
+          return;
+        }
+      } catch (e) {
+        // Si hay error al verificar, mejor prevenir la creación
+        if (!mounted) return;
+        setState(() {
+          _formError = TaskStrings.taskGenericError;
+        });
+        return;
+      }
+    }
+
+    if (!mounted) return;
     await context.read<TaskCubit>().createTask(input);
   }
 
@@ -187,6 +221,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         if (context.canPop()) {
           context.pop();
         } else {
+          // Si no hay historial (ej. acceso directo), volvemos a la lista general
           context.go(AppRoutes.taskList);
         }
       });
@@ -216,7 +251,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       useSafeArea: true,
       builder: (context) => BlocProvider.value(
         value: membershipCubit,
-        child: _StudentSelectionModal(
+        child: StudentSelectionModal(
           classId: classId,
           initialSelectedIds: _selectedStudentIds,
           onSelectionChanged: (selectedIds) {
@@ -246,7 +281,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final minutes = int.tryParse(_estimatedTimeController.text.trim()) ?? 0;
-    return title.length >= 3 && description.isNotEmpty && minutes > 0;
+    return title.length >= 3 &&
+        description.isNotEmpty &&
+        minutes > 0 &&
+        _selectedClasses.isNotEmpty;
   }
 
   Future<void> _pickDueDate() async {
@@ -270,20 +308,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       appBar: const CustomAppBar(title: TaskStrings.createTask),
       body: MultiBlocListener(
         listeners: [
-          // Escucha para auto-seleccionar la primera clase si no hay selección
-          BlocListener<ClassCubit, ClassState>(
-            listener: (context, state) {
-              if (!_hasAutoSelectedClass &&
-                  state is ClassSuccess &&
-                  state.classes.isNotEmpty &&
-                  _selectedClasses.isEmpty) {
-                setState(() {
-                  _selectedClasses.add(state.classes.first.id);
-                  _hasAutoSelectedClass = true;
-                });
-              }
-            },
-          ),
           // Escucha original de TaskCubit
           BlocListener<TaskCubit, TaskState>(
             listenWhen: (previous, current) =>
@@ -412,7 +436,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.month.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.year}'
-                            : TaskStrings.estimatedTimeHint,
+                            : TaskStrings.dueDateHint,
                       ),
                       onTap: _pickDueDate,
                     ),
@@ -428,6 +452,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                           title: TaskStrings.selectClassToAssign,
                           subtitle: classes.isEmpty
                               ? 'Cargando o sin clases...'
+                              : _selectedClasses.isEmpty
+                              ? 'Obligatorio seleccionar al menos una clase'
                               : '${_selectedClasses.length} seleccionadas',
                           margin: EdgeInsets.zero,
                           child: Column(
@@ -639,181 +665,6 @@ class _SuccessBanner extends StatelessWidget {
                 color: context.colorScheme.onPrimaryContainer,
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StudentSelectionModal extends StatefulWidget {
-  const _StudentSelectionModal({
-    required this.classId,
-    required this.initialSelectedIds,
-    required this.onSelectionChanged,
-  });
-
-  final String classId;
-  final Set<String> initialSelectedIds;
-  final ValueChanged<Set<String>> onSelectionChanged;
-
-  @override
-  State<_StudentSelectionModal> createState() => _StudentSelectionModalState();
-}
-
-class _StudentSelectionModalState extends State<_StudentSelectionModal> {
-  late Set<String> _selectedIds;
-  late MembershipCubit _membershipCubit;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIds = Set.from(widget.initialSelectedIds);
-    _membershipCubit = context.read<MembershipCubit>();
-    // Cargar miembros si es necesario
-    _membershipCubit.loadMembers(classId: widget.classId);
-  }
-
-  void _toggleStudent(String studentId) {
-    setState(() {
-      if (_selectedIds.contains(studentId)) {
-        _selectedIds.remove(studentId);
-      } else {
-        _selectedIds.add(studentId);
-      }
-    });
-  }
-
-  void _toggleAll(List<String> allIds) {
-    setState(() {
-      if (_selectedIds.length == allIds.length) {
-        _selectedIds.clear();
-      } else {
-        _selectedIds.addAll(allIds);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Seleccionar alumnos', style: context.textTheme.titleLarge),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.m),
-          Expanded(
-            child: BlocBuilder<MembershipCubit, MembershipState>(
-              builder: (context, state) {
-                if (state is MembershipLoading ||
-                    state is MembershipListLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is MembershipEmpty) {
-                  return const Center(
-                    child: Text('No hay alumnos activos en esta clase.'),
-                  );
-                }
-
-                if (state is MembershipListSuccess) {
-                  final students = state.members
-                      .where((m) => m.isActive) // Solo alumnos activos
-                      .toList();
-
-                  if (students.isEmpty) {
-                    return const Center(
-                      child: Text('No hay alumnos activos en esta clase.'),
-                    );
-                  }
-
-                  return Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => _toggleAll(
-                            students.map((s) => s.studentId).toList(),
-                          ),
-                          child: Text(
-                            _selectedIds.length == students.length
-                                ? 'Deseleccionar todos'
-                                : 'Seleccionar todos',
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: students.length,
-                          itemBuilder: (context, index) {
-                            final student = students[index];
-                            final isSelected = _selectedIds.contains(
-                              student.studentId,
-                            );
-                            final displayName =
-                                student.studentName ?? student.studentId;
-
-                            return CheckboxListTile(
-                              value: isSelected,
-                              onChanged: (_) =>
-                                  _toggleStudent(student.studentId),
-                              title: Text(displayName),
-                              subtitle: student.studentEmail != null
-                                  ? Text(student.studentEmail!)
-                                  : null,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-
-                if (state is MembershipError || state is MembershipListError) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.error_outline, color: Colors.orange),
-                        const SizedBox(height: AppSpacing.s),
-                        const Text('Error al cargar alumnos'),
-                        TextButton(
-                          onPressed: () => _membershipCubit.loadMembers(
-                            classId: widget.classId,
-                            refresh: true,
-                          ),
-                          child: const Text('Reintentar'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-          const SizedBox(height: AppSpacing.m),
-          FilledButton(
-            onPressed: () {
-              widget.onSelectionChanged(_selectedIds);
-              Navigator.pop(context);
-            },
-            child: const Text('Confirmar selección'),
           ),
         ],
       ),
