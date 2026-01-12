@@ -173,25 +173,25 @@ service cloud.firestore {
     // - Delete: Solo el docente relacionado
 
     match /assignments/{assignmentId} {
-      // Lectura: student asignado o teacher relacionado
+      // Lectura: Cualquier alumno para su propia tarea, o cualquier docente para gestión.
+      // Permitimos lectura general a docentes para facilitar las consultas de asignación de clase.
       allow read: if isAuth() && (
-        resource.data.studentId == request.auth.uid ||
-        resource.data.teacherId == request.auth.uid
+        (resource != null && resource.data.studentId == request.auth.uid) ||
+        isTeacher()
       );
 
-      // Creación: solo el teacher relacionado
-      allow create: if isAuth() &&
-                      request.resource.data.teacherId == request.auth.uid &&
-                      request.resource.data.keys().hasAll(['id', 'taskId', 'studentId', 'teacherId', 'status', 'assignedAt']);
+      // Creación: Solo el docente autenticado puede crear asignaciones para sí mismo
+      allow create: if isAuth() && isTeacher() &&
+                      request.resource.data.teacherId == request.auth.uid;
 
-      // Actualización: teacher relacionado O student asignado (para progreso)
+      // Actualización: El docente propietario o el alumno asignado (para progreso)
       allow update: if isAuth() && (
-        resource.data.teacherId == request.auth.uid ||
-        resource.data.studentId == request.auth.uid
+        (resource != null && resource.data.teacherId == request.auth.uid) ||
+        (resource != null && resource.data.studentId == request.auth.uid)
       );
 
-      // Eliminación: solo el teacher relacionado
-      allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+      // Eliminación: Solo el docente propietario
+      allow delete: if isAuth() && (resource != null && resource.data.teacherId == request.auth.uid);
     }
 
     // ==========================================================================

@@ -13,6 +13,9 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../classes/domain/repositories/class_repository.dart';
+import '../../../classes/presentation/cubit/class_cubit.dart';
+import '../../../classes/presentation/cubit/membership_cubit.dart';
 import '../../domain/models/task_model.dart';
 import '../../presentation/cubit/task_cubit.dart';
 import '../../presentation/cubit/task_state.dart';
@@ -79,13 +82,26 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
   Future<void> _showAssignDialog(BuildContext context, TaskModel task) async {
     final taskCubit = context.read<TaskCubit>();
+    final classRepository = context.read<ClassRepository>();
+
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) => BlocProvider.value(
-        value: taskCubit,
+      builder: (dialogContext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: taskCubit),
+          BlocProvider(create: (context) => ClassCubit(classRepository)),
+          BlocProvider(create: (context) => MembershipCubit(classRepository)),
+        ],
         child: AssignTaskDialog(task: task),
       ),
     );
+  }
+
+  Future<void> _refreshTask(BuildContext context) async {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthAuthenticated) {
+      await context.read<TaskCubit>().refreshTasks();
+    }
   }
 
   Future<void> _toggleStatus(bool value) async {
@@ -146,17 +162,44 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
         listenWhen: (previous, current) =>
             current is TaskActionSuccess || current is TaskError,
         listener: (context, state) {
-          if (state is TaskActionSuccess &&
-              state.action == TaskAction.deleted) {
-            context.go(AppRoutes.taskList);
+          if (state is TaskActionSuccess) {
+            if (state.action == TaskAction.deleted) {
+              context.go(AppRoutes.taskList);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message ?? TaskStrings.taskUpdateSuccess),
+                  backgroundColor: context.colorScheme.primary,
+                ),
+              );
+            }
+          } else if (state is TaskError) {
+            // Si ya tenemos una tarea cargada (o una acción exitosa previa),
+            // mostramos el error como un SnackBar en lugar de romper la pantalla.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: context.colorScheme.error,
+              ),
+            );
           }
         },
         buildWhen: (previous, current) {
-          // No reconstruir cuando es TaskActionSuccess (excepto deleted)
-          // Esto mantiene la UI visible mientras el stream actualiza los datos
+          // Si es una acción exitosa y no es borrado, NO reconstruimos el body.
           if (current is TaskActionSuccess) {
             return current.action == TaskAction.deleted;
           }
+
+          // Si estamos cargando o hay un error, pero ya teníamos datos (Success o ActionSuccess),
+          // o venimos de un Loading que a su vez venía de datos...
+          // En definitiva: si ya hay algo bueno en pantalla, no reconstruyas para Error/Loading.
+          if ((current is TaskLoading || current is TaskError) &&
+              (previous is TaskSuccess ||
+                  previous is TaskActionSuccess ||
+                  previous is TaskLoading)) {
+            return false;
+          }
+
           return true;
         },
         builder: (context, state) {
@@ -165,19 +208,32 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           }
 
           if (state is TaskError) {
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Center(
-                child: SelectableText.rich(
-                  TextSpan(text: state.message, style: context.textError),
-                  textAlign: TextAlign.center,
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: context.colorScheme.error,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Text(state.message, textAlign: TextAlign.center),
+                    const SizedBox(height: AppSpacing.m),
+                    TextButton(
+                      onPressed: () => _refreshTask(context),
+                      child: const Text('Reintentar carga'),
+                    ),
+                  ],
                 ),
               ),
             );
           }
 
           if (state is! TaskSuccess) {
-            return const SizedBox.shrink();
+            return const Center(child: Text('Cargando tarea...'));
           }
 
           final matching = state.tasks.where(

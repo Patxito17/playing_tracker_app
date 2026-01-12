@@ -376,6 +376,10 @@ class TaskStrings {
       'Podrás crear una nueva más adelante si lo necesitas.';
   static const String selectClassToAssign = 'Selecciona la clase destino';
   static const String assigningTask = 'Asignando tarea...';
+  static const String recipientsTitle = 'Seleccionar alumnos';
+  static const String assignToAllStudents = 'Asignar a todos los alumnos';
+  static const String assignToSelectedStudents =
+      'Asignar a alumnos seleccionados';
 
   // Errores genéricos
   static const String taskGenericError =

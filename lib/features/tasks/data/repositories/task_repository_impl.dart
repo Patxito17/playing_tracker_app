@@ -323,6 +323,28 @@ final class TaskRepositoryImpl implements TaskRepository {
     }
   }
 
+  @override
+  Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
+    required String taskId,
+    required String classId,
+    String? teacherId,
+  }) async {
+    try {
+      return await _assignmentService.getAssignmentsByTaskAndClass(
+        taskId: taskId,
+        classId: classId,
+        teacherId: teacherId,
+      );
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'getAssignmentsByTaskAndClass',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible cargar las asignaciones de la clase.',
+      );
+    }
+  }
+
   Never _throwRepositoryException({
     required String method,
     required Object error,
