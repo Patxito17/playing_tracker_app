@@ -1,8 +1,8 @@
 # Resumen Ejecutivo del Proyecto - Playing Tracker
 
-**Última actualización:** Octubre 2025
-**Estado:** Sprint 0 - Diseño UI/UX en desarrollo
-**Versión:** 1.0
+**Última actualización:** 24 de Noviembre 2025
+**Estado:** Sprint 3 - Sistema de Clases (Fase 7 completada)
+**Versión:** 1.2
 
 ---
 
@@ -44,37 +44,33 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita asignar t
 
 ## Estado Actual del Proyecto
 
-### Sprint Actual: Sprint 0 - Diseño UI/UX
-**Estado:** En desarrollo
-**Duración:** Octubre 2025
+### Sprint Actual: Sprint 3 - Sistema de Clases y Membresías
+**Estado:** Fase 7 completada (gestión de alumnos funcional)
+**Duración:** Noviembre-Diciembre 2025
 
-**Completado:**
-- Configuración inicial de Flutter 3.x con Dart 3.9.2+
-- Sistema de tema Material Design 3 completo (claro/oscuro)
-- Componentes base reutilizables
-- Prototipos de todas las pantallas (UI estática)
-- Navegación con go_router y ShellRoute
-- Estructura Feature-First Architecture
+**Completado recientemente:**
+- `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart` consume `ClassCubit` (loading/empty/success/error, `_EmptyState` reutilizable, `SelectableText.rich` para errores).
+- `lib/features/classes/presentation/screens/create_class_screen.dart` validado con `CustomTextField`, `CreateClassInput`, desactivación de botones y navegación segura (`Navigator.canPop`).
+- `lib/features/classes/presentation/screens/manage_students_screen.dart` ahora conectado a `MembershipCubit`, soporta paginación (botón `Cargar más`), encabezado con `ClassModel`, confirmaciones M3 para expulsar/regenerar y estados vacíos/errores accesibles.
+- `membership_service.dart` + `class_repository_impl.dart` exponen records `MembershipPage` para paginación y `getStudentsForClass` iterativo; `MembershipCubit` diferencia estados de lista vs. operaciones.
+- Nuevos strings operativos en `lib/core/constants/app_strings.dart` (regeneración de código, diálogos de alumno, labels de ID).
+- Tests widget dedicados: `test/features/classes/presentation/screens/manage_students_screen_test.dart` más suites existentes (`create_class_screen_test.dart`, `teacher_classes_list_screen_test.dart`); unit tests de servicios cubren paginación.
+- `lib/features/classes/presentation/screens/teacher_classes_list_screen.dart` ahora navega directo a `ManageStudentsScreen`, dejando fuera las tabs mock heredadas del Sprint 0.
+- `lib/features/classes/presentation/screens/student_classes_list_screen.dart` elimina mocks y utiliza `StudentClassesCubit` + `ClassRepository.watchStudentMemberships` para listar memberships reales con pull-to-refresh y CTA para unirse con código.
+- QA ejecutado: `dart format .`, `flutter analyze`, `flutter test`.
 
-**En progreso:**
-- Refinamiento de componentes UI
-- Implementación de accesibilidad completa
+**En progreso (Sprint 3):**
+- Documentación y QA final de Fase 8
+- Preparación de fan-out completo para Sprint 4 (helper + hooks documentados)
 
-**Próximos sprints:**
-- Sprint 1: Modelos de Dominio y Arquitectura de Datos
-- Sprint 2: Autenticación y Gestión de Usuarios
-- Sprint 3: Sistema de Clases y Membresías
-- Sprint 4: Gestión de Tareas y Asignaciones
-- Sprint 5: Cronómetro y Sesiones de Estudio
-- Sprint 6: Estadísticas y Dashboards
-- Sprint 7: Testing y Optimización
+**Siguientes sprints:** Tareas/Asignaciones, Cronómetro, Estadísticas, QA final
 
 ---
 
 ## Arquitectura General
 
 ### Stack Tecnológico
-- **Frontend:** Flutter 3.x (Dart 3.9.2+)
+- **Frontend:** Flutter 3.38.x (Dart 3.10.x)
 - **Backend:** Firebase
   - Firebase Authentication (Email/Password)
   - Cloud Firestore (Base de datos NoSQL)
@@ -130,6 +126,7 @@ lib/
 ## Referencias Principales
 
 - **Guía completa del proyecto:** [Guia_Proyecto_PlayingTracker.md](./Guia_Proyecto_PlayingTracker.md)
+- **Sprint 3 detalle:** [sprints/SPRINT_3_IMPLEMENTACION.md](../sprints/SPRINT_3_IMPLEMENTACION.md)
 - **Sprint 0 detallado:** [sprints/SPRINT_0_IMPLEMENTACION.md](./sprints/SPRINT_0_IMPLEMENTACION.md)
 - **Arquitectura técnica:** [CURSOR_INDEXING_ARCHITECTURE.md](./CURSOR_INDEXING_ARCHITECTURE.md)
 - **Referencias técnicas:** [CURSOR_INDEXING_TECHNICAL_REFERENCES.md](./CURSOR_INDEXING_TECHNICAL_REFERENCES.md)
@@ -145,4 +142,5 @@ lib/
 4. **Comentarios en español** - Todo el código debe tener comentarios descriptivos en español
 5. **Diseño primero** - Completar UI antes de implementar lógica de negocio
 6. **Accesibilidad desde el inicio** - Asegurar contraste mínimo 4.5:1 y soporte para TalkBack/VoiceOver
+7. **Servicios verificados** - Reutilizar `ClassService`/`MembershipService` antes de tocar Firestore directo; tests disponibles como referencia
 

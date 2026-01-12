@@ -78,24 +78,6 @@ class StudentHomeScreen extends StatelessWidget {
         description: HomeStrings.joinClassDescription,
         onTap: () => context.push(AppRoutes.joinClass),
       ),
-      HomeQuickActionConfig(
-        icon: Icons.assignment_turned_in_outlined,
-        title: HomeStrings.studentTasksAction,
-        description: HomeStrings.studentTasksDescription,
-        onTap: () => context.go(AppRoutes.taskList),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.timer_outlined,
-        title: HomeStrings.practiceAction,
-        description: HomeStrings.practiceDescription,
-        onTap: () => context.go(AppRoutes.sessionHistory),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.bar_chart_rounded,
-        title: HomeStrings.studentStatsAction,
-        description: HomeStrings.studentStatsDescription,
-        onTap: () => context.go(AppRoutes.studentStatistics),
-      ),
     ];
   }
 }
