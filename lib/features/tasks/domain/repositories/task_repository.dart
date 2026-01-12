@@ -86,6 +86,13 @@ abstract interface class TaskRepository {
   /// Retorna `null` cuando la asignación no existe o el usuario no tiene
   /// permisos para consultarla.
   Future<AssignmentModel?> getAssignmentById(String assignmentId);
+
+  /// Obtiene la lista de asignaciones de una tarea para una clase específica.
+  Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
+    required String taskId,
+    required String classId,
+    String? teacherId,
+  });
 }
 
 /// Excepción base del repositorio de tareas.
