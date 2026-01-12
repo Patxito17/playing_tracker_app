@@ -220,6 +220,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         if (context.canPop()) {
           context.pop();
         } else {
+          // Si no hay historial (ej. acceso directo), volvemos a la lista general
           context.go(AppRoutes.taskList);
         }
       });

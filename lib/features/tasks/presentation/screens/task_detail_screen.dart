@@ -164,7 +164,17 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
         listener: (context, state) {
           if (state is TaskActionSuccess) {
             if (state.action == TaskAction.deleted) {
-              context.go(AppRoutes.taskList);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(TaskStrings.taskDeleteSuccess),
+                  backgroundColor: context.colorScheme.primary,
+                ),
+              );
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(AppRoutes.taskList);
+              }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

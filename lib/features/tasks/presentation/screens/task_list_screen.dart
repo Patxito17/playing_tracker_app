@@ -86,13 +86,46 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<TaskCubit, TaskState>(
+      body: BlocConsumer<TaskCubit, TaskState>(
+        buildWhen: (previous, current) {
+          // Ignoramos TaskActionSuccess en el builder porque es un estado
+          // "de evento" para el listener. Si no lo ignoramos, el builder
+          // se ejecutaría y mostraría un estado vacío o el loader.
+          if (current is TaskActionSuccess) return false;
+
+          // Si ya tenemos datos (Success), no reconstruimos ante Carga o Error.
+          // El usuario recibirá feedback mediante el Listener (SnackBar).
+          if (previous is TaskSuccess &&
+              (current is TaskLoading || current is TaskError)) {
+            return false;
+          }
+
+          return true;
+        },
+        listener: (context, state) {
+          if (state is TaskActionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? TaskStrings.taskUpdateSuccess),
+                backgroundColor: context.colorScheme.primary,
+              ),
+            );
+          } else if (state is TaskError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: context.colorScheme.error,
+              ),
+            );
+          }
+        },
         builder: (context, state) {
-          if (state is TaskLoading || state is TaskInitial) {
+          if ((state is TaskLoading || state is TaskInitial) &&
+              state is! TaskSuccess) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is TaskError) {
+          if (state is TaskError && state is! TaskSuccess) {
             return Padding(
               padding: const EdgeInsets.all(AppSpacing.l),
               child: Center(
