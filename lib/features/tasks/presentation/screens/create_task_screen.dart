@@ -14,6 +14,7 @@ import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../classes/domain/models/class_model.dart';
+import '../../../classes/domain/repositories/class_repository.dart';
 import '../../../classes/presentation/cubit/class_cubit.dart';
 import '../../../classes/presentation/cubit/class_state.dart';
 import '../../../classes/presentation/cubit/membership_cubit.dart';
@@ -49,7 +50,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   String? _successMessage;
 
   Timer? _autoPopTimer;
-  bool _hasAutoSelectedClass = false;
 
   @override
   void initState() {
@@ -113,6 +113,39 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         _formError = error.message;
       });
       return;
+    }
+
+    if (_selectedClasses.isEmpty) {
+      setState(() {
+        _formError = ValidationStrings.atLeastOneClassRequired;
+      });
+      return;
+    }
+
+    // Verificar que todas las clases seleccionadas tengan al menos un alumno
+    // para evitar crear tareas "huérfanas" sin asignaciones.
+    final classRepo = context.read<ClassRepository>();
+    for (final classId in _selectedClasses) {
+      try {
+        final membersPage = await classRepo.listClassMembers(
+          classId: classId,
+          limit: 1,
+        );
+        if (membersPage.members.isEmpty) {
+          if (!mounted) return;
+          setState(() {
+            _formError = TaskStrings.noStudentsInClassError;
+          });
+          return;
+        }
+      } catch (e) {
+        // Si hay error al verificar, mejor prevenir la creación
+        if (!mounted) return;
+        setState(() {
+          _formError = TaskStrings.taskGenericError;
+        });
+        return;
+      }
     }
 
     await context.read<TaskCubit>().createTask(input);
@@ -246,7 +279,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final minutes = int.tryParse(_estimatedTimeController.text.trim()) ?? 0;
-    return title.length >= 3 && description.isNotEmpty && minutes > 0;
+    return title.length >= 3 &&
+        description.isNotEmpty &&
+        minutes > 0 &&
+        _selectedClasses.isNotEmpty;
   }
 
   Future<void> _pickDueDate() async {
@@ -270,20 +306,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       appBar: const CustomAppBar(title: TaskStrings.createTask),
       body: MultiBlocListener(
         listeners: [
-          // Escucha para auto-seleccionar la primera clase si no hay selección
-          BlocListener<ClassCubit, ClassState>(
-            listener: (context, state) {
-              if (!_hasAutoSelectedClass &&
-                  state is ClassSuccess &&
-                  state.classes.isNotEmpty &&
-                  _selectedClasses.isEmpty) {
-                setState(() {
-                  _selectedClasses.add(state.classes.first.id);
-                  _hasAutoSelectedClass = true;
-                });
-              }
-            },
-          ),
           // Escucha original de TaskCubit
           BlocListener<TaskCubit, TaskState>(
             listenWhen: (previous, current) =>
@@ -412,7 +434,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.month.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.year}'
-                            : TaskStrings.estimatedTimeHint,
+                            : TaskStrings.dueDateHint,
                       ),
                       onTap: _pickDueDate,
                     ),
@@ -428,6 +450,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                           title: TaskStrings.selectClassToAssign,
                           subtitle: classes.isEmpty
                               ? 'Cargando o sin clases...'
+                              : _selectedClasses.isEmpty
+                              ? 'Obligatorio seleccionar al menos una clase'
                               : '${_selectedClasses.length} seleccionadas',
                           margin: EdgeInsets.zero,
                           child: Column(
