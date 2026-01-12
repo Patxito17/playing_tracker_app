@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 20 de Noviembre 2025
-**Estado del proyecto:** Sprint 2 - Autenticación y Gestión de Usuarios (Fase 6 completada) 🚧
+**Última actualización:** 08 de Enero 2026
+**Estado del proyecto:** Sprint 5 - Cronómetro y Sesiones de Estudio (Inicio) 🚀
 
 ---
 
@@ -36,7 +36,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 
 ### Lenguaje y Framework
 - **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
-  Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 (baseline actual ^3.9.2).
+  Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 y validada nuevamente al incorporar `fake_cloud_firestore` para las pruebas de servicios en Sprint 3.
 - **Backend:** Firebase ✅
   - Firebase Authentication ✅ (Email/Password)
   - Cloud Firestore ✅ (Base de datos NoSQL)
@@ -45,6 +45,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Control de versiones:** Git/GitHub ✅
 - **Diseño UI:** Material Design 3 ✅
 - **Herramientas:** DevTools, Flutter Widget Inspector ✅
+- **Testing helpers:** fake_cloud_firestore + mocktail para aislar servicios (Sprint 3)
 
 ### Gestión de Estado
 - **flutter_bloc** ✅ Dependencia configurada (Sprint 0) y usada en wrappers de UI.
@@ -52,6 +53,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **ForgotPasswordCubit** ✅ Añadido en Sprint 2 (Fase 5) para manejar recuperación de contraseña desacoplada del flujo principal.
 - **Equatable** ✅ Disponible para estados/entidades desde Sprint 1.
 - **BlocProvider** ✅ Configurado en ejemplos y listo para inyección en Sprint 2.
+- **AppBlocObserver** ✅ (Sprint 3 Fase 4) definido en `core/config/bloc/app_bloc_observer.dart`, registra métricas globales (`BlocMetricsRecorder`) y se inicializa en `main.dart` antes de correr la app.
 - **BlocBuilder/BlocConsumer** ✅ Utilizados en pantallas de autenticación (Sprint 0) como base.
 
 ### Diseño y Tema (Material Design 3)
@@ -75,9 +77,10 @@ lib/
 │   │   └── app_strings.dart          # Strings organizados por categorías
 │   ├── extensions/                    # 📅 Por implementar
 │   │   └── context_extensions.dart   # Extensions para BuildContext
-│   └── utils/                         # 📅 Por implementar
+│   └── utils/                         # Helpers compartidos activos
 │       ├── validators.dart           # Validadores de formularios
-│       └── firebase_error_mapper.dart # Mapeo de errores Firebase a español
+│       ├── firebase_error_mapper.dart # Mapeo de errores Firebase a español
+│       └── access_code_generator.dart # Generador centralizado de códigos (Sprint 3)
 │
 ├── config/                            # Configuración de la app 📅
 │   ├── theme/                        # 📅 Por implementar
@@ -115,22 +118,28 @@ lib/
 │   │           ├── teacher_home_screen.dart  # Redirige a teacher_classes_list_screen
 │   │           └── student_home_screen.dart  # Redirige a student_classes_list_screen
 │   │
-│   ├── classes/                      # 📅 Gestión de clases (Sprint 0 - UI, Sprint 3 - Lógica)
-│   │   ├── domain/                  # 📅 Por implementar
+│   ├── classes/                      # Gestión de clases (Sprint 0 - UI, Sprint 3 - Lógica)
+│   │   ├── domain/
 │   │   │   ├── models/
 │   │   │   │   ├── class_model.dart # Modelo de clase
 │   │   │   │   └── membership_model.dart # Modelo de membresía
 │   │   │   └── enums/
 │   │   │       └── class_status.dart # Estados de clase
-│   │   ├── data/                    # 📅 Por implementar
+│   │   ├── data/
 │   │   │   ├── services/
-│   │   │   │   └── class_service.dart # CRUD de clases
+│   │   │   │   ├── class_service.dart     # CRUD + generación de códigos (Sprint 3)
+│   │   │   │   └── membership_service.dart # Relación N:M (Sprint 3)
+│   │   │   ├── helpers/
+│   │   │   │   └── fan_out_helper.dart    # Hook preparado para assignments (Sprint 3 Fase 4)
 │   │   │   └── repositories/
-│   │   │       └── class_repository.dart # Orquestación
-│   │   └── presentation/            # 📅 Por implementar
+│   │   │       ├── class_repository.dart      # Contrato dominio
+│   │   │       └── class_repository_impl.dart # Implementación + mapping (Sprint 3 Fase 4)
+│   │   └── presentation/            # Sprint 3 - Cubits conectados a Firestore
 │   │       ├── cubit/
-│   │       │   ├── class_cubit.dart # Cubit de clases
-│   │   │       └── class_state.dart # Estados de clases
+│   │       │   ├── class_cubit.dart       # Cubit docente (streams + refresh)
+│   │       │   ├── class_state.dart       # Estados sealed (initial/loading/empty/success/error)
+│   │       │   ├── membership_cubit.dart  # Operaciones N:M (join/invite/remove/code)
+│   │       │   └── membership_state.dart  # Estados sealed para feedback inmediato
 │   │       └── screens/
 │   │           ├── create_class_screen.dart # Crear clase
 │   │           ├── join_class_screen.dart # Unirse a clase
@@ -217,6 +226,31 @@ lib/
 
 ## 🧱 Funcionalidades Principales
 
+### 📌 Sprint 3 · Fase 3 (21/11/2025)
+
+- Implementado `AccessCodeGenerator` con validaciones alfanuméricas para códigos de 6 caracteres.
+- Nuevos servicios `ClassService` y `MembershipService` (Firestore + transacciones) listos para ser consumidos por los Cubits de la Fase 4.
+- Reglas de Firestore actualizadas para permitir que alumnos creen/reactiven membresías mediante códigos y para exigir `updatedAt` en `memberships`.
+- Índices compuestos extendidos (`classes.ownerTeacherId+createdAt`, `memberships.classId+isActive+joinedAt`) asegurando streams paginados en 400 ms.
+- Suite de pruebas dedicada (`test/features/classes/data/services`) usando `fake_cloud_firestore` y `mocktail`.
+- Documentación y roadmap sincronizados con el alcance real del Sprint 3.
+
+### 📌 Sprint 3 · Fase 4 (24/11/2025)
+
+- `ClassRepositoryImpl` implementado con contratos desacoplados (`ClassService`, `MembershipService`, `FanOutHelper`) y manejo exhaustivo de excepciones (`InvalidAccessCodeException`, `MembershipNotFoundException`, etc.).
+- `ClassCubit` y `MembershipCubit` consumen el repositorio, exponen estados sealed (`ClassActionSuccess`, `MembershipSuccess`) y soportan refrescos manuales (`_manualRefreshPending`).
+- `fan_out_helper.dart` documentado como stub para Sprint 4; `ClassRepositoryImpl.fanOutTask` delega en el helper + hook del servicio.
+- Pruebas unitarias (`test/features/classes/data/repositories/...`, `test/features/classes/presentation/cubit/...`) usando `bloc_test` + `mocktail`.
+- QA completo: `dart format --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
+
+### 📌 Sprint 3 · Fase 5 (24/11/2025)
+
+- `TeacherClassesListScreen` conectado al `ClassCubit` real (estados loading/empty/error/success), `_EmptyState` reutilizable, chips de estado y errores con `SelectableText.rich`.
+- `CreateClassScreen` integra `CustomTextField`, `CreateClassInput`, validaciones de dominio y navegación segura (`Navigator.canPop()`) tras emitir `ClassActionSuccess`.
+- Strings operativos agregados en `app_strings.dart` (mensajes de clases/membresías, etiquetas de estado, textos de retry) y reutilizados en la UI.
+- Nuevos widget tests (`test/features/classes/presentation/screens/*.dart`) montan GoRouter embebido para validar navegación, formularios y estados.
+- QA completo: `dart format .`, `flutter analyze`, `flutter test`.
+
 ### 👩‍🏫 Módulo Docente
 
 **✅ Implementado (Sprint 2):**
@@ -260,6 +294,10 @@ lib/
 - ✅ Detalle de clase con 3 tabs: Tareas (clickeables para iniciar sesión), Información de clase, Estadísticas de clase
 - ✅ Estadísticas generales (todas las clases del estudiante)
 - ✅ Pantalla de configuración (placeholder)
+
+**⚡ Actualización 27/11/2025**
+- `StudentClassesListScreen` depura en tiempo real las “clases zombis”: elimina de la lista las clases eliminadas/archivadas por el docente mediante watchers individuales y mantiene la UI sincronizada sin reiniciar la app.
+- `StudentClassDetailScreen` se cierra automáticamente cuando la clase se archiva/elimina o la membresía es revocada, mostrando un `SnackBar` contextual y regresando a la lista del alumno.
 
 **📅 Próximamente (Sprint 3+):**
 - 📅 Visualización de tareas asignadas
@@ -373,6 +411,7 @@ memberships/{membershipId}
   teacherId: string,             // ID del docente (denormalizado)
   className: string,             // Nombre de la clase (denormalizado)
   joinedAt: Timestamp,          // Fecha de unión
+  updatedAt: Timestamp,         // Última modificación (re-activaciones)
   isActive: boolean              // Estado de la membresía
 }
 ```
@@ -611,8 +650,8 @@ service cloud.firestore {
 ---
 
 ### 📅 Sprint 3: Sistema de Clases y Membresías
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+**Duración:** Diciembre 2025 (2 semanas)
+**Estado:** 🚧 En progreso (Fases 1-7 completadas)
 
 **Objetivos:**
 - 📚 **Gestión de clases** (crear, editar, eliminar)
@@ -624,15 +663,28 @@ service cloud.firestore {
 **Entregables:**
 - 📚 CRUD de clases con códigos de acceso
 - 🔗 Sistema de membresías N:M
-- 👥 Gestión de alumnos por clase
-- 🔄 Lógica de fan-out para asignaciones
+- 👥 Gestión de alumnos por clase (ManageStudentsScreen integrada a Cubits reales)
+- 🔄 Lógica de fan-out para asignaciones (hooks y TODOs documentados)
 - 📱 Pantallas de gestión de clases
+
+**Avances recientes (24 nov 2025):**
+- `MembershipService` y `ClassRepositoryImpl` exponen paginación segura (`MembershipPage`) con cursores y validaciones de argumentos.
+- `MembershipCubit` separa estados para operaciones vs. listados, habilitando `loadMembers`, `refreshMembers`, confirmaciones M3 y reutilización en UI.
+- `ManageStudentsScreen` consume la capa real (header con `ClassModel`, listados paginados, `SelectableText.rich` para errores y diálogos de confirmación para expulsar o regenerar códigos).
+- Se añadieron tests widget (`manage_students_screen_test.dart`) y unitarios de servicios para cubrir paginación, junto a actualizaciones de documentación e índices.
+- `TeacherClassesListScreen` navega directo a `ManageStudentsScreen` (sin tabs mock heredados) y los HomeScreens muestran únicamente acciones respaldadas por lógica real.
+- `StudentClassesListScreen` incorpora `StudentClassesCubit`, escucha los memberships activos del alumno y ofrece pull-to-refresh + CTA para unirse usando códigos reales.
+
+**Avances recientes (27 nov 2025):**
+- `ClassService.watchClassById` y `ClassRepository.watchClassById` permiten reaccionar a archivados/eliminaciones sin necesidad de refrescar manualmente.
+- `TeacherClassDetailScreen` y `StudentClassDetailScreen` escuchan el documento en tiempo real; si la clase se elimina o la membresía se revoca, muestran un mensaje y regresan a la lista correspondiente.
+- `StudentClassesCubit` administra un watcher por clase visible para depurar registros huérfanos (clases borradas) y mantener la lista del alumno consistente en todo momento.
 
 ---
 
-### 📅 Sprint 4: Gestión de Tareas y Asignaciones
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### ✅ Sprint 4: Gestión de Tareas y Asignaciones
+**Duración:** Diciembre 2025 - Enero 2026
+**Estado:** ✅ Finalizado (Validación de calidad completada)
 
 **Objetivos:**
 - 🎯 **CRUD de tareas** con asignaciones masivas
@@ -650,9 +702,9 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 5: Cronómetro y Sesiones de Estudio
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### 🚀 Sprint 5: Cronómetro y Sesiones de Estudio
+**Duración:** Enero 2026
+**Estado:** 🚧 En progreso
 
 **Objetivos:**
 - ⏱️ **Cronómetro funcional** con controles completos
@@ -715,14 +767,14 @@ service cloud.firestore {
 ```
 Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
-Sprint 2: ██████░░░░░░░░░░░░ 50% 🚧 Autenticación
-Sprint 3: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Clases y Membresías
-Sprint 4: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Tareas y Asignaciones
-Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Cronómetro y Sesiones
+Sprint 2: ████████████████████ 100% ✅ Autenticación
+Sprint 3: ████████████████████ 100% ✅ Clases y Membresías
+Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
+Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 🚧 Cronómetro y Sesiones
 Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
 Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
 
-Progreso Total: ███░░░░░░░░░░░░░░░░ 26% (2 sprints terminados + Sprint 2 en curso)
+Progreso Total: ███████████░░░░░░░░░ 55% (Sprints 0-4 completados, Sprint 5 iniciando)
 ```
 
 ---

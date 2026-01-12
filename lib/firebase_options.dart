@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'playing-tracker-app.firebasestorage.app',
     measurementId: 'G-Z2P13CZFVV',
   );
-
 }

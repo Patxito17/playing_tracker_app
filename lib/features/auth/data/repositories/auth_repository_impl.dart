@@ -76,6 +76,40 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<TeacherModel?> getTeacherProfile(String userId) async {
+    try {
+      final snapshot = await _teachersRef.doc(userId).get();
+      if (!snapshot.exists) {
+        return null;
+      }
+      final data = snapshot.data();
+      if (data == null) {
+        return null;
+      }
+      return TeacherModel.fromJson(data);
+    } catch (error) {
+      throw AuthRepositoryException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<StudentModel?> getStudentProfile(String userId) async {
+    try {
+      final snapshot = await _studentsRef.doc(userId).get();
+      if (!snapshot.exists) {
+        return null;
+      }
+      final data = snapshot.data();
+      if (data == null) {
+        return null;
+      }
+      return StudentModel.fromJson(data);
+    } catch (error) {
+      throw AuthRepositoryException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
   Future<void> createTeacher({
     required String userId,
     required String firstName,
