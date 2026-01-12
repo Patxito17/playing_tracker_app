@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -66,74 +67,24 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }
 
   Future<void> _showEditDialog(BuildContext context, TaskModel task) async {
-    final titleController = TextEditingController(text: task.title);
-    final descriptionController = TextEditingController(
-      text: task.description ?? '',
+    final taskCubit = context.read<TaskCubit>();
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => BlocProvider.value(
+        value: taskCubit,
+        child: _EditTaskDialog(task: task),
+      ),
     );
-
-    try {
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            title: Text(TaskStrings.editTask),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: TaskStrings.taskTitleLabel,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.m),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    labelText: TaskStrings.taskDescriptionLabel,
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(CommonStrings.cancel),
-              ),
-              FilledButton(
-                onPressed: () {
-                  final input = (
-                    taskId: task.id,
-                    title: titleController.text.trim(),
-                    description: descriptionController.text.trim().isEmpty
-                        ? null
-                        : descriptionController.text.trim(),
-                    durationSuggested: null,
-                    attachments: null,
-                    dueDate: null,
-                    isActive: null,
-                  );
-                  context.read<TaskCubit>().updateTask(input);
-                  Navigator.of(dialogContext).pop();
-                },
-                child: Text(CommonStrings.save),
-              ),
-            ],
-          );
-        },
-      );
-    } finally {
-      // Liberamos explícitamente los controladores usados solo en este diálogo.
-      titleController.dispose();
-      descriptionController.dispose();
-    }
   }
 
   Future<void> _showAssignDialog(BuildContext context, TaskModel task) async {
+    final taskCubit = context.read<TaskCubit>();
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) => AssignTaskDialog(task: task),
+      builder: (dialogContext) => BlocProvider.value(
+        value: taskCubit,
+        child: AssignTaskDialog(task: task),
+      ),
     );
   }
 
@@ -151,6 +102,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }
 
   Future<void> _confirmDelete(BuildContext context, TaskModel task) async {
+    final taskCubit = context.read<TaskCubit>();
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -171,7 +123,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 foregroundColor: context.colorScheme.onError,
               ),
               onPressed: () {
-                context.read<TaskCubit>().deleteTask(task.id);
+                taskCubit.deleteTask(task.id);
                 Navigator.of(dialogContext).pop();
               },
               child: Text(TaskStrings.deleteTask),
@@ -391,6 +343,136 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+class _EditTaskDialog extends StatefulWidget {
+  const _EditTaskDialog({required this.task});
+
+  final TaskModel task;
+
+  @override
+  State<_EditTaskDialog> createState() => _EditTaskDialogState();
+}
+
+class _EditTaskDialogState extends State<_EditTaskDialog> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _durationController;
+  DateTime? _dueDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.task.title);
+    _descriptionController = TextEditingController(
+      text: widget.task.description ?? '',
+    );
+    _durationController = TextEditingController(
+      text: (widget.task.durationSuggested ~/ 60).toString(),
+    );
+    _dueDate = widget.task.dueDate?.toDate();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _durationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDueDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dueDate ?? now,
+      firstDate: now.subtract(const Duration(days: 365)),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        _dueDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(TaskStrings.editTask),
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _titleController,
+            decoration: InputDecoration(labelText: TaskStrings.taskTitleLabel),
+            textCapitalization: TextCapitalization.sentences,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          TextField(
+            controller: _descriptionController,
+            decoration: InputDecoration(
+              labelText: TaskStrings.taskDescriptionLabel,
+            ),
+            maxLines: 3,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          TextField(
+            controller: _durationController,
+            decoration: InputDecoration(
+              labelText: TaskStrings.estimatedTimeLabel,
+              suffixText: ' min',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.event),
+            title: Text(TaskStrings.dueDate),
+            subtitle: Text(
+              _dueDate != null
+                  ? DateFormat('dd/MM/yyyy').format(_dueDate!)
+                  : TaskStrings.dueDateHint,
+            ),
+            onTap: _pickDueDate,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(CommonStrings.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final title = _titleController.text.trim();
+            final description = _descriptionController.text.trim();
+            final minutes = int.tryParse(_durationController.text.trim());
+
+            if (title.isEmpty || minutes == null || minutes <= 0) {
+              return;
+            }
+
+            final input = (
+              taskId: widget.task.id,
+              title: title,
+              description: description.isEmpty ? null : description,
+              durationSuggested: minutes * 60,
+              attachments: null,
+              dueDate: _dueDate,
+              isActive: null,
+            );
+            context.read<TaskCubit>().updateTask(input);
+            Navigator.of(context).pop();
+          },
+          child: Text(CommonStrings.save),
+        ),
+      ],
     );
   }
 }
