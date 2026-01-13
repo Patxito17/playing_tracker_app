@@ -38,7 +38,7 @@
   - Método `createSession(SessionModel)`: Insertar en `sessions`.
   - *Transacción:* Actualizar `assignments/{assignmentId}` incrementando `sessionsCount` y `totalDurationLogged`.
   - *Transacción:* Actualizar `students/{studentId}` incrementando totales globales.
-- [ ] **Implementar `SessionRepository`**:
+- [x] **Implementar `SessionRepository`**:
   - Contrato e implementación que orquesta la llamada al servicio.
   - Manejo de errores (`SessionException`).
 - [ ] **Tests Unitarios**:
