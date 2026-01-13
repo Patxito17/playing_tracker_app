@@ -34,7 +34,7 @@
 - [x] **Definir Modelo `SessionModel`**:
   - Campos: `id`, `studentId`, `taskId`, `teacherId`, `startTime`, `endTime`, `durationSeconds`, `status` (completed), `createdAt`, `notes`.
   - Mappers `fromJson`/`toJson`.
-- [ ] **Implementar `SessionService`**:
+- [x] **Implementar `SessionService`**:
   - Método `createSession(SessionModel)`: Insertar en `sessions`.
   - *Transacción:* Actualizar `assignments/{assignmentId}` incrementando `sessionsCount` y `totalDurationLogged`.
   - *Transacción:* Actualizar `students/{studentId}` incrementando totales globales.
