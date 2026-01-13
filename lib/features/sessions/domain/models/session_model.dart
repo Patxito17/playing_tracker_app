@@ -4,6 +4,21 @@ import 'package:playing_tracker/core/utils/timestamp_converter.dart';
 
 part 'session_model.g.dart';
 
+/// Estados posibles de una sesión de práctica
+enum SessionStatus {
+  /// Sesión no iniciada
+  idle,
+
+  /// Sesión en progreso
+  running,
+
+  /// Sesión pausada temporalmente
+  paused,
+
+  /// Sesión completada y guardada
+  completed,
+}
+
 /// Modelo que representa un registro atómico de sesión de estudio.
 ///
 /// Cada sesión representa un período continuo de práctica/estudio que un alumno
@@ -36,6 +51,7 @@ part 'session_model.g.dart';
 ///   dateLogged: Timestamp.fromDate(DateTime(2025, 11, 13)),
 ///   monthBucket: '2025-11',
 ///   notes: 'Sesión enfocada en escalas',
+///   status: SessionStatus.completed,
 ///   createdAt: Timestamp.now(),
 /// );
 ///
@@ -83,6 +99,9 @@ class SessionModel {
   /// Notas opcionales del alumno sobre la sesión
   final String? notes;
 
+  /// Estado de la sesión
+  final SessionStatus status;
+
   /// Fecha y hora de creación del registro en Firestore
   @TimestampConverter()
   final Timestamp createdAt;
@@ -100,6 +119,7 @@ class SessionModel {
     required this.dateLogged,
     required this.monthBucket,
     this.notes,
+    this.status = SessionStatus.completed,
     required this.createdAt,
   });
 
@@ -156,6 +176,7 @@ class SessionModel {
     Timestamp? dateLogged,
     String? monthBucket,
     String? notes,
+    SessionStatus? status,
     Timestamp? createdAt,
   }) {
     return SessionModel(
@@ -170,6 +191,7 @@ class SessionModel {
       dateLogged: dateLogged ?? this.dateLogged,
       monthBucket: monthBucket ?? this.monthBucket,
       notes: notes ?? this.notes,
+      status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -190,6 +212,7 @@ class SessionModel {
           dateLogged == other.dateLogged &&
           monthBucket == other.monthBucket &&
           notes == other.notes &&
+          status == other.status &&
           createdAt == other.createdAt;
 
   @override
@@ -205,6 +228,7 @@ class SessionModel {
       dateLogged.hashCode ^
       monthBucket.hashCode ^
       notes.hashCode ^
+      status.hashCode ^
       createdAt.hashCode;
 
   @override
