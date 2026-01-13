@@ -50,7 +50,11 @@
 ### ⏱️ Fase 2: Lógica del Cronómetro (State Management)
 **Objetivo:** Crear el motor del cronómetro independiente de la UI.
 
-- [ ] **Implementar `TimerTicker`**: Clase auxiliar streamable que emite ticks cada segundo.
+- [x] **Implementar `TimerTicker`**: Clase auxiliar streamable que emite ticks cada segundo.
+  - ✅ Stream broadcast con emisión de ticks cada segundo (configurable).
+  - ✅ Control start/pause/stop con mantenimiento de estado.
+  - ✅ Gestión de recursos con dispose().
+  - ✅ 24 tests pasando validando emisión, control y casos límite.
 - [ ] **Implementar `SessionCubit`**:
   - Estados: `SessionInitial`, `SessionRunning` (duration), `SessionPaused` (duration), `SessionSuccess` (summary), `SessionError`.
   - Métodos: `startSession(taskId)`, `pauseSession()`, `resumeSession()`, `stopSession()` (pre-guardado), `saveSession()`.
