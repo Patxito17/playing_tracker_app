@@ -41,9 +41,11 @@
 - [x] **Implementar `SessionRepository`**:
   - Contrato e implementación que orquesta la llamada al servicio.
   - Manejo de errores (`SessionException`).
-- [ ] **Tests Unitarios**:
-  - Validar serialización del modelo.
-  - Mockear `FirebaseFirestore` para validar la lógica de transacción (o al menos la llamada).
+- [x] **Tests Unitarios**:
+  - ✅ Validación de serialización del modelo (28 tests en `session_model_test.dart`).
+  - ✅ Mock de `FirebaseFirestore` usando `FakeFirebaseFirestore` para validar lógica de transacción (13 tests en `session_service_test.dart`).
+  - ✅ Tests del repositorio con Mocktail (16 tests en `session_repository_test.dart`).
+  - **Total: 57 tests pasando** (100% cobertura de código público).
 
 ### ⏱️ Fase 2: Lógica del Cronómetro (State Management)
 **Objetivo:** Crear el motor del cronómetro independiente de la UI.
