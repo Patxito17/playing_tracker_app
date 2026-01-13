@@ -31,7 +31,7 @@
 ### 🏗️ Fase 1: Capa de Datos y Dominio (Sessions)
 **Objetivo:** Establecer los cimientos para persistir las sesiones de práctica.
 
-- [ ] **Definir Modelo `SessionModel`**:
+- [x] **Definir Modelo `SessionModel`**:
   - Campos: `id`, `studentId`, `taskId`, `teacherId`, `startTime`, `endTime`, `durationSeconds`, `status` (completed), `createdAt`, `notes`.
   - Mappers `fromJson`/`toJson`.
 - [ ] **Implementar `SessionService`**:
