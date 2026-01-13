@@ -22,7 +22,6 @@ import 'package:playing_tracker/features/tasks/domain/repositories/task_reposito
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_cubit.dart';
 import 'package:playing_tracker/features/tasks/presentation/screens/create_task_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
-import 'package:provider/provider.dart';
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -88,20 +87,21 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => MultiProvider(
-            providers: [
-              Provider<ClassRepository>.value(value: mockClassRepository),
-            ],
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<TaskCubit>.value(value: taskCubit),
-                BlocProvider<AuthCubit>.value(value: mockAuthCubit),
-                BlocProvider<ClassCubit>.value(value: mockClassCubit),
-                BlocProvider<MembershipCubit>.value(value: mockMembershipCubit),
-              ],
-              child: const CreateTaskScreen(),
-            ),
-          ),
+          builder: (context, state) =>
+              RepositoryProvider<ClassRepository>.value(
+                value: mockClassRepository,
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider<TaskCubit>.value(value: taskCubit),
+                    BlocProvider<AuthCubit>.value(value: mockAuthCubit),
+                    BlocProvider<ClassCubit>.value(value: mockClassCubit),
+                    BlocProvider<MembershipCubit>.value(
+                      value: mockMembershipCubit,
+                    ),
+                  ],
+                  child: const CreateTaskScreen(),
+                ),
+              ),
         ),
       ],
     );
