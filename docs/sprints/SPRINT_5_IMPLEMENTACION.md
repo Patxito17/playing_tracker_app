@@ -55,13 +55,19 @@
   - ✅ Control start/pause/stop con mantenimiento de estado.
   - ✅ Gestión de recursos con dispose().
   - ✅ 24 tests pasando validando emisión, control y casos límite.
-- [ ] **Implementar `SessionCubit`**:
-  - Estados: `SessionInitial`, `SessionRunning` (duration), `SessionPaused` (duration), `SessionSuccess` (summary), `SessionError`.
-  - Métodos: `startSession(taskId)`, `pauseSession()`, `resumeSession()`, `stopSession()` (pre-guardado), `saveSession()`.
-  - **Manejo de ciclo de vida:** Detectar `AppLifecycleState` para ajustar el tiempo si la app se minimiza (guardar timestamp de "pause" background y recalcular al volver).
-- [ ] **Tests Unitarios del Cubit**:
-  - Validar transiciones de estado `idle` -> `running` -> `paused`.
-  - Validar cálculo de tiempo.
+- [x] **Implementar `SessionCubit`**:
+  - ✅ Estados: `SessionInitial`, `SessionRunning`, `SessionPaused`, `SessionSaving`, `SessionSuccess`, `SessionError`.
+  - ✅ Métodos: `startSession()`, `pauseSession()`, `resumeSession()`, `stopSession()`, `saveSession()`.
+  - ✅ Integración con `TimerTicker` para emisión de ticks cada segundo.
+  - ✅ Manejo de ciclo de vida con `WidgetsBindingObserver` para ajustar tiempo en background/foreground.
+  - ✅ Persistencia de sesiones usando `SessionRepository`.
+  - ✅ 17 tests pasando validando todos los métodos y casos de error.
+- [x] **Tests Unitarios del Cubit**:
+  - ✅ Validación de transiciones de estado (idle → running → paused → success).
+  - ✅ Validación de cálculo de tiempo con ticker.
+  - ✅ Validación de manejo de errores en cada operación.
+  - ✅ Validación de persistencia con repository mockeado.
+  - **Total Fase 2: 41 tests** (24 TimerTicker + 17 SessionCubit) ✅
 
 ### 📱 Fase 3: Interfaz de Práctica (Timer UI)
 **Objetivo:** Pantalla donde el alumno realiza la práctica.
