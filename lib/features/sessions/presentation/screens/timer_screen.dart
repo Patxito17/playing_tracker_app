@@ -103,6 +103,9 @@ class _TimerScreenState extends State<TimerScreen>
   }
 
   Future<void> _handleSave(BuildContext context) async {
+    // Pausar el cronómetro mientras el usuario escribe notas
+    context.read<SessionCubit>().pauseSession();
+
     setState(() {
       _showNotesInput = true;
     });
