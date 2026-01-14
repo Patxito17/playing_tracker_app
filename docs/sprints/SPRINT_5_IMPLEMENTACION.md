@@ -87,8 +87,13 @@
     - 24 tests del `TimerTicker` (validan la emisión correcta de ticks).
     - Análisis estático con `flutter analyze` (0 issues).
     - Integración en `app_routes.dart` con configuración correcta del BlocProvider.
-- [ ] **Integración en Navegación**:
-  - Acceso desde `StudentTaskDetailScreen` -> botón "Practicar".
+- [x] **Integración en Navegación**:
+  - ✅ Acceso desde `AssignmentDetailScreen` (pantalla de detalle para estudiantes).
+  - ✅ Botón "Iniciar Práctica" con icono `play_circle_outline`.
+  - ✅ Navegación con `context.goNamed()` pasando parámetros correctos.
+  - ✅ Extra data: `studentId`, `teacherId`, `taskTitle`.
+  - ✅ Path parameters: `taskId`.
+  - ✅ Validado con `flutter analyze` (sin errores).
 - [ ] **Feedback visual**:
   - Animaciones suaves al pausar/reanudar.
   - Dialog de confirmación antes de descartar una sesión en curso.

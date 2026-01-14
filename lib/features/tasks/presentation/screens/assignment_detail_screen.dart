@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -187,12 +188,18 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
                   label: TaskStrings.startPractice,
+                  icon: Icons.play_circle_outline,
+                  variant: CustomButtonVariant.filled,
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(TaskStrings.practiceAvailableSoon),
-                        behavior: SnackBarBehavior.floating,
-                      ),
+                    // Navegar al TimerScreen con todos los parámetros necesarios
+                    context.goNamed(
+                      'timer',
+                      pathParameters: {'taskId': assignment.taskId},
+                      extra: {
+                        'studentId': assignment.studentId,
+                        'teacherId': assignment.teacherId,
+                        'taskTitle': assignment.taskTitle ?? 'Tarea',
+                      },
                     );
                   },
                 ),
