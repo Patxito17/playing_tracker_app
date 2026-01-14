@@ -73,6 +73,12 @@ class StudentHomeScreen extends StatelessWidget {
         onTap: () => context.go(AppRoutes.studentClassesList),
       ),
       HomeQuickActionConfig(
+        icon: Icons.assignment_outlined,
+        title: TaskStrings.myAssignmentsTitle,
+        description: 'Ver todas tus tareas en un solo lugar',
+        onTap: () => context.push(AppRoutes.assignmentList),
+      ),
+      HomeQuickActionConfig(
         icon: Icons.group_add_outlined,
         title: HomeStrings.joinClassAction,
         description: HomeStrings.joinClassDescription,

@@ -88,14 +88,16 @@
     - Análisis estático con `flutter analyze` (0 issues).
     - Integración en `app_routes.dart` con configuración correcta del BlocProvider.
 - [x] **Integración en Navegación**:
-  - ✅ Acceso desde `AssignmentDetailScreen` (pantalla de detalle para estudiantes).
+  - ✅ Acceso desde `StudentHomeScreen` -> Botón "Mis Asignaciones" -> `AssignmentListScreen` -> `AssignmentDetailScreen`.
   - ✅ Acceso desde `AssignmentCard` (widget de tarjeta de tarea en la pestaña "Tareas" de StudentClassDetailScreen).
   - ✅ Botón "Iniciar Práctica" / "Iniciar sesión de estudio" con icono `play_circle_outline`.
   - ✅ Navegación con `context.goNamed()` pasando parámetros correctos.
   - ✅ Extra data: `studentId`, `teacherId`, `taskTitle`.
   - ✅ Path parameters: `taskId`.
   - ✅ Validado con `flutter analyze` (sin errores).
-  - ✅ **Dos puntos de acceso**: Desde el detalle de asignación individual Y desde las tarjetas de tareas en la clase.
+  - ✅ **Dos flujos completos de navegación**:
+    1. **Vista Global**: Home -> "Mis Asignaciones" -> Lista completa -> Detalle -> Timer
+    2. **Por Clase**: Clases -> Clase específica -> Tab "Tareas" -> Tarjeta -> Timer
 - [x] **Feedback visual**:
   - ✅ **Animación de pulso**: El cronómetro circular "late" suavemente cuando está corriendo (Transform.scale con AnimationController).
   - ✅ **AnimatedSwitcher**: Transición suave (fade + scale) del texto de estado al cambiar entre "Listo", "En progreso" y "Pausado".
