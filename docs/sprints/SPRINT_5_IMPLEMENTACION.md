@@ -94,9 +94,13 @@
   - ✅ Extra data: `studentId`, `teacherId`, `taskTitle`.
   - ✅ Path parameters: `taskId`.
   - ✅ Validado con `flutter analyze` (sin errores).
-- [ ] **Feedback visual**:
-  - Animaciones suaves al pausar/reanudar.
-  - Dialog de confirmación antes de descartar una sesión en curso.
+- [x] **Feedback visual**:
+  - ✅ **Animación de pulso**: El cronómetro circular "late" suavemente cuando está corriendo (Transform.scale con AnimationController).
+  - ✅ **AnimatedSwitcher**: Transición suave (fade + scale) del texto de estado al cambiar entre "Listo", "En progreso" y "Pausado".
+  - ✅ **Dialog de confirmación**: AlertDialog con botones claros antes de descartar una sesión en curso.
+  - ✅ **Gradientes animados**: El contenedor circular usa LinearGradient para profundidad visual.
+  - ✅ **Sombras con glow**: BoxShadow en el cronómetro circular y botones principales.
+  - ✅ **Validado con `flutter analyze`** (sin errores).
 
 ### 💾 Fase 4: Persistencia y Feedback
 **Objetivo:** Conectar el timer con Firebase y cerrar el ciclo.
