@@ -481,15 +481,34 @@ class _CircularTimer extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.s),
-                      Text(
-                        isRunning
-                            ? 'En progreso...'
-                            : duration > 0
-                            ? 'Pausado'
-                            : 'Listo para empezar',
-                        style: context.bodyMediumOnSurface?.copyWith(
-                          color: context.colorScheme.onPrimaryContainer
-                              .withValues(alpha: 0.8),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          isRunning
+                              ? 'En progreso...'
+                              : duration > 0
+                              ? 'Pausado'
+                              : 'Listo para empezar',
+                          key: ValueKey(
+                            isRunning
+                                ? 'running'
+                                : duration > 0
+                                ? 'paused'
+                                : 'idle',
+                          ),
+                          style: context.bodyMediumOnSurface?.copyWith(
+                            color: context.colorScheme.onPrimaryContainer
+                                .withValues(alpha: 0.8),
+                          ),
                         ),
                       ),
                     ],
