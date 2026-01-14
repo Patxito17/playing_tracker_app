@@ -35,7 +35,6 @@ import '../../features/statistics/presentation/screens/statistics_screen.dart';
 import '../../features/tasks/data/repositories/task_repository_impl.dart';
 import '../../features/tasks/presentation/cubit/assignment_cubit.dart';
 import '../../features/tasks/presentation/cubit/task_cubit.dart';
-import '../../features/tasks/presentation/screens/assignment_detail_screen.dart';
 import '../../features/tasks/presentation/screens/assignment_list_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
@@ -88,7 +87,6 @@ class AppRoutes {
 
   // Rutas de Asignaciones (Alumno)
   static const String assignmentList = '/assignments';
-  static const String assignmentDetail = '/assignments/:assignmentId';
 
   // Rutas de Sesiones
   static const String timer = '/timer/:taskId';
@@ -456,31 +454,6 @@ class AppRoutes {
           return BlocProvider(
             create: (context) => AssignmentCubit(TaskRepositoryImpl()),
             child: const AssignmentListScreen(),
-          );
-        },
-      ),
-      GoRoute(
-        path: assignmentDetail,
-        name: 'assignmentDetail',
-        builder: (context, state) {
-          final assignmentId = state.pathParameters['assignmentId'] ?? '';
-          final extraCubit = state.extra;
-          if (extraCubit is AssignmentCubit) {
-            return BlocProvider<AssignmentCubit>.value(
-              value: extraCubit,
-              child: AssignmentDetailScreen(assignmentId: assignmentId),
-            );
-          }
-          final authState = context.read<AuthCubit>().state;
-          if (authState is! AuthAuthenticated ||
-              authState.role != UserRole.student) {
-            return const ErrorScreen(
-              errorMessage: 'No se pudo cargar el detalle de la asignación.',
-            );
-          }
-          return BlocProvider(
-            create: (context) => AssignmentCubit(TaskRepositoryImpl()),
-            child: AssignmentDetailScreen(assignmentId: assignmentId),
           );
         },
       ),
