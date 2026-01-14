@@ -89,11 +89,13 @@
     - Integración en `app_routes.dart` con configuración correcta del BlocProvider.
 - [x] **Integración en Navegación**:
   - ✅ Acceso desde `AssignmentDetailScreen` (pantalla de detalle para estudiantes).
-  - ✅ Botón "Iniciar Práctica" con icono `play_circle_outline`.
+  - ✅ Acceso desde `AssignmentCard` (widget de tarjeta de tarea en la pestaña "Tareas" de StudentClassDetailScreen).
+  - ✅ Botón "Iniciar Práctica" / "Iniciar sesión de estudio" con icono `play_circle_outline`.
   - ✅ Navegación con `context.goNamed()` pasando parámetros correctos.
   - ✅ Extra data: `studentId`, `teacherId`, `taskTitle`.
   - ✅ Path parameters: `taskId`.
   - ✅ Validado con `flutter analyze` (sin errores).
+  - ✅ **Dos puntos de acceso**: Desde el detalle de asignación individual Y desde las tarjetas de tareas en la clase.
 - [x] **Feedback visual**:
   - ✅ **Animación de pulso**: El cronómetro circular "late" suavemente cuando está corriendo (Transform.scale con AnimationController).
   - ✅ **AnimatedSwitcher**: Transición suave (fade + scale) del texto de estado al cambiar entre "Listo", "En progreso" y "Pausado".
