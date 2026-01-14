@@ -146,15 +146,8 @@ class _TimerScreenState extends State<TimerScreen>
     return BlocConsumer<SessionCubit, SessionState>(
       listener: (context, state) {
         if (state is SessionSuccess) {
-          // Sesión guardada exitosamente
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: context.colorScheme.primary,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-          context.pop();
+          // Mostrar diálogo de éxito premium
+          _showSuccessDialog(context, state.duration, state.message);
         } else if (state is SessionError) {
           // Error al guardar
           ScaffoldMessenger.of(context).showSnackBar(
@@ -338,6 +331,90 @@ class _TimerScreenState extends State<TimerScreen>
           ),
         ),
       ],
+    );
+  }
+
+  /// Muestra un diálogo de éxito premium con el resumen de la sesión
+  void _showSuccessDialog(BuildContext context, int duration, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        ),
+        title: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.m),
+              decoration: BoxDecoration(
+                color: context.colorScheme.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.check_circle_rounded,
+                color: context.colorScheme.primary,
+                size: 64,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.m),
+            Text('¡Sesión Guardada!', style: context.titleLargeBold),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: context.bodyMediumOnSurfaceVariant,
+            ),
+            const SizedBox(height: AppSpacing.l),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.m),
+              decoration: BoxDecoration(
+                color: context.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.timer_outlined,
+                    color: context.colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: AppSpacing.s),
+                  Text(
+                    'Tiempo practicado: ${_formatTime(duration)}',
+                    style: context.titleMediumBold?.copyWith(
+                      color: context.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar diálogo
+                context.pop(); // Volver a la pantalla anterior
+              },
+              style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
+              ),
+              child: const Text('Continuar'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

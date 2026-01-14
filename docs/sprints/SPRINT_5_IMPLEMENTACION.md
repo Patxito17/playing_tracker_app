@@ -109,13 +109,14 @@
 ### 💾 Fase 4: Persistencia y Feedback
 **Objetivo:** Conectar el timer con Firebase y cerrar el ciclo.
 
-- [ ] **Conectar `SessionCubit.saveSession`** con `SessionRepository`.
-- [ ] **Manejar éxito**:
-  - Mostrar pantalla de resumen ("¡Bien hecho! 30 minutos practicados").
-  - Navegar de vuelta al detalle de la tarea o lista.
-- [ ] **Validar contadores**:
-  - Verificar que en `assignment` se actualizó el progreso.
-  - Verificar estadísticas rápidas en el perfil del alumno.
+- [x] **Conectar `SessionCubit.saveSession`** con `SessionRepository`.
+- [x] **Manejar éxito**:
+  - ✅ **Diálogo de resumen**: Se implementó `_showSuccessDialog` en `TimerScreen` con diseño premium.
+  - ✅ **Feedback visual**: Muestra tiempo practicado y mensaje de éxito antes de navegar.
+  - ✅ **Navegación**: Vuelve automáticamente después de confirmar el resumen.
+- [x] **Validar contadores**:
+  - ✅ **Transaccionalidad**: `SessionService` asegura que `assignment` y `student` se actualicen atómicamente.
+  - ✅ **Campos**: Se actualizan `sessionsCount`, `totalDurationLogged` y `lastSessionDate`.
 
 ### 📜 Fase 5: Historial y Detalles
 **Objetivo:** Permitir al alumno ver qué ha hecho.
