@@ -286,6 +286,7 @@ class _TimerScreenState extends State<TimerScreen>
             children: [
               // Botón Stop
               Expanded(
+                flex: 3,
                 child: CustomButton(
                   label: 'Descartar',
                   icon: Icons.close_rounded,
@@ -296,10 +297,10 @@ class _TimerScreenState extends State<TimerScreen>
               const SizedBox(width: AppSpacing.m),
               // Botón Save
               Expanded(
-                flex: 2,
+                flex: 5,
                 child: CustomButton(
                   label: 'Guardar sesión',
-                  icon: Icons.check_circle_outline_rounded,
+                  icon: Icons.check_rounded,
                   variant: CustomButtonVariant.filled,
                   onPressed: () => _handleSave(context),
                 ),

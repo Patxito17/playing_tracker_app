@@ -150,7 +150,7 @@ class AssignmentCard extends StatelessWidget {
 
   /// Navega al TimerScreen con todos los parámetros necesarios
   void _navigateToTimer(BuildContext context) {
-    context.goNamed(
+    context.pushNamed(
       'timer',
       pathParameters: {'taskId': assignment.taskId},
       extra: {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -146,16 +144,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                     ...assignments.map((assignment) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                        child: AssignmentCard(
-                          assignment: assignment,
-                          onTap: () => context.push(
-                            AppRoutes.assignmentDetail.replaceAll(
-                              ':assignmentId',
-                              assignment.id,
-                            ),
-                            extra: context.read<AssignmentCubit>(),
-                          ),
-                        ),
+                        child: AssignmentCard(assignment: assignment),
                       );
                     }),
                 ],
