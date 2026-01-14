@@ -25,6 +25,9 @@ import '../../features/classes/presentation/screens/teacher_class_detail_screen.
 import '../../features/classes/presentation/screens/teacher_classes_list_screen.dart';
 import '../../features/home/presentation/screens/student_home_screen.dart';
 import '../../features/home/presentation/screens/teacher_home_screen.dart';
+import '../../features/sessions/data/repositories/session_repository_impl.dart';
+import '../../features/sessions/data/services/session_service.dart';
+import '../../features/sessions/presentation/cubit/session_cubit.dart';
 import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
@@ -488,7 +491,23 @@ class AppRoutes {
         name: 'timer',
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          return TimerScreen(taskId: taskId);
+          final extra = state.extra as Map<String, String>?;
+
+          // Crear las dependencias necesarias
+          final sessionService = SessionService();
+          final sessionRepository = SessionRepositoryImpl(
+            sessionService: sessionService,
+          );
+
+          return BlocProvider(
+            create: (context) => SessionCubit(sessionRepository),
+            child: TimerScreen(
+              taskId: taskId,
+              studentId: extra?['studentId'] ?? '',
+              teacherId: extra?['teacherId'] ?? '',
+              taskTitle: extra?['taskTitle'] ?? 'Tarea',
+            ),
+          );
         },
       ),
       GoRoute(

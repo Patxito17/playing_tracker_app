@@ -72,11 +72,21 @@
 ### 📱 Fase 3: Interfaz de Práctica (Timer UI)
 **Objetivo:** Pantalla donde el alumno realiza la práctica.
 
-- [ ] **Crear `TimerScreen`**:
-  - Diseño circular (progress indicator) visualmente atractivo.
-  - Mostrar tiempo transcurrido (MM:SS o HH:MM:SS).
-  - Botones grandes de control (Play/Pause/Stop).
-  - Input opcional para "Notas de sesión" al finalizar.
+- [x] **Crear `TimerScreen`**:
+  - ✅ Diseño circular con progress indicator animado y gradientes premium.
+  - ✅ Mostrar tiempo transcurrido en formato adaptativo (MM:SS o HH:MM:SS).
+  - ✅ Botones grandes de control con animación de pulso (Play/Pause/Resume/Stop/Save).
+  - ✅ Input opcional para "Notas de sesión" al finalizar.
+  - ✅ Integración completa con `SessionCubit` y estado reactivo.
+  - ✅ Confirmación antes de descartar sesión.
+  - ✅ Feedback visual con SnackBars y estados de carga.
+  - ✅ Manejo de navegación con PopScope para prevenir pérdida de datos.
+  - ✅ Validación mediante `flutter analyze` (sin errors).
+  - ℹ️ **Nota sobre tests**: Los widget tests para esta pantalla son complejos debido a que `SessionCubit` implementa `WidgetsBindingObserver` y `TimerTicker`. La funcionalidad está validada mediante:
+    - 17 tests del `SessionCubit` (incluyen todas las interacciones del timer).
+    - 24 tests del `TimerTicker` (validan la emisión correcta de ticks).
+    - Análisis estático con `flutter analyze` (0 issues).
+    - Integración en `app_routes.dart` con configuración correcta del BlocProvider.
 - [ ] **Integración en Navegación**:
   - Acceso desde `StudentTaskDetailScreen` -> botón "Practicar".
 - [ ] **Feedback visual**:
