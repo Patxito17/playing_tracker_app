@@ -491,7 +491,7 @@ class AppRoutes {
         name: 'timer',
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          final extra = state.extra as Map<String, String>?;
+          final extra = state.extra as Map<String, String?>?;
 
           // Crear las dependencias necesarias
           final sessionService = SessionService();
@@ -506,6 +506,7 @@ class AppRoutes {
               studentId: extra?['studentId'] ?? '',
               teacherId: extra?['teacherId'] ?? '',
               taskTitle: extra?['taskTitle'] ?? 'Tarea',
+              className: extra?['className'],
             ),
           );
         },
