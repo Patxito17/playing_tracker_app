@@ -190,10 +190,16 @@ final class SessionCubit extends Cubit<SessionState>
   /// Guarda la sesión actual en Firebase.
   ///
   /// [notes] son notas opcionales a agregar/actualizar en la sesión.
+  /// [taskTitle] es el título de la tarea (campo denormalizado).
+  /// [className] es el nombre de la clase (campo denormalizado).
   ///
   /// Detiene el cronómetro, crea un [SessionModel] y lo persiste
   /// usando el [SessionRepository].
-  Future<void> saveSession({String? notes}) async {
+  Future<void> saveSession({
+    String? notes,
+    String? taskTitle,
+    String? className,
+  }) async {
     final currentState = state;
 
     // Solo se puede guardar desde Running o Paused
@@ -264,6 +270,8 @@ final class SessionCubit extends Cubit<SessionState>
         dateLogged: now,
         monthBucket: SessionModel.generateMonthBucket(now),
         notes: sessionNotes,
+        taskTitle: taskTitle,
+        className: className,
         status: SessionStatus.completed,
         createdAt: now,
       );

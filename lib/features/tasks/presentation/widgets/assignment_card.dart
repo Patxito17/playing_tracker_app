@@ -157,6 +157,7 @@ class AssignmentCard extends StatelessWidget {
         'studentId': assignment.studentId,
         'teacherId': assignment.teacherId,
         'taskTitle': assignment.taskTitle ?? 'Tarea',
+        'className': assignment.className,
       },
     );
   }

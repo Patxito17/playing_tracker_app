@@ -99,6 +99,12 @@ class SessionModel {
   /// Notas opcionales del alumno sobre la sesión
   final String? notes;
 
+  /// Título de la tarea (campo denormalizado para eficiencia)
+  final String? taskTitle;
+
+  /// Nombre de la clase (campo denormalizado para eficiencia)
+  final String? className;
+
   /// Estado de la sesión
   final SessionStatus status;
 
@@ -119,6 +125,8 @@ class SessionModel {
     required this.dateLogged,
     required this.monthBucket,
     this.notes,
+    this.taskTitle,
+    this.className,
     this.status = SessionStatus.completed,
     required this.createdAt,
   });

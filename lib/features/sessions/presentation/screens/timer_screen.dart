@@ -26,6 +26,7 @@ class TimerScreen extends StatefulWidget {
   final String studentId;
   final String teacherId;
   final String taskTitle;
+  final String? className;
 
   const TimerScreen({
     super.key,
@@ -33,6 +34,7 @@ class TimerScreen extends StatefulWidget {
     required this.studentId,
     required this.teacherId,
     required this.taskTitle,
+    this.className,
   });
 
   @override
@@ -116,6 +118,8 @@ class _TimerScreenState extends State<TimerScreen>
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
+      taskTitle: widget.taskTitle,
+      className: widget.className,
     );
   }
 

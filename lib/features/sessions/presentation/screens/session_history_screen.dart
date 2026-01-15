@@ -243,9 +243,15 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Construir título y subtítulo basado en los datos disponibles
+    final title = session.className ?? 'Sesión de práctica';
+    final subtitle = session.taskTitle != null
+        ? '${session.taskTitle} • ${formatDateTime(session.endTime)}'
+        : formatDateTime(session.endTime);
+
     return CustomCard(
-      title: 'Sesión de práctica',
-      subtitle: formatDateTime(session.endTime),
+      title: title,
+      subtitle: subtitle,
       trailingAction: Chip(
         label: Text(
           formatDurationReadable(session.totalDuration),
