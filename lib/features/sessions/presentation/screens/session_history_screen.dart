@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -101,9 +100,12 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
   /// Formatea la fecha y hora de la sesión
   String _formatDateTime(Timestamp timestamp) {
     final date = timestamp.toDate();
-    final dateFormat = DateFormat('dd MMM yyyy', 'es_ES');
-    final timeFormat = DateFormat('HH:mm');
-    return '${dateFormat.format(date)} • ${timeFormat.format(date)}';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year;
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$day/$month/$year • $hour:$minute';
   }
 
   @override
