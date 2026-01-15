@@ -13,6 +13,7 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
+import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
 
 class _MockClassService extends Mock implements ClassServiceContract {}
 
@@ -21,11 +22,15 @@ class _MockMembershipService extends Mock
 
 class _MockFanOutHelper extends Mock implements FanOutHelperContract {}
 
+class _MockAssignmentService extends Mock
+    implements AssignmentServiceContract {}
+
 void main() {
   late ClassRepositoryImpl repository;
   late _MockClassService classService;
   late _MockMembershipService membershipService;
   late _MockFanOutHelper fanOutHelper;
+  late _MockAssignmentService assignmentService;
 
   setUpAll(() {
     registerFallbackValue(_createClassInput());
@@ -37,9 +42,11 @@ void main() {
     classService = _MockClassService();
     membershipService = _MockMembershipService();
     fanOutHelper = _MockFanOutHelper();
+    assignmentService = _MockAssignmentService();
     repository = ClassRepositoryImpl(
       classService: classService,
       membershipService: membershipService,
+      assignmentService: assignmentService,
       fanOutHelper: fanOutHelper,
     );
   });
@@ -140,6 +147,29 @@ void main() {
       () => fanOutHelper.propagateToAssignments('task-123', 'class-456'),
     ).called(1);
   });
+
+  test(
+    'deleteClassPermanent elimina memberships, assignments y la clase',
+    () async {
+      when(
+        () => membershipService.deleteMembershipsByClass(any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => assignmentService.deleteAssignmentsByClass(any()),
+      ).thenAnswer((_) async {});
+      when(() => classService.deleteClass(any())).thenAnswer((_) async {});
+
+      await repository.deleteClassPermanent('class-1');
+
+      verify(
+        () => membershipService.deleteMembershipsByClass('class-1'),
+      ).called(1);
+      verify(
+        () => assignmentService.deleteAssignmentsByClass('class-1'),
+      ).called(1);
+      verify(() => classService.deleteClass('class-1')).called(1);
+    },
+  );
 }
 
 CreateClassInput _createClassInput() => (

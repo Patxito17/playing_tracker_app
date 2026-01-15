@@ -138,8 +138,11 @@ service cloud.firestore {
       // Actualización: Solo el teacher relacionado puede actualizar
       allow update: if isAuth() && resource.data.teacherId == request.auth.uid;
 
-      // Eliminación: solo el teacher relacionado
-      allow delete: if isAuth() && resource.data.teacherId == request.auth.uid;
+      // Eliminación: solo el teacher relacionado o dueño de la clase
+      allow delete: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        isClassOwner(resource.data.classId)
+      );
     }
 
     // ==========================================================================
@@ -190,8 +193,11 @@ service cloud.firestore {
         (resource != null && resource.data.studentId == request.auth.uid)
       );
 
-      // Eliminación: Solo el docente propietario
-      allow delete: if isAuth() && (resource != null && resource.data.teacherId == request.auth.uid);
+      // Eliminación: Solo el docente propietario o el dueño de la clase asociada
+      allow delete: if isAuth() && resource != null && (
+        resource.data.teacherId == request.auth.uid ||
+        isClassOwner(resource.data.classId)
+      );
     }
 
     // ==========================================================================
