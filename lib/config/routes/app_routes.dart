@@ -27,6 +27,7 @@ import '../../features/home/presentation/screens/student_home_screen.dart';
 import '../../features/home/presentation/screens/teacher_home_screen.dart';
 import '../../features/sessions/data/repositories/session_repository_impl.dart';
 import '../../features/sessions/data/services/session_service.dart';
+import '../../features/sessions/presentation/cubit/history_cubit.dart';
 import '../../features/sessions/presentation/cubit/session_cubit.dart';
 import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
@@ -72,6 +73,7 @@ class AppRoutes {
   // Rutas de Estudiante con BottomNavigationBar
   static const String studentClassesList = '/home/student/classes';
   static const String studentClassDetail = '/home/student/classes';
+  static const String studentHistory = '/home/student/history';
   static const String studentStatistics = '/home/student/statistics';
   static const String studentSettings = '/home/student/settings';
 
@@ -295,6 +297,31 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: studentHistory,
+                name: 'studentHistory',
+                builder: (context, state) {
+                  final authState = context.read<AuthCubit>().state;
+                  final studentId = authState is AuthAuthenticated
+                      ? authState.userId
+                      : '';
+
+                  // Crear las dependencias necesarias
+                  final sessionService = SessionService();
+                  final sessionRepository = SessionRepositoryImpl(
+                    sessionService: sessionService,
+                  );
+
+                  return BlocProvider(
+                    create: (context) => HistoryCubit(sessionRepository),
+                    child: SessionHistoryScreen(studentId: studentId),
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: studentStatistics,
                 name: 'studentStatistics',
                 builder: (context, state) => const StatisticsScreen(),
@@ -486,7 +513,23 @@ class AppRoutes {
       GoRoute(
         path: sessionHistory,
         name: 'sessionHistory',
-        builder: (context, state) => const SessionHistoryScreen(),
+        builder: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          final studentId = authState is AuthAuthenticated
+              ? authState.userId
+              : '';
+
+          // Crear las dependencias necesarias
+          final sessionService = SessionService();
+          final sessionRepository = SessionRepositoryImpl(
+            sessionService: sessionService,
+          );
+
+          return BlocProvider(
+            create: (context) => HistoryCubit(sessionRepository),
+            child: SessionHistoryScreen(studentId: studentId),
+          );
+        },
       ),
 
       // Rutas de estadísticas
