@@ -121,11 +121,16 @@
 ### 📜 Fase 5: Historial y Detalles
 **Objetivo:** Permitir al alumno ver qué ha hecho.
 
-- [ ] **Implementar `SessionHistoryScreen`**:
-  - Lista paginada de sesiones ordenadas por fecha reciente.
-  - Filtros básicos (por tarea o fecha).
-- [ ] **Detalle de Sesión (Opcional por ahora)**:
-  - Ver notas y duración exacta.
+- [x] **Implementar `SessionHistoryScreen`**:
+  - ✅ **`HistoryCubit` y `HistoryState`**: Cubit completo con manejo de estados (Loading, Success, Empty, Error).
+  - ✅ **Conexión con datos reales**: Usa `SessionRepository.watchStudentSessions` para datos en tiempo real.
+  - ✅ **Filtros funcionales**: Por fecha (hoy, esta semana, este mes, todos) con lógica implementada.
+  - ✅ **UI mejorada**: Muestra duración, fecha/hora formateadas, y notas de sesión si existen.
+  - ✅ **RefreshIndicator**: Pull-to-refresh para recargar sesiones.
+  - ✅ **14 tests pasando**: Cobertura completa de `HistoryCubit` y estados.
+  - ✅ **Ruta configurada**: `sessionHistory` en `app_routes.dart` con inyección de dependencias.
+- [x] **Detalle de Sesión**:
+  - ✅ Las notas y duración exacta se muestran directamente en cada tarjeta del historial.
 
 ### ✅ Fase 6: Calidad y Pulido
 - [ ] **Tests de Widget**:
