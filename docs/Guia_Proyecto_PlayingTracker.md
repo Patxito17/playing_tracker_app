@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 08 de Enero 2026
-**Estado del proyecto:** Sprint 5 - Cronómetro y Sesiones de Estudio (Inicio) 🚀
+**Última actualización:** 24 de Enero 2026
+**Estado del proyecto:** Sprint 5 Completado ✅ | Sprint 6 - Estadísticas y Dashboards (Planificado) 📅
 
 ---
 
@@ -770,7 +770,7 @@ Sprint 1: ████████████████████ 100% ✅ 
 Sprint 2: ████████████████████ 100% ✅ Autenticación
 Sprint 3: ████████████████████ 100% ✅ Clases y Membresías
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
-Sprint 5: ░░░░░░░░░░░░░░░░░░░░ 0% 🚧 Cronómetro y Sesiones
+Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
 Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
 
