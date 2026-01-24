@@ -16,7 +16,7 @@ import 'package:playing_tracker/features/sessions/presentation/cubit/session_sta
 /// - Integración con [TimerTicker] para emisión de ticks
 /// - Manejo del ciclo de vida de la app (background/foreground)
 /// - Persistencia de sesiones en Firebase
-/// - Gestión automática de tiempo perdido cuando la app está en background
+/// - Pausa automática cuando la app va a background para seguridad del alumno
 ///
 /// Ejemplo de uso:
 /// ```dart
@@ -49,10 +49,6 @@ final class SessionCubit extends Cubit<SessionState>
   final SessionRepository _repository;
   final TimerTicker _ticker;
   StreamSubscription<int>? _tickerSubscription;
-
-  // Para manejo del ciclo de vida
-  DateTime? _backgroundTimestamp;
-  int _durationWhenBackground = 0;
 
   /// Inicia una nueva sesión de práctica.
   ///
@@ -180,8 +176,6 @@ final class SessionCubit extends Cubit<SessionState>
     _ticker.stop();
     await _tickerSubscription?.cancel();
     _tickerSubscription = null;
-    _backgroundTimestamp = null;
-    _durationWhenBackground = 0;
 
     emit(const SessionInitial());
     log('SessionCubit: Sesión detenida sin guardar');
@@ -279,10 +273,6 @@ final class SessionCubit extends Cubit<SessionState>
       // Guardar en el repositorio
       await _repository.createSession(session);
 
-      // Limpiar estado
-      _backgroundTimestamp = null;
-      _durationWhenBackground = 0;
-
       // Emitir éxito
       emit(
         SessionSuccess(
@@ -317,9 +307,9 @@ final class SessionCubit extends Cubit<SessionState>
 
   /// Manejo del ciclo de vida de la app.
   ///
-  /// Cuando la app va a background, guarda el timestamp y pausa el ticker.
-  /// Cuando vuelve a foreground, calcula el tiempo transcurrido y ajusta
-  /// la duración si es necesario.
+  /// Cuando la app va a background, pausa automáticamente la sesión.
+  /// Cuando vuelve a foreground, la sesión permanece pausada para que el
+  /// alumno la reanude manualmente.
   @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycleState) {
     super.didChangeAppLifecycleState(lifecycleState);
@@ -350,64 +340,49 @@ final class SessionCubit extends Cubit<SessionState>
   }
 
   /// Maneja cuando la app va a background.
+  ///
+  /// Si la sesión está corriendo, la pausa automáticamente y cambia el estado
+  /// a [SessionPaused]. Esto evita que los alumnos pierdan tiempo accidentalmente
+  /// si olvidan pausar antes de salir de la app.
   void _handleAppBackgrounded() {
     final currentState = state;
 
     if (currentState is SessionRunning) {
-      _backgroundTimestamp = DateTime.now();
-      _durationWhenBackground = currentState.duration;
-
       // Pausar automáticamente el ticker
       _ticker.pause();
 
-      log(
-        'SessionCubit: App en background - pausando en ${currentState.duration}s',
+      // Cambiar el estado a pausado
+      emit(
+        SessionPaused(
+          taskId: currentState.taskId,
+          studentId: currentState.studentId,
+          teacherId: currentState.teacherId,
+          duration: currentState.duration,
+          notes: currentState.notes,
+        ),
       );
-    } else if (currentState is SessionPaused) {
-      // Si ya estaba pausada, solo guardar el timestamp
-      _backgroundTimestamp = DateTime.now();
-      _durationWhenBackground = currentState.duration;
+
+      log(
+        'SessionCubit: App en background - pausando automáticamente en ${currentState.duration}s',
+      );
     }
+    // Si ya estaba pausada, no hacer nada (mantener el estado)
   }
 
   /// Maneja cuando la app vuelve a foreground.
+  ///
+  /// La sesión permanece en estado pausado y requiere que el usuario
+  /// presione manualmente el botón "Reanudar" para continuar.
+  /// Esto garantiza que solo se cuente el tiempo real de práctica.
   void _handleAppForegrounded() {
-    final currentState = state;
-    final backgroundTime = _backgroundTimestamp;
-
-    if (backgroundTime == null) {
-      return;
-    }
-
-    // Calcular tiempo transcurrido en background
-    final timeInBackground = DateTime.now().difference(backgroundTime);
-    final secondsInBackground = timeInBackground.inSeconds;
-
     log(
-      'SessionCubit: App de vuelta - estuvo ${secondsInBackground}s en background',
+      'SessionCubit: App de vuelta a foreground. '
+      'La sesión permanece pausada y requiere reanudación manual.',
     );
 
-    if (currentState is SessionRunning) {
-      // Si estaba corriendo, ajustar la duración y reanudar el ticker
-      final adjustedDuration = _durationWhenBackground + secondsInBackground;
-
-      // Reanudar el ticker desde la nueva duración
-      _ticker.stop(); // Reset
-      _ticker.start(reset: true);
-
-      // Emitir nuevo estado con duración ajustada
-      emit(currentState.copyWith(duration: adjustedDuration));
-
-      log('SessionCubit: Duración ajustada a ${adjustedDuration}s');
-    } else if (currentState is SessionPaused) {
-      // Si estaba pausada, mantenerla pausada (no agregar tiempo)
-      // No hacer nada, el usuario reanudará manualmente
-      log('SessionCubit: Sesión sigue pausada');
-    }
-
-    // Limpiar timestamps
-    _backgroundTimestamp = null;
-    _durationWhenBackground = 0;
+    // La sesión siempre permanece pausada al volver de background
+    // El usuario debe presionar "Reanudar" manualmente para continuar
+    // No se agrega tiempo en background a la duración
   }
 
   @override
