@@ -56,6 +56,9 @@ class AssignmentModel {
   /// ID de la clase a la que pertenece la asignación (denormalizado)
   final String classId;
 
+  /// Nombre de la clase (denormalizado para eficiencia)
+  final String? className;
+
   /// ID del docente que creó/asignó la tarea (campo denormalizado)
   final String teacherId;
 
@@ -103,6 +106,7 @@ class AssignmentModel {
     required this.taskId,
     required this.studentId,
     required this.classId,
+    this.className,
     required this.teacherId,
     this.taskTitle,
     this.taskDescription,
@@ -154,6 +158,7 @@ class AssignmentModel {
     String? taskId,
     String? studentId,
     String? classId,
+    String? className,
     String? teacherId,
     String? taskTitle,
     String? taskDescription,
@@ -172,6 +177,7 @@ class AssignmentModel {
       taskId: taskId ?? this.taskId,
       studentId: studentId ?? this.studentId,
       classId: classId ?? this.classId,
+      className: className ?? this.className,
       teacherId: teacherId ?? this.teacherId,
       taskTitle: taskTitle ?? this.taskTitle,
       taskDescription: taskDescription ?? this.taskDescription,

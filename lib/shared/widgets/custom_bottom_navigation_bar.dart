@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_strings.dart';
 
 /// BottomNavigationBar personalizado con Material Design 3
@@ -48,6 +49,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.class_outlined),
           selectedIcon: Icon(Icons.class_),
           label: NavigationStrings.classesTab,
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_outlined),
+          selectedIcon: Icon(Icons.history),
+          label: NavigationStrings.historyTab,
         ),
         NavigationDestination(
           icon: Icon(Icons.bar_chart_outlined),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
 import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
@@ -58,7 +59,7 @@ class AssignmentCard extends StatelessWidget {
             label: TaskStrings.startStudySession,
             variant: CustomButtonVariant.filled,
             icon: Icons.play_arrow,
-            onPressed: () => _showComingSoonSnackBar(context),
+            onPressed: () => _navigateToTimer(context),
           ),
         ],
       ),
@@ -147,13 +148,17 @@ class AssignmentCard extends StatelessWidget {
     );
   }
 
-  /// Muestra SnackBar indicando que el cronómetro está en desarrollo
-  void _showComingSoonSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(TaskStrings.practiceAvailableSoon),
-        duration: Duration(seconds: 2),
-      ),
+  /// Navega al TimerScreen con todos los parámetros necesarios
+  void _navigateToTimer(BuildContext context) {
+    context.pushNamed(
+      'timer',
+      pathParameters: {'taskId': assignment.taskId},
+      extra: {
+        'studentId': assignment.studentId,
+        'teacherId': assignment.teacherId,
+        'taskTitle': assignment.taskTitle ?? 'Tarea',
+        'className': assignment.className,
+      },
     );
   }
 

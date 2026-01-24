@@ -18,6 +18,11 @@ SessionModel _$SessionModelFromJson(Map<String, dynamic> json) => SessionModel(
   dateLogged: const TimestampConverter().fromJson(json['dateLogged'] as Object),
   monthBucket: json['monthBucket'] as String,
   notes: json['notes'] as String?,
+  taskTitle: json['taskTitle'] as String?,
+  className: json['className'] as String?,
+  status:
+      $enumDecodeNullable(_$SessionStatusEnumMap, json['status']) ??
+      SessionStatus.completed,
   createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
 );
 
@@ -34,5 +39,15 @@ Map<String, dynamic> _$SessionModelToJson(SessionModel instance) =>
       'dateLogged': const TimestampConverter().toJson(instance.dateLogged),
       'monthBucket': instance.monthBucket,
       'notes': instance.notes,
+      'taskTitle': instance.taskTitle,
+      'className': instance.className,
+      'status': _$SessionStatusEnumMap[instance.status]!,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
     };
+
+const _$SessionStatusEnumMap = {
+  SessionStatus.idle: 'idle',
+  SessionStatus.running: 'running',
+  SessionStatus.paused: 'paused',
+  SessionStatus.completed: 'completed',
+};
