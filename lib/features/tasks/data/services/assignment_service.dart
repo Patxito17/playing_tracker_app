@@ -12,6 +12,7 @@ typedef AssignmentFanOutData = ({
   String studentId,
   String teacherId,
   String classId,
+  String? className,
   String taskTitle,
   String? taskDescription,
   int durationSuggested,
@@ -67,6 +68,8 @@ abstract interface class AssignmentServiceContract {
     required String classId,
     required List<String> studentIds,
   });
+
+  Future<void> deleteAssignmentsByClass(String classId);
 }
 
 /// Servicio centrado en operaciones de la colección `assignments`.
@@ -105,6 +108,7 @@ final class AssignmentService implements AssignmentServiceContract {
             'studentId': assignment.studentId,
             'teacherId': assignment.teacherId,
             'classId': assignment.classId,
+            'className': assignment.className,
             'taskTitle': assignment.taskTitle,
             'taskDescription': assignment.taskDescription,
             'durationSuggested': assignment.durationSuggested,
@@ -443,6 +447,28 @@ final class AssignmentService implements AssignmentServiceContract {
       await batch.commit();
     } on FirebaseException catch (error, stackTrace) {
       _logError('deleteSpecificAssignments', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> deleteAssignmentsByClass(String classId) async {
+    try {
+      final snapshot = await _assignmentsCollection
+          .where('classId', isEqualTo: classId)
+          .get();
+
+      final docs = snapshot.docs;
+      for (var i = 0; i < docs.length; i += _batchWriteLimit) {
+        final end = (i + _batchWriteLimit).clamp(0, docs.length);
+        final batch = _firestore.batch();
+        for (final doc in docs.sublist(i, end)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('deleteAssignmentsByClass', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }

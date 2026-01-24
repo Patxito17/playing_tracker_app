@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:playing_tracker/features/classes/data/services/class_service.dart';
 import 'package:playing_tracker/features/classes/data/services/membership_service.dart';
 import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
 import 'package:playing_tracker/features/tasks/data/services/task_service.dart';
@@ -29,13 +30,16 @@ final class FanOutHelper implements FanOutHelperContract {
     MembershipServiceContract? membershipService,
     AssignmentServiceContract? assignmentService,
     TaskServiceContract? taskService,
+    ClassServiceContract? classService,
   }) : _membershipService = membershipService ?? MembershipService(),
        _assignmentService = assignmentService ?? AssignmentService(),
-       _taskService = taskService ?? TaskService();
+       _taskService = taskService ?? TaskService(),
+       _classService = classService ?? ClassService();
 
   final MembershipServiceContract _membershipService;
   final AssignmentServiceContract _assignmentService;
   final TaskServiceContract _taskService;
+  final ClassServiceContract _classService;
   final Map<String, _FanOutContext> _pendingFanOuts = {};
 
   /// Prepara la información necesaria para un fan-out.
@@ -61,11 +65,17 @@ final class FanOutHelper implements FanOutHelperContract {
         ? allParams.where((id) => studentIds.contains(id)).toList()
         : allParams;
 
+    final classModel = await _classService.getClassById(classId);
+    if (classModel == null) {
+      throw ArgumentError('La clase $classId no existe o no está disponible.');
+    }
+
     final contextKey = _buildContextKey(taskId, classId);
     _pendingFanOuts[contextKey] = _FanOutContext(
       task: task,
       studentIds: targetIds,
       classId: classId,
+      className: classModel.name,
     );
     log(
       'Fan-out preparado para tarea $taskId y clase $classId. '
@@ -147,6 +157,7 @@ final class FanOutHelper implements FanOutHelperContract {
           studentId: studentId,
           teacherId: context.task.createdBy,
           classId: context.classId,
+          className: context.className,
           taskTitle: context.task.title,
           taskDescription: context.task.description,
           durationSuggested: context.task.durationSuggested,
@@ -184,9 +195,11 @@ final class _FanOutContext {
     required this.task,
     required this.studentIds,
     required this.classId,
+    required this.className,
   });
 
   final TaskModel task;
   final List<String> studentIds;
   final String classId;
+  final String className;
 }

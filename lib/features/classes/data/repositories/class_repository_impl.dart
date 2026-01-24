@@ -11,6 +11,7 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
+import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
 
 /// Implementación concreta del [ClassRepository] que orquesta servicios y
 /// helpers de datos respetando la arquitectura Domain → Repository → Service.
@@ -18,13 +19,16 @@ final class ClassRepositoryImpl implements ClassRepository {
   ClassRepositoryImpl({
     ClassServiceContract? classService,
     MembershipServiceContract? membershipService,
+    AssignmentServiceContract? assignmentService,
     FanOutHelperContract? fanOutHelper,
   }) : _classService = classService ?? ClassService(),
        _membershipService = membershipService ?? MembershipService(),
+       _assignmentService = assignmentService ?? AssignmentService(),
        _fanOutHelper = fanOutHelper ?? FanOutHelper();
 
   final ClassServiceContract _classService;
   final MembershipServiceContract _membershipService;
+  final AssignmentServiceContract _assignmentService;
   final FanOutHelperContract _fanOutHelper;
 
   @override
@@ -263,6 +267,7 @@ final class ClassRepositoryImpl implements ClassRepository {
     }
     try {
       await _membershipService.deleteMembershipsByClass(classId);
+      await _assignmentService.deleteAssignmentsByClass(classId);
       await _classService.deleteClass(classId);
     } catch (error, stackTrace) {
       _throwRepositoryException(
