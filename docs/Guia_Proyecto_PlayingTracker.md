@@ -71,10 +71,13 @@ La aplicación implementa **Material Design 3** completamente:
 
 ```
 lib/
-├── core/                              # Código compartido 📅
-│   ├── constants/                     # 📅 Por implementar
+├── core/                              # Código compartido
+│   ├── constants/                     # Constantes y recursos globales
 │   │   ├── app_constants.dart        # Constantes globales (espaciado, colores)
-│   │   └── app_strings.dart          # Strings organizados por categorías
+│   │   ├── app_strings.dart          # Barrel file (punto de entrada centralizado)
+│   │   ├── validation_strings.dart   # Mensajes de validación de formularios
+│   │   ├── common_strings.dart       # Strings compartidos (Aceptar, Cancelar, etc.)
+│   │   └── navigation_strings.dart   # Nombres de navegación
 │   ├── extensions/                    # 📅 Por implementar
 │   │   └── context_extensions.dart   # Extensions para BuildContext
 │   └── utils/                         # Helpers compartidos activos
@@ -742,12 +745,14 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 7: Testing y Optimización
+### 📅 Sprint 7: Testing y Optimización Profesional
 **Duración:** Próximamente
 **Estado:** 📅 Planificado
 
 **Objetivos:**
 - 🧪 **Testing completo** (Unit, Widget, Integration)
+- 🌐 **Internacionalización (l10n)**: Migración a archivos `.arb` y `AppLocalizations` para seguir las mejores prácticas oficiales de Flutter y permitir multi-idioma.
+- 🏗️ **Refactorización de Recursos**: Eliminación completa de constantes de strings en Dart en favor de la generación automática de código de Flutter.
 - ⚡ **Optimización de rendimiento**
 - 🔒 **Auditoría de seguridad**
 - 📱 **Testing de accesibilidad**
