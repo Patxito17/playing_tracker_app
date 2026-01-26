@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 26 de Enero 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Planificado) 📅
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (En Progreso - Fase 1 l10n Completa) 📅
 
 ---
 
@@ -88,8 +88,8 @@ lib/
 ├── config/                            # Configuración de la app 📅
 │   ├── theme/                        # 📅 Por implementar
 │   │   └── app_theme.dart           # ThemeData Material Design 3
-│   └── routes/                       # 📅 Por implementar
-│       └── app_routes.dart          # Navegación y rutas
+│   └── routes/                       # Configuración de navegación
+│       └── app_routes.dart          # Router GoRouter con StatefulShellRoute y Guards
 │
 ├── features/                          # Features por funcionalidad
 │   ├── auth/                         # 📅 Autenticación (Sprint 2)
