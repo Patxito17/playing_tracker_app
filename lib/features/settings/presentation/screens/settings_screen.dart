@@ -6,6 +6,8 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../auth/domain/enums/user_role.dart';
+import '../../../classes/domain/repositories/class_repository.dart';
 import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
 
@@ -285,8 +287,11 @@ class SettingsScreen extends StatelessWidget {
     final authState = context.read<AuthCubit>().state;
     if (authState is! AuthAuthenticated) return;
 
-    // TODO: Obtener firstName y lastName desde Firestore
-    // Por ahora mostramos mensaje placeholder
+    final firstNameController = TextEditingController(
+      text: authState.firstName,
+    );
+    final lastNameController = TextEditingController(text: authState.lastName);
+
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -295,33 +300,64 @@ class SettingsScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller: TextEditingController(text: ''),
+              controller: firstNameController,
               decoration: InputDecoration(
                 labelText: context.l10n.firstNameLabel,
                 hintText: context.l10n.firstNameHint,
               ),
-              enabled: false,
             ),
             const SizedBox(height: AppSpacing.m),
             TextField(
-              controller: TextEditingController(text: ''),
+              controller: lastNameController,
               decoration: InputDecoration(
                 labelText: context.l10n.lastNameLabel,
                 hintText: context.l10n.lastNameHint,
               ),
-              enabled: false,
-            ),
-            const SizedBox(height: AppSpacing.m),
-            Text(
-              'Funcionalidad en desarrollo',
-              style: context.bodySmallOnSurfaceVariant,
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(context.l10n.close),
+            child: Text(context.l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final firstName = firstNameController.text.trim();
+              final lastName = lastNameController.text.trim();
+
+              if (firstName.isEmpty || lastName.isEmpty) {
+                // TODO: Mostrar snackbar de error
+                return;
+              }
+
+              Navigator.of(dialogContext).pop();
+
+              // Actualizar el perfil
+              await context.read<AuthCubit>().updateProfile(
+                firstName: firstName,
+                lastName: lastName,
+              );
+
+              if (context.mounted) {
+                final authState = context.read<AuthCubit>().state;
+                if (authState is AuthAuthenticated) {
+                  // Propagamos el cambio de nombre a las membresías existentes
+                  // Lo hacemos de forma "silenciosa" para la UI principal, pero asegurando consistencia
+                  try {
+                    await context.read<ClassRepository>().updateUserReferences(
+                      userId: authState.userId,
+                      newName: '$firstName $lastName',
+                      isTeacher: authState.role == UserRole.teacher,
+                    );
+                  } catch (e) {
+                    // Logueamos pero no interrumpimos el flow del usuario
+                    debugPrint('Error propagando nombre: $e');
+                  }
+                }
+              }
+            },
+            child: Text(context.l10n.save),
           ),
         ],
       ),

@@ -421,6 +421,31 @@ final class ClassRepositoryImpl implements ClassRepository {
 
   String _buildMembershipId(String classId, String studentId) =>
       '${classId}_$studentId';
+
+  @override
+  Future<void> updateUserReferences({
+    required String userId,
+    required String newName,
+    required bool isTeacher,
+  }) async {
+    if (userId.trim().isEmpty || newName.trim().isEmpty) {
+      throw ArgumentError('UserId y nuevo nombre son obligatorios');
+    }
+    try {
+      await _membershipService.updateMemberNameInAllMemberships(
+        userId: userId,
+        newName: newName,
+        isTeacher: isTeacher,
+      );
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'updateUserReferences',
+        error: error,
+        stackTrace: stackTrace,
+        fallbackMessage: 'No fue posible propagar el cambio de nombre.',
+      );
+    }
+  }
 }
 
 const _defaultPaginationLimit = 20;

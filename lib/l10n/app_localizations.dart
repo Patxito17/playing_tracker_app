@@ -562,6 +562,12 @@ abstract class AppLocalizations {
   /// **'Inicio docente'**
   String get teacherHomeTitle;
 
+  /// Saludo de bienvenida con nombre
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, {name}'**
+  String welcomeUser(String name);
+
   /// Título home alumno
   ///
   /// In es, this message translates to:
@@ -963,6 +969,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ocurrió un error al gestionar tus clases.'**
   String get classGenericError;
+
+  /// Error al crear clase
+  ///
+  /// In es, this message translates to:
+  /// **'No fue posible crear la clase. Intenta nuevamente.'**
+  String get classCreateError;
+
+  /// Error al actualizar clase
+  ///
+  /// In es, this message translates to:
+  /// **'No fue posible actualizar la clase.'**
+  String get classUpdateError;
+
+  /// Error al cargar clases
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error al cargar tus clases.'**
+  String get classLoadError;
+
+  /// Error al refrescar clases sin teacherId
+  ///
+  /// In es, this message translates to:
+  /// **'No se ha configurado un docente para actualizar las clases.'**
+  String get classRefreshNoTeacherError;
 
   /// Acción eliminar clase
   ///

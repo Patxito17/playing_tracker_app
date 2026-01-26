@@ -45,6 +45,14 @@ abstract class AuthRepository {
   /// Envía un email para restablecer la contraseña del usuario.
   Future<void> sendPasswordResetEmail(String email);
 
+  /// Actualiza el perfil del usuario (nombre y apellidos) en Firestore.
+  /// Detecta automáticamente si es teacher o student y actualiza la colección correcta.
+  Future<void> updateUserProfile({
+    required String userId,
+    required String firstName,
+    required String lastName,
+  });
+
   /// Cierra la sesión actual.
   Future<void> signOut();
 }

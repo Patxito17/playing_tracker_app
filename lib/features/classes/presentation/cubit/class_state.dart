@@ -56,13 +56,14 @@ final class ClassActionSuccess extends ClassState {
 
 /// Estado que encapsula errores de negocio o de infraestructura.
 final class ClassError extends ClassState {
-  const ClassError({this.message, this.cause});
+  const ClassError({this.message, this.cause, this.errorType});
 
   final String? message;
   final Object? cause;
+  final ClassErrorType? errorType;
 
   @override
-  List<Object?> get props => [message, cause];
+  List<Object?> get props => [message, cause, errorType];
 }
 
 /// Origen de los datos renderizados por [ClassCubit].
@@ -70,3 +71,6 @@ enum ClassStateSource { stream, manualRefresh }
 
 /// Acciones que pueden reflejarse como éxito puntual.
 enum ClassAction { created, statusUpdated }
+
+/// Tipos de error específicos para ClassCubit.
+enum ClassErrorType { createFailed, updateFailed, loadFailed, refreshNoTeacher }

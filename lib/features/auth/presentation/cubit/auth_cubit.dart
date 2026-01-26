@@ -40,7 +40,21 @@ class AuthCubit extends HydratedCubit<AuthState> {
       }
 
       final role = await _authRepository.getUserRole(currentUser.uid);
-      emit(AuthAuthenticated(role: role, userId: currentUser.uid));
+
+      // Cargar el modelo completo del usuario
+      dynamic userModel;
+      if (role == UserRole.teacher) {
+        userModel = await _authRepository.getTeacherProfile(currentUser.uid);
+      } else {
+        userModel = await _authRepository.getStudentProfile(currentUser.uid);
+      }
+
+      if (userModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del usuario.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: userModel));
     } catch (error) {
       emit(AuthError(_mapError(error)));
     }
@@ -56,8 +70,23 @@ class AuthCubit extends HydratedCubit<AuthState> {
         emit(const AuthError('No se pudo obtener el usuario autenticado.'));
         return;
       }
+
       final role = await _authRepository.getUserRole(userId);
-      emit(AuthAuthenticated(role: role, userId: userId));
+
+      // Cargar el modelo completo del usuario
+      dynamic userModel;
+      if (role == UserRole.teacher) {
+        userModel = await _authRepository.getTeacherProfile(userId);
+      } else {
+        userModel = await _authRepository.getStudentProfile(userId);
+      }
+
+      if (userModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del usuario.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: userModel));
     } catch (error) {
       emit(AuthError(_mapError(error)));
     }
@@ -89,7 +118,14 @@ class AuthCubit extends HydratedCubit<AuthState> {
         email: email,
       );
 
-      emit(AuthAuthenticated(role: UserRole.teacher, userId: userId));
+      // Cargar el modelo recién creado
+      final teacherModel = await _authRepository.getTeacherProfile(userId);
+      if (teacherModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del docente.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: teacherModel));
     } catch (error) {
       emit(AuthError(_mapError(error)));
     }
@@ -121,7 +157,14 @@ class AuthCubit extends HydratedCubit<AuthState> {
         email: email,
       );
 
-      emit(AuthAuthenticated(role: UserRole.student, userId: userId));
+      // Cargar el modelo recién creado
+      final studentModel = await _authRepository.getStudentProfile(userId);
+      if (studentModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del alumno.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: studentModel));
     } catch (error) {
       emit(AuthError(_mapError(error)));
     }
@@ -146,16 +189,15 @@ class AuthCubit extends HydratedCubit<AuthState> {
         return const AuthUnauthenticated();
       }
 
-      final roleIndex = json['roleIndex'] as int;
       final userId = json['userId'] as String?;
       if (userId == null) {
         return const AuthUnauthenticated();
       }
 
-      return AuthAuthenticated(
-        role: UserRole.values[roleIndex],
-        userId: userId,
-      );
+      // Cargar el modelo desde Firestore al rehidratar
+      // Nota: esto es asíncrono, por lo que podría no funcionar bien con hydrated_bloc
+      // En este caso, dejaríamos que checkAuthState se encargue al iniciar
+      return const AuthUnauthenticated();
     } catch (_) {
       return const AuthUnauthenticated();
     }
@@ -172,6 +214,52 @@ class AuthCubit extends HydratedCubit<AuthState> {
       'roleIndex': state.role.index,
       'userId': state.userId,
     };
+  }
+
+  /// Actualiza el perfil del usuario (nombre y apellidos).
+  Future<void> updateProfile({
+    required String firstName,
+    required String lastName,
+  }) async {
+    final currentState = state;
+    if (currentState is! AuthAuthenticated) {
+      emit(const AuthError('No hay sesión activa para actualizar.'));
+      return;
+    }
+
+    // Evitamos emitir AuthLoading para no disparar redirecciones globales
+    // emit(const AuthLoading());
+    try {
+      await _authRepository.updateUserProfile(
+        userId: currentState.userId,
+        firstName: firstName,
+        lastName: lastName,
+      );
+
+      // Recargar el modelo actualizado
+      final role = currentState.role;
+      dynamic updatedModel;
+      if (role == UserRole.teacher) {
+        updatedModel = await _authRepository.getTeacherProfile(
+          currentState.userId,
+        );
+      } else {
+        updatedModel = await _authRepository.getStudentProfile(
+          currentState.userId,
+        );
+      }
+
+      if (updatedModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil actualizado.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: updatedModel));
+    } catch (error) {
+      emit(AuthError(_mapError(error)));
+      // Restaurar el estado anterior en caso de error
+      emit(currentState);
+    }
   }
 
   String _mapError(Object error) {

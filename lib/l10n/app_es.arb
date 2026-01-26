@@ -333,6 +333,13 @@
 
   "teacherHomeTitle": "Inicio docente",
   "@teacherHomeTitle": { "description": "Título home docente" },
+  "welcomeUser": "Hola, {name}",
+  "@welcomeUser": {
+    "description": "Saludo de bienvenida con nombre",
+    "placeholders": {
+      "name": { "type": "String", "example": "Juan" }
+    }
+  },
   "studentHomeTitle": "Inicio alumno",
   "@studentHomeTitle": { "description": "Título home alumno" },
   "quickActionsTitle": "Acciones rápidas",
@@ -489,6 +496,14 @@
   "@membershipInactiveError": { "description": "Error cuando un alumno intenta unirse a una clase de la que fue expulsado/desactivado" },
   "classGenericError": "Ocurrió un error al gestionar tus clases.",
   "@classGenericError": { "description": "Error genérico de clases" },
+  "classCreateError": "No fue posible crear la clase. Intenta nuevamente.",
+  "@classCreateError": { "description": "Error al crear clase" },
+  "classUpdateError": "No fue posible actualizar la clase.",
+  "@classUpdateError": { "description": "Error al actualizar clase" },
+  "classLoadError": "Ocurrió un error al cargar tus clases.",
+  "@classLoadError": { "description": "Error al cargar clases" },
+  "classRefreshNoTeacherError": "No se ha configurado un docente para actualizar las clases.",
+  "@classRefreshNoTeacherError": { "description": "Error al refrescar clases sin teacherId" },
   "deleteClassAction": "Eliminar clase",
   "@deleteClassAction": { "description": "Acción eliminar clase" },
   "deleteClassConfirmation": "¿Estás seguro de que deseas eliminar esta clase de forma permanente? Esta acción no se puede deshacer.",

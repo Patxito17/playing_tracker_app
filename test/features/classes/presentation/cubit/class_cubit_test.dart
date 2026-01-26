@@ -95,6 +95,25 @@ void main() {
   );
 
   blocTest<ClassCubit, ClassState>(
+    'emite ClassError con type createFailed cuando createClass lanza excepción genérica',
+    build: () => ClassCubit(repository),
+    act: (cubit) {
+      when(() => repository.createClass(any())).thenThrow(Exception('error'));
+      return cubit.createClass(_createClassInput());
+    },
+    expect: () => [
+      const ClassLoading(),
+      isA<ClassError>()
+          .having(
+            (state) => state.errorType,
+            'errorType',
+            ClassErrorType.createFailed,
+          )
+          .having((state) => state.cause, 'cause', isA<Exception>()),
+    ],
+  );
+
+  blocTest<ClassCubit, ClassState>(
     'emite ClassActionSuccess al actualizar estado correctamente',
     build: () => ClassCubit(repository),
     act: (cubit) {

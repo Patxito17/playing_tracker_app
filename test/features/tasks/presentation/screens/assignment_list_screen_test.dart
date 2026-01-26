@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
@@ -15,6 +14,8 @@ import 'package:playing_tracker/features/tasks/presentation/cubit/assignment_cub
 import 'package:playing_tracker/features/tasks/presentation/cubit/assignment_state.dart';
 import 'package:playing_tracker/features/tasks/presentation/screens/assignment_list_screen.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
+
+import '../../../../helpers/user_test_helpers.dart';
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -31,14 +32,14 @@ void main() {
     mockAuthCubit = _MockAuthCubit();
 
     // Configure AuthCubit mock to return authenticated state
-    when(() => mockAuthCubit.state).thenReturn(
-      const AuthAuthenticated(userId: 'student-1', role: UserRole.student),
-    );
-    when(() => mockAuthCubit.stream).thenAnswer(
-      (_) => Stream.value(
-        const AuthAuthenticated(userId: 'student-1', role: UserRole.student),
-      ),
-    );
+    // Configure AuthCubit mock to return authenticated state
+    final mockStudent = createMockStudent(id: 'student-1');
+    when(
+      () => mockAuthCubit.state,
+    ).thenReturn(AuthAuthenticated(user: mockStudent));
+    when(
+      () => mockAuthCubit.stream,
+    ).thenAnswer((_) => Stream.value(AuthAuthenticated(user: mockStudent)));
 
     // Configure TaskRepository mock defaults
     when(

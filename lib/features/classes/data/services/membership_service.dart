@@ -41,6 +41,13 @@ abstract interface class MembershipServiceContract {
   Future<List<String>> getStudentsForClass(String classId);
 
   Stream<List<MembershipModel>> watchStudentMemberships(String studentId);
+
+  /// Actualiza el nombre del usuario (student o teacher) en todas sus membresías.
+  Future<void> updateMemberNameInAllMemberships({
+    required String userId,
+    required String newName,
+    required bool isTeacher,
+  });
 }
 
 /// Servicio responsable de gestionar la relación N:M entre clases y alumnos.
@@ -394,6 +401,52 @@ final class MembershipService implements MembershipServiceContract {
         },
       ),
     );
+  }
+
+  @override
+  Future<void> updateMemberNameInAllMemberships({
+    required String userId,
+    required String newName,
+    required bool isTeacher,
+  }) async {
+    final fieldToQuery = isTeacher ? 'teacherId' : 'studentId';
+    final fieldToUpdate = isTeacher ? 'teacherName' : 'studentName';
+
+    try {
+      final snapshot = await _membershipsCollection
+          .where(fieldToQuery, isEqualTo: userId)
+          .get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      var batch = _firestore.batch();
+      var count = 0;
+
+      for (final doc in snapshot.docs) {
+        batch.update(doc.reference, {
+          fieldToUpdate: newName,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+        count++;
+
+        if (count >= _batchWriteLimit) {
+          await batch.commit();
+          batch = _firestore.batch();
+          count = 0;
+        }
+      }
+
+      if (count > 0) {
+        await batch.commit();
+      }
+    } on FirebaseException catch (error, stackTrace) {
+      log(
+        'MembershipService#updateMemberNameInAllMemberships FirebaseException: ${error.code}',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
   }
 
   /// Crea o re-activa (en caso de existir) la membresía del alumno.

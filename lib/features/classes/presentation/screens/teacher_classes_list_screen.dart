@@ -133,8 +133,8 @@ class _StateAwareContent extends StatelessWidget {
           );
         },
       ),
-      ClassError(:final message) => _ErrorState(
-        message: message ?? context.l10n.classGenericError,
+      ClassError(:final message, :final errorType) => _ErrorState(
+        message: _getErrorMessage(context, message, errorType),
         onRetry: onRetry,
       ),
       ClassSuccess(:final classes) => _ClassesList(
@@ -367,4 +367,21 @@ class _ErrorState extends StatelessWidget {
       ],
     );
   }
+}
+
+String _getErrorMessage(
+  BuildContext context,
+  String? message,
+  ClassErrorType? errorType,
+) {
+  if (message != null && message.isNotEmpty) {
+    return message;
+  }
+  return switch (errorType) {
+    ClassErrorType.createFailed => context.l10n.classCreateError,
+    ClassErrorType.updateFailed => context.l10n.classUpdateError,
+    ClassErrorType.loadFailed => context.l10n.classLoadError,
+    ClassErrorType.refreshNoTeacher => context.l10n.classRefreshNoTeacherError,
+    _ => context.l10n.classGenericError,
+  };
 }

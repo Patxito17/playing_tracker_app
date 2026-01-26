@@ -7,6 +7,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../widgets/home_sections.dart';
 
 /// Pantalla de inicio para docentes con acciones y resumen rápido.
@@ -18,9 +19,19 @@ class TeacherHomeScreen extends StatelessWidget {
     final colorScheme = context.colorScheme;
     final quickActions = _buildTeacherActions(context);
 
+    final userName = context.select((AuthCubit cubit) {
+      final state = cubit.state;
+      if (state is AuthAuthenticated) {
+        return state.firstName;
+      }
+      return '';
+    });
+
     return Scaffold(
       appBar: CustomAppBar(
-        title: context.l10n.teacherHomeTitle,
+        title: userName.isNotEmpty
+            ? context.l10n.welcomeUser(userName)
+            : context.l10n.teacherHomeTitle,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
