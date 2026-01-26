@@ -980,4 +980,60 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logout => 'Cerrar sesión';
+
+  @override
+  String get languageSection => 'Idioma y región';
+
+  @override
+  String get languageSettings => 'Idioma';
+
+  @override
+  String get languageSpanish => 'Español';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get colorSettings => 'Color principal';
+
+  @override
+  String get editProfileTitle => 'Editar perfil';
+
+  @override
+  String get generalSection => 'General';
+
+  @override
+  String versionLabel(String version) {
+    return 'Versión $version';
+  }
+
+  @override
+  String get termsAndConditionsLink => 'Términos y condiciones';
+
+  @override
+  String get privacyPolicyLink => 'Política de privacidad';
+
+  @override
+  String get themeLight => 'Claro';
+
+  @override
+  String get themeDark => 'Oscuro';
+
+  @override
+  String get themeSystem => 'Sistema';
+
+  @override
+  String get colorBlue => 'Azul';
+
+  @override
+  String get colorPurple => 'Púrpura';
+
+  @override
+  String get colorGreen => 'Verde';
+
+  @override
+  String get colorOrange => 'Naranja';
+
+  @override
+  String get colorRed => 'Rojo';
 }

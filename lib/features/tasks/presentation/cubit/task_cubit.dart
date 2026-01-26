@@ -109,7 +109,7 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.updateTask(input);
-      emit(const TaskActionSuccess(action: TaskAction.updated, message: ''));
+      emit(const TaskActionSuccess(action: TaskAction.updated));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
@@ -140,7 +140,7 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.deleteTask(taskId);
-      emit(const TaskActionSuccess(action: TaskAction.deleted, message: ''));
+      emit(const TaskActionSuccess(action: TaskAction.deleted));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
@@ -153,7 +153,7 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.assignTaskToClass(input);
-      emit(const TaskActionSuccess(action: TaskAction.assigned, message: ''));
+      emit(const TaskActionSuccess(action: TaskAction.assigned));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {

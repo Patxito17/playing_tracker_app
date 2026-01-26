@@ -34,7 +34,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(<TaskModel>[]));
       return cubit.watchTasks(teacherId: 'teacher-1');
     },
-    expect: () => const [TaskLoading(), TaskEmpty(message: '')],
+    expect: () => const [TaskLoading(), TaskEmpty()],
   );
 
   blocTest<TaskCubit, TaskState>(
@@ -66,11 +66,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(
-        action: TaskAction.created,
-        message: '',
-        taskId: 'task-1',
-      ),
+      TaskActionSuccess(action: TaskAction.created, taskId: 'task-1'),
     ],
   );
 
@@ -104,7 +100,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(action: TaskAction.updated, message: ''),
+      TaskActionSuccess(action: TaskAction.updated, message: null),
     ],
   );
 
@@ -117,7 +113,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(action: TaskAction.deleted, message: ''),
+      TaskActionSuccess(action: TaskAction.deleted, message: null),
     ],
   );
 
@@ -130,7 +126,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(action: TaskAction.assigned, message: ''),
+      TaskActionSuccess(action: TaskAction.assigned, message: null),
     ],
   );
 }
