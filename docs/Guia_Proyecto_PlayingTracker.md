@@ -750,6 +750,7 @@ service cloud.firestore {
 **Estado:** 📅 Planificado
 
 **Objetivos:**
+- 🏗️ **Refactorización de Navegación**: Modularización del archivo `app_routes.dart` por features y migración a **Typed Routes** con `go_router_builder` para eliminar el uso de strings y garantizar seguridad de tipos.
 - 🧪 **Testing completo** (Unit, Widget, Integration)
 - 🌐 **Internacionalización (l10n)**: Migración a archivos `.arb` y `AppLocalizations` para seguir las mejores prácticas oficiales de Flutter y permitir multi-idioma.
 - 🏗️ **Refactorización de Recursos**: Eliminación completa de constantes de strings en Dart en favor de la generación automática de código de Flutter.
@@ -847,6 +848,7 @@ Cumplimiento del **RGPD (Reglamento General de Protección de Datos)** y **LOPDG
 - 👥 **Sistema de grupos** y clases
 - 💬 **Chat docente-alumno** integrado
 - 🌍 **Internacionalización** (múltiples idiomas)
+- 🧭 **Navegación Profesional:** Modularización de rutas por feature y Type-Safe Routes (`go_router_builder`).
 - 🎨 **Personalización** de temas y colores
 
 ### Escalabilidad Técnica
@@ -978,7 +980,7 @@ Este documento sirve como **guía integral para el entorno Cursor**, proporciona
 - 📚 Referencias a documentación detallada
 - ✅ Progreso verificable con enfoque iterativo
 
-**Última actualización:** 20 de Noviembre 2025
-**Versión del documento:** 5.1
-**Progreso del proyecto:** Sprint 2 en progreso (Sprints 0 y 1 completados)
-**Siguiente sprint:** Sprint 3 - Sistema de Clases y Membresías (planificado)
+**Última actualización:** 26 de Enero 2026
+**Versión del documento:** 6.0
+**Estado del proyecto:** Sprint 6 en progreso (Sprints 0-5 completados)
+**Siguiente sprint:** Sprint 7 - Testing, l10n y Refactorización de Navegación
