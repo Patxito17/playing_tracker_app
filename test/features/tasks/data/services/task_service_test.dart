@@ -23,9 +23,9 @@ void main() {
       durationSuggested: 1800,
       attachments: <AttachmentModel>[
         AttachmentModel(
-          name: 'Partitura',
-          url: 'https://storage.test/score.pdf',
-          type: AttachmentType.pdf,
+          name: 'Video tutorial',
+          url: 'https://youtube.com/test',
+          type: AttachmentType.link,
         ),
       ],
       dueDate: DateTime(2025, 1, 10),

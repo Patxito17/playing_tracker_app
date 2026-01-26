@@ -3,11 +3,9 @@ import 'package:playing_tracker/features/tasks/domain/enums/attachment_type.dart
 
 part 'attachment_model.g.dart';
 
-/// Modelo que representa un archivo adjunto asociado a una tarea.
+/// Modelo que representa un adjunto (enlace) asociado a una tarea.
 ///
-/// Los archivos adjuntos pueden ser de diferentes tipos:
-/// - PDF: Partituras, documentos, material teórico
-/// - Audio: Referencias musicales, ejemplos, backing tracks
+/// Los adjuntos actualmente son únicamente enlaces externos:
 /// - Link: Enlaces a videos, recursos web, tutoriales
 ///
 /// Este modelo es inmutable y se serializa a/desde JSON para almacenamiento en Firestore.
@@ -15,9 +13,9 @@ part 'attachment_model.g.dart';
 /// Ejemplo de uso:
 /// ```dart
 /// final attachment = AttachmentModel(
-///   name: 'Partitura - Sonata No. 1',
-///   url: 'https://storage.ejemplo.com/partituras/sonata1.pdf',
-///   type: AttachmentType.pdf,
+///   name: 'Video tutorial',
+///   url: 'https://www.youtube.com/watch?v=...',
+///   type: AttachmentType.link,
 /// );
 ///
 /// // Serializar a JSON
@@ -28,13 +26,13 @@ part 'attachment_model.g.dart';
 /// ```
 @JsonSerializable()
 class AttachmentModel {
-  /// Nombre descriptivo del archivo adjunto
+  /// Nombre descriptivo del enlace adjunto
   final String name;
 
-  /// URL completa donde se encuentra almacenado el archivo
+  /// URL completa del enlace
   final String url;
 
-  /// Tipo de archivo adjunto (pdf, audio, link)
+  /// Tipo de adjunto (siempre link)
   final AttachmentType type;
 
   /// Constructor del modelo de adjunto

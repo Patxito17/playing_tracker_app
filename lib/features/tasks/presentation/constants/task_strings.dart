@@ -29,7 +29,7 @@ class TaskStrings {
   static const String recipientsHint = 'Selecciona los estudiantes';
   static const String attachmentsLabel = 'Adjuntos';
   static const String attachmentsHint =
-      'Archivos adjuntos (PDF, imágenes, etc.)';
+      'Enlaces externos (YouTube, Drive, etc.)';
   static const String addAttachment = 'Agregar adjunto';
   static const String noAttachments = 'No hay adjuntos';
   static const String selectAllStudents = 'Todos';
