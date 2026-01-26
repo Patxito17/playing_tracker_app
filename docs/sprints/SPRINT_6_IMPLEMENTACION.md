@@ -70,19 +70,18 @@
 ### 📊 Fase 2: Componentes de Gráficos Reutilizables
 **Objetivo:** Crear widgets de gráficos reutilizables con Material Design 3.
 
-- [ ] **Configurar dependencia `fl_chart`**:
-  - Agregar `fl_chart: ^0.69.0` a `pubspec.yaml`.
+- [x] **Configurar dependencia `fl_chart`**:
+  - Agregar `fl_chart: ^1.1.1` a `pubspec.yaml`.
   - Crear wrapper widgets con tema M3.
-- [ ] **Implementar Widgets de Gráficos**:
-  - `BarChartWidget`: Gráfico de barras para tiempo diario/semanal.
-  - `LineChartWidget`: Gráfico de líneas para tendencias.
-  - `PieChartWidget`: Gráfico circular para distribución.
-  - `ProgressChartWidget`: Indicador de progreso circular.
-- [ ] **Aplicar Tema Material Design 3**:
+- [x] **Implementar Widgets de Gráficos**:
+  - `AppBarChart`: Gráfico de barras para tiempo diario/semanal.
+  - `AppPieChart`: Gráfico circular para distribución.
+  - `AppProgressChart`: Indicador de progreso circular.
+- [x] **Aplicar Tema Material Design 3**:
   - Colores coherentes con `colorScheme`.
   - Animaciones suaves y feedback táctil.
   - Tooltips informativos al tocar datos.
-- [ ] **Tests de Widget**:
+- [x] **Tests de Widget**:
   - Renderizado correcto con datos de ejemplo.
   - Manejo de casos vacíos (sin datos).
 

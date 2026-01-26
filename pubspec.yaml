@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # UI y Tema
-  google_fonts: ^7.0.0          # Fuentes personalizadas
+  google_fonts: ^8.0.0          # Fuentes personalizadas
 
   # Navegación
   go_router: ^17.0.0            # Navegación declarativa
@@ -55,6 +55,7 @@ dependencies:
   # Utilidades
   intl: ^0.20.2                 # Internacionalización
   uuid: ^4.5.1                  # Generación de IDs únicos y códigos de acceso
+  
   # Autenticación
   firebase_auth: ^6.1.2
 
@@ -63,6 +64,9 @@ dependencies:
 
   # Storage para hydrated_bloc
   path_provider: ^2.1.5
+
+  # Gráficos y visualizaciones
+  fl_chart: ^1.1.1              # Librería de gráficos para estadísticas
 
 dev_dependencies:
   flutter_test:
