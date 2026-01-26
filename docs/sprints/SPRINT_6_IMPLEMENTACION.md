@@ -199,6 +199,7 @@
   - Definir objetivos, fases y entregables para el módulo de Testing y Optimización según el roadmap:
     - 🧪 Testing completo (Unit, Widget, Integration)
     - 🌐 Internacionalización (l10n) y Refactorización de Strings profesional (archivos .arb)
+    - 🧭 **Refactorización de Navegación**: Modularización de `app_routes.dart` y migración a **Typed Routes** (Type-safety).
     - ⚡ Optimización de rendimiento
     - 🔒 Auditoría de seguridad
     - 📱 Testing de accesibilidad
