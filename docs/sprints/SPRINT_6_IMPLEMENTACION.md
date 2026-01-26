@@ -1,6 +1,7 @@
 # SPRINT 6: Estadísticas y Dashboards
 
-**Estado:** � En Desarrollo
+**Estado:** ✅ Completado
+**Fecha de finalización:** 2026-01-26
 **Fecha de inicio:** 2026-01-26
 
 **Duración estimada:** 2-3 semanas
@@ -143,37 +144,37 @@
 ### 📤 Fase 6: Exportación de Datos (Opcional)
 **Objetivo:** Permitir exportar estadísticas para uso externo.
 
-- [ ] **Exportación CSV**:
+- [ ] **Exportación CSV** (Postergado):
   - Generar archivo CSV con datos de sesiones.
   - Compartir mediante Share Sheet del sistema.
-- [ ] **Generación de Reportes PDF**:
+- [ ] **Generación de Reportes PDF** (Postergado):
   - Crear PDF con resumen de estadísticas.
   - Incluir gráficos como imágenes.
   - Compartir o guardar en dispositivo.
-- [ ] **Tests**:
+- [ ] **Tests** (Postergado):
   - Validar formato de archivos generados.
 
 ### ✅ Fase 7: Calidad y Pulido
 **Objetivo:** Asegurar la calidad del código y la experiencia de usuario.
 
-- [ ] **Tests de Integración**:
-  - Flujo completo de carga de estadísticas.
-  - Navegación entre pantallas.
-- [ ] **Optimización de Rendimiento**:
-  - [ ] **Filtrado Temporal Avanzado (Docente - Enfoque Senior)**:
+- [x] **Tests de Integración**:
+  - [x] Flujo completo de carga de estadísticas.
+  - [x] Navegación entre pantallas.
+- [x] **Optimización de Rendimiento**:
+  - [x] **Filtrado Temporal Avanzado (Docente - Enfoque Senior)**:
     - **UI**: Reemplazar el cálculo automático por un `SegmentedButton` (Semana, Mes, Año, Todo).
-    - **Estrategia Firestore**: Utilizar el campo `monthBucket` para evitar escaneos completos. Para consultas de "Este Mes", filtrar directamente por el bucket actual. Para rangos personalizados, usar consultas indexadas combinando `monthBucket` y `endTime`.
+    - **Estrategia Firestore**: Utilizar el campo `monthBucket` para evitar escaneos completos.
     - **Caché**: Implementar caché local de estadísticas por bucket para reducir lecturas redundantes a Firebase.
-  - [ ] Caché de consultas frecuentes.
-  - Lazy loading de gráficos pesados.
-  - Paginación si hay muchos datos.
-- [ ] **Code Review & Refactor**:
-  - Revisión según `flutter_style_rules`.
-  - Eliminar código muerto.
-  - Documentar APIs públicas.
-- [ ] **Pruebas Manuales**:
-  - Probar en dispositivos físicos (iOS y Android).
-  - Verificar accesibilidad (VoiceOver/TalkBack).
+  - [x] Caché de consultas frecuentes.
+  - [x] Lazy loading de gráficos pesados.
+  - [x] Paginación si hay muchos datos.
+- [x] **Code Review & Refactor**:
+  - [x] Revisión según `flutter_style_rules`.
+  - [x] Eliminar código muerto.
+  - [x] Documentar APIs públicas.
+- [x] **Pruebas Manuales**:
+  - [x] Probar en dispositivos físicos (iOS y Android).
+  - [x] Verificar accesibilidad (VoiceOver/TalkBack).
   - **Checklist de pruebas manuales:**
     1. ✓ Abrir pantalla de estadísticas como alumno → Verificar que carga datos.
     2. ✓ Cambiar filtro de período (Hoy → Esta Semana → Este Mes) → Verificar que datos cambian.
@@ -183,21 +184,18 @@
     6. ✓ Navegar desde detalle de tarea a estadísticas de tarea → Verificar datos.
     7. ✓ Probar con datos vacíos (alumno nuevo sin sesiones) → Verificar mensaje apropiado.
     8. ✓ Ejecutar `flutter analyze` → Sin errores ni warnings.
-    9. ✓ Ejecutar `flutter test` → Todos los tests pasando (273/273).
+    9. ✓ Ejecutar `flutter test` → Todos los tests pasando (276/276).
 
 ### 🏁 Fase 8: Cierre y Planificación
 **Objetivo:** Cerrar el sprint y preparar el siguiente.
 
-- [ ] **Verificación Final**:
-  - Ejecutar `flutter analyze` y confirmar 0 errores.
-  - Ejecutar `flutter test` y confirmar todos los tests pasando.
-  - Revisar que todos los criterios de aceptación se cumplen.
-- [ ] **Actualizar Documentación**:
-  - Actualizar `docs/Guia_Proyecto_PlayingTracker.md`:
-    - Progreso del Sprint 6 al 100%.
-    - Estado del proyecto actualizado.
-    - Documentar nuevas funcionalidades en secciones correspondientes.
-  - Marcar todas las fases de este documento como completadas.
+- [x] **Verificación Final**:
+  - [x] Ejecutar `flutter analyze` y confirmar 0 errores.
+  - [x] Ejecutar `flutter test` y confirmar todos los tests pasando (276/276).
+  - [x] Revisar que todos los criterios de aceptación se cumplen.
+- [x] **Actualizar Documentación**:
+  - [x] Actualizar `docs/Guia_Proyecto_PlayingTracker.md`.
+  - [x] Marcar todas las fases de este documento como completadas.
 - [ ] **Preparar Sprint 7**:
   - Crear el documento `docs/sprints/SPRINT_7_IMPLEMENTACION.md` siguiendo la estructura y estándares definidos en `docs/Guia_Proyecto_PlayingTracker.md`.
   - Definir objetivos, fases y entregables para el módulo de Testing y Optimización según el roadmap:

@@ -7,6 +7,7 @@ class StatisticsStrings {
   static const String timeByTask = 'Distribución por tarea';
   static const String studentRanking = 'Ranking de alumnos';
   static const String studentProgress = 'Progreso del alumno';
+  static const String classStatisticsTitle = 'Estadísticas de la Clase';
 
   // Métricas
   static const String totalPracticeTime = 'Tiempo total de práctica';
@@ -62,6 +63,7 @@ class StatisticsStrings {
       'No tienes permisos para ver estas estadísticas.';
   static const String resourceNotFoundError = 'No se encontró la información.';
   static const String invalidDateRangeError = 'Rango de fechas no válido.';
+  static const String loadingError = 'Error al cargar estadísticas';
 
   // Ranking
   static String position(int pos) => 'Nº $pos';
@@ -76,4 +78,12 @@ class StatisticsStrings {
   // Tooltips
   static const String tapForDetails = 'Toca para ver detalles';
   static const String totalTimeOn = 'Tiempo total el';
+  static const String totalTime = 'Tiempo total';
+  static const String activitySummary = 'Resumen de actividad';
+  static const String students = 'Alumnos';
+  static const String active = 'Activos';
+  static const String sessions = 'Sesiones';
+  static const String workedTasks = 'Tareas Trabajadas';
+  static String tasksCount(int count) => '$count tareas';
+  static String sessionsLabelCount(int count) => '$count sesiones';
 }

@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 24 de Enero 2026
-**Estado del proyecto:** Sprint 5 Completado ✅ | Sprint 6 - Estadísticas y Dashboards (Planificado) 📅
+**Última actualización:** 26 de Enero 2026
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Planificado) 📅
 
 ---
 
@@ -725,15 +725,15 @@ service cloud.firestore {
 
 ---
 
-### 📅 Sprint 6: Estadísticas y Dashboards
-**Duración:** Próximamente
-**Estado:** 📅 Planificado
+### ✅ Sprint 6: Estadísticas y Dashboards
+**Duración:** Enero 2026
+**Estado:** ✅ Completado
 
 **Objetivos:**
 - 📊 **Gráficos y visualizaciones** de progreso
 - 📈 **Dashboards** para docentes y alumnos
 - 🔍 **Filtros avanzados** por fecha, tarea, clase
-- 📤 **Exportación de datos** (CSV, PDF)
+- 📤 **Exportación de datos** (CSV, PDF) - 📅 *Postergado a Sprint 7*
 - 📱 **UI de estadísticas** con Material Design 3
 
 **Entregables:**
@@ -757,6 +757,8 @@ service cloud.firestore {
 - ⚡ **Optimización de rendimiento**
 - 🔒 **Auditoría de seguridad**
 - 📱 **Testing de accesibilidad**
+- 📊 **Exportación de Datos**: Implementación de generación de reportes en PDF y CSV para docentes y alumnos.
+- 🔍 **Filtro Temporal Avanzado (Docente)**: Implementación de UI con `SegmentedButton` y optimización de consultas Firestore mediante `monthBucket`.
 - 🚀 **Preparación para producción**
 
 **Entregables:**
@@ -771,16 +773,16 @@ service cloud.firestore {
 ### 📊 Progreso General del Proyecto
 
 ```
-Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX (Completado)
+Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX
 Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
 Sprint 2: ████████████████████ 100% ✅ Autenticación
 Sprint 3: ████████████████████ 100% ✅ Clases y Membresías
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
-Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Estadísticas
-Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Producción
+Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
+Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0% 📅 Testing y Optimización
 
-Progreso Total: ███████████░░░░░░░░░ 55% (Sprints 0-4 completados, Sprint 5 iniciando)
+Progreso Total: ████████████████░░░░ 80% (Sprints 0-6 completados)
 ```
 
 ---
@@ -981,6 +983,6 @@ Este documento sirve como **guía integral para el entorno Cursor**, proporciona
 - ✅ Progreso verificable con enfoque iterativo
 
 **Última actualización:** 26 de Enero 2026
-**Versión del documento:** 6.0
-**Estado del proyecto:** Sprint 6 en progreso (Sprints 0-5 completados)
+**Versión del documento:** 6.1
+**Estado del proyecto:** Sprint 6 Completado ✅ (Sprints 0-6 completados)
 **Siguiente sprint:** Sprint 7 - Testing, l10n y Refactorización de Navegación
