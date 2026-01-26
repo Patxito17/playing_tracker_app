@@ -5,7 +5,6 @@ import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
-import 'package:playing_tracker/features/statistics/presentation/constants/statistics_strings.dart';
 import 'package:playing_tracker/shared/widgets/custom_app_bar.dart';
 import 'package:playing_tracker/shared/widgets/custom_card.dart';
 
