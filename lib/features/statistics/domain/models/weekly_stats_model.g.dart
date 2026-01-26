@@ -20,6 +20,11 @@ WeeklyStatsModel _$WeeklyStatsModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => DailyStatsModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      taskBreakdown:
+          (json['taskBreakdown'] as List<dynamic>?)
+              ?.map((e) => TaskStatsModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       previousWeekDuration: (json['previousWeekDuration'] as num?)?.toInt(),
     );
 
@@ -31,5 +36,6 @@ Map<String, dynamic> _$WeeklyStatsModelToJson(WeeklyStatsModel instance) =>
       'totalSessions': instance.totalSessions,
       'uniqueTasks': instance.uniqueTasks,
       'dailyBreakdown': instance.dailyBreakdown,
+      'taskBreakdown': instance.taskBreakdown,
       'previousWeekDuration': instance.previousWeekDuration,
     };

@@ -27,6 +27,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
   Future<DailyStatsModel> getDailyStats({
     required String studentId,
     required DateTime date,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -39,6 +40,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       return await _statisticsService.getDailyStats(
         studentId: sanitizedId,
         date: date,
+        classId: classId,
       );
     } catch (error, stackTrace) {
       _throwRepositoryException(
@@ -53,6 +55,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
   Future<WeeklyStatsModel> getWeeklyStats({
     required String studentId,
     required DateTime weekStart,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -65,6 +68,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       return await _statisticsService.getWeeklyStats(
         studentId: sanitizedId,
         weekStart: weekStart,
+        classId: classId,
       );
     } catch (error, stackTrace) {
       _throwRepositoryException(
@@ -80,6 +84,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     required String studentId,
     required int month,
     required int year,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -105,6 +110,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
         studentId: sanitizedId,
         month: month,
         year: year,
+        classId: classId,
       );
     } catch (error, stackTrace) {
       _throwRepositoryException(
@@ -233,9 +239,10 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
           .where((doc) => (doc.data()['status'] as String?) == 'completed')
           .length;
 
-      // 3. Calcular rachas (simplificado - en producción usar lógica más compleja)
-      final currentStreak = await _calculateCurrentStreak(sanitizedId);
-      final longestStreak = await _calculateLongestStreak(sanitizedId);
+      // 3. Calcular rachas de forma eficiente (Batch Fetching)
+      final streakMetrics = await _getStreakMetrics(sanitizedId);
+      final currentStreak = streakMetrics.current;
+      final longestStreak = streakMetrics.longest;
 
       // 4. Calcular promedio por sesión
       final averageSessionDuration = totalSessionsCount > 0
@@ -263,48 +270,76 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     }
   }
 
-  /// Calcula la racha actual de días consecutivos con práctica
-  Future<int> _calculateCurrentStreak(String studentId) async {
+  /// Obtiene las métricas de racha (actual y máxima) en una sola consulta de lote.
+  /// Esto optimiza las lecturas de Firestore drásticamente en comparación con bucles.
+  Future<({int current, int longest})> _getStreakMetrics(
+    String studentId,
+  ) async {
     try {
+      // 1. Obtener las fechas de los últimos registros (ej: los últimos registros de actividad)
+      final sessionsSnapshot = await _firestore
+          .collection('sessions')
+          .where('studentId', isEqualTo: studentId)
+          .orderBy('dateLogged', descending: true)
+          .limit(
+            200,
+          ) // Límite razonable para calcular rachas sin denormalización
+          .get();
+
+      if (sessionsSnapshot.docs.isEmpty) return (current: 0, longest: 0);
+
+      // 2. Extraer fechas únicas (sin hora) en orden descendente
+      final practiceDates =
+          sessionsSnapshot.docs
+              .map((doc) => (doc.data()['dateLogged'] as Timestamp).toDate())
+              .map((date) => DateTime(date.year, date.month, date.day))
+              .toSet()
+              .toList()
+            ..sort((a, b) => b.compareTo(a));
+
+      if (practiceDates.isEmpty) return (current: 0, longest: 0);
+
+      // 3. Variables para el cálculo
+      int currentStreak = 0;
+      int maxStreak = 0;
+      int tempStreak = 1;
+
       final now = DateTime.now();
-      int streak = 0;
+      final today = DateTime(now.year, now.month, now.day);
+      final yesterday = today.subtract(const Duration(days: 1));
 
-      // Revisar los últimos 365 días (límite razonable)
-      for (int i = 0; i < 365; i++) {
-        final checkDate = now.subtract(Duration(days: i));
-        final stats = await _statisticsService.getDailyStats(
-          studentId: studentId,
-          date: checkDate,
-        );
-
-        if (stats.totalSessions > 0) {
-          streak++;
-        } else {
-          // Si no hay sesiones, la racha se rompe
-          if (i == 0) {
-            // Si hoy no hay práctica, racha es 0
-            return 0;
+      // 4. Calcular racha actual (solo si hubo práctica hoy o ayer)
+      if (!practiceDates.first.isBefore(yesterday)) {
+        currentStreak = 1;
+        for (int i = 0; i < practiceDates.length - 1; i++) {
+          if (practiceDates[i].difference(practiceDates[i + 1]).inDays == 1) {
+            currentStreak++;
+          } else {
+            break;
           }
-          break;
         }
       }
 
-      return streak;
+      // 5. Calcular racha máxima histórica (dentro de los datos recuperados)
+      maxStreak = 1;
+      for (int i = 0; i < practiceDates.length - 1; i++) {
+        if (practiceDates[i].difference(practiceDates[i + 1]).inDays == 1) {
+          tempStreak++;
+        } else {
+          if (tempStreak > maxStreak) maxStreak = tempStreak;
+          tempStreak = 1;
+        }
+      }
+      if (tempStreak > maxStreak) maxStreak = tempStreak;
+
+      return (current: currentStreak, longest: maxStreak);
     } catch (e) {
       log(
-        'Error calculating current streak: $e',
+        'Error calculating streak metrics: $e',
         name: 'StatisticsRepositoryImpl',
       );
-      return 0;
+      return (current: 0, longest: 0);
     }
-  }
-
-  /// Calcula la racha más larga de días consecutivos
-  Future<int> _calculateLongestStreak(String studentId) async {
-    // En una implementación real, esto debería estar pre-calculado
-    // o almacenado como agregado en el documento del estudiante
-    // Por ahora, retornamos un valor conservador
-    return 0;
   }
 
   /// Mapea errores a excepciones de dominio

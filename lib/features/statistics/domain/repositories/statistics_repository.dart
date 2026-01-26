@@ -12,12 +12,14 @@ abstract interface class StatisticsRepository {
   Future<DailyStatsModel> getDailyStats({
     required String studentId,
     required DateTime date,
+    String? classId,
   });
 
   /// Obtiene estadísticas semanales para un estudiante.
   Future<WeeklyStatsModel> getWeeklyStats({
     required String studentId,
     required DateTime weekStart,
+    String? classId,
   });
 
   /// Obtiene estadísticas mensuales para un estudiante.
@@ -25,6 +27,7 @@ abstract interface class StatisticsRepository {
     required String studentId,
     required int month,
     required int year,
+    String? classId,
   });
 
   /// Obtiene estadísticas de una tarea específica.

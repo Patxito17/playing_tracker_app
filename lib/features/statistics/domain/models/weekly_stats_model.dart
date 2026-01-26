@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:playing_tracker/core/utils/timestamp_converter.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 
 part 'weekly_stats_model.g.dart';
 
@@ -54,6 +55,9 @@ class WeeklyStatsModel {
   /// Desglose diario de estadísticas (lunes a domingo)
   final List<DailyStatsModel> dailyBreakdown;
 
+  /// Desglose por tareas trabajadas en la semana
+  final List<TaskStatsModel> taskBreakdown;
+
   /// Duración total de la semana anterior (para comparativa)
   final int? previousWeekDuration;
 
@@ -65,6 +69,7 @@ class WeeklyStatsModel {
     required this.totalSessions,
     required this.uniqueTasks,
     this.dailyBreakdown = const [],
+    this.taskBreakdown = const [],
     this.previousWeekDuration,
   });
 

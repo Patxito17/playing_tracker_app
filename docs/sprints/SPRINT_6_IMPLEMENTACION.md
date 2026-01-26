@@ -88,19 +88,19 @@
 ### 📱 Fase 3: Dashboard del Alumno
 **Objetivo:** Crear la pantalla de estadísticas para el alumno.
 
-- [ ] **Implementar `StudentStatsCubit`**:
+- [x] **Implementar `StudentStatsCubit`**:
   - Estados: `Initial`, `Loading`, `Loaded`, `Error`.
   - Cargar estadísticas al abrir la pantalla.
   - Método para cambiar período (día/semana/mes).
-- [ ] **Diseñar UI de Estadísticas del Alumno**:
+- [x] **Diseñar UI de Estadísticas del Alumno**:
   - Hero card con tiempo total de práctica.
   - Gráfico de barras: Tiempo por día (últimos 7 días).
   - Gráfico circular: Distribución por tarea.
   - Lista de tareas con progreso individual.
   - Racha de práctica (días consecutivos).
-- [ ] **Implementar Filtros**:
+- [x] **Implementar Filtros**:
   - Selector de período (Hoy, Esta Semana, Este Mes, Personalizado).
-  - Filtro por clase.
+  - Filtro por clase (aislando sesiones de una clase específica).
 - [ ] **Tests**:
   - Tests unitarios del Cubit.
   - Tests de widget para la UI.
@@ -129,13 +129,13 @@
 ### 🔄 Fase 5: Integración con Navigation
 **Objetivo:** Conectar las pantallas de estadísticas con el flujo de la app.
 
-- [ ] **Actualizar Navegación**:
+- [x] **Actualizar Navegación**:
   - Tab de Estadísticas en BottomNavigationBar ya existente.
   - Rutas en GoRouter para navegación profunda.
-- [ ] **Conectar con Pantallas Existentes**:
-  - Desde detalle de clase → Ver estadísticas de clase.
+- [x] **Conectar con Pantallas Existentes**:
+  - Desde detalle de clase → Ver estadísticas de clase (estudiante).
   - Desde detalle de tarea → Ver estadísticas de tarea.
-  - Desde perfil de alumno (docente) → Ver estadísticas del alumno.
+  - Desde perfil de alumno (docente) → Ver estadísticas del alumno (pendiente docente).
 - [ ] **Probar Flujo Completo**:
   - Navegación sin glitches.
   - Estados de carga y error correctos.
@@ -291,3 +291,5 @@ Los contadores ya implementados en Sprint 5 que se reutilizarán:
 - Este sprint depende de la completitud del Sprint 5 (cronómetro y sesiones).
 - La Fase 6 (Exportación) es opcional y puede posponerse a un sprint posterior.
 - Se recomienda priorizar la experiencia del alumno (Fase 3) antes que la del docente (Fase 4).
+- **Nota Sprint 6 (2026-01-26):** Se ha corregido un error crítico en `AppBarChart` donde la app se cerraba si no había datos (división por cero).
+- **Nota Sprint 6 (2026-01-26):** Se ha añadido `classId` a `SessionModel` para permitir el filtrado correcto de estadísticas por clase.
