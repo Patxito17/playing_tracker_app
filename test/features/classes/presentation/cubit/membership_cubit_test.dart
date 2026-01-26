@@ -31,7 +31,7 @@ void main() {
     },
     expect: () => const [
       MembershipLoading(),
-      MembershipSuccess(action: MembershipAction.invitedStudent, message: ''),
+      MembershipSuccess(action: MembershipAction.invitedStudent),
     ],
   );
 
@@ -65,7 +65,7 @@ void main() {
     },
     expect: () => const [
       MembershipLoading(),
-      MembershipSuccess(action: MembershipAction.joinedClass, message: ''),
+      MembershipSuccess(action: MembershipAction.joinedClass),
     ],
     verify: (_) => verify(() => repository.joinClassWithCode(any())).called(1),
   );

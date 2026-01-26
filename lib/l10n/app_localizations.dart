@@ -1875,6 +1875,114 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cerrar sesión'**
   String get logout;
+
+  /// Sección idioma
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma y región'**
+  String get languageSection;
+
+  /// Configuración idioma
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get languageSettings;
+
+  /// Idioma español
+  ///
+  /// In es, this message translates to:
+  /// **'Español'**
+  String get languageSpanish;
+
+  /// Idioma inglés
+  ///
+  /// In es, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Configuración color
+  ///
+  /// In es, this message translates to:
+  /// **'Color principal'**
+  String get colorSettings;
+
+  /// Título editar perfil
+  ///
+  /// In es, this message translates to:
+  /// **'Editar perfil'**
+  String get editProfileTitle;
+
+  /// Sección general
+  ///
+  /// In es, this message translates to:
+  /// **'General'**
+  String get generalSection;
+
+  /// Label versión app
+  ///
+  /// In es, this message translates to:
+  /// **'Versión {version}'**
+  String versionLabel(String version);
+
+  /// Link términos
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y condiciones'**
+  String get termsAndConditionsLink;
+
+  /// Link privacidad
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get privacyPolicyLink;
+
+  /// Tema claro
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// Tema oscuro
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeDark;
+
+  /// Tema del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// Color azul
+  ///
+  /// In es, this message translates to:
+  /// **'Azul'**
+  String get colorBlue;
+
+  /// Color púrpura
+  ///
+  /// In es, this message translates to:
+  /// **'Púrpura'**
+  String get colorPurple;
+
+  /// Color verde
+  ///
+  /// In es, this message translates to:
+  /// **'Verde'**
+  String get colorGreen;
+
+  /// Color naranja
+  ///
+  /// In es, this message translates to:
+  /// **'Naranja'**
+  String get colorOrange;
+
+  /// Color rojo
+  ///
+  /// In es, this message translates to:
+  /// **'Rojo'**
+  String get colorRed;
 }
 
 class _AppLocalizationsDelegate

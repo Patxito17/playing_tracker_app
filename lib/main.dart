@@ -6,6 +6,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:playing_tracker/features/settings/data/services/settings_service.dart';
+import 'package:playing_tracker/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:playing_tracker/features/settings/presentation/cubit/settings_state.dart';
+
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
 import 'core/config/bloc/app_bloc_observer.dart';
@@ -35,22 +39,27 @@ void main() async {
           ),
   );
 
+  // 3) Inicializar SettingsService
+  final settingsService = await SettingsService.init();
+
   // Asignar storage globalmente y ejecutar la app
   HydratedBloc.storage = storage;
   Bloc.observer = AppBlocObserver();
-  runApp(const PlayingTrackerApp());
+  runApp(PlayingTrackerApp(settingsService: settingsService));
 }
 
 /// Widget raíz de la aplicación
 class PlayingTrackerApp extends StatefulWidget {
   const PlayingTrackerApp({
     super.key,
+    required this.settingsService,
     this.authRepository,
     this.authCubitBuilder,
     this.classRepository,
     this.taskRepository,
   });
 
+  final SettingsService settingsService;
   final AuthRepository? authRepository;
   final AuthCubit Function(AuthRepository repository)? authCubitBuilder;
   final ClassRepository? classRepository;
@@ -61,8 +70,6 @@ class PlayingTrackerApp extends StatefulWidget {
 }
 
 class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
-  final ThemeMode _themeMode = ThemeMode.system;
-
   @override
   Widget build(BuildContext context) {
     final repository = widget.authRepository ?? AuthRepositoryImpl();
@@ -75,28 +82,67 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
         RepositoryProvider<ClassRepository>.value(value: classRepository),
         RepositoryProvider<TaskRepository>.value(value: taskRepository),
       ],
-      child: BlocProvider(
-        create: (_) =>
-            widget.authCubitBuilder?.call(repository) ?? AuthCubit(repository),
-        child: Builder(
-          builder: (context) {
-            final authCubit = context.read<AuthCubit>();
-            final appRoutes = AppRoutes(authCubit);
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) =>
+                widget.authCubitBuilder?.call(repository) ??
+                AuthCubit(repository),
+          ),
+          BlocProvider(create: (_) => SettingsCubit(widget.settingsService)),
+        ],
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, settingsState) {
+            return Builder(
+              builder: (context) {
+                final authCubit = context.read<AuthCubit>();
+                final appRoutes = AppRoutes(authCubit);
 
-            return MaterialApp.router(
-              title: 'Playing Tracker',
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: _themeMode,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              routerConfig: appRoutes.router,
-              debugShowCheckedModeBanner: false,
+                final lightTheme = AppTheme.lightTheme;
+                final darkTheme = AppTheme.darkTheme;
+
+                // Si hay color semilla personalizado, regenerar temas
+                // Nota: Por simplicidad, AppTheme.lightTheme es estático ahora.
+                // Si implementamos color personalizado real, deberíamos hacer AppTheme.fromSeed(color).
+
+                // Aplicar color personalizado si existe
+                final effectiveLight = settingsState.seedColor != null
+                    ? ThemeData(
+                        useMaterial3: true,
+                        colorScheme: ColorScheme.fromSeed(
+                          seedColor: settingsState.seedColor!,
+                          brightness: Brightness.light,
+                        ),
+                      )
+                    : lightTheme;
+
+                final effectiveDark = settingsState.seedColor != null
+                    ? ThemeData(
+                        useMaterial3: true,
+                        colorScheme: ColorScheme.fromSeed(
+                          seedColor: settingsState.seedColor!,
+                          brightness: Brightness.dark,
+                        ),
+                      )
+                    : darkTheme;
+
+                return MaterialApp.router(
+                  title: 'Playing Tracker',
+                  theme: effectiveLight,
+                  darkTheme: effectiveDark,
+                  themeMode: settingsState.themeMode,
+                  locale: settingsState.locale,
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  routerConfig: appRoutes.router,
+                  debugShowCheckedModeBanner: false,
+                );
+              },
             );
           },
         ),

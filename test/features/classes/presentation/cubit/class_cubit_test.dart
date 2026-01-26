@@ -33,7 +33,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(<ClassModel>[]));
       return cubit.watchClasses(teacherId: 'teacher-1');
     },
-    expect: () => const [ClassLoading(), ClassEmpty(message: '')],
+    expect: () => const [ClassLoading(), ClassEmpty()],
   );
 
   blocTest<ClassCubit, ClassState>(
@@ -69,7 +69,7 @@ void main() {
     },
     expect: () => const [
       ClassLoading(),
-      ClassActionSuccess(action: ClassAction.created, message: ''),
+      ClassActionSuccess(action: ClassAction.created),
     ],
   );
 
@@ -108,7 +108,7 @@ void main() {
     },
     expect: () => const [
       ClassLoading(),
-      ClassActionSuccess(action: ClassAction.statusUpdated, message: ''),
+      ClassActionSuccess(action: ClassAction.statusUpdated),
     ],
   );
 

@@ -69,6 +69,7 @@ dependencies:
 
   # Gráficos y visualizaciones
   fl_chart: ^1.1.1              # Librería de gráficos para estadísticas
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:
