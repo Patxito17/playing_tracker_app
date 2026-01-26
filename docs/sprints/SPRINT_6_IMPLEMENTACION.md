@@ -199,6 +199,7 @@
   - Crear el documento `docs/sprints/SPRINT_7_IMPLEMENTACION.md` siguiendo la estructura y estándares definidos en `docs/Guia_Proyecto_PlayingTracker.md`.
   - Definir objetivos, fases y entregables para el módulo de Testing y Optimización según el roadmap:
     - 🧪 Testing completo (Unit, Widget, Integration)
+    - 🌐 Internacionalización (l10n) y Refactorización de Strings profesional (archivos .arb)
     - ⚡ Optimización de rendimiento
     - 🔒 Auditoría de seguridad
     - 📱 Testing de accesibilidad
