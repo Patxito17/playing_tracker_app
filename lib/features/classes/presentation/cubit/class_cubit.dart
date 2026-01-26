@@ -28,12 +28,7 @@ class ClassCubit extends Cubit<ClassState> {
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));
     } catch (error) {
-      emit(
-        ClassError(
-          message: 'No fue posible crear la clase. Intenta nuevamente.',
-          cause: error,
-        ),
-      );
+      emit(ClassError(errorType: ClassErrorType.createFailed, cause: error));
     }
   }
 
@@ -70,10 +65,7 @@ class ClassCubit extends Cubit<ClassState> {
               return;
             }
             emit(
-              ClassError(
-                message: 'Ocurrió un error al cargar tus clases.',
-                cause: error,
-              ),
+              ClassError(errorType: ClassErrorType.loadFailed, cause: error),
             );
           },
         );
@@ -83,12 +75,7 @@ class ClassCubit extends Cubit<ClassState> {
   Future<void> refreshClasses() async {
     final teacherId = _currentTeacherId;
     if (teacherId == null) {
-      emit(
-        const ClassError(
-          message:
-              'No se ha configurado un docente para actualizar las clases.',
-        ),
-      );
+      emit(ClassError(errorType: ClassErrorType.refreshNoTeacher));
       return;
     }
     _manualRefreshPending = true;
@@ -109,12 +96,7 @@ class ClassCubit extends Cubit<ClassState> {
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));
     } catch (error) {
-      emit(
-        ClassError(
-          message: 'No fue posible actualizar la clase.',
-          cause: error,
-        ),
-      );
+      emit(ClassError(errorType: ClassErrorType.updateFailed, cause: error));
     }
   }
 

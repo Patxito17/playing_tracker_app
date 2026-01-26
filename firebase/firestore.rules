@@ -135,8 +135,14 @@ service cloud.firestore {
                       ) &&
                       request.resource.data.keys().hasAll(['id', 'classId', 'studentId', 'teacherId', 'className', 'joinedAt', 'updatedAt', 'isActive']);
 
-      // Actualización: Solo el teacher relacionado puede actualizar
-      allow update: if isAuth() && resource.data.teacherId == request.auth.uid;
+      // Actualización: Teacher relacionado O Student propietario (solo campos de perfil)
+      allow update: if isAuth() && (
+        resource.data.teacherId == request.auth.uid ||
+        (
+          resource.data.studentId == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['studentName', 'studentEmail', 'updatedAt'])
+        )
+      );
 
       // Eliminación: solo el teacher relacionado o dueño de la clase
       allow delete: if isAuth() && (

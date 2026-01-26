@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
+import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
+import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
 
 /// Estados posibles para el flujo de autenticación de Playing Tracker.
 ///
@@ -22,18 +24,36 @@ final class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-/// Estado que representa a un usuario autenticado, junto a su rol.
+/// Estado que representa a un usuario autenticado con su modelo completo.
 final class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated({required this.role, required this.userId});
+  const AuthAuthenticated({required this.user});
 
-  /// Rol del usuario (teacher o student).
-  final UserRole role;
+  /// Modelo completo del usuario (TeacherModel o StudentModel).
+  /// Se usa dynamic para evitar complicaciones de tipos, pero en runtime
+  /// siempre será TeacherModel o StudentModel.
+  final dynamic user;
 
-  /// Identificador del usuario en Firebase Auth.
-  final String userId;
+  /// Rol del usuario derivado del tipo del modelo.
+  UserRole get role {
+    if (user is TeacherModel) return UserRole.teacher;
+    if (user is StudentModel) return UserRole.student;
+    throw StateError('Unknown user type: ${user.runtimeType}');
+  }
+
+  /// ID del usuario (acceso directo al campo id del modelo).
+  String get userId => user.id as String;
+
+  /// Nombre del usuario (acceso directo).
+  String get firstName => user.firstName as String;
+
+  /// Apellidos del usuario (acceso directo).
+  String get lastName => user.lastName as String;
+
+  /// Nombre completo del usuario.
+  String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props => [role, userId];
+  List<Object?> get props => [user];
 }
 
 /// Estado que indica que no hay sesión activa.

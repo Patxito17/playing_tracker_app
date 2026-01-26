@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
@@ -14,6 +13,8 @@ import 'package:playing_tracker/features/classes/presentation/cubit/membership_c
 import 'package:playing_tracker/features/classes/presentation/screens/join_class_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
+
+import '../../../../helpers/user_test_helpers.dart';
 
 class _MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -33,9 +34,9 @@ void main() {
     classRepository = _MockClassRepository();
     membershipCubit = MembershipCubit(classRepository);
     authCubit = _MockAuthCubit();
-    when(() => authCubit.state).thenReturn(
-      const AuthAuthenticated(role: UserRole.student, userId: 'student-1'),
-    );
+    when(
+      () => authCubit.state,
+    ).thenReturn(AuthAuthenticated(user: createMockStudent(id: 'student-1')));
     when(
       () => authCubit.stream,
     ).thenAnswer((_) => const Stream<AuthState>.empty());

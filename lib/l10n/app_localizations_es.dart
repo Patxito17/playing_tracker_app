@@ -257,6 +257,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get teacherHomeTitle => 'Inicio docente';
 
   @override
+  String welcomeUser(String name) {
+    return 'Hola, $name';
+  }
+
+  @override
   String get studentHomeTitle => 'Inicio alumno';
 
   @override
@@ -485,6 +490,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get classGenericError => 'Ocurrió un error al gestionar tus clases.';
+
+  @override
+  String get classCreateError =>
+      'No fue posible crear la clase. Intenta nuevamente.';
+
+  @override
+  String get classUpdateError => 'No fue posible actualizar la clase.';
+
+  @override
+  String get classLoadError => 'Ocurrió un error al cargar tus clases.';
+
+  @override
+  String get classRefreshNoTeacherError =>
+      'No se ha configurado un docente para actualizar las clases.';
 
   @override
   String get deleteClassAction => 'Eliminar clase';

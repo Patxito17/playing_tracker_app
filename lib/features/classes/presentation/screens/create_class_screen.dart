@@ -83,9 +83,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     final authState = context.read<AuthCubit>().state;
     if (authState is! AuthAuthenticated) {
       setState(() {
-        _formError = context
-            .l10n
-            .membershipServiceError; // Usando un error genérico o deberia ser classGenericError
+        _formError = context.l10n.classGenericError;
       });
       return;
     }
@@ -125,7 +123,17 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
 
   String _resolveErrorMessage(ClassState state) {
     if (state is ClassError) {
-      return state.message ?? _formError ?? '';
+      if (state.message != null && state.message!.isNotEmpty) {
+        return state.message!;
+      }
+      return switch (state.errorType) {
+        ClassErrorType.createFailed => context.l10n.classCreateError,
+        ClassErrorType.updateFailed => context.l10n.classUpdateError,
+        ClassErrorType.loadFailed => context.l10n.classLoadError,
+        ClassErrorType.refreshNoTeacher =>
+          context.l10n.classRefreshNoTeacherError,
+        _ => context.l10n.classGenericError,
+      };
     }
     return _formError ?? '';
   }
@@ -170,7 +178,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
           if (state is ClassError) {
             if (!mounted) return;
             setState(() {
-              _formError = state.message;
+              _formError = _resolveErrorMessage(state);
             });
           }
         },

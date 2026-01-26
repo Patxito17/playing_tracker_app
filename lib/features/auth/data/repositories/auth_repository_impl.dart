@@ -170,6 +170,43 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> updateUserProfile({
+    required String userId,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      final now = Timestamp.now();
+      final updateData = {
+        'firstName': firstName,
+        'lastName': lastName,
+        'updatedAt': now,
+      };
+
+      // Intentar actualizar en teachers
+      final teacherDoc = await _teachersRef.doc(userId).get();
+      if (teacherDoc.exists) {
+        await _teachersRef.doc(userId).update(updateData);
+        return;
+      }
+
+      // Si no es teacher, actualizar en students
+      final studentDoc = await _studentsRef.doc(userId).get();
+      if (studentDoc.exists) {
+        await _studentsRef.doc(userId).update(updateData);
+        return;
+      }
+
+      throw AuthRepositoryException('Usuario no encontrado.');
+    } catch (error) {
+      if (error is AuthRepositoryException) {
+        rethrow;
+      }
+      throw AuthRepositoryException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
   Future<void> signOut() async {
     try {
       await _firebaseAuth.signOut();

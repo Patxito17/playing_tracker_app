@@ -70,79 +70,88 @@ class PlayingTrackerApp extends StatefulWidget {
 }
 
 class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
+  late final AuthRepository _authRepository;
+  late final ClassRepository _classRepository;
+  late final TaskRepository _taskRepository;
+  late final AuthCubit _authCubit;
+  late final SettingsCubit _settingsCubit;
+  late final AppRoutes _appRoutes;
+
+  @override
+  void initState() {
+    super.initState();
+    _authRepository = widget.authRepository ?? AuthRepositoryImpl();
+    _classRepository = widget.classRepository ?? ClassRepositoryImpl();
+    _taskRepository = widget.taskRepository ?? TaskRepositoryImpl();
+
+    _authCubit =
+        widget.authCubitBuilder?.call(_authRepository) ??
+        AuthCubit(_authRepository);
+    _settingsCubit = SettingsCubit(widget.settingsService);
+    _appRoutes = AppRoutes(_authCubit);
+  }
+
+  @override
+  void dispose() {
+    _authCubit.close();
+    _settingsCubit.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final repository = widget.authRepository ?? AuthRepositoryImpl();
-    final classRepository = widget.classRepository ?? ClassRepositoryImpl();
-    final taskRepository = widget.taskRepository ?? TaskRepositoryImpl();
-
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AuthRepository>.value(value: repository),
-        RepositoryProvider<ClassRepository>.value(value: classRepository),
-        RepositoryProvider<TaskRepository>.value(value: taskRepository),
+        RepositoryProvider.value(value: _authRepository),
+        RepositoryProvider.value(value: _classRepository),
+        RepositoryProvider.value(value: _taskRepository),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (_) =>
-                widget.authCubitBuilder?.call(repository) ??
-                AuthCubit(repository),
-          ),
-          BlocProvider(create: (_) => SettingsCubit(widget.settingsService)),
+          BlocProvider.value(value: _authCubit),
+          BlocProvider.value(value: _settingsCubit),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settingsState) {
-            return Builder(
-              builder: (context) {
-                final authCubit = context.read<AuthCubit>();
-                final appRoutes = AppRoutes(authCubit);
+            final lightTheme = AppTheme.lightTheme;
+            final darkTheme = AppTheme.darkTheme;
 
-                final lightTheme = AppTheme.lightTheme;
-                final darkTheme = AppTheme.darkTheme;
+            // Aplicar color personalizado si existe
+            final effectiveLight = settingsState.seedColor != null
+                ? ThemeData(
+                    useMaterial3: true,
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: settingsState.seedColor!,
+                      brightness: Brightness.light,
+                    ),
+                  )
+                : lightTheme;
 
-                // Si hay color semilla personalizado, regenerar temas
-                // Nota: Por simplicidad, AppTheme.lightTheme es estático ahora.
-                // Si implementamos color personalizado real, deberíamos hacer AppTheme.fromSeed(color).
+            final effectiveDark = settingsState.seedColor != null
+                ? ThemeData(
+                    useMaterial3: true,
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: settingsState.seedColor!,
+                      brightness: Brightness.dark,
+                    ),
+                  )
+                : darkTheme;
 
-                // Aplicar color personalizado si existe
-                final effectiveLight = settingsState.seedColor != null
-                    ? ThemeData(
-                        useMaterial3: true,
-                        colorScheme: ColorScheme.fromSeed(
-                          seedColor: settingsState.seedColor!,
-                          brightness: Brightness.light,
-                        ),
-                      )
-                    : lightTheme;
-
-                final effectiveDark = settingsState.seedColor != null
-                    ? ThemeData(
-                        useMaterial3: true,
-                        colorScheme: ColorScheme.fromSeed(
-                          seedColor: settingsState.seedColor!,
-                          brightness: Brightness.dark,
-                        ),
-                      )
-                    : darkTheme;
-
-                return MaterialApp.router(
-                  title: 'Playing Tracker',
-                  theme: effectiveLight,
-                  darkTheme: effectiveDark,
-                  themeMode: settingsState.themeMode,
-                  locale: settingsState.locale,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  routerConfig: appRoutes.router,
-                  debugShowCheckedModeBanner: false,
-                );
-              },
+            return MaterialApp.router(
+              title: 'Playing Tracker',
+              theme: effectiveLight,
+              darkTheme: effectiveDark,
+              themeMode: settingsState.themeMode,
+              locale: settingsState.locale,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: _appRoutes.router,
+              debugShowCheckedModeBanner: false,
             );
           },
         ),

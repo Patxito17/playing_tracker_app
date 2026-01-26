@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/config/routes/app_routes.dart';
-import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../helpers/mock_hydrated_storage.dart';
+import '../../../helpers/user_test_helpers.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
@@ -64,7 +64,7 @@ void main() {
 
   testWidgets('docente autenticado llega a su home', (tester) async {
     testAuthCubit.setTestState(
-      const AuthAuthenticated(role: UserRole.teacher, userId: 't-1'),
+      AuthAuthenticated(user: createMockTeacher(id: 't-1')),
     );
 
     await tester.pumpWidget(buildRouter());
@@ -77,7 +77,7 @@ void main() {
     'estudiante no puede acceder a rutas de docente y vuelve a su home',
     (tester) async {
       testAuthCubit.setTestState(
-        const AuthAuthenticated(role: UserRole.student, userId: 's-1'),
+        AuthAuthenticated(user: createMockStudent(id: 's-1')),
       );
 
       await tester.pumpWidget(buildRouter());

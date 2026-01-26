@@ -107,7 +107,14 @@ class AppRoutes {
   /// Configuración de GoRouter reactivo.
   late final GoRouter router = GoRouter(
     initialLocation: splash,
-    refreshListenable: GoRouterRefreshStream(authCubit.stream),
+    refreshListenable: GoRouterRefreshStream(
+      authCubit.stream.distinct((prev, next) {
+        if (prev is AuthAuthenticated && next is AuthAuthenticated) {
+          return prev.role == next.role;
+        }
+        return prev == next;
+      }),
+    ),
     redirect: (context, state) {
       final authState = authCubit.state;
       final location = state.uri.path;

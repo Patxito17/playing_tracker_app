@@ -105,6 +105,15 @@ abstract interface class ClassRepository {
   Stream<List<MembershipModel>> watchStudentMemberships({
     required String studentId,
   });
+
+  /// Actualiza las referencias denormalizadas del usuario en las membresías.
+  ///
+  /// Se debe llamar cuando un usuario (docente o alumno) cambia su nombre.
+  Future<void> updateUserReferences({
+    required String userId,
+    required String newName,
+    required bool isTeacher,
+  });
 }
 
 /// Excepción base del repositorio de clases.

@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
@@ -16,6 +15,8 @@ import 'package:playing_tracker/features/classes/presentation/cubit/class_state.
 import 'package:playing_tracker/features/classes/presentation/screens/create_class_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
+
+import '../../../../helpers/user_test_helpers.dart';
 
 class _MockClassRepository extends Mock implements ClassRepository {}
 
@@ -41,9 +42,9 @@ void main() {
     when(
       () => mockAuthCubit.stream,
     ).thenAnswer((_) => const Stream<AuthState>.empty());
-    when(() => mockAuthCubit.state).thenReturn(
-      const AuthAuthenticated(role: UserRole.teacher, userId: 'teacher-1'),
-    );
+    when(
+      () => mockAuthCubit.state,
+    ).thenReturn(AuthAuthenticated(user: createMockTeacher(id: 'teacher-1')));
   });
 
   tearDown(() => classCubit.close());
