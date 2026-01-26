@@ -14,8 +14,12 @@ import '../../../../features/auth/domain/models/teacher_model.dart';
 import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../../../../features/classes/domain/models/class_model.dart';
 import '../../../../features/classes/domain/repositories/class_repository.dart';
+import '../../../../features/statistics/data/repositories/statistics_repository_impl.dart';
+import '../../../../features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../cubit/membership_cubit.dart';
 import '../cubit/membership_state.dart';
 import '../widgets/class_statistics_tab.dart';
@@ -111,47 +115,72 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(ClassDetailStrings.classDetailTitle),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
-            tooltip: CommonStrings.back,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                MembershipCubit(context.read<ClassRepository>())
+                  ..loadMembers(classId: widget.classId, refresh: true),
           ),
-          bottom: CustomTabBar(
-            tabs: const [
-              Tab(
-                icon: Icon(Icons.info_outline),
-                text: ClassDetailStrings.infoTab,
+          BlocProvider(
+            create: (context) {
+              final authState = context.read<AuthCubit>().state;
+              final teacherId = authState is AuthAuthenticated
+                  ? authState.userId
+                  : '';
+              final cubit = TeacherStatsCubit(StatisticsRepositoryImpl());
+              if (teacherId.isNotEmpty) {
+                cubit.loadClassStats(
+                  classId: widget.classId,
+                  teacherId: teacherId,
+                );
+              }
+              return cubit;
+            },
+          ),
+        ],
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(ClassDetailStrings.classDetailTitle),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+              tooltip: CommonStrings.back,
+            ),
+            bottom: CustomTabBar(
+              tabs: const [
+                Tab(
+                  icon: Icon(Icons.info_outline),
+                  text: ClassDetailStrings.infoTab,
+                ),
+                Tab(
+                  icon: Icon(Icons.assignment),
+                  text: ClassDetailStrings.tasksTab,
+                ),
+                Tab(
+                  icon: Icon(Icons.people),
+                  text: ClassDetailStrings.studentsTab,
+                ),
+                Tab(
+                  icon: Icon(Icons.bar_chart),
+                  text: ClassDetailStrings.statisticsTab,
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              TeacherClassInfoTab(
+                classId: widget.classId,
+                classFuture: _classFuture,
+                onRefreshRequested: _refreshClassDetails,
+                activeTasksCount: _mockActiveTasksCount,
               ),
-              Tab(
-                icon: Icon(Icons.assignment),
-                text: ClassDetailStrings.tasksTab,
-              ),
-              Tab(
-                icon: Icon(Icons.people),
-                text: ClassDetailStrings.studentsTab,
-              ),
-              Tab(
-                icon: Icon(Icons.bar_chart),
-                text: ClassDetailStrings.statisticsTab,
-              ),
+              ClassTasksTab(classId: widget.classId),
+              ManageStudentsTab(classId: widget.classId),
+              ClassStatisticsTab(classId: widget.classId, isTeacher: true),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            TeacherClassInfoTab(
-              classId: widget.classId,
-              classFuture: _classFuture,
-              onRefreshRequested: _refreshClassDetails,
-              activeTasksCount: _mockActiveTasksCount,
-            ),
-            ClassTasksTab(classId: widget.classId),
-            ManageStudentsTab(classId: widget.classId),
-            ClassStatisticsTab(classId: widget.classId, isTeacher: true),
-          ],
         ),
       ),
     );
