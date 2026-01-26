@@ -1,0 +1,312 @@
+{
+  "@@locale": "es",
+  
+  "showPassword": "Mostrar contraseña",
+  "@showPassword": {
+    "description": "Texto para mostrar contraseña oculta"
+  },
+  "hidePassword": "Ocultar contraseña",
+  "@hidePassword": {
+    "description": "Texto para ocultar contraseña visible"
+  },
+  "loading": "Cargando...",
+  "@loading": {
+    "description": "Texto mostrado durante estados de carga"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Botón para cancelar acción"
+  },
+  "save": "Guardar",
+  "@save": {
+    "description": "Botón para guardar cambios"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Botón para eliminar elemento"
+  },
+  "edit": "Editar",
+  "@edit": {
+    "description": "Botón para editar elemento"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Botón para reintentar acción fallida"
+  },
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Botón de confirmación"
+  },
+  "loadMore": "Cargar más",
+  "@loadMore": {
+    "description": "Botón para cargar más elementos"
+  },
+  "close": "Cerrar",
+  "@close": {
+    "description": "Botón para cerrar diálogo o pantalla"
+  },
+  "back": "Volver",
+  "@back": {
+    "description": "Botón para volver atrás"
+  },
+  "next": "Siguiente",
+  "@next": {
+    "description": "Botón para ir al siguiente paso"
+  },
+  "done": "Hecho",
+  "@done": {
+    "description": "Botón de finalización"
+  },
+  "copy": "Copiar",
+  "@copy": {
+    "description": "Botón para copiar texto"
+  },
+  "copied": "Copiado",
+  "@copied": {
+    "description": "Mensaje confirmando que se copió"
+  },
+  "download": "Descargar",
+  "@download": {
+    "description": "Botón para descargar archivo"
+  },
+
+  "fieldRequired": "{fieldName} es requerido",
+  "@fieldRequired": {
+    "description": "Mensaje genérico de campo requerido",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "El nombre"
+      }
+    }
+  },
+  "emailRequired": "El email es requerido",
+  "@emailRequired": {
+    "description": "Email es campo obligatorio"
+  },
+  "emailInvalidFormat": "El formato del email no es válido",
+  "@emailInvalidFormat": {
+    "description": "Email con formato incorrecto"
+  },
+  "passwordRequired": "La contraseña es requerida",
+  "@passwordRequired": {
+    "description": "Contraseña es campo obligatorio"
+  },
+  "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+  "@passwordMinLength": {
+    "description": "Contraseña menor a longitud mínima"
+  },
+  "confirmPasswordRequired": "Debes confirmar tu contraseña",
+  "@confirmPasswordRequired": {
+    "description": "Confirmación de contraseña es obligatoria"
+  },
+  "passwordsDoNotMatch": "Las contraseñas no coinciden",
+  "@passwordsDoNotMatch": {
+    "description": "Las contraseñas ingresadas no coinciden"
+  },
+  "nameMinLength": "{fieldName} debe tener al menos 3 caracteres",
+  "@nameMinLength": {
+    "description": "Nombre menor a longitud mínima",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "El nombre"
+      }
+    }
+  },
+  "nameInvalidCharacters": "{fieldName} solo puede contener letras y espacios",
+  "@nameInvalidCharacters": {
+    "description": "Nombre contiene caracteres inválidos",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "El nombre"
+      }
+    }
+  },
+  "atLeastOneClassRequired": "Debes seleccionar al menos una clase",
+  "@atLeastOneClassRequired": {
+    "description": "Validación de selección de clase"
+  },
+  "firstNameField": "El nombre",
+  "@firstNameField": {
+    "description": "Campo nombre para validaciones"
+  },
+  "lastNameField": "Los apellidos",
+  "@lastNameField": {
+    "description": "Campo apellidos para validaciones"
+  },
+
+  "loginTitle": "Iniciar sesión",
+  "@loginTitle": {
+    "description": "Título de pantalla de login"
+  },
+  "registerTitle": "Crear cuenta",
+  "@registerTitle": {
+    "description": "Título de pantalla de registro"
+  },
+  "forgotPasswordTitle": "Recuperar contraseña",
+  "@forgotPasswordTitle": {
+    "description": "Título de pantalla de recuperación"
+  },
+  "welcomeTitle": "Bienvenido",
+  "@welcomeTitle": {
+    "description": "Saludo de bienvenida"
+  },
+  "loginSubtitle": "Inicia sesión para continuar",
+  "@loginSubtitle": {
+    "description": "Subtítulo de login"
+  },
+  "createAccountTitle": "Crea tu cuenta",
+  "@createAccountTitle": {
+    "description": "Título de creación de cuenta"
+  },
+  "createAccountSubtitle": "Completa el formulario para registrarte",
+  "@createAccountSubtitle": {
+    "description": "Subtítulo de registro"
+  },
+  "forgotPasswordQuestion": "¿Olvidaste tu contraseña?",
+  "@forgotPasswordQuestion": {
+    "description": "Pregunta si olvidó su contraseña"
+  },
+  "forgotPasswordInstructions": "Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.",
+  "@forgotPasswordInstructions": {
+    "description": "Instrucciones de recuperación"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Etiqueta del campo email"
+  },
+  "passwordLabel": "Contraseña",
+  "@passwordLabel": {
+    "description": "Etiqueta del campo contraseña"
+  },
+  "confirmPasswordLabel": "Confirmar contraseña",
+  "@confirmPasswordLabel": {
+    "description": "Etiqueta de confirmación de contraseña"
+  },
+  "firstNameLabel": "Nombre",
+  "@firstNameLabel": {
+    "description": "Etiqueta del campo nombre"
+  },
+  "lastNameLabel": "Apellidos",
+  "@lastNameLabel": {
+    "description": "Etiqueta del campo apellidos"
+  },
+  "accountTypeLabel": "Tipo de cuenta",
+  "@accountTypeLabel": {
+    "description": "Etiqueta para tipo de cuenta"
+  },
+  "emailHint": "usuario@ejemplo.com",
+  "@emailHint": {
+    "description": "Placeholder del campo email"
+  },
+  "passwordHint": "Ingresa tu contraseña",
+  "@passwordHint": {
+    "description": "Placeholder del campo contraseña"
+  },
+  "passwordMinLengthHint": "Mínimo 6 caracteres",
+  "@passwordMinLengthHint": {
+    "description": "Hint de longitud mínima"
+  },
+  "confirmPasswordHint": "Repite tu contraseña",
+  "@confirmPasswordHint": {
+    "description": "Placeholder de confirmación"
+  },
+  "firstNameHint": "Ingresa tu nombre",
+  "@firstNameHint": {
+    "description": "Placeholder del campo nombre"
+  },
+  "lastNameHint": "Ingresa tus apellidos",
+  "@lastNameHint": {
+    "description": "Placeholder del campo apellidos"
+  },
+  "teacherRole": "Docente",
+  "@teacherRole": {
+    "description": "Rol de docente"
+  },
+  "studentRole": "Alumno",
+  "@studentRole": {
+    "description": "Rol de estudiante"
+  },
+  "loginButton": "Iniciar sesión",
+  "@loginButton": {
+    "description": "Botón de inicio de sesión"
+  },
+  "registerButton": "Registrarse",
+  "@registerButton": {
+    "description": "Botón de registro"
+  },
+  "sendRecoveryLinkButton": "Enviar enlace de recuperación",
+  "@sendRecoveryLinkButton": {
+    "description": "Botón enviar enlace"
+  },
+  "noAccountQuestion": "¿No tienes cuenta? ",
+  "@noAccountQuestion": {
+    "description": "Pregunta si no tiene cuenta"
+  },
+  "registerLink": "Regístrate",
+  "@registerLink": {
+    "description": "Enlace a registro"
+  },
+  "alreadyHaveAccountQuestion": "¿Ya tienes cuenta? ",
+  "@alreadyHaveAccountQuestion": {
+    "description": "Pregunta si ya tiene cuenta"
+  },
+  "loginLink": "Inicia sesión",
+  "@loginLink": {
+    "description": "Enlace a login"
+  },
+  "forgotPasswordLink": "¿Olvidaste tu contraseña?",
+  "@forgotPasswordLink": {
+    "description": "Enlace a recuperación"
+  },
+  "rememberPasswordQuestion": "¿Recordaste tu contraseña? ",
+  "@rememberPasswordQuestion": {
+    "description": "Pregunta si ya recordó su contraseña"
+  },
+  "acceptTermsPrefix": "Acepto los ",
+  "@acceptTermsPrefix": {
+    "description": "Inicio de aceptación de términos"
+  },
+  "termsAndConditions": "términos y condiciones",
+  "@termsAndConditions": {
+    "description": "Términos y condiciones"
+  },
+  "acceptTermsMiddle": " y la ",
+  "@acceptTermsMiddle": {
+    "description": "Conector entre términos y privacidad"
+  },
+  "privacyPolicy": "política de privacidad",
+  "@privacyPolicy": {
+    "description": "Política de privacidad"
+  },
+  "emailSentTitle": "Email enviado",
+  "@emailSentTitle": {
+    "description": "Título de confirmación de envío"
+  },
+  "emailSentMessage": "Revisa tu bandeja de entrada. Si no encuentras el email, verifica tu carpeta de spam.",
+  "@emailSentMessage": {
+    "description": "Mensaje tras enviar email"
+  },
+  "termsNotAcceptedMessage": "Debes aceptar los términos y condiciones",
+  "@termsNotAcceptedMessage": {
+    "description": "Error si no aceptó términos"
+  },
+  "loginErrorSemanticLabel": "Error al iniciar sesión. Revisa los datos ingresados.",
+  "@loginer rorSemanticLabel": {
+    "description": "Etiqueta semántica de error login"
+  },
+  "registerErrorSemanticLabel": "Error al registrarte. Revisa la información del formulario.",
+  "@registerErrorSemanticLabel": {
+    "description": "Etiqueta semántica de error registro"
+  },
+  "forgotPasswordSuccessSemanticLabel": "Enlace de recuperación enviado correctamente.",
+  "@forgotPasswordSuccessSemanticLabel": {
+    "description": "Etiqueta semántica de éxito"
+  },
+  "forgotPasswordErrorSemanticLabel": "No se pudo enviar el enlace de recuperación.",
+  "@forgotPasswordErrorSemanticLabel": {
+    "description": "Etiqueta semántica de error"
+  }
+}

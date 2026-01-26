@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -16,19 +17,16 @@ import 'features/classes/domain/repositories/class_repository.dart';
 import 'features/tasks/data/repositories/task_repository_impl.dart';
 import 'features/tasks/domain/repositories/task_repository.dart';
 import 'firebase_options.dart';
+import 'l10n/app_localizations.dart';
 
 /// Punto de entrada de la aplicación Playing Tracker
-///
-/// Fase 1 - Inicialización: Firebase + HydratedBloc
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1) Inicializar Firebase primero (usar las opciones generadas por FlutterFire)
+  // 1) Inicializar Firebase primero
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // 2) Construir HydratedStorage (usa ruta por defecto si no se pasa directory)
-  //    Nota: algunas versiones de hydrated_bloc aceptan una sobrecarga sin parámetros.
-  // Construir HydratedStorage usando HydratedStorageDirectory según la API
+  // 2) Construir HydratedStorage
   final storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorageDirectory.web
@@ -44,9 +42,6 @@ void main() async {
 }
 
 /// Widget raíz de la aplicación
-///
-/// Gestiona el tema actual (claro/oscuro) y proporciona el MaterialApp.router
-/// configurado con GoRouter y los temas de Material Design 3.
 class PlayingTrackerApp extends StatefulWidget {
   const PlayingTrackerApp({
     super.key,
@@ -56,16 +51,9 @@ class PlayingTrackerApp extends StatefulWidget {
     this.taskRepository,
   });
 
-  /// Permite inyectar un repositorio custom (por ejemplo en tests).
   final AuthRepository? authRepository;
-
-  /// Builder opcional para crear el [AuthCubit] con configuraciones especiales.
   final AuthCubit Function(AuthRepository repository)? authCubitBuilder;
-
-  /// Permite inyectar un repositorio custom de clases (útil en pruebas).
   final ClassRepository? classRepository;
-
-  /// Permite inyectar un repositorio custom de tareas.
   final TaskRepository? taskRepository;
 
   @override
@@ -73,10 +61,6 @@ class PlayingTrackerApp extends StatefulWidget {
 }
 
 class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
-  /// Modo de tema actual (claro u oscuro)
-  ///
-  /// Por defecto usa el tema del sistema. En futuros sprints se implementará
-  /// un sistema de configuración persistente usando SharedPreferences o similar.
   final ThemeMode _themeMode = ThemeMode.system;
 
   @override
@@ -104,6 +88,13 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: _themeMode,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
               routerConfig: appRoutes.router,
               debugShowCheckedModeBanner: false,
             );

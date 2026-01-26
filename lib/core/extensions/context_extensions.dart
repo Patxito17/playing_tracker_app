@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../constants/app_constants.dart';
 
 /// Extension methods para BuildContext
@@ -98,4 +99,9 @@ extension BuildContextExtensions on BuildContext {
 
   /// Texto de ayuda/hint
   TextStyle? get textHint => AppTextStyles.hint(this);
+
+  /// Acceso rápido a las traducciones
+  ///
+  /// Uso: `context.l10n.miString`
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
 }
