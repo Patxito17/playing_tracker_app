@@ -24,10 +24,10 @@
     - Configurar `go_router_builder`.
     - Definir clases `RouteData` para cada ruta.
     - Eliminar el uso de strings literales para navegación en toda la app.
-- [ ] **Sistema de Internacionalización**:
-    - Configurar `flutter_localizations` y generar archivos `.arb`.
-    - Migrar `app_strings.dart` y constantes relacionadas a `AppLocalizations`.
-    - Implementar selector de idioma en la pestaña settings (para estudiantes y docentes) o detección automática.
+- [x] **Sistema de Internacionalización**:
+    - [x] Configurar `flutter_localizations` y generar archivos `.arb`.
+    - [x] Migrar `app_strings.dart` y constantes relacionadas a `AppLocalizations`.
+    - [ ] Implementar selector de idioma en la pestaña settings (para estudiantes y docentes) o detección automática.
 
 ### 🧪 Fase 2: Suite de Testing Automatizado
 **Objetivo:** Garantizar la estabilidad regresiva y la calidad del software.

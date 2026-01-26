@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 
 /// Estados posibles para operaciones de membresías (alumnos).
@@ -22,9 +21,9 @@ final class MembershipLoading extends MembershipState {
 
 /// Estado que representa ausencia de resultados u operaciones pendientes.
 final class MembershipEmpty extends MembershipState {
-  const MembershipEmpty({this.message = StudentStrings.noStudentsInClass});
+  const MembershipEmpty({this.message});
 
-  final String message;
+  final String? message;
 
   @override
   List<Object?> get props => [message];
@@ -60,9 +59,9 @@ final class MembershipListSuccess extends MembershipState {
 
 /// Estado de error para cargas de miembros.
 final class MembershipListError extends MembershipState {
-  const MembershipListError({required this.message, this.cause});
+  const MembershipListError({this.message, this.cause});
 
-  final String message;
+  final String? message;
   final Object? cause;
 
   @override
@@ -82,9 +81,9 @@ final class MembershipSuccess extends MembershipState {
 
 /// Estado de error con mensajes legibles para la UI.
 final class MembershipError extends MembershipState {
-  const MembershipError({required this.message, this.cause});
+  const MembershipError({this.message, this.cause});
 
-  final String message;
+  final String? message;
   final Object? cause;
 
   @override

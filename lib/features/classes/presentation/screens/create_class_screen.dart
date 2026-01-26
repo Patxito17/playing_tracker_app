@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -53,16 +52,14 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     String? descriptionError;
 
     if (name.isEmpty) {
-      nameError = ValidationStrings.required(ClassesStrings.classNameLabel);
+      nameError = context.l10n.fieldRequired(context.l10n.classNameLabel);
     } else if (name.length < 3) {
-      nameError = ValidationStrings.nameMinLength(
-        ClassesStrings.classNameLabel,
-      );
+      nameError = context.l10n.nameMinLength(context.l10n.classNameLabel);
     }
 
     if (description.isEmpty) {
-      descriptionError = ValidationStrings.required(
-        ClassesStrings.classDescriptionLabel,
+      descriptionError = context.l10n.fieldRequired(
+        context.l10n.classDescriptionLabel,
       );
     }
 
@@ -86,7 +83,9 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     final authState = context.read<AuthCubit>().state;
     if (authState is! AuthAuthenticated) {
       setState(() {
-        _formError = ClassesStrings.classGenericError;
+        _formError = context
+            .l10n
+            .membershipServiceError; // Usando un error genérico o deberia ser classGenericError
       });
       return;
     }
@@ -126,7 +125,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
 
   String _resolveErrorMessage(ClassState state) {
     if (state is ClassError) {
-      return state.message;
+      return state.message ?? _formError ?? '';
     }
     return _formError ?? '';
   }
@@ -142,7 +141,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
 
   void _handleSuccess(ClassActionSuccess state) {
     setState(() {
-      _successMessage = state.message ?? ClassesStrings.classCreateSuccess;
+      _successMessage = state.message ?? context.l10n.classCreateSuccess;
       _formError = null;
     });
     _clearForm();
@@ -159,7 +158,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: ClassesStrings.createClass),
+      appBar: CustomAppBar(title: context.l10n.createClassAction),
       body: BlocConsumer<ClassCubit, ClassState>(
         listenWhen: (previous, current) =>
             current is ClassActionSuccess || current is ClassError,
@@ -189,14 +188,14 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  ClassesStrings.createClassTitle,
+                  context.l10n.createClassAction,
                   style: context.textTheme.headlineMedium,
                 ),
                 const SizedBox(height: AppSpacing.l),
                 CustomTextField(
                   controller: _nameController,
-                  label: ClassesStrings.classNameLabel,
-                  hint: ClassesStrings.classNameHint,
+                  label: context.l10n.classNameLabel,
+                  hint: context.l10n.classNameHint,
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   errorText: _nameError,
@@ -210,8 +209,8 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                 const SizedBox(height: AppSpacing.m),
                 CustomTextField(
                   controller: _descriptionController,
-                  label: ClassesStrings.classDescriptionLabel,
-                  hint: ClassesStrings.classDescriptionHint,
+                  label: context.l10n.classDescriptionLabel,
+                  hint: context.l10n.classDescriptionHint,
                   textCapitalization: TextCapitalization.sentences,
                   textInputAction: TextInputAction.done,
                   maxLines: 4,
@@ -225,8 +224,8 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                 ),
                 const SizedBox(height: AppSpacing.l),
                 CustomCard(
-                  title: ClassesStrings.accessCodeLabel,
-                  subtitle: ClassesStrings.accessCodeGenerated,
+                  title: context.l10n.accessCodeLabel,
+                  subtitle: context.l10n.accessCodeGenerated,
                   child: Row(
                     children: [
                       Expanded(
@@ -241,7 +240,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.info_outline),
-                        tooltip: ClassesStrings.accessCodeGenerated,
+                        tooltip: context.l10n.accessCodeGenerated,
                         onPressed: null,
                       ),
                     ],
@@ -265,7 +264,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                 ],
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
-                  label: ClassesStrings.createClassButton,
+                  label: context.l10n.createClassAction,
                   variant: CustomButtonVariant.filled,
                   icon: Icons.add,
                   onPressed: (isLoading || !isFormValid) ? null : _handleCreate,

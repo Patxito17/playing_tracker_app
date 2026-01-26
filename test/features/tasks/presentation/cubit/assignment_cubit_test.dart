@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
@@ -34,10 +33,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(<AssignmentModel>[]));
       return cubit.watchAssignments(studentId: 'student-1');
     },
-    expect: () => const [
-      AssignmentLoading(),
-      AssignmentEmpty(message: TaskStrings.noAssignmentsReceived),
-    ],
+    expect: () => const [AssignmentLoading(), AssignmentEmpty(message: '')],
   );
 
   blocTest<AssignmentCubit, AssignmentState>(

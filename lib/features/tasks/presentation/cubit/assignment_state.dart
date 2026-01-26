@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/value_objects/task_filters.dart';
 
@@ -23,7 +22,7 @@ final class AssignmentLoading extends AssignmentState {
 
 /// Estado que representa ausencia de tareas asignadas.
 final class AssignmentEmpty extends AssignmentState {
-  const AssignmentEmpty({this.message = TaskStrings.noAssignmentsReceived});
+  const AssignmentEmpty({this.message = ''});
 
   final String message;
 

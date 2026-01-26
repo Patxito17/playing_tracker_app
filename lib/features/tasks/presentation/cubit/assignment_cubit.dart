@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/assignment_state.dart';
 
@@ -21,7 +20,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
-      emit(const AssignmentError(message: TaskStrings.taskGenericError));
+      emit(const AssignmentError(message: ''));
       return;
     }
 
@@ -53,7 +52,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
             }
             emit(
               AssignmentError(
-                message: TaskStrings.taskGenericError,
+                message: '',
                 cause: error,
               ),
             );
@@ -65,7 +64,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
   Future<void> refreshAssignments() async {
     final studentId = _currentStudentId;
     if (studentId == null) {
-      emit(const AssignmentError(message: TaskStrings.taskGenericError));
+      emit(const AssignmentError(message: ''));
       return;
     }
     await watchAssignments(studentId: studentId, filters: _currentFilters);
@@ -76,7 +75,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
     _currentFilters = filters;
     final studentId = _currentStudentId;
     if (studentId == null) {
-      emit(const AssignmentError(message: TaskStrings.taskGenericError));
+      emit(const AssignmentError(message: ''));
       return;
     }
     await watchAssignments(studentId: studentId, filters: filters);

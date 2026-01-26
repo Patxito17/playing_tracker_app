@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -63,13 +62,13 @@ class ClassStatisticsTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      ClassDetailStrings.classStatisticsTitle,
+                      context.l10n.classStatisticsTitle,
                       style: context.textTheme.titleLarge,
                     ),
                     const SizedBox(height: AppSpacing.l),
                     CustomCard(
-                      title: ClassDetailStrings.totalTime,
-                      subtitle: ClassDetailStrings.totalTimeDescription,
+                      title: context.l10n.totalTime,
+                      subtitle: context.l10n.totalTimeDescription,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -99,7 +98,7 @@ class ClassStatisticsTab extends StatelessWidget {
                                 ),
                                 const SizedBox(width: AppSpacing.s),
                                 Text(
-                                  'Promedio por alumno: ${classStats.averageDurationPerStudentFormatted}',
+                                  '${context.l10n.averageDurationLabel}: ${classStats.averageDurationPerStudentFormatted}',
                                   style: context.bodyMediumOnSurfaceVariant
                                       ?.copyWith(
                                         color: context
@@ -116,13 +115,15 @@ class ClassStatisticsTab extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.m),
                     CustomCard(
-                      title: ClassDetailStrings.totalSessions,
-                      subtitle: ClassDetailStrings.totalSessionsDescription,
+                      title: context.l10n.totalSessions,
+                      subtitle: context.l10n.totalSessions, // O similar
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${classStats.totalSessions} sesiones',
+                            context.l10n.sessionsCount(
+                              classStats.totalSessions,
+                            ),
                             style: context.textTheme.headlineLarge?.copyWith(
                               color: context.colorScheme.secondary,
                               fontWeight: FontWeight.bold,
@@ -149,13 +150,15 @@ class ClassStatisticsTab extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.m),
                     CustomCard(
-                      title: ClassDetailStrings.activeStudents,
-                      subtitle: ClassDetailStrings.activeStudentsDescription,
+                      title: context.l10n.activeStudents,
+                      subtitle: context.l10n.activeStudents, // O similar
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${classStats.activeStudents} alumnos activos',
+                            context.l10n.activeStudentsCount(
+                              classStats.activeStudents,
+                            ),
                             style: context.textTheme.headlineLarge?.copyWith(
                               color: context.colorScheme.tertiary,
                               fontWeight: FontWeight.bold,
@@ -163,7 +166,7 @@ class ClassStatisticsTab extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.s),
                           Text(
-                            'De un total de ${classStats.totalStudents}',
+                            'De un total de ${context.l10n.studentsCount(classStats.totalStudents)}',
                             style: context.bodySmallOnSurfaceVariant,
                           ),
                           const SizedBox(height: AppSpacing.m),
@@ -183,8 +186,8 @@ class ClassStatisticsTab extends StatelessWidget {
                     // Desglose detallado por tareas
                     if (classStats.taskBreakdown.isNotEmpty)
                       CustomCard(
-                        title: 'Detalle por Tareas',
-                        subtitle: 'Rendimiento individual por tarea',
+                        title: context.l10n.generalOverview,
+                        subtitle: context.l10n.generalOverview,
                         child: Column(
                           children: [
                             ...classStats.taskBreakdown.map((task) {
@@ -279,13 +282,13 @@ class ClassStatisticsTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    ClassDetailStrings.myStatisticsTitle,
+                    context.l10n.classStatisticsTitle,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: AppSpacing.l),
                   CustomCard(
-                    title: ClassDetailStrings.totalTime,
-                    subtitle: ClassDetailStrings.myTotalTimeDescription,
+                    title: context.l10n.totalTime,
+                    subtitle: context.l10n.totalTime, // O totalTimeDescription
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -313,13 +316,15 @@ class ClassStatisticsTab extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.m),
                   CustomCard(
-                    title: ClassDetailStrings.mySessions,
-                    subtitle: ClassDetailStrings.mySessionsDescription,
+                    title: context.l10n.totalSessions,
+                    subtitle: context
+                        .l10n
+                        .totalSessions, // O totalSessionsDescription
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${weeklyStats.totalSessions} sesiones',
+                          context.l10n.sessionsCount(weeklyStats.totalSessions),
                           style: context.textTheme.headlineLarge?.copyWith(
                             color: context.colorScheme.secondary,
                             fontWeight: FontWeight.bold,

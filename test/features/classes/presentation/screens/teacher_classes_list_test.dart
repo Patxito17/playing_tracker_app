@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/class_cubit.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/class_state.dart';
 import 'package:playing_tracker/features/classes/presentation/screens/teacher_classes_list_screen.dart';
-import 'package:playing_tracker/features/classes/presentation/constants/classes_strings.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class MockClassCubit extends Mock implements ClassCubit {}
 
@@ -26,6 +27,13 @@ void main() {
 
     return MaterialApp.router(
       routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
       builder: (context, child) =>
           BlocProvider<ClassCubit>.value(value: mockClassCubit, child: child!),
     );
@@ -56,7 +64,7 @@ void main() {
 
       expect(find.text(message), findsOneWidget);
       expect(
-        find.text(ClassesStrings.createClass),
+        find.text('Crear clase'),
         findsWidgets,
       ); // One in FAB, one in empty state button
     });

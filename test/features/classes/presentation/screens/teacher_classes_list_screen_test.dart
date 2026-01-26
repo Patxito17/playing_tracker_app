@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/class_cubit.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/class_state.dart';
 import 'package:playing_tracker/features/classes/presentation/screens/teacher_classes_list_screen.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockClassRepository extends Mock implements ClassRepository {}
 
@@ -37,7 +38,16 @@ void main() {
       ],
     );
 
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
+    );
   }
 
   testWidgets('muestra indicador de carga cuando el estado es ClassLoading', (
@@ -51,11 +61,12 @@ void main() {
   });
 
   testWidgets('muestra estado vacío cuando no hay clases', (tester) async {
-    classCubit.emit(const ClassEmpty(message: ClassesStrings.noClassesCreated));
+    const msg = 'No tienes clases creadas';
+    classCubit.emit(const ClassEmpty(message: msg));
 
     await tester.pumpWidget(buildTestRouter());
 
-    expect(find.text(ClassesStrings.noClassesCreated), findsOneWidget);
+    expect(find.text(msg), findsOneWidget);
   });
 
   testWidgets('renderiza tarjetas cuando hay clases disponibles', (

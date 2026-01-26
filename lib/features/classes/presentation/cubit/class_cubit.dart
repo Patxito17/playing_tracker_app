@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
@@ -24,10 +23,7 @@ class ClassCubit extends Cubit<ClassState> {
     try {
       await _repository.createClass(input);
       emit(
-        const ClassActionSuccess(
-          action: ClassAction.created,
-          message: ClassesStrings.classCreateSuccess,
-        ),
+        const ClassActionSuccess(action: ClassAction.created, message: null),
       );
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));
@@ -60,7 +56,7 @@ class ClassCubit extends Cubit<ClassState> {
                 : ClassStateSource.stream;
             _manualRefreshPending = false;
             if (classes.isEmpty) {
-              emit(ClassEmpty(message: ClassesStrings.noClassesCreated));
+              emit(const ClassEmpty(message: null));
               return;
             }
             emit(
@@ -108,10 +104,7 @@ class ClassCubit extends Cubit<ClassState> {
     try {
       await _repository.updateClassStatus(classId: classId, isActive: isActive);
       emit(
-        ClassActionSuccess(
-          action: ClassAction.statusUpdated,
-          message: ClassesStrings.classStatusUpdatedSuccess,
-        ),
+        ClassActionSuccess(action: ClassAction.statusUpdated, message: null),
       );
     } on ClassRepositoryException catch (error) {
       emit(ClassError(message: error.message, cause: error));

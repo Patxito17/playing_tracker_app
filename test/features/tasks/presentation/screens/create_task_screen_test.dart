@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
@@ -22,6 +22,7 @@ import 'package:playing_tracker/features/tasks/domain/repositories/task_reposito
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_cubit.dart';
 import 'package:playing_tracker/features/tasks/presentation/screens/create_task_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -106,7 +107,16 @@ void main() {
       ],
     );
 
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
+    );
   }
 
   testWidgets(
@@ -129,10 +139,7 @@ void main() {
 
       await tester.pumpWidget(buildTestScreen());
 
-      final button = find.widgetWithText(
-        CustomButton,
-        TaskStrings.createTaskButton,
-      );
+      final button = find.widgetWithText(CustomButton, 'Crear tarea');
       await tester.ensureVisible(button);
       await tester.tap(button);
       await tester.pump();
@@ -206,15 +213,15 @@ void main() {
 
     // Rellenar formulario
     await tester.enterText(
-      find.widgetWithText(TextFormField, TaskStrings.taskTitleLabel),
+      find.widgetWithText(TextFormField, 'Título de la tarea'),
       'Escalas mayores',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, TaskStrings.taskDescriptionLabel),
+      find.widgetWithText(TextFormField, 'Descripción'),
       'Practicar escalas',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, TaskStrings.estimatedTimeLabel),
+      find.widgetWithText(TextFormField, 'Tiempo estimado (minutos)'),
       '30',
     );
 
@@ -226,10 +233,7 @@ void main() {
     // Esperar a que se actualice el estado tras seleccionar la clase
     await tester.pump();
 
-    final button = find.widgetWithText(
-      CustomButton,
-      TaskStrings.createTaskButton,
-    );
+    final button = find.widgetWithText(CustomButton, 'Crear tarea');
     await tester.ensureVisible(button);
     await tester.tap(button);
 

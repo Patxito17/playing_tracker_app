@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -58,7 +57,10 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
 
   Future<void> _handleJoin() async {
     FocusScope.of(context).unfocus();
-    final validationError = validateAccessCodeField(_codeController.text);
+    final validationError = validateAccessCodeField(
+      context,
+      _codeController.text,
+    );
     if (validationError != null) {
       setState(() {
         _codeError = validationError;
@@ -75,7 +77,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
         name: 'JoinClassScreen',
       );
       setState(() {
-        _formError = ClassesStrings.membershipGenericError;
+        _formError = context.l10n.membershipServiceError;
         _successMessage = null;
       });
       return;
@@ -113,7 +115,9 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
       level: 700,
     );
     setState(() {
-      _successMessage = state.message ?? ClassesStrings.membershipJoinSuccess;
+      _successMessage = (state.message != null && state.message!.isNotEmpty)
+          ? state.message
+          : context.l10n.membershipJoinSuccess;
       _formError = null;
     });
     final classCubit = _maybeReadClassCubit();
@@ -159,7 +163,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: ClassesStrings.joinClass),
+      appBar: CustomAppBar(title: context.l10n.joinClassAction),
       body: BlocConsumer<MembershipCubit, MembershipState>(
         listenWhen: (previous, current) =>
             current is MembershipSuccess || current is MembershipError,
@@ -178,7 +182,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  ClassesStrings.joinClassTitle,
+                  context.l10n.joinClassAction, // O joinClassTitle si estuviera
                   style: context.textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -194,7 +198,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
                       const SizedBox(width: AppSpacing.s),
                       Expanded(
                         child: Text(
-                          ClassesStrings.accessCodeInstructions,
+                          context.l10n.accessCodeInstructions,
                           style: context.bodyMediumOnSurfaceVariant,
                         ),
                       ),
@@ -204,8 +208,8 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
                 const SizedBox(height: AppSpacing.l),
                 CustomTextField(
                   controller: _codeController,
-                  label: ClassesStrings.accessCodeLabel,
-                  hint: ClassesStrings.accessCodeHint,
+                  label: context.l10n.accessCodeLabel,
+                  hint: context.l10n.accessCodeHint,
                   textCapitalization: TextCapitalization.characters,
                   textInputAction: TextInputAction.done,
                   maxLength: 6,
@@ -235,7 +239,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
                 ],
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
-                  label: ClassesStrings.joinButton,
+                  label: context.l10n.joinButtonLabel,
                   variant: CustomButtonVariant.filled,
                   icon: Icons.login,
                   onPressed: isLoading ? null : _handleJoin,

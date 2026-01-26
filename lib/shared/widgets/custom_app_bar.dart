@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../l10n/app_localizations.dart';
 
 /// AppBar personalizado con título, acciones configurables y navegación hacia atrás
 ///
@@ -99,7 +99,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading = IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: onBackPressed ?? () => context.pop(),
-        tooltip: CommonStrings.back,
+        tooltip: AppLocalizations.of(context)!.back,
       );
     } else if (!automaticallyImplyLeading) {
       leading = const SizedBox.shrink();

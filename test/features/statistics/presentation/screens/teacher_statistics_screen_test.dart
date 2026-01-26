@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
@@ -10,6 +11,7 @@ import 'package:playing_tracker/features/statistics/domain/models/class_stats_mo
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
 import 'package:playing_tracker/features/statistics/presentation/screens/teacher_statistics_screen.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class MockTeacherStatsCubit extends Mock implements TeacherStatsCubit {}
 
@@ -36,6 +38,13 @@ void main() {
 
     return MaterialApp.router(
       routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
       builder: (context, child) => MultiBlocProvider(
         providers: [
           BlocProvider<TeacherStatsCubit>.value(value: mockTeacherStatsCubit),
@@ -61,7 +70,8 @@ void main() {
         ),
       );
 
-      expect(find.text('Estadísticas de la Clase'), findsOneWidget);
+      // "Estadísticas de la clase" (lowercase c in clase)
+      expect(find.text('Estadísticas de la clase'), findsOneWidget);
     });
 
     testWidgets('shows class name when loaded', (WidgetTester tester) async {

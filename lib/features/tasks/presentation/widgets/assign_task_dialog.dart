@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
@@ -112,12 +111,12 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
   Future<void> _handleAssign() async {
     final authState = context.read<AuthCubit>().state;
     if (authState is! AuthAuthenticated) {
-      setState(() => _error = TaskStrings.taskGenericError);
+      setState(() => _error = context.l10n.classGenericError);
       return;
     }
 
     if (_selectedClasses.isEmpty) {
-      setState(() => _error = ValidationStrings.atLeastOneClassRequired);
+      setState(() => _error = context.l10n.atLeastOneClassRequired);
       return;
     }
 
@@ -138,7 +137,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
         );
         if (membersPage.members.isEmpty) {
           setState(() {
-            _error = TaskStrings.noStudentsInClassError;
+            _error = context.l10n.noStudentsInClassError;
             _isSubmitting = false;
           });
           return;
@@ -165,7 +164,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = TaskStrings.taskGenericError;
+          _error = context.l10n.classGenericError;
           _isSubmitting = false;
         });
       }
@@ -175,7 +174,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(TaskStrings.assignTask),
+      title: Text(context.l10n.assignTask),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -200,7 +199,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
                   child: Text(
-                    'No tienes clases registradas para asignar esta tarea.',
+                    context.l10n.noClassesJoined,
                     style: context.bodyMediumOnSurfaceVariant,
                     textAlign: TextAlign.center,
                   ),
@@ -211,7 +210,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    TaskStrings.selectClassToAssign,
+                    context.l10n.selectClassToAssign,
                     style: context.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: AppSpacing.s),
@@ -239,10 +238,10 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
           if (_selectedClasses.length == 1) ...[
             const SizedBox(height: AppSpacing.m),
             CustomCard(
-              title: TaskStrings.recipientsTitle,
+              title: context.l10n.recipientsTitle,
               subtitle: _selectedStudentIds.isEmpty
-                  ? TaskStrings.assignToAllStudents
-                  : '${_selectedStudentIds.length} ${TaskStrings.selectedRecipients}',
+                  ? context.l10n.assignToAllStudents
+                  : '${_selectedStudentIds.length} ${context.l10n.selectedRecipients(_selectedStudentIds.length)}',
               margin: EdgeInsets.zero,
               onTap: () =>
                   _showStudentSelectionModal(context, _selectedClasses.first),
@@ -256,8 +255,8 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                   Expanded(
                     child: Text(
                       _selectedStudentIds.isEmpty
-                          ? TaskStrings.assignToAllStudents
-                          : TaskStrings.assignToSelectedStudents,
+                          ? context.l10n.assignToAllStudents
+                          : context.l10n.assignToSelectedStudents,
                       style: context.textTheme.bodyMedium,
                     ),
                   ),
@@ -284,7 +283,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: Text(CommonStrings.cancel),
+          child: Text(context.l10n.cancel),
         ),
         FilledButton(
           onPressed: (_isSubmitting || _selectedClasses.isEmpty)
@@ -299,7 +298,7 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                     color: Colors.white,
                   ),
                 )
-              : Text(TaskStrings.assignTask),
+              : Text(context.l10n.assignTask),
         ),
       ],
     );

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
@@ -479,7 +478,7 @@ final class StatisticsService {
 
       if (!classDoc.exists) {
         throw FirebaseErrorMapperException(
-          StatisticsStrings.resourceNotFoundError,
+          '',
         );
       }
 

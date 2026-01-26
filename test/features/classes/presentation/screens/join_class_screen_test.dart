@@ -2,9 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
@@ -13,6 +13,7 @@ import 'package:playing_tracker/features/classes/domain/value_objects/join_class
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_cubit.dart';
 import 'package:playing_tracker/features/classes/presentation/screens/join_class_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -65,21 +66,25 @@ void main() {
         ),
       ],
     );
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
+    );
   }
 
   testWidgets('muestra error cuando el código está vacío', (tester) async {
     await tester.pumpWidget(buildApp());
 
-    await tester.tap(
-      find.widgetWithText(CustomButton, ClassesStrings.joinButton),
-    );
+    await tester.tap(find.widgetWithText(CustomButton, 'Unirse'));
     await tester.pump();
 
-    expect(
-      find.text(ValidationStrings.required(ClassesStrings.accessCodeLabel)),
-      findsWidgets,
-    );
+    expect(find.text('Código de acceso es requerido'), findsWidgets);
     verifyNever(() => classRepository.joinClassWithCode(any()));
   });
 
@@ -90,13 +95,8 @@ void main() {
 
     await tester.pumpWidget(buildApp());
 
-    await tester.enterText(
-      find.bySemanticsLabel(ClassesStrings.accessCodeLabel),
-      'abc234',
-    );
-    await tester.tap(
-      find.widgetWithText(CustomButton, ClassesStrings.joinButton),
-    );
+    await tester.enterText(find.bySemanticsLabel('Código de acceso'), 'abc234');
+    await tester.tap(find.widgetWithText(CustomButton, 'Unirse'));
     await tester.pump();
 
     final captured =
@@ -117,17 +117,12 @@ void main() {
 
     await tester.pumpWidget(buildApp());
 
-    await tester.enterText(
-      find.bySemanticsLabel(ClassesStrings.accessCodeLabel),
-      'ABC234',
-    );
-    await tester.tap(
-      find.widgetWithText(CustomButton, ClassesStrings.joinButton),
-    );
+    await tester.enterText(find.bySemanticsLabel('Código de acceso'), 'ABC234');
+    await tester.tap(find.widgetWithText(CustomButton, 'Unirse'));
     await tester.pump(); // loading
     await tester.pump(); // success
 
-    expect(find.text(ClassesStrings.membershipJoinSuccess), findsOneWidget);
+    expect(find.text('Te uniste a la clase correctamente.'), findsOneWidget);
     await tester.pump(const Duration(seconds: 1));
   });
 }

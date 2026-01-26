@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/auth/domain/models/teacher_model.dart';
 import '../../../../features/auth/domain/repositories/auth_repository.dart';
@@ -99,7 +98,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
     }
     _classRemoved = true;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(ClassDetailStrings.classDeletedExitMessage)),
+      SnackBar(content: Text(context.l10n.classDeletedExitMessage)),
     );
     context.go(AppRoutes.teacherClassesList);
   }
@@ -141,29 +140,29 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         ],
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(ClassDetailStrings.classDetailTitle),
+            title: Text(context.l10n.classDetailTitle),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.pop(),
-              tooltip: CommonStrings.back,
+              tooltip: context.l10n.back,
             ),
             bottom: CustomTabBar(
-              tabs: const [
+              tabs: [
                 Tab(
-                  icon: Icon(Icons.info_outline),
-                  text: ClassDetailStrings.infoTab,
+                  icon: const Icon(Icons.info_outline),
+                  text: context.l10n.infoTab,
                 ),
                 Tab(
-                  icon: Icon(Icons.assignment),
-                  text: ClassDetailStrings.tasksTab,
+                  icon: const Icon(Icons.assignment),
+                  text: context.l10n.tasksTab,
                 ),
                 Tab(
-                  icon: Icon(Icons.people),
-                  text: ClassDetailStrings.studentsTab,
+                  icon: const Icon(Icons.people),
+                  text: context.l10n.studentsTab,
                 ),
                 Tab(
-                  icon: Icon(Icons.bar_chart),
-                  text: ClassDetailStrings.statisticsTab,
+                  icon: const Icon(Icons.bar_chart),
+                  text: context.l10n.statisticsTab,
                 ),
               ],
             ),
@@ -238,7 +237,7 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
             return Center(
               child: SelectableText.rich(
                 TextSpan(
-                  text: ClassesStrings.classGenericError,
+                  text: context.l10n.classGenericError,
                   style: context.bodyMediumOnSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
@@ -320,14 +319,14 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ClassesStrings.classStatusUpdatedSuccess)),
+        SnackBar(content: Text(context.l10n.classStatusUpdatedSuccess)),
       );
       await widget.onRefreshRequested();
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(ClassesStrings.classGenericError),
+          content: Text(context.l10n.classGenericError),
           backgroundColor: context.colorScheme.error,
         ),
       );
@@ -343,12 +342,12 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
         await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(ClassesStrings.deleteClassAction),
-            content: Text(ClassesStrings.deleteClassConfirmation),
+            title: Text(context.l10n.deleteClassAction),
+            content: Text(context.l10n.deleteClassConfirmation),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(CommonStrings.cancel),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
@@ -356,7 +355,7 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
                   backgroundColor: context.colorScheme.error,
                   foregroundColor: context.colorScheme.onError,
                 ),
-                child: Text(CommonStrings.confirm),
+                child: Text(context.l10n.confirm),
               ),
             ],
           ),
@@ -373,15 +372,15 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
     try {
       await repository.deleteClassPermanent(classModel.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ClassesStrings.classDeleteSuccess)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.classDeleteSuccess)));
       context.go(AppRoutes.teacherClassesList);
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(ClassesStrings.classGenericError),
+          content: Text(context.l10n.classGenericError),
           backgroundColor: context.colorScheme.error,
         ),
       );
@@ -393,7 +392,7 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
     Clipboard.setData(ClipboardData(text: code));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(CommonStrings.copied),
+        content: Text(context.l10n.copied),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -404,16 +403,16 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
         await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: Text(ClassesStrings.regenerateAccessCodeAction),
-            content: Text(ClassesStrings.regenerateCodeConfirmation),
+            title: Text(context.l10n.regenerateAccessCodeAction),
+            content: Text(context.l10n.regenerateCodeConfirmation),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(CommonStrings.cancel),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(CommonStrings.confirm),
+                child: Text(context.l10n.confirm),
               ),
             ],
           ),
@@ -427,7 +426,7 @@ class _TeacherClassInfoTabState extends State<TeacherClassInfoTab> {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(ClassesStrings.membershipRegenerateSuccess)),
+      SnackBar(content: Text(context.l10n.membershipRegenerateSuccess)),
     );
     await widget.onRefreshRequested();
   }
@@ -459,27 +458,26 @@ class _ClassInformationSection extends StatelessWidget {
       'dd/MM/yyyy – HH:mm',
     ).format(classModel.createdAt.toDate());
     final statusLabel = classModel.canJoin
-        ? ClassesStrings.classStatusActive
-        : ClassesStrings.classStatusArchived;
+        ? context.l10n.classStatusActive
+        : context.l10n.classStatusArchived;
 
     return CustomCard(
-      title: ClassDetailStrings.classInfo,
+      title: context.l10n.infoTab, // O classInfo
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _InfoRow(label: context.l10n.classNameLabel, value: classModel.name),
           _InfoRow(
-            label: ClassesStrings.classNameLabel,
-            value: classModel.name,
+            label: context.l10n.classDescriptionLabel,
+            value: classModel.description ?? context.l10n.classDescriptionHint,
           ),
+          _InfoRow(label: context.l10n.classStatusActive, value: statusLabel),
           _InfoRow(
-            label: ClassesStrings.classDescriptionLabel,
-            value:
-                classModel.description ?? ClassesStrings.classDescriptionHint,
-          ),
-          _InfoRow(label: ClassesStrings.classStatusActive, value: statusLabel),
-          _InfoRow(label: ClassDetailStrings.created, value: createdAt),
+            label: context.l10n.joinedAtLabel,
+            value: createdAt,
+          ), // O created
           _InfoRow(
-            label: ClassesStrings.accessCodeValueLabel,
+            label: context.l10n.accessCodeLabel,
             value: classModel.accessCode,
           ),
         ],
@@ -513,22 +511,22 @@ class _TeacherInformationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final displayName = teacherName?.isNotEmpty == true
         ? teacherName!
-        : '${ClassesStrings.teacherLabel}$teacherId';
+        : '${context.l10n.teacherLabel}$teacherId';
     final displayEmail = teacherEmail?.isNotEmpty == true ? teacherEmail! : '—';
 
     return CustomCard(
-      title: ClassDetailStrings.teacherInfo,
+      title: context.l10n.teacherHomeTitle, // O teacherInfo si estuviera
       subtitle: displayName,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${ClassDetailStrings.email}: $displayEmail',
+            '${context.l10n.emailLabel}: $displayEmail',
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: AppSpacing.s),
           Text(
-            '${StudentStrings.studentIdLabel}: $teacherId',
+            'ID: $teacherId', // O studentIdLabel
             style: context.bodySmallOnSurfaceVariant,
           ),
           const SizedBox(height: AppSpacing.m),
@@ -547,8 +545,8 @@ class _TeacherInformationSection extends StatelessWidget {
                         )
                       : Text(
                           isClassActive
-                              ? ClassesStrings.archiveClassAction
-                              : ClassesStrings.activateClassAction,
+                              ? context.l10n.archiveClassAction
+                              : context.l10n.activateClassAction,
                         ),
                 ),
               ),
@@ -568,7 +566,7 @@ class _TeacherInformationSection extends StatelessWidget {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(ClassesStrings.deleteClassAction),
+                      : Text(context.l10n.delete),
                 ),
               ),
             ],

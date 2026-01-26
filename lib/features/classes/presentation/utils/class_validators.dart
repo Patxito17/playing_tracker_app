@@ -1,4 +1,5 @@
-import 'package:playing_tracker/core/constants/app_strings.dart';
+import 'package:flutter/widgets.dart';
+import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/core/utils/access_code_generator.dart';
 
 /// Valida campos relacionados con clases/membresías en formularios de la UI.
@@ -17,14 +18,14 @@ String normalizeAccessCode(String rawValue) => rawValue.trim().toUpperCase();
 ///
 /// [value] Texto introducido por el usuario en el formulario.
 /// Retorna `null` cuando el código es válido según las reglas del proyecto.
-String? validateAccessCodeField(String? value) {
+String? validateAccessCodeField(BuildContext context, String? value) {
   final trimmed = value?.trim() ?? '';
   if (trimmed.isEmpty) {
-    return ValidationStrings.required(ClassesStrings.accessCodeLabel);
+    return context.l10n.fieldRequired(context.l10n.accessCodeLabel);
   }
 
   if (!isValidAccessCode(trimmed.toUpperCase())) {
-    return ClassesStrings.accessCodeInvalidFormat;
+    return context.l10n.accessCodeInvalidFormat;
   }
 
   return null;

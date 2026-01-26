@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
@@ -34,10 +33,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(<ClassModel>[]));
       return cubit.watchClasses(teacherId: 'teacher-1');
     },
-    expect: () => const [
-      ClassLoading(),
-      ClassEmpty(message: ClassesStrings.noClassesCreated),
-    ],
+    expect: () => const [ClassLoading(), ClassEmpty(message: '')],
   );
 
   blocTest<ClassCubit, ClassState>(
@@ -73,10 +69,7 @@ void main() {
     },
     expect: () => const [
       ClassLoading(),
-      ClassActionSuccess(
-        action: ClassAction.created,
-        message: ClassesStrings.classCreateSuccess,
-      ),
+      ClassActionSuccess(action: ClassAction.created, message: ''),
     ],
   );
 
@@ -115,10 +108,7 @@ void main() {
     },
     expect: () => const [
       ClassLoading(),
-      ClassActionSuccess(
-        action: ClassAction.statusUpdated,
-        message: ClassesStrings.classStatusUpdatedSuccess,
-      ),
+      ClassActionSuccess(action: ClassAction.statusUpdated, message: ''),
     ],
   );
 

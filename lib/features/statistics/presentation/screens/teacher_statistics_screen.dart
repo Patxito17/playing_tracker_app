@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
@@ -27,7 +26,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: StatisticsStrings.classStatisticsTitle),
+      appBar: CustomAppBar(title: context.l10n.classStatisticsTitle),
       body: BlocBuilder<TeacherStatsCubit, TeacherStatsState>(
         builder: (context, state) {
           return switch (state) {
@@ -45,7 +44,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.m),
                   Text(
-                    StatisticsStrings.loadingError,
+                    context.l10n.loadingError,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: AppSpacing.s),
@@ -61,7 +60,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
                           classId: classId,
                           teacherId: teacherId,
                         ),
-                    child: Text(CommonStrings.retry),
+                    child: Text(context.l10n.retry),
                   ),
                 ],
               ),
@@ -79,20 +78,20 @@ class TeacherStatisticsScreen extends StatelessWidget {
                     // Resumen general de la clase
                     CustomCard(
                       title: classStats.className,
-                      subtitle: StatisticsStrings.activitySummary,
+                      subtitle: context.l10n.activitySummary,
                       child: Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _StatItem(
-                                label: StatisticsStrings.students,
+                                label: context.l10n.studentsLabel,
                                 value: '${classStats.totalStudents}',
                                 icon: Icons.people,
                                 color: context.colorScheme.primary,
                               ),
                               _StatItem(
-                                label: StatisticsStrings.active,
+                                label: context.l10n.classStatusActive,
                                 value: '${classStats.activeStudents}',
                                 subtitle: classStats
                                     .activeStudentsPercentageFormatted,
@@ -100,7 +99,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
                                 color: context.colorScheme.tertiary,
                               ),
                               _StatItem(
-                                label: StatisticsStrings.sessions,
+                                label: context.l10n.sessionsLabelCount(0).split(' ').last,
                                 value: '${classStats.totalSessions}',
                                 icon: Icons.event_note,
                                 color: context.colorScheme.secondary,
@@ -126,7 +125,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: AppSpacing.s),
                                 Text(
-                                  '${StatisticsStrings.totalTime}: ${classStats.durationFormatted}',
+                                  '${context.l10n.totalTime}: ${classStats.durationFormatted}',
                                   style: context.titleMediumBold?.copyWith(
                                     color:
                                         context.colorScheme.onPrimaryContainer,
@@ -143,8 +142,8 @@ class TeacherStatisticsScreen extends StatelessWidget {
                     // Desglose por tareas
                     if (classStats.taskBreakdown.isNotEmpty)
                       CustomCard(
-                        title: StatisticsStrings.workedTasks,
-                        subtitle: StatisticsStrings.tasksCount(
+                        title: context.l10n.workedTasks,
+                        subtitle: context.l10n.tasksCount(
                           classStats.taskBreakdown.length,
                         ),
                         child: Column(
@@ -167,7 +166,7 @@ class TeacherStatisticsScreen extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          StatisticsStrings.sessionsLabelCount(
+                                          context.l10n.sessionsLabelCount(
                                             task.totalSessions,
                                           ),
                                           style:

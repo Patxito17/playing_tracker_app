@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 
@@ -15,17 +14,17 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: SettingsStrings.settingsTitle),
+      appBar: CustomAppBar(title: context.l10n.settingsTitle),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
         children: [
           // Sección de Perfil
           _SettingsSection(
-            title: SettingsStrings.profileSection,
+            title: context.l10n.profileSection,
             children: [
               ListTile(
                 leading: const Icon(Icons.person_outline),
-                title: Text(SettingsStrings.editProfile),
+                title: Text(context.l10n.editProfile),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   // Placeholder: editar perfil
@@ -35,11 +34,11 @@ class SettingsScreen extends StatelessWidget {
           ),
           // Sección de Notificaciones
           _SettingsSection(
-            title: SettingsStrings.notificationsSection,
+            title: context.l10n.notificationsSection,
             children: [
               ListTile(
                 leading: const Icon(Icons.notifications_outlined),
-                title: Text(SettingsStrings.notificationSettings),
+                title: Text(context.l10n.notificationSettings),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   // Placeholder: configuración de notificaciones
@@ -49,11 +48,11 @@ class SettingsScreen extends StatelessWidget {
           ),
           // Sección de Apariencia
           _SettingsSection(
-            title: SettingsStrings.appearanceSection,
+            title: context.l10n.appearanceSection,
             children: [
               ListTile(
                 leading: const Icon(Icons.palette_outlined),
-                title: Text(SettingsStrings.themeSettings),
+                title: Text(context.l10n.themeSettings),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   // Placeholder: configuración de tema
@@ -63,12 +62,12 @@ class SettingsScreen extends StatelessWidget {
           ),
           // Sección de Cuenta
           _SettingsSection(
-            title: SettingsStrings.accountSection,
+            title: context.l10n.accountSection,
             children: [
               ListTile(
                 leading: Icon(Icons.logout, color: context.colorScheme.error),
                 title: Text(
-                  SettingsStrings.logout,
+                  context.l10n.logout,
                   style: TextStyle(color: context.colorScheme.error),
                 ),
                 onTap: () {
@@ -87,12 +86,12 @@ class SettingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      SettingsStrings.inDevelopment,
+                      context.l10n.inDevelopment,
                       style: context.titleSmallBold,
                     ),
                     const SizedBox(height: AppSpacing.s),
                     Text(
-                      SettingsStrings.futureFeatures,
+                      context.l10n.futureFeatures,
                       style: context.bodySmallOnSurfaceVariant,
                     ),
                   ],

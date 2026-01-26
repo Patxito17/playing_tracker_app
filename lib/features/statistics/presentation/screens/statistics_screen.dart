@@ -48,7 +48,11 @@ class StatisticsScreen extends StatelessWidget {
                 }
 
                 if (state is ClassError) {
-                  return Center(child: Text(state.message));
+                  return Center(
+                    child: Text(
+                      state.message ?? context.l10n.classGenericError,
+                    ),
+                  );
                 }
 
                 if (state is ClassSuccess) {

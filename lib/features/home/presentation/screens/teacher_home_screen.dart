@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -21,11 +20,11 @@ class TeacherHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: HomeStrings.teacherHomeTitle,
+        title: context.l10n.teacherHomeTitle,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            tooltip: SettingsStrings.logout,
+            tooltip: context.l10n.logout,
             icon: const Icon(Icons.logout_rounded),
             onPressed: () => context.read<AuthCubit>().logout(),
           ),
@@ -39,23 +38,23 @@ class TeacherHomeScreen extends StatelessWidget {
             children: [
               HomeHeroCard(
                 icon: Icons.school_rounded,
-                title: HomeStrings.teacherWelcomeTitle,
-                subtitle: HomeStrings.teacherWelcomeSubtitle,
-                buttonLabel: HomeStrings.manageClassesAction,
+                title: context.l10n.teacherWelcomeTitle,
+                subtitle: context.l10n.teacherWelcomeSubtitle,
+                buttonLabel: context.l10n.manageClassesAction,
                 onPressed: () => context.go(AppRoutes.teacherClassesList),
                 backgroundColor: colorScheme.primaryContainer,
                 foregroundColor: colorScheme.onPrimaryContainer,
               ),
               const SizedBox(height: AppSpacing.xl),
               HomeQuickActionsSection(
-                title: HomeStrings.quickActionsTitle,
-                subtitle: HomeStrings.teacherQuickActionsSubtitle,
+                title: context.l10n.quickActionsTitle,
+                subtitle: context.l10n.teacherQuickActionsSubtitle,
                 actions: quickActions,
               ),
               const SizedBox(height: AppSpacing.xl),
-              const HomeHighlightsCard(
+              HomeHighlightsCard(
                 icon: Icons.lightbulb_outline,
-                description: HomeStrings.teacherHighlightsDescription,
+                description: context.l10n.teacherHighlightsDescription,
               ),
             ],
           ),
@@ -69,14 +68,14 @@ class TeacherHomeScreen extends StatelessWidget {
     return [
       HomeQuickActionConfig(
         icon: Icons.class_rounded,
-        title: HomeStrings.manageClassesAction,
-        description: HomeStrings.manageClassesDescription,
+        title: context.l10n.manageClassesAction,
+        description: context.l10n.manageClassesDescription,
         onTap: () => context.go(AppRoutes.teacherClassesList),
       ),
       HomeQuickActionConfig(
         icon: Icons.add_circle_outline,
-        title: HomeStrings.createClassAction,
-        description: HomeStrings.createClassDescription,
+        title: context.l10n.createClassAction,
+        description: context.l10n.createClassDescription,
         onTap: () => context.push(AppRoutes.createClass),
         backgroundColor: colorScheme.secondaryContainer,
         foregroundColor: colorScheme.onSecondaryContainer,

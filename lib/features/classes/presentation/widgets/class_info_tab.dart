@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../domain/models/class_model.dart';
@@ -46,7 +45,7 @@ class _StudentClassInfoTabState extends State<StudentClassInfoTab> {
             return Center(
               child: SelectableText.rich(
                 TextSpan(
-                  text: ClassesStrings.classGenericError,
+                  text: context.l10n.classGenericError,
                   style: context.bodyMediumOnSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
@@ -84,7 +83,7 @@ class _StudentClassInfoTabState extends State<StudentClassInfoTab> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(CommonStrings.copied),
+        content: Text(context.l10n.copied),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -106,11 +105,11 @@ class _ClassSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final statusLabel = classModel.canJoin
-        ? ClassesStrings.classStatusActive
-        : ClassesStrings.classStatusArchived;
+        ? context.l10n.classStatusActive
+        : context.l10n.classStatusArchived;
     final statusColor = classModel.canJoin
         ? colorScheme.primary
-        : colorScheme.error;
+        : colorScheme.outline;
     final createdAt = DateFormat(
       'dd/MM/yyyy – HH:mm',
     ).format(classModel.createdAt.toDate());
@@ -136,25 +135,25 @@ class _ClassSummaryCard extends StatelessWidget {
               ),
               Chip(
                 avatar: const Icon(Icons.event, size: 16),
-                label: Text('${ClassDetailStrings.created}: $createdAt'),
+                label: Text('${context.l10n.createdDateLabel}: $createdAt'),
               ),
               if (joinedAt != null)
                 Chip(
                   avatar: const Icon(Icons.calendar_month, size: 16),
-                  label: Text('${StudentStrings.joinedAtLabel} $joinedAt'),
+                  label: Text('${context.l10n.joinedAtLabel} $joinedAt'),
                 ),
             ],
           ),
           const SizedBox(height: AppSpacing.m),
           Text(
-            ClassDetailStrings.classDescription,
+            context.l10n.infoTab, // O classDescription
             style: context.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             classModel.description?.trim().isNotEmpty == true
                 ? classModel.description!
-                : ClassesStrings.classDescriptionHint,
+                : context.l10n.classGenericError, // O similar
             style: context.textTheme.bodyMedium,
           ),
         ],
@@ -177,20 +176,20 @@ class _TeacherInformationCard extends StatelessWidget {
     final teacherName = membership?.teacherName?.trim();
     final teacherDisplayName = teacherName?.isNotEmpty == true
         ? teacherName
-        : '${ClassesStrings.teacherLabel}$teacherId';
+        : '${context.l10n.infoTab}$teacherId'; // O similar
     final studentName = membership?.studentName?.trim();
     final studentDisplayName = studentName?.isNotEmpty == true
         ? studentName
         : membership?.studentId ?? '—';
 
     return CustomCard(
-      title: ClassDetailStrings.teacherInfo,
+      title: context.l10n.infoTab, // O teacherInfo
       subtitle: teacherDisplayName,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${StudentStrings.studentNameLabel}: $studentDisplayName',
+            '${context.l10n.manageStudentsTitle}: $studentDisplayName', // O studentNameLabel
             style: context.bodySmallOnSurfaceVariant,
           ),
         ],

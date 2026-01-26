@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import 'home_quick_action_card.dart';
 
@@ -149,7 +148,7 @@ class HomeHighlightsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    HomeStrings.highlightsTitle,
+                    context.l10n.highlightsTitle,
                     style: context.titleMediumBold,
                   ),
                   const SizedBox(height: AppSpacing.s),

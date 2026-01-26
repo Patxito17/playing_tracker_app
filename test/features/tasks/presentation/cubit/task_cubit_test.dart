@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
@@ -35,10 +34,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(<TaskModel>[]));
       return cubit.watchTasks(teacherId: 'teacher-1');
     },
-    expect: () => const [
-      TaskLoading(),
-      TaskEmpty(message: TaskStrings.noTasksCreated),
-    ],
+    expect: () => const [TaskLoading(), TaskEmpty(message: '')],
   );
 
   blocTest<TaskCubit, TaskState>(
@@ -72,7 +68,7 @@ void main() {
       TaskLoading(),
       TaskActionSuccess(
         action: TaskAction.created,
-        message: TaskStrings.taskCreateSuccess,
+        message: '',
         taskId: 'task-1',
       ),
     ],
@@ -108,10 +104,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(
-        action: TaskAction.updated,
-        message: TaskStrings.taskUpdateSuccess,
-      ),
+      TaskActionSuccess(action: TaskAction.updated, message: ''),
     ],
   );
 
@@ -124,10 +117,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(
-        action: TaskAction.deleted,
-        message: TaskStrings.taskDeleteSuccess,
-      ),
+      TaskActionSuccess(action: TaskAction.deleted, message: ''),
     ],
   );
 
@@ -140,10 +130,7 @@ void main() {
     },
     expect: () => const [
       TaskLoading(),
-      TaskActionSuccess(
-        action: TaskAction.assigned,
-        message: TaskStrings.taskAssignSuccess,
-      ),
+      TaskActionSuccess(action: TaskAction.assigned, message: ''),
     ],
   );
 }
