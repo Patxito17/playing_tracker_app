@@ -20,8 +20,4 @@ Map<String, dynamic> _$AttachmentModelToJson(AttachmentModel instance) =>
       'type': _$AttachmentTypeEnumMap[instance.type]!,
     };
 
-const _$AttachmentTypeEnumMap = {
-  AttachmentType.pdf: 'pdf',
-  AttachmentType.audio: 'audio',
-  AttachmentType.link: 'link',
-};
+const _$AttachmentTypeEnumMap = {AttachmentType.link: 'link'};

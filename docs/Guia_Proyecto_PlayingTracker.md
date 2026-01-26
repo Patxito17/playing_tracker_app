@@ -274,7 +274,7 @@ lib/
 **📅 Próximamente (Sprint 3+):**
 - 📅 Creación de tareas con:
   - Título, descripción, tiempo sugerido
-  - Archivo adjunto (PDF/audio opcional)
+  - Un enlace externo (YouTube, Drive, etc.)
 - 📅 Asignación a uno o varios alumnos
 - 📅 Visualización de:
   - Tiempo total de estudio por alumno
@@ -428,11 +428,11 @@ tasks/{taskId}
   description: string,           // Descripción detallada
   createdBy: string,            // ID del docente creador
   durationSuggested: number,     // Minutos sugeridos de estudio
-  attachments: [                 // Archivos adjuntos (opcional)
+  attachments: [                 // Enlaces adjuntos (opcional)
     {
       name: string,
       url: string,
-      type: string               // "pdf" | "audio" | "link"
+      type: string               // solo "link"
     }
   ],
   createdAt: Timestamp,          // Fecha de creación
@@ -733,14 +733,12 @@ service cloud.firestore {
 - 📊 **Gráficos y visualizaciones** de progreso
 - 📈 **Dashboards** para docentes y alumnos
 - 🔍 **Filtros avanzados** por fecha, tarea, clase
-- 📤 **Exportación de datos** (CSV, PDF) - 📅 *Postergado a Sprint 7*
 - 📱 **UI de estadísticas** con Material Design 3
 
 **Entregables:**
 - 📊 Sistema de gráficos y visualizaciones
 - 📈 Dashboards personalizados por rol
 - 🔍 Filtros y consultas avanzadas
-- 📤 Exportación de reportes
 - 📱 Pantallas de estadísticas
 
 ---
@@ -757,7 +755,6 @@ service cloud.firestore {
 - ⚡ **Optimización de rendimiento**
 - 🔒 **Auditoría de seguridad**
 - 📱 **Testing de accesibilidad**
-- 📊 **Exportación de Datos**: Implementación de generación de reportes en PDF y CSV para docentes y alumnos.
 - 🔍 **Filtro Temporal Avanzado (Docente)**: Implementación de UI con `SegmentedButton` y optimización de consultas Firestore mediante `monthBucket`.
 - 🚀 **Preparación para producción**
 
@@ -842,11 +839,8 @@ Cumplimiento del **RGPD (Reglamento General de Protección de Datos)** y **LOPDG
 
 ### Funcionalidades Avanzadas (Post-MVP)
 - 🎮 **Gamificación:** Logros, recompensas, rachas de estudio
-- 📄 **Integración con partituras** en PDF con anotaciones
-- 🎵 **Módulo de grabación** de práctica con audio
 - 📱 **Modo offline** con sincronización diferida
 - 🔔 **Notificaciones push** para recordatorios de tareas
-- 📊 **Exportación avanzada** de datos (CSV, PDF, Excel)
 - 👥 **Sistema de grupos** y clases
 - 💬 **Chat docente-alumno** integrado
 - 🌍 **Internacionalización** (múltiples idiomas)

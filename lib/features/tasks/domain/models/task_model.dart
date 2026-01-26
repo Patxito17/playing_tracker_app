@@ -11,7 +11,7 @@ part 'task_model.g.dart';
 /// deben realizar. Una tarea puede incluir:
 /// - Título y descripción detallada
 /// - Duración sugerida de práctica en segundos
-/// - Archivos adjuntos (partituras, audios, enlaces)
+/// - Enlaces adjuntos (videos, recursos web)
 /// - Fecha de vencimiento opcional
 ///
 /// Las tareas se almacenan en la colección `tasks` de Firestore y luego
@@ -27,9 +27,9 @@ part 'task_model.g.dart';
 ///   durationSuggested: 1800, // 30 minutos en segundos
 ///   attachments: [
 ///     AttachmentModel(
-///       name: 'Partitura escalas',
-///       url: 'https://ejemplo.com/escalas.pdf',
-///       type: AttachmentType.pdf,
+///       name: 'Video tutorial',
+///       url: 'https://youtube.com/...',
+///       type: AttachmentType.link,
 ///     ),
 ///   ],
 ///   createdAt: Timestamp.now(),
@@ -37,12 +37,6 @@ part 'task_model.g.dart';
 ///   dueDate: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
 ///   isActive: true,
 /// );
-///
-/// // Serializar a JSON para Firestore
-/// final json = task.toJson();
-///
-/// // Deserializar desde JSON
-/// final taskFromJson = TaskModel.fromJson(json);
 /// ```
 @JsonSerializable(explicitToJson: true)
 class TaskModel {
@@ -61,7 +55,7 @@ class TaskModel {
   /// Duración sugerida de práctica en segundos
   final int durationSuggested;
 
-  /// Lista de archivos adjuntos asociados a la tarea
+  /// Lista de enlaces asociados a la tarea
   final List<AttachmentModel> attachments;
 
   /// Fecha y hora de creación de la tarea

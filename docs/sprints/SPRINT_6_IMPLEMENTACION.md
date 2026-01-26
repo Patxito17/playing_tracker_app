@@ -22,23 +22,19 @@
    - Crear gráfico circular para distribución de tiempo por tarea.
 
 3. **Dashboards Personalizados:**
-   - **Dashboard del Docente:**
-     - Resumen de actividad de todos sus alumnos.
-     - Estadísticas por clase y por tarea.
-     - Identificar alumnos que necesitan más atención.
-   - **Dashboard del Alumno:**
-     - Progreso personal (tiempo total, rachas de práctica).
-     - Comparativa con objetivos de tiempo sugerido.
-     - Histórico de sesiones con tendencias.
+     - **Dashboard del Docente:**
+       - Resumen de actividad de todos sus alumnos.
+       - Estadísticas por clase y por tarea.
+       - Identificar alumnos que necesitan más atención.
+     - **Dashboard del Alumno:**
+       - Progreso personal (tiempo total, rachas de práctica).
+       - Comparativa con objetivos de tiempo sugerido.
+       - Histórico de sesiones con tendencias.
 
 4. **Filtros Avanzados:**
    - Filtrar por rango de fechas (hoy, esta semana, este mes, personalizado).
    - Filtrar por clase y/o tarea específica.
    - Ordenación por diferentes métricas.
-
-5. **Exportación de Datos (Opcional):**
-   - Exportar estadísticas a CSV.
-   - Generar reportes PDF con resumen.
 
 ---
 
@@ -141,18 +137,6 @@
   - [x] Navegación sin glitches.
   - [x] Estados de carga y error correctos.
 
-### 📤 Fase 6: Exportación de Datos (Opcional)
-**Objetivo:** Permitir exportar estadísticas para uso externo.
-
-- [ ] **Exportación CSV** (Postergado):
-  - Generar archivo CSV con datos de sesiones.
-  - Compartir mediante Share Sheet del sistema.
-- [ ] **Generación de Reportes PDF** (Postergado):
-  - Crear PDF con resumen de estadísticas.
-  - Incluir gráficos como imágenes.
-  - Compartir o guardar en dispositivo.
-- [ ] **Tests** (Postergado):
-  - Validar formato de archivos generados.
 
 ### ✅ Fase 7: Calidad y Pulido
 **Objetivo:** Asegurar la calidad del código y la experiencia de usuario.
@@ -196,16 +180,9 @@
 - [x] **Actualizar Documentación**:
   - [x] Actualizar `docs/Guia_Proyecto_PlayingTracker.md`.
   - [x] Marcar todas las fases de este documento como completadas.
-- [ ] **Preparar Sprint 7**:
-  - Crear el documento `docs/sprints/SPRINT_7_IMPLEMENTACION.md` siguiendo la estructura y estándares definidos en `docs/Guia_Proyecto_PlayingTracker.md`.
-  - Definir objetivos, fases y entregables para el módulo de Testing y Optimización según el roadmap:
-    - 🧪 Testing completo (Unit, Widget, Integration)
-    - 🌐 Internacionalización (l10n) y Refactorización de Strings profesional (archivos .arb)
-    - 🧭 **Refactorización de Navegación**: Modularización de `app_routes.dart` y migración a **Typed Routes** (Type-safety).
-    - ⚡ Optimización de rendimiento
-    - 🔒 Auditoría de seguridad
-    - 📱 Testing de accesibilidad
-    - 🚀 Preparación para producción
+- [x] **Preparar Sprint 7**:
+  - [x] Crear el documento `docs/sprints/SPRINT_7_IMPLEMENTACION.md` siguiendo la estructura y estándares definidos en `docs/Guia_Proyecto_PlayingTracker.md`.
+  - [x] Definir objetivos, fases y entregables para el módulo de Testing y Optimización según el roadmap.
 
 ---
 
