@@ -4,13 +4,16 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../../statistics/presentation/widgets/app_bar_chart.dart';
+import '../../../statistics/presentation/widgets/app_pie_chart.dart';
+import '../../../statistics/presentation/widgets/app_progress_chart.dart';
 
 /// Tab de estadísticas de la clase (común para docente y estudiante)
 ///
 /// Muestra estadísticas agregadas de la clase.
 /// Para docente: estadísticas de todos los estudiantes.
 /// Para estudiante: estadísticas individuales.
-/// Sprint 0 - Fase 7: UI completa con Material Design 3 y gráficos placeholder
+/// Sprint 6 Fase 2: Integración de gráficos reales para verificación manual.
 class ClassStatisticsTab extends StatelessWidget {
   final String classId;
   final bool isTeacher;
@@ -44,17 +47,21 @@ class ClassStatisticsTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '0 horas',
+                  '12 horas',
                   style: context.textTheme.headlineLarge?.copyWith(
                     color: context.colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.m),
-                // Gráfico placeholder
-                _ChartPlaceholder(
-                  height: 100,
-                  color: context.colorScheme.primary,
+                const AppBarChart(
+                  height: 150,
+                  data: [
+                    (label: 'Sem 1', value: 120),
+                    (label: 'Sem 2', value: 180),
+                    (label: 'Sem 3', value: 150),
+                    (label: 'Sem 4', value: 210),
+                  ],
                 ),
               ],
             ),
@@ -71,17 +78,19 @@ class ClassStatisticsTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '0 sesiones',
+                  '24 sesiones',
                   style: context.textTheme.headlineLarge?.copyWith(
                     color: context.colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.m),
-                // Gráfico placeholder
-                _ChartPlaceholder(
-                  height: 100,
-                  color: context.colorScheme.secondary,
+                const AppPieChart(
+                  radius: 70,
+                  data: [
+                    (label: 'Completadas', value: 18, color: Colors.green),
+                    (label: 'En curso', value: 6, color: Colors.orange),
+                  ],
                 ),
               ],
             ),
@@ -95,49 +104,24 @@ class ClassStatisticsTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '0 estudiantes',
+                    '15 estudiantes',
                     style: context.textTheme.headlineLarge?.copyWith(
                       color: context.colorScheme.tertiary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.m),
-                  // Gráfico placeholder
-                  _ChartPlaceholder(
-                    height: 100,
-                    color: context.colorScheme.tertiary,
+                  const Center(
+                    child: AppProgressChart(
+                      progress: 0.85,
+                      size: 120,
+                      strokeWidth: 12,
+                    ),
                   ),
                 ],
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-/// Widget placeholder para gráficos
-class _ChartPlaceholder extends StatelessWidget {
-  final double height;
-  final Color color;
-
-  const _ChartPlaceholder({required this.height, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.bar_chart,
-          size: 48,
-          color: color.withValues(alpha: 0.5),
-        ),
       ),
     );
   }
