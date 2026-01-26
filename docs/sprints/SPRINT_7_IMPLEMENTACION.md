@@ -10,8 +10,8 @@
 
 1.  **Testing Integral:** AlcaNZar una cobertura robusta mediante tests unitarios, de widget e integración.
 2.  **Internacionalización (l10n):** Migrar todos los strings a archivos `.arb` siguiendo las mejores prácticas de Flutter.
-3.  **Navegación Profesional:** Refactorizar `app_routes.dart` hacia una estructura modular y Type-Safe usando `go_router_builder`.
-4.  **Calidad de Producción:** Realizar auditoría de seguridad, optimización de rendimiento y pruebas de accesibilidad.
+3.  **Calidad de Producción:** Realizar auditoría de seguridad, optimización de rendimiento y pruebas de accesibilidad.
+4.  **Optimización:** Mejorar el rendimiento de listas y transiciones.
 
 ---
 
@@ -20,13 +20,10 @@
 ### 🏗️ Fase 1: Refactorización de Infraestructura (Navegación y Strings)
 **Objetivo:** Modernizar la base técnica del proyecto para escalabilidad.
 
-- [ ] **Migración a Typed Routes**:
-    - Configurar `go_router_builder`.
-    - Definir clases `RouteData` para cada ruta.
-    - Eliminar el uso de strings literales para navegación en toda la app.
 - [x] **Sistema de Internacionalización**:
     - [x] Configurar `flutter_localizations` y generar archivos `.arb`.
     - [x] Migrar `app_strings.dart` y constantes relacionadas a `AppLocalizations`.
+    - [x] Implementar selectores y extensión `context.l10n`.
     - [ ] Implementar selector de idioma en la pestaña settings (para estudiantes y docentes) o detección automática.
 
 ### 🧪 Fase 2: Suite de Testing Automatizado
@@ -73,10 +70,9 @@
 ---
 
 ## ✅ Criterios de Aceptación
-1.  ✓ La app utiliza rutas tipadas para toda la navegación.
-2.  ✓ Todos los strings son gestionados mediante el sistema l10n de Flutter.
-3.  ✓ La cobertura de tests es superior al 80% en lógica de negocio.
-4.  ✓ La app cumple con los estándares básicos de accesibilidad WCAG.
+1.  ✓ Todos los strings son gestionados mediante el sistema l10n de Flutter.
+2.  ✓ La cobertura de tests es superior al 80% en lógica de negocio.
+3.  ✓ La app cumple con los estándares básicos de accesibilidad WCAG.
 
 ---
 
