@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/extensions/context_extensions.dart';
 import '../../features/auth/domain/enums/user_role.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
@@ -48,33 +48,33 @@ class CustomBottomNavigationBar extends StatelessWidget {
         );
       },
       destinations: [
-        const NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: NavigationStrings.homeTab,
+        NavigationDestination(
+          icon: const Icon(Icons.home_outlined),
+          selectedIcon: const Icon(Icons.home),
+          label: context.l10n.homeTab,
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.class_outlined),
-          selectedIcon: Icon(Icons.class_),
-          label: NavigationStrings.classesTab,
+        NavigationDestination(
+          icon: const Icon(Icons.class_outlined),
+          selectedIcon: const Icon(Icons.class_),
+          label: context.l10n.classesTab,
         ),
         // Solo mostrar Historial para alumnos, para coincidir con el
         // número de branches en StatefulShellRoute (4 para docente, 5 para alumno)
         if (!isTeacher)
-          const NavigationDestination(
-            icon: Icon(Icons.history_outlined),
-            selectedIcon: Icon(Icons.history),
-            label: NavigationStrings.historyTab,
+          NavigationDestination(
+            icon: const Icon(Icons.history_outlined),
+            selectedIcon: const Icon(Icons.history),
+            label: context.l10n.historyTab,
           ),
-        const NavigationDestination(
-          icon: Icon(Icons.bar_chart_outlined),
-          selectedIcon: Icon(Icons.bar_chart),
-          label: NavigationStrings.statisticsTab,
+        NavigationDestination(
+          icon: const Icon(Icons.bar_chart_outlined),
+          selectedIcon: const Icon(Icons.bar_chart),
+          label: context.l10n.statisticsTab,
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.settings_outlined),
-          selectedIcon: Icon(Icons.settings),
-          label: NavigationStrings.settingsTab,
+        NavigationDestination(
+          icon: const Icon(Icons.settings_outlined),
+          selectedIcon: const Icon(Icons.settings),
+          label: context.l10n.settingsTab,
         ),
       ],
     );

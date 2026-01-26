@@ -9,6 +9,21 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get homeTab => 'Inicio';
+
+  @override
+  String get classesTab => 'Clases';
+
+  @override
+  String get historyTab => 'Historial';
+
+  @override
+  String get statisticsTab => 'Estadísticas';
+
+  @override
+  String get settingsTab => 'Ajustes';
+
+  @override
   String get showPassword => 'Mostrar contraseña';
 
   @override

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -70,7 +69,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       _firstNameError = Validators.name(
         value,
-        ValidationStrings.firstNameField,
+        requiredMsg: context.l10n.fieldRequired(context.l10n.firstNameField),
+        minLengthMsg: context.l10n.nameMinLength(context.l10n.firstNameField),
+        invalidCharactersMsg: context.l10n.nameInvalidCharacters(
+          context.l10n.firstNameField,
+        ),
       );
     });
   }
@@ -78,26 +81,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
   /// Valida el campo de apellidos
   void _validateLastName(String value) {
     setState(() {
-      _lastNameError = Validators.name(value, ValidationStrings.lastNameField);
+      _lastNameError = Validators.name(
+        value,
+        requiredMsg: context.l10n.fieldRequired(context.l10n.lastNameField),
+        minLengthMsg: context.l10n.nameMinLength(context.l10n.lastNameField),
+        invalidCharactersMsg: context.l10n.nameInvalidCharacters(
+          context.l10n.lastNameField,
+        ),
+      );
     });
   }
 
   /// Valida el campo de email
   void _validateEmail(String value) {
     setState(() {
-      _emailError = Validators.email(value);
+      _emailError = Validators.email(
+        value,
+        requiredMsg: context.l10n.emailRequired,
+        invalidMsg: context.l10n.emailInvalidFormat,
+      );
     });
   }
 
   /// Valida el campo de contraseña
   void _validatePassword(String value) {
     setState(() {
-      _passwordError = Validators.password(value);
+      _passwordError = Validators.password(
+        value,
+        requiredMsg: context.l10n.passwordRequired,
+        minLengthMsg: context.l10n.passwordMinLength,
+      );
       // Si hay confirmación, validarla también
       if (_confirmPasswordController.text.isNotEmpty) {
         _confirmPasswordError = Validators.confirmPassword(
           _passwordController.text,
           _confirmPasswordController.text,
+          requiredMsg: context.l10n.confirmPasswordRequired,
+          matchMsg: context.l10n.passwordsDoNotMatch,
         );
       }
     });
@@ -109,6 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _confirmPasswordError = Validators.confirmPassword(
         _passwordController.text,
         value,
+        requiredMsg: context.l10n.confirmPasswordRequired,
+        matchMsg: context.l10n.passwordsDoNotMatch,
       );
     });
   }
@@ -125,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Validar términos aceptados con mensaje persistente
     if (!_termsAccepted) {
       setState(() {
-        _formError = AuthStrings.termsNotAcceptedMessage;
+        _formError = context.l10n.termsNotAcceptedMessage;
       });
       return;
     }
@@ -163,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: AuthStrings.registerTitle),
+      appBar: CustomAppBar(title: context.l10n.registerTitle),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -193,13 +215,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         // Título principal
                         Text(
-                          AuthStrings.createAccountTitle,
+                          context.l10n.createAccountTitle,
                           style: context.displaySmallBold,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppSpacing.s),
                         Text(
-                          AuthStrings.createAccountSubtitle,
+                          context.l10n.createAccountSubtitle,
                           style: context.bodyLargeOnSurfaceVariant,
                           textAlign: TextAlign.center,
                         ),
@@ -208,7 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         if (displayError != null) ...[
                           Semantics(
-                            label: AuthStrings.registerErrorSemanticLabel,
+                            label: context.l10n.registerErrorSemanticLabel,
                             liveRegion: true,
                             child: SelectableText.rich(
                               TextSpan(
@@ -225,20 +247,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Selector de rol
                         Text(
-                          AuthStrings.accountTypeLabel,
+                          context.l10n.accountTypeLabel,
                           style: context.titleMediumBold,
                         ),
                         const SizedBox(height: AppSpacing.m),
                         SegmentedButton<String>(
-                          segments: const [
+                          segments: [
                             ButtonSegment<String>(
                               value: 'teacher',
-                              label: Text(AuthStrings.teacherRole),
+                              label: Text(context.l10n.teacherRole),
                               icon: Icon(Icons.school_outlined),
                             ),
                             ButtonSegment<String>(
                               value: 'student',
-                              label: Text(AuthStrings.studentRole),
+                              label: Text(context.l10n.studentRole),
                               icon: Icon(Icons.person_outline),
                             ),
                           ],
@@ -255,8 +277,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Campo de nombre
                         CustomTextField(
                           controller: _firstNameController,
-                          label: AuthStrings.firstNameLabel,
-                          hint: AuthStrings.firstNameHint,
+                          label: context.l10n.firstNameLabel,
+                          hint: context.l10n.firstNameHint,
                           keyboardType: TextInputType.name,
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
@@ -284,8 +306,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Campo de apellidos
                         CustomTextField(
                           controller: _lastNameController,
-                          label: AuthStrings.lastNameLabel,
-                          hint: AuthStrings.lastNameHint,
+                          label: context.l10n.lastNameLabel,
+                          hint: context.l10n.lastNameHint,
                           keyboardType: TextInputType.name,
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
@@ -313,8 +335,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Campo de email
                         CustomTextField(
                           controller: _emailController,
-                          label: AuthStrings.emailLabel,
-                          hint: AuthStrings.emailHint,
+                          label: context.l10n.emailLabel,
+                          hint: context.l10n.emailHint,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           textCapitalization: TextCapitalization.none,
@@ -342,8 +364,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Campo de contraseña
                         CustomTextField(
                           controller: _passwordController,
-                          label: AuthStrings.passwordLabel,
-                          hint: AuthStrings.passwordMinLengthHint,
+                          label: context.l10n.passwordLabel,
+                          hint: context.l10n.passwordMinLengthHint,
                           obscureText: _obscurePassword,
                           textInputAction: TextInputAction.next,
                           textCapitalization: TextCapitalization.none,
@@ -366,8 +388,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                             },
                             tooltip: _obscurePassword
-                                ? CommonStrings.showPassword
-                                : CommonStrings.hidePassword,
+                                ? context.l10n.showPassword
+                                : context.l10n.hidePassword,
                           ),
                           onChanged: (value) {
                             // Limpiar error al escribir
@@ -393,8 +415,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Campo de confirmación de contraseña
                         CustomTextField(
                           controller: _confirmPasswordController,
-                          label: AuthStrings.confirmPasswordLabel,
-                          hint: AuthStrings.confirmPasswordHint,
+                          label: context.l10n.confirmPasswordLabel,
+                          hint: context.l10n.confirmPasswordHint,
                           obscureText: _obscureConfirmPassword,
                           textInputAction: TextInputAction.done,
                           textCapitalization: TextCapitalization.none,
@@ -418,8 +440,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                             },
                             tooltip: _obscureConfirmPassword
-                                ? CommonStrings.showPassword
-                                : CommonStrings.hidePassword,
+                                ? context.l10n.showPassword
+                                : context.l10n.hidePassword,
                           ),
                           onChanged: (value) {
                             // Limpiar error al escribir
@@ -468,10 +490,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       style: context.bodySmallOnSurfaceVariant,
                                       children: [
                                         TextSpan(
-                                          text: AuthStrings.acceptTermsPrefix,
+                                          text: context.l10n.acceptTermsPrefix,
                                         ),
                                         TextSpan(
-                                          text: AuthStrings.termsAndConditions,
+                                          text: context.l10n.termsAndConditions,
                                           style: context.textPrimary?.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: context
@@ -481,10 +503,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: AuthStrings.acceptTermsMiddle,
+                                          text: context.l10n.acceptTermsMiddle,
                                         ),
                                         TextSpan(
-                                          text: AuthStrings.privacyPolicy,
+                                          text: context.l10n.privacyPolicy,
                                           style: context.textPrimary?.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: context
@@ -506,7 +528,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Botón de registro
                         CustomButton(
-                          label: AuthStrings.registerButton,
+                          label: context.l10n.registerButton,
                           variant: CustomButtonVariant.filled,
                           isLoading: isLoading,
                           onPressed: isLoading ? null : _handleRegister,
@@ -519,13 +541,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              AuthStrings.alreadyHaveAccountQuestion,
+                              context.l10n.alreadyHaveAccountQuestion,
                               style: context.bodyMediumOnSurfaceVariant,
                             ),
                             TextButton(
                               onPressed: () => context.go(AppRoutes.login),
                               child: Text(
-                                AuthStrings.loginLink,
+                                context.l10n.loginLink,
                                 style: context.textPrimary?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize:

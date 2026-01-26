@@ -1,23 +1,16 @@
 /// Validadores de formularios para la aplicación Playing Tracker
 ///
 /// Proporciona funciones de validación reutilizables para campos de
-/// formularios con mensajes de error en español.
-///
-/// Sprint 0 - Fase 5: Validadores implementados para pantallas de autenticación
-library;
-
-import '../constants/app_strings.dart';
-
-/// Clase con métodos estáticos para validación de formularios
+/// formularios. Los mensajes deben ser pasados desde el UI para soporte l10n.
 class Validators {
   /// Valida que un campo no esté vacío
   ///
   /// [value] Valor a validar
-  /// [fieldName] Nombre del campo para el mensaje de error
-  /// Retorna un mensaje de error si el campo está vacío, null si es válido
-  static String? required(String? value, String fieldName) {
+  /// [errorMsg] Mensaje de error a mostrar si falla
+  /// Retorna [errorMsg] si el campo está vacío, null si es válido
+  static String? required(String? value, String errorMsg) {
     if (value == null || value.trim().isEmpty) {
-      return ValidationStrings.required(fieldName);
+      return errorMsg;
     }
     return null;
   }
@@ -25,14 +18,19 @@ class Validators {
   /// Valida formato de email
   ///
   /// [value] Email a validar
-  /// Retorna un mensaje de error si el email no es válido, null si es válido
-  static String? email(String? value) {
+  /// [requiredMsg] Mensaje si está vacío
+  /// [invalidMsg] Mensaje si el formato es inválido
+  static String? email(
+    String? value, {
+    String? requiredMsg,
+    String? invalidMsg,
+  }) {
     if (value == null || value.trim().isEmpty) {
-      return ValidationStrings.emailRequired;
+      return requiredMsg;
     }
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
-      return ValidationStrings.emailInvalidFormat;
+      return invalidMsg;
     }
     return null;
   }
@@ -40,32 +38,43 @@ class Validators {
   /// Valida longitud mínima de contraseña
   ///
   /// [value] Contraseña a validar
-  /// Retorna un mensaje de error si la contraseña es muy corta, null si es válida
-  static String? password(String? value) {
+  /// [requiredMsg] Mensaje si está vacío
+  /// [minLengthMsg] Mensaje si es muy corta
+  static String? password(
+    String? value, {
+    String? requiredMsg,
+    String? minLengthMsg,
+  }) {
     if (value == null || value.isEmpty) {
-      return ValidationStrings.passwordRequired;
+      return requiredMsg;
     }
     if (value.length < 6) {
-      return ValidationStrings.passwordMinLength;
+      return minLengthMsg;
     }
     return null;
   }
 
-  /// Valida que un nombre contenga solo letras y espacios
+  /// Valida formato de nombre
   ///
   /// [value] Nombre a validar
-  /// [fieldName] Nombre del campo para el mensaje de error
-  /// Retorna un mensaje de error si contiene caracteres inválidos, null si es válido
-  static String? name(String? value, String fieldName) {
+  /// [requiredMsg] Mensaje si está vacío
+  /// [minLengthMsg] Mensaje si es muy corto
+  /// [invalidCharactersMsg] Mensaje si contiene caracteres inválidos
+  static String? name(
+    String? value, {
+    String? requiredMsg,
+    String? minLengthMsg,
+    String? invalidCharactersMsg,
+  }) {
     if (value == null || value.trim().isEmpty) {
-      return ValidationStrings.nameRequired(fieldName);
+      return requiredMsg;
     }
     if (value.trim().length < 3) {
-      return ValidationStrings.nameMinLength(fieldName);
+      return minLengthMsg;
     }
     final nameRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$');
     if (!nameRegex.hasMatch(value.trim())) {
-      return ValidationStrings.nameInvalidCharacters(fieldName);
+      return invalidCharactersMsg;
     }
     return null;
   }
@@ -74,13 +83,19 @@ class Validators {
   ///
   /// [password] Contraseña original
   /// [confirmPassword] Contraseña de confirmación
-  /// Retorna un mensaje de error si no coinciden, null si coinciden
-  static String? confirmPassword(String? password, String? confirmPassword) {
+  /// [requiredMsg] Mensaje si la confirmación está vacía
+  /// [matchMsg] Mensaje si no coinciden
+  static String? confirmPassword(
+    String? password,
+    String? confirmPassword, {
+    String? requiredMsg,
+    String? matchMsg,
+  }) {
     if (confirmPassword == null || confirmPassword.isEmpty) {
-      return ValidationStrings.confirmPasswordRequired;
+      return requiredMsg;
     }
     if (password != confirmPassword) {
-      return ValidationStrings.passwordsDoNotMatch;
+      return matchMsg;
     }
     return null;
   }

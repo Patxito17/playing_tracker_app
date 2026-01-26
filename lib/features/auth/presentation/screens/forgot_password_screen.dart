@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -40,7 +39,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   /// Valida el campo de email
   void _validateEmail(String value) {
     setState(() {
-      _emailError = Validators.email(value);
+      _emailError = Validators.email(
+        value,
+        requiredMsg: context.l10n.emailRequired,
+        invalidMsg: context.l10n.emailInvalidFormat,
+      );
     });
   }
 
@@ -60,7 +63,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: AuthStrings.forgotPasswordTitle),
+      appBar: CustomAppBar(title: context.l10n.forgotPasswordTitle),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -87,21 +90,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Text(
-                          AuthStrings.forgotPasswordQuestion,
+                          context.l10n.forgotPasswordQuestion,
                           style: context.headlineMediumBold,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppSpacing.m),
                         if (!emailSent)
                           Text(
-                            AuthStrings.forgotPasswordInstructions,
+                            context.l10n.forgotPasswordInstructions,
                             style: context.bodyLargeOnSurfaceVariant,
                             textAlign: TextAlign.center,
                           )
                         else
                           Semantics(
                             label:
-                                AuthStrings.forgotPasswordSuccessSemanticLabel,
+                                context.l10n.forgotPasswordSuccessSemanticLabel,
                             liveRegion: true,
                             child: Container(
                               padding: const EdgeInsets.all(AppSpacing.l),
@@ -121,7 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                   const SizedBox(height: AppSpacing.m),
                                   Text(
-                                    AuthStrings.emailSentTitle,
+                                    context.l10n.emailSentTitle,
                                     style: context.titleLargeBold?.copyWith(
                                       color: context
                                           .colorScheme
@@ -131,7 +134,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                   const SizedBox(height: AppSpacing.s),
                                   Text(
-                                    AuthStrings.emailSentMessage,
+                                    context.l10n.emailSentMessage,
                                     style: AppTextStyles.bodyMedium(context)
                                         ?.copyWith(
                                           color: context
@@ -147,7 +150,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         if (errorMessage != null) ...[
                           const SizedBox(height: AppSpacing.m),
                           Semantics(
-                            label: AuthStrings.forgotPasswordErrorSemanticLabel,
+                            label:
+                                context.l10n.forgotPasswordErrorSemanticLabel,
                             liveRegion: true,
                             child: SelectableText.rich(
                               TextSpan(
@@ -164,8 +168,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           const SizedBox(height: AppSpacing.xxl),
                           CustomTextField(
                             controller: _emailController,
-                            label: AuthStrings.emailLabel,
-                            hint: AuthStrings.emailHint,
+                            label: context.l10n.emailLabel,
+                            hint: context.l10n.emailHint,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.done,
                             textCapitalization: TextCapitalization.none,
@@ -186,7 +190,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                           const SizedBox(height: AppSpacing.xl),
                           CustomButton(
-                            label: AuthStrings.sendRecoveryLinkButton,
+                            label: context.l10n.sendRecoveryLinkButton,
                             variant: CustomButtonVariant.filled,
                             isLoading: isLoading,
                             onPressed: isLoading ? null : _handleSendEmail,
@@ -197,13 +201,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              AuthStrings.rememberPasswordQuestion,
+                              context.l10n.rememberPasswordQuestion,
                               style: context.bodyMediumOnSurfaceVariant,
                             ),
                             TextButton(
                               onPressed: () => context.go(AppRoutes.login),
                               child: Text(
-                                AuthStrings.loginLink,
+                                context.l10n.loginLink,
                                 style: context.textPrimary?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize:
