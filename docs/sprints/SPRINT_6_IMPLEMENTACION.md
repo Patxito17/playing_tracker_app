@@ -101,9 +101,9 @@
 - [x] **Implementar Filtros**:
   - Selector de período (Hoy, Esta Semana, Este Mes, Personalizado).
   - Filtro por clase (aislando sesiones de una clase específica).
-- [ ] **Tests**:
-  - Tests unitarios del Cubit.
-  - Tests de widget para la UI.
+- [x] **Tests**:
+  - [x] Tests unitarios del Cubit (`StudentStatsCubit`).
+  - [x] Tests de widget para la UI (`StudentStatisticsScreen`).
 
 ### 👩‍🏫 Fase 4: Dashboard del Docente
 **Objetivo:** Crear la pantalla de estadísticas para el docente.

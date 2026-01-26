@@ -10,7 +10,7 @@ import 'package:playing_tracker/features/statistics/presentation/cubit/student_s
 ///
 /// Carga en paralelo el progreso general (`StudentProgressModel`) y las
 /// estadísticas semanales (`WeeklyStatsModel`) con desglose de tareas.
-final class StudentStatsCubit extends Cubit<StudentStatsState> {
+class StudentStatsCubit extends Cubit<StudentStatsState> {
   StudentStatsCubit(this._repository) : super(const StudentStatsInitial());
 
   final StatisticsRepository _repository;
