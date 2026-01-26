@@ -486,18 +486,16 @@ final class StatisticsService {
       final className =
           classDoc.data()?['name'] as String? ?? 'Clase desconocida';
 
-      // 2. Obtener membresías activas de la clase
+      // 2. Obtener membresías activas de la clase para contar estudiantes
       final membershipsSnapshot = await _firestore
           .collection('memberships')
           .where('classId', isEqualTo: sanitizedClassId)
           .where('isActive', isEqualTo: true)
           .get();
 
-      final studentIds = membershipsSnapshot.docs
-          .map((doc) => doc.data()['studentId'] as String)
-          .toList();
+      final totalStudents = membershipsSnapshot.docs.length;
 
-      if (studentIds.isEmpty) {
+      if (totalStudents == 0) {
         return ClassStatsModel(
           classId: sanitizedClassId,
           className: className,
@@ -508,10 +506,10 @@ final class StatisticsService {
         );
       }
 
-      // 3. Obtener sesiones de todos los estudiantes de la clase
+      // 3. Consultar sesiones usando classId directamente (optimizado)
       final sessionsSnapshot = await _sessionsCollection
+          .where('classId', isEqualTo: sanitizedClassId)
           .where('teacherId', isEqualTo: sanitizedTeacherId)
-          .where('studentId', whereIn: studentIds)
           .get();
 
       // 4. Calcular métricas globales
@@ -519,10 +517,12 @@ final class StatisticsService {
       final activeStudentIds = <String>{};
       final now = DateTime.now();
       final oneWeekAgo = now.subtract(const Duration(days: 7));
+      final taskMap = <String, ({String title, int duration, int sessions})>{};
 
       for (final doc in sessionsSnapshot.docs) {
         final data = doc.data();
-        totalDuration += (data['totalDuration'] as int?) ?? 0;
+        final sessionDuration = (data['totalDuration'] as int?) ?? 0;
+        totalDuration += sessionDuration;
 
         // Contar estudiantes con actividad en la última semana
         final endTime = data['endTime'] as Timestamp?;
@@ -532,16 +532,45 @@ final class StatisticsService {
             activeStudentIds.add(studentId);
           }
         }
+
+        // Calcular desglose por tareas
+        final taskId = data['taskId'] as String?;
+        final taskTitle = data['taskTitle'] as String? ?? 'Tarea desconocida';
+
+        if (taskId != null) {
+          final existing = taskMap[taskId];
+          if (existing != null) {
+            taskMap[taskId] = (
+              title: existing.title,
+              duration: existing.duration + sessionDuration,
+              sessions: existing.sessions + 1,
+            );
+          } else {
+            taskMap[taskId] = (
+              title: taskTitle,
+              duration: sessionDuration,
+              sessions: 1,
+            );
+          }
+        }
       }
 
-      // 5. Obtener estadísticas por tarea (opcional, simplificado)
-      // En una implementación completa, aquí se consultarían tareas de la clase
-      final taskBreakdown = <TaskStatsModel>[];
+      // 5. Generar lista de TaskStatsModel
+      final taskBreakdown = taskMap.entries
+          .map(
+            (entry) => TaskStatsModel(
+              taskId: entry.key,
+              taskTitle: entry.value.title,
+              totalDuration: entry.value.duration,
+              totalSessions: entry.value.sessions,
+            ),
+          )
+          .toList();
 
       return ClassStatsModel(
         classId: sanitizedClassId,
         className: className,
-        totalStudents: studentIds.length,
+        totalStudents: totalStudents,
         activeStudents: activeStudentIds.length,
         totalDuration: totalDuration,
         totalSessions: sessionsSnapshot.docs.length,

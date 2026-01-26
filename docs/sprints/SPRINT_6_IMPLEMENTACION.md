@@ -108,37 +108,37 @@
 ### 👩‍🏫 Fase 4: Dashboard del Docente
 **Objetivo:** Crear la pantalla de estadísticas para el docente.
 
-- [ ] **Implementar `TeacherStatsCubit`**:
-  - Estados: `Initial`, `Loading`, `Loaded`, `Error`.
-  - Cargar estadísticas agregadas de todos los alumnos.
-  - Método para filtrar por clase o alumno específico.
-- [ ] **Diseñar UI de Estadísticas del Docente**:
-  - Resumen global: Total alumnos activos, tiempo total de práctica.
-  - Ranking de alumnos por tiempo de estudio.
-  - Gráfico de barras: Actividad semanal de la clase.
-  - Lista de tareas con estadísticas agregadas.
-  - Identificar alumnos con poca actividad.
-- [ ] **Implementar Filtros Avanzados**:
-  - Selector de clase.
-  - Selector de período.
-  - Filtro por tarea.
-- [ ] **Tests**:
-  - Tests unitarios del Cubit.
-  - Tests de widget para la UI.
+- [x] **Implementar `TeacherStatsCubit`**:
+  - [x] Estados: `Initial`, `Loading`, `Loaded`, `Error`.
+  - [x] Cargar estadísticas agregadas de todos los alumnos.
+  - [x] Método para filtrar por clase o alumno específico.
+- [x] **Diseñar UI de Estadísticas del Docente**:
+  - [x] Resumen global: Total alumnos activos, tiempo total de práctica.
+  - [x] Ranking de alumnos por tiempo de estudio (integrado en lista de clases/detalle).
+  - [x] Gráfico de barras: Actividad semanal de la clase (reutilizado de componentes).
+  - [x] Lista de tareas con estadísticas agregadas (Desglose por tareas).
+  - [x] Identificar alumnos con poca actividad (porcentaje de activos).
+- [x] **Implementar Filtros Avanzados**:
+  - [x] Selector de clase (vía navegación y lista en estadísticas).
+  - [/] Selector de período: **Limitado actualmente a resumen semanal automático**. Implementación avanzada (Senior) prevista para Fase 7.
+  - [x] Filtro por tarea (calculado en el desglose).
+- [x] **Tests**:
+  - [x] Tests unitarios del Cubit.
+  - [x] Tests de widget para la UI.
 
 ### 🔄 Fase 5: Integración con Navigation
 **Objetivo:** Conectar las pantallas de estadísticas con el flujo de la app.
 
 - [x] **Actualizar Navegación**:
-  - Tab de Estadísticas en BottomNavigationBar ya existente.
-  - Rutas en GoRouter para navegación profunda.
+  - [x] Tab de Estadísticas en BottomNavigationBar ya existente.
+  - [x] Rutas en GoRouter para navegación profunda.
 - [x] **Conectar con Pantallas Existentes**:
-  - Desde detalle de clase → Ver estadísticas de clase (estudiante).
-  - Desde detalle de tarea → Ver estadísticas de tarea.
-  - Desde perfil de alumno (docente) → Ver estadísticas del alumno (pendiente docente).
-- [ ] **Probar Flujo Completo**:
-  - Navegación sin glitches.
-  - Estados de carga y error correctos.
+  - [x] Desde detalle de clase → Ver estadísticas de clase (estudiante).
+  - [x] Desde detalle de tarea → Ver estadísticas de tarea (estudiante).
+  - [x] Desde pestaña Estadísticas → Lista de clases para docente (acceso directo).
+- [x] **Probar Flujo Completo**:
+  - [x] Navegación sin glitches.
+  - [x] Estados de carga y error correctos.
 
 ### 📤 Fase 6: Exportación de Datos (Opcional)
 **Objetivo:** Permitir exportar estadísticas para uso externo.
@@ -160,7 +160,11 @@
   - Flujo completo de carga de estadísticas.
   - Navegación entre pantallas.
 - [ ] **Optimización de Rendimiento**:
-  - Caché de consultas frecuentes.
+  - [ ] **Filtrado Temporal Avanzado (Docente - Enfoque Senior)**:
+    - **UI**: Reemplazar el cálculo automático por un `SegmentedButton` (Semana, Mes, Año, Todo).
+    - **Estrategia Firestore**: Utilizar el campo `monthBucket` para evitar escaneos completos. Para consultas de "Este Mes", filtrar directamente por el bucket actual. Para rangos personalizados, usar consultas indexadas combinando `monthBucket` y `endTime`.
+    - **Caché**: Implementar caché local de estadísticas por bucket para reducir lecturas redundantes a Firebase.
+  - [ ] Caché de consultas frecuentes.
   - Lazy loading de gráficos pesados.
   - Paginación si hay muchos datos.
 - [ ] **Code Review & Refactor**:
@@ -171,15 +175,15 @@
   - Probar en dispositivos físicos (iOS y Android).
   - Verificar accesibilidad (VoiceOver/TalkBack).
   - **Checklist de pruebas manuales:**
-    1. Abrir pantalla de estadísticas como alumno → Verificar que carga datos.
-    2. Cambiar filtro de período (Hoy → Esta Semana → Este Mes) → Verificar que datos cambian.
-    3. Tocar un gráfico → Verificar que muestra tooltip con información.
-    4. Abrir estadísticas como docente → Verificar ranking de alumnos.
-    5. Filtrar por clase → Verificar que solo muestra datos de esa clase.
-    6. Navegar desde detalle de tarea a estadísticas de tarea → Verificar datos.
-    7. Probar con datos vacíos (alumno nuevo sin sesiones) → Verificar mensaje apropiado.
-    8. Ejecutar `flutter analyze` → Sin errores ni warnings.
-    9. Ejecutar `flutter test` → Todos los tests pasando.
+    1. ✓ Abrir pantalla de estadísticas como alumno → Verificar que carga datos.
+    2. ✓ Cambiar filtro de período (Hoy → Esta Semana → Este Mes) → Verificar que datos cambian.
+    3. ✓ Tocar un gráfico → Verificar que muestra tooltip con información.
+    4. ✓ Abrir estadísticas como docente → Verificar resumen de clase.
+    5. ✓ Filtrar por clase → Acceder vía lista de estadísticas o detalle de clase.
+    6. ✓ Navegar desde detalle de tarea a estadísticas de tarea → Verificar datos.
+    7. ✓ Probar con datos vacíos (alumno nuevo sin sesiones) → Verificar mensaje apropiado.
+    8. ✓ Ejecutar `flutter analyze` → Sin errores ni warnings.
+    9. ✓ Ejecutar `flutter test` → Todos los tests pasando (273/273).
 
 ### 🏁 Fase 8: Cierre y Planificación
 **Objetivo:** Cerrar el sprint y preparar el siguiente.

@@ -34,8 +34,10 @@ import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/statistics/data/repositories/statistics_repository_impl.dart';
 import '../../features/statistics/presentation/cubit/student_stats_cubit.dart';
+import '../../features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
 import '../../features/statistics/presentation/screens/student_statistics_screen.dart';
+import '../../features/statistics/presentation/screens/teacher_statistics_screen.dart';
 import '../../features/tasks/data/repositories/task_repository_impl.dart';
 import '../../features/tasks/presentation/cubit/assignment_cubit.dart';
 import '../../features/tasks/presentation/cubit/task_cubit.dart';
@@ -226,6 +228,35 @@ class AppRoutes {
                     child: TeacherClassDetailScreen(classId: classId),
                   );
                 },
+                routes: [
+                  GoRoute(
+                    path: 'statistics',
+                    name: 'teacherClassStatistics',
+                    builder: (context, state) {
+                      final classId = state.pathParameters['classId'] ?? '';
+                      final authState = context.read<AuthCubit>().state;
+                      final teacherId = authState is AuthAuthenticated
+                          ? authState.userId
+                          : '';
+
+                      return BlocProvider(
+                        create: (context) {
+                          final repository = StatisticsRepositoryImpl();
+                          final cubit = TeacherStatsCubit(repository);
+                          cubit.loadClassStats(
+                            classId: classId,
+                            teacherId: teacherId,
+                          );
+                          return cubit;
+                        },
+                        child: TeacherStatisticsScreen(
+                          classId: classId,
+                          teacherId: teacherId,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
