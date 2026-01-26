@@ -75,6 +75,9 @@ class SessionModel {
   /// ID del docente dueño de la tarea (campo denormalizado)
   final String teacherId;
 
+  /// ID de la clase a la que pertenece la tarea (campo denormalizado)
+  final String? classId;
+
   /// Fecha y hora de inicio de la sesión
   @TimestampConverter()
   final Timestamp startTime;
@@ -118,6 +121,7 @@ class SessionModel {
     required this.studentId,
     required this.taskId,
     required this.teacherId,
+    this.classId,
     required this.startTime,
     required this.endTime,
     required this.totalDuration,
@@ -171,12 +175,12 @@ class SessionModel {
     return '$seconds s';
   }
 
-  /// Crea una copia del modelo con los campos especificados modificados
   SessionModel copyWith({
     String? id,
     String? studentId,
     String? taskId,
     String? teacherId,
+    String? classId,
     Timestamp? startTime,
     Timestamp? endTime,
     int? totalDuration,
@@ -192,6 +196,7 @@ class SessionModel {
       studentId: studentId ?? this.studentId,
       taskId: taskId ?? this.taskId,
       teacherId: teacherId ?? this.teacherId,
+      classId: classId ?? this.classId,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       totalDuration: totalDuration ?? this.totalDuration,

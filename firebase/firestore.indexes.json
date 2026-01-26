@@ -402,6 +402,75 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateLogged",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "monthBucket",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "teacherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "taskId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "studentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "classId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateLogged",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

@@ -37,6 +37,7 @@ final class StatisticsService {
   Future<DailyStatsModel> getDailyStats({
     required String studentId,
     required DateTime date,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -57,11 +58,16 @@ final class StatisticsService {
       );
 
       // Consultar sesiones del día
-      final querySnapshot = await _sessionsCollection
+      Query<Map<String, dynamic>> query = _sessionsCollection
           .where('studentId', isEqualTo: sanitizedId)
           .where('dateLogged', isGreaterThanOrEqualTo: startOfDay)
-          .where('dateLogged', isLessThan: endOfDay)
-          .get();
+          .where('dateLogged', isLessThan: endOfDay);
+
+      if (classId != null && classId.isNotEmpty) {
+        query = query.where('classId', isEqualTo: classId);
+      }
+
+      final querySnapshot = await query.get();
 
       // Calcular métricas
       int totalDuration = 0;
@@ -98,6 +104,7 @@ final class StatisticsService {
   Future<WeeklyStatsModel> getWeeklyStats({
     required String studentId,
     required DateTime weekStart,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -120,14 +127,19 @@ final class StatisticsService {
       );
 
       // Consultar sesiones de la semana
-      final querySnapshot = await _sessionsCollection
+      Query<Map<String, dynamic>> query = _sessionsCollection
           .where('studentId', isEqualTo: sanitizedId)
           .where(
             'dateLogged',
             isGreaterThanOrEqualTo: Timestamp.fromDate(normalizedWeekStart),
           )
-          .where('dateLogged', isLessThan: Timestamp.fromDate(weekEnd))
-          .get();
+          .where('dateLogged', isLessThan: Timestamp.fromDate(weekEnd));
+
+      if (classId != null && classId.isNotEmpty) {
+        query = query.where('classId', isEqualTo: classId);
+      }
+
+      final querySnapshot = await query.get();
 
       // Calcular métricas semanales
       int totalDuration = 0;
@@ -171,21 +183,77 @@ final class StatisticsService {
         );
       }
 
-      // Obtener duración de semana anterior (opcional)
+      // Obtener duración de semana anterior (opcional) de forma eficiente sin recursión
       final previousWeekStart = normalizedWeekStart.subtract(
         const Duration(days: 7),
       );
+      final previousWeekEnd = normalizedWeekStart;
       int? previousWeekDuration;
+
       try {
-        final previousStats = await getWeeklyStats(
-          studentId: studentId,
-          weekStart: previousWeekStart,
-        );
-        previousWeekDuration = previousStats.totalDuration;
+        Query<Map<String, dynamic>> prevQuery = _sessionsCollection
+            .where('studentId', isEqualTo: sanitizedId)
+            .where(
+              'dateLogged',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(previousWeekStart),
+            )
+            .where(
+              'dateLogged',
+              isLessThan: Timestamp.fromDate(previousWeekEnd),
+            );
+
+        if (classId != null && classId.isNotEmpty) {
+          prevQuery = prevQuery.where('classId', isEqualTo: classId);
+        }
+
+        final prevQuerySnapshot = await prevQuery.get();
+
+        int prevTotal = 0;
+        for (final doc in prevQuerySnapshot.docs) {
+          prevTotal += (doc.data()['totalDuration'] as int?) ?? 0;
+        }
+        previousWeekDuration = prevTotal;
       } catch (e) {
-        // Ignorar si no hay datos de semana anterior
+        log('Error al obtener duración de semana anterior: $e');
         previousWeekDuration = null;
       }
+
+      // Generar desglose por tareas
+      final taskMap = <String, ({String title, int duration, int sessions})>{};
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        final taskId = data['taskId'] as String?;
+        final taskTitle = data['taskTitle'] as String? ?? 'Tarea desconocida';
+        final duration = (data['totalDuration'] as int?) ?? 0;
+
+        if (taskId != null) {
+          final existing = taskMap[taskId];
+          if (existing != null) {
+            taskMap[taskId] = (
+              title: existing.title,
+              duration: existing.duration + duration,
+              sessions: existing.sessions + 1,
+            );
+          } else {
+            taskMap[taskId] = (
+              title: taskTitle,
+              duration: duration,
+              sessions: 1,
+            );
+          }
+        }
+      }
+
+      final taskBreakdown = taskMap.entries
+          .map(
+            (entry) => TaskStatsModel(
+              taskId: entry.key,
+              taskTitle: entry.value.title,
+              totalDuration: entry.value.duration,
+              totalSessions: entry.value.sessions,
+            ),
+          )
+          .toList();
 
       return WeeklyStatsModel(
         weekStart: Timestamp.fromDate(normalizedWeekStart),
@@ -194,6 +262,7 @@ final class StatisticsService {
         totalSessions: querySnapshot.docs.length,
         uniqueTasks: uniqueTasks.length,
         dailyBreakdown: dailyBreakdown,
+        taskBreakdown: taskBreakdown,
         previousWeekDuration: previousWeekDuration,
       );
     } on FirebaseException catch (error, stackTrace) {
@@ -214,6 +283,7 @@ final class StatisticsService {
     required String studentId,
     required int month,
     required int year,
+    String? classId,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -233,10 +303,15 @@ final class StatisticsService {
       );
 
       // Consultar sesiones usando monthBucket (optimizado)
-      final querySnapshot = await _sessionsCollection
+      Query<Map<String, dynamic>> query = _sessionsCollection
           .where('studentId', isEqualTo: sanitizedId)
-          .where('monthBucket', isEqualTo: monthBucket)
-          .get();
+          .where('monthBucket', isEqualTo: monthBucket);
+
+      if (classId != null && classId.isNotEmpty) {
+        query = query.where('classId', isEqualTo: classId);
+      }
+
+      final querySnapshot = await query.get();
 
       // Calcular métricas
       int totalDuration = 0;

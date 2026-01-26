@@ -22,6 +22,7 @@ final class SessionRunning extends SessionState {
     required this.taskId,
     required this.studentId,
     required this.teacherId,
+    this.classId,
     required this.duration,
     this.notes,
   });
@@ -35,6 +36,9 @@ final class SessionRunning extends SessionState {
   /// ID del docente dueño de la tarea
   final String teacherId;
 
+  /// ID de la clase a la que pertenece la tarea
+  final String? classId;
+
   /// Duración actual de la sesión en segundos
   final int duration;
 
@@ -42,13 +46,21 @@ final class SessionRunning extends SessionState {
   final String? notes;
 
   @override
-  List<Object?> get props => [taskId, studentId, teacherId, duration, notes];
+  List<Object?> get props => [
+    taskId,
+    studentId,
+    teacherId,
+    classId,
+    duration,
+    notes,
+  ];
 
   /// Crea una copia del estado con los campos especificados modificados
   SessionRunning copyWith({
     String? taskId,
     String? studentId,
     String? teacherId,
+    String? classId,
     int? duration,
     String? notes,
   }) {
@@ -56,6 +68,7 @@ final class SessionRunning extends SessionState {
       taskId: taskId ?? this.taskId,
       studentId: studentId ?? this.studentId,
       teacherId: teacherId ?? this.teacherId,
+      classId: classId ?? this.classId,
       duration: duration ?? this.duration,
       notes: notes ?? this.notes,
     );
@@ -71,6 +84,7 @@ final class SessionPaused extends SessionState {
     required this.taskId,
     required this.studentId,
     required this.teacherId,
+    this.classId,
     required this.duration,
     this.notes,
   });
@@ -84,6 +98,9 @@ final class SessionPaused extends SessionState {
   /// ID del docente dueño de la tarea
   final String teacherId;
 
+  /// ID de la clase a la que pertenece la tarea
+  final String? classId;
+
   /// Duración actual de la sesión en segundos
   final int duration;
 
@@ -91,13 +108,21 @@ final class SessionPaused extends SessionState {
   final String? notes;
 
   @override
-  List<Object?> get props => [taskId, studentId, teacherId, duration, notes];
+  List<Object?> get props => [
+    taskId,
+    studentId,
+    teacherId,
+    classId,
+    duration,
+    notes,
+  ];
 
   /// Crea una copia del estado con los campos especificados modificados
   SessionPaused copyWith({
     String? taskId,
     String? studentId,
     String? teacherId,
+    String? classId,
     int? duration,
     String? notes,
   }) {
@@ -105,6 +130,7 @@ final class SessionPaused extends SessionState {
       taskId: taskId ?? this.taskId,
       studentId: studentId ?? this.studentId,
       teacherId: teacherId ?? this.teacherId,
+      classId: classId ?? this.classId,
       duration: duration ?? this.duration,
       notes: notes ?? this.notes,
     );

@@ -62,6 +62,7 @@ final class SessionCubit extends Cubit<SessionState>
     required String taskId,
     required String studentId,
     required String teacherId,
+    String? classId,
     String? notes,
   }) async {
     // Validaciones
@@ -101,6 +102,7 @@ final class SessionCubit extends Cubit<SessionState>
           taskId: taskId,
           studentId: studentId,
           teacherId: teacherId,
+          classId: classId,
           duration: 0,
           notes: notes,
         ),
@@ -136,6 +138,7 @@ final class SessionCubit extends Cubit<SessionState>
         taskId: currentState.taskId,
         studentId: currentState.studentId,
         teacherId: currentState.teacherId,
+        classId: currentState.classId,
         duration: currentState.duration,
         notes: currentState.notes,
       ),
@@ -160,6 +163,7 @@ final class SessionCubit extends Cubit<SessionState>
         taskId: currentState.taskId,
         studentId: currentState.studentId,
         teacherId: currentState.teacherId,
+        classId: currentState.classId,
         duration: currentState.duration,
         notes: currentState.notes,
       ),
@@ -208,6 +212,7 @@ final class SessionCubit extends Cubit<SessionState>
     final String taskId;
     final String studentId;
     final String teacherId;
+    final String? classId;
     final int duration;
     String? sessionNotes;
 
@@ -215,12 +220,14 @@ final class SessionCubit extends Cubit<SessionState>
       taskId = currentState.taskId;
       studentId = currentState.studentId;
       teacherId = currentState.teacherId;
+      classId = currentState.classId;
       duration = currentState.duration;
       sessionNotes = notes ?? currentState.notes;
     } else if (currentState is SessionPaused) {
       taskId = currentState.taskId;
       studentId = currentState.studentId;
       teacherId = currentState.teacherId;
+      classId = currentState.classId;
       duration = currentState.duration;
       sessionNotes = notes ?? currentState.notes;
     } else {
@@ -257,6 +264,7 @@ final class SessionCubit extends Cubit<SessionState>
         studentId: studentId,
         taskId: taskId,
         teacherId: teacherId,
+        classId: classId,
         startTime: startTime,
         endTime: now,
         totalDuration: duration,
@@ -357,6 +365,7 @@ final class SessionCubit extends Cubit<SessionState>
           taskId: currentState.taskId,
           studentId: currentState.studentId,
           teacherId: currentState.teacherId,
+          classId: currentState.classId,
           duration: currentState.duration,
           notes: currentState.notes,
         ),

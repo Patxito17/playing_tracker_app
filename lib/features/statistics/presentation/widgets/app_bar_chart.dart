@@ -70,7 +70,7 @@ class AppBarChart extends StatelessWidget {
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
-                maxY: maxValue * 1.2, // 20% de margen superior
+                maxY: maxValue == 0 ? 10 : maxValue * 1.2, // Evitar maxY = 0
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
@@ -122,6 +122,9 @@ class AppBarChart extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 40,
+                      interval: maxValue == 0
+                          ? 2
+                          : (maxValue * 1.2 / 5).clamp(1, double.infinity),
                       getTitlesWidget: (value, meta) {
                         return Text(
                           value.toInt().toString(),
@@ -140,7 +143,9 @@ class AppBarChart extends StatelessWidget {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  horizontalInterval: maxValue / 5,
+                  horizontalInterval: maxValue == 0
+                      ? 2
+                      : (maxValue * 1.2 / 5).clamp(1, double.infinity),
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
                       color: colorScheme.outlineVariant.withValues(alpha: 0.3),

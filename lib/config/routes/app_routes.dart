@@ -32,7 +32,10 @@ import '../../features/sessions/presentation/cubit/session_cubit.dart';
 import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/statistics/data/repositories/statistics_repository_impl.dart';
+import '../../features/statistics/presentation/cubit/student_stats_cubit.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
+import '../../features/statistics/presentation/screens/student_statistics_screen.dart';
 import '../../features/tasks/data/repositories/task_repository_impl.dart';
 import '../../features/tasks/presentation/cubit/assignment_cubit.dart';
 import '../../features/tasks/presentation/cubit/task_cubit.dart';
@@ -324,7 +327,22 @@ class AppRoutes {
               GoRoute(
                 path: studentStatistics,
                 name: 'studentStatistics',
-                builder: (context, state) => const StatisticsScreen(),
+                builder: (context, state) {
+                  final authState = context.read<AuthCubit>().state;
+                  final studentId = authState is AuthAuthenticated
+                      ? authState.userId
+                      : '';
+
+                  return BlocProvider(
+                    create: (context) {
+                      final repository = StatisticsRepositoryImpl();
+                      final cubit = StudentStatsCubit(repository);
+                      cubit.loadStats(studentId: studentId);
+                      return cubit;
+                    },
+                    child: StudentStatisticsScreen(studentId: studentId),
+                  );
+                },
               ),
             ],
           ),
@@ -507,6 +525,7 @@ class AppRoutes {
               teacherId: extra?['teacherId'] ?? '',
               taskTitle: extra?['taskTitle'] ?? 'Tarea',
               className: extra?['className'],
+              classId: extra?['classId'],
             ),
           );
         },

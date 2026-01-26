@@ -16,6 +16,8 @@ import '../../domain/repositories/class_repository.dart';
 import '../widgets/class_info_tab.dart';
 import '../widgets/class_statistics_tab.dart';
 import '../widgets/student_class_tasks_tab.dart';
+import '../../../statistics/presentation/cubit/student_stats_cubit.dart';
+import '../../../statistics/data/repositories/statistics_repository_impl.dart';
 
 /// Pantalla de detalle de clase para estudiante
 ///
@@ -158,44 +160,52 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(ClassDetailStrings.classDetailTitle),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
-            tooltip: CommonStrings.back,
+    final authState = context.read<AuthCubit>().state;
+    final studentId = authState is AuthAuthenticated ? authState.userId : '';
+
+    return BlocProvider(
+      create: (context) =>
+          StudentStatsCubit(StatisticsRepositoryImpl())
+            ..loadStats(studentId: studentId, classId: widget.classId),
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(ClassDetailStrings.classDetailTitle),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+              tooltip: CommonStrings.back,
+            ),
+            bottom: CustomTabBar(
+              tabs: const [
+                Tab(
+                  icon: Icon(Icons.info_outline),
+                  text: ClassDetailStrings.infoTab,
+                ),
+                Tab(
+                  icon: Icon(Icons.assignment),
+                  text: ClassDetailStrings.tasksTab,
+                ),
+                Tab(
+                  icon: Icon(Icons.bar_chart),
+                  text: ClassDetailStrings.statisticsTab,
+                ),
+              ],
+            ),
           ),
-          bottom: CustomTabBar(
-            tabs: const [
-              Tab(
-                icon: Icon(Icons.info_outline),
-                text: ClassDetailStrings.infoTab,
+          body: TabBarView(
+            children: [
+              StudentClassInfoTab(
+                classId: widget.classId,
+                classFuture: _classFuture,
+                membership: _currentMembership,
+                onRefreshRequested: _refreshClassDetails,
               ),
-              Tab(
-                icon: Icon(Icons.assignment),
-                text: ClassDetailStrings.tasksTab,
-              ),
-              Tab(
-                icon: Icon(Icons.bar_chart),
-                text: ClassDetailStrings.statisticsTab,
-              ),
+              StudentClassTasksTab(classId: widget.classId),
+              ClassStatisticsTab(classId: widget.classId, isTeacher: false),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            StudentClassInfoTab(
-              classId: widget.classId,
-              classFuture: _classFuture,
-              membership: _currentMembership,
-              onRefreshRequested: _refreshClassDetails,
-            ),
-            StudentClassTasksTab(classId: widget.classId),
-            ClassStatisticsTab(classId: widget.classId, isTeacher: false),
-          ],
         ),
       ),
     );
