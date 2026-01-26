@@ -1,5 +1,27 @@
 {
   "@@locale": "es",
+
+  "homeTab": "Inicio",
+  "@homeTab": {
+    "description": "Texto pestaña Inicio"
+  },
+  "classesTab": "Clases",
+  "@classesTab": {
+    "description": "Texto pestaña Clases"
+  },
+  "historyTab": "Historial",
+  "@historyTab": {
+    "description": "Texto pestaña Historial"
+  },
+  "statisticsTab": "Estadísticas",
+  "@statisticsTab": {
+    "description": "Texto pestaña Estadísticas"
+  },
+  "settingsTab": "Ajustes",
+  "@settingsTab": {
+    "description": "Texto pestaña Ajustes"
+  },
+
   
   "showPassword": "Mostrar contraseña",
   "@showPassword": {

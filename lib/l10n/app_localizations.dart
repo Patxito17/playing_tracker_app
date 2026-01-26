@@ -94,6 +94,36 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('es')];
 
+  /// Texto pestaña Inicio
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get homeTab;
+
+  /// Texto pestaña Clases
+  ///
+  /// In es, this message translates to:
+  /// **'Clases'**
+  String get classesTab;
+
+  /// Texto pestaña Historial
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get historyTab;
+
+  /// Texto pestaña Estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get statisticsTab;
+
+  /// Texto pestaña Ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTab;
+
   /// Texto para mostrar contraseña oculta
   ///
   /// In es, this message translates to:

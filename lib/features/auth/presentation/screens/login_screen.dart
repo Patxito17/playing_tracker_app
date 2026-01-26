@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -49,14 +48,23 @@ class _LoginScreenState extends State<LoginScreen> {
   /// Valida el campo de email
   void _validateEmail(String value) {
     setState(() {
-      _emailError = Validators.email(value);
+      _emailError = Validators.email(
+        value,
+        requiredMsg: context.l10n.emailRequired,
+        invalidMsg: context.l10n.emailInvalidFormat,
+      );
     });
   }
 
   /// Valida el campo de contraseña
   void _validatePassword(String value) {
     setState(() {
-      _passwordError = Validators.password(value);
+      _obscurePassword = true; // No es necesario, pero lo mantenemos si estaba
+      _passwordError = Validators.password(
+        value,
+        requiredMsg: context.l10n.passwordRequired,
+        minLengthMsg: context.l10n.passwordMinLength,
+      );
     });
   }
 
@@ -80,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: AuthStrings.loginTitle),
+      appBar: CustomAppBar(title: context.l10n.loginTitle),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -111,20 +119,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         SizedBox(height: context.screenHeight * 0.1),
                         Text(
-                          AuthStrings.welcomeTitle,
+                          context.l10n.welcomeTitle,
                           style: context.displaySmallBold,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppSpacing.s),
                         Text(
-                          AuthStrings.loginSubtitle,
+                          context.l10n.loginSubtitle,
                           style: context.bodyLargeOnSurfaceVariant,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppSpacing.xxl),
                         if (errorMessage != null) ...[
                           Semantics(
-                            label: AuthStrings.loginErrorSemanticLabel,
+                            label: context.l10n.loginErrorSemanticLabel,
                             liveRegion: true,
                             child: SelectableText.rich(
                               TextSpan(
@@ -140,8 +148,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                         CustomTextField(
                           controller: _emailController,
-                          label: AuthStrings.emailLabel,
-                          hint: AuthStrings.emailHint,
+                          label: context.l10n.emailLabel,
+                          hint: context.l10n.emailHint,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           textCapitalization: TextCapitalization.none,
@@ -164,8 +172,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: AppSpacing.l),
                         CustomTextField(
                           controller: _passwordController,
-                          label: AuthStrings.passwordLabel,
-                          hint: AuthStrings.passwordHint,
+                          label: context.l10n.passwordLabel,
+                          hint: context.l10n.passwordHint,
                           obscureText: _obscurePassword,
                           textInputAction: TextInputAction.done,
                           textCapitalization: TextCapitalization.none,
@@ -188,8 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             tooltip: _obscurePassword
-                                ? CommonStrings.showPassword
-                                : CommonStrings.hidePassword,
+                                ? context.l10n.showPassword
+                                : context.l10n.hidePassword,
                           ),
                           onChanged: (value) {
                             if (_passwordError != null) {
@@ -207,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () =>
                                 context.push(AppRoutes.forgotPassword),
                             child: Text(
-                              AuthStrings.forgotPasswordLink,
+                              context.l10n.forgotPasswordLink,
                               style: context.textPrimary?.copyWith(
                                 fontSize: context.textTheme.bodySmall?.fontSize,
                               ),
@@ -216,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         CustomButton(
-                          label: AuthStrings.loginButton,
+                          label: context.l10n.loginButton,
                           variant: CustomButtonVariant.filled,
                           isLoading: isLoading,
                           onPressed: isLoading ? null : _handleLogin,
@@ -226,13 +234,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              AuthStrings.noAccountQuestion,
+                              context.l10n.noAccountQuestion,
                               style: context.bodyMediumOnSurfaceVariant,
                             ),
                             TextButton(
                               onPressed: () => context.push(AppRoutes.register),
                               child: Text(
-                                AuthStrings.registerLink,
+                                context.l10n.registerLink,
                                 style: context.textPrimary?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize:
