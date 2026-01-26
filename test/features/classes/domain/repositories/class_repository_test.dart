@@ -12,6 +12,7 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 import 'package:playing_tracker/features/classes/domain/value_objects/create_class_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/join_class_input.dart';
+import 'package:playing_tracker/features/tasks/data/services/assignment_service.dart';
 
 class _MockClassService extends Mock implements ClassServiceContract {}
 
@@ -20,19 +21,25 @@ class _MockMembershipService extends Mock
 
 class _MockFanOutHelper extends Mock implements FanOutHelperContract {}
 
+class _MockAssignmentService extends Mock
+    implements AssignmentServiceContract {}
+
 void main() {
   late _MockClassService classService;
   late _MockMembershipService membershipService;
   late _MockFanOutHelper fanOutHelper;
+  late _MockAssignmentService assignmentService;
   late ClassRepository repository;
 
   setUp(() {
     classService = _MockClassService();
     membershipService = _MockMembershipService();
     fanOutHelper = _MockFanOutHelper();
+    assignmentService = _MockAssignmentService();
     repository = ClassRepositoryImpl(
       classService: classService,
       membershipService: membershipService,
+      assignmentService: assignmentService,
       fanOutHelper: fanOutHelper,
     );
   });

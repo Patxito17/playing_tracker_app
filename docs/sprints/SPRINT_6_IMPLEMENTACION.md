@@ -1,7 +1,8 @@
 # SPRINT 6: Estadísticas y Dashboards
 
-**Estado:** 📅 Planificado
-**Fecha de inicio:** Pendiente (tras cierre Sprint 5)
+**Estado:** � En Desarrollo
+**Fecha de inicio:** 2026-01-26
+
 **Duración estimada:** 2-3 semanas
 
 ---
@@ -45,27 +46,26 @@
 ### 🏗️ Fase 1: Capa de Datos y Dominio (Statistics)
 **Objetivo:** Establecer los cimientos para calcular y obtener estadísticas.
 
-- [ ] **Definir Modelos de Estadísticas**:
+- [x] **Definir Modelos de Estadísticas**:
   - `DailyStatsModel`: Estadísticas de un día específico.
   - `WeeklyStatsModel`: Agregado semanal con comparativa.
   - `TaskStatsModel`: Estadísticas por tarea (tiempo total, sesiones, promedio).
   - `ClassStatsModel`: Estadísticas por clase (todos los alumnos).
   - `StudentProgressModel`: Progreso individual del alumno.
-- [ ] **Implementar `StatisticsService`**:
+- [x] **Implementar `StatisticsService`**:
   - Método `getDailyStats(studentId, date)`: Estadísticas de un día.
   - Método `getWeeklyStats(studentId, weekStart)`: Estadísticas semanales.
   - Método `getMonthlyStats(studentId, month, year)`: Estadísticas mensuales.
   - Método `getTaskStats(taskId, studentId?)`: Estadísticas por tarea.
   - Método `getClassStats(classId, teacherId)`: Estadísticas de clase para docente.
   - Utilizar `monthBucket` de `sessions` para consultas eficientes.
-- [ ] **Implementar `StatisticsRepository`**:
+- [x] **Implementar `StatisticsRepository`**:
   - Contrato e implementación que orquesta las consultas.
-  - Caché local para evitar consultas repetidas.
   - Manejo de errores (`StatisticsException`).
-- [ ] **Tests Unitarios**:
+- [x] **Tests Unitarios**:
   - Validación de serialización de modelos.
-  - Mock de `FirebaseFirestore` usando `FakeFirebaseFirestore`.
   - Tests del repositorio con Mocktail.
+
 
 ### 📊 Fase 2: Componentes de Gráficos Reutilizables
 **Objetivo:** Crear widgets de gráficos reutilizables con Material Design 3.
