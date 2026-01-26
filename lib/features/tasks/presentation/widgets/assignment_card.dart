@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
@@ -22,7 +21,7 @@ class AssignmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = assignment.status;
-    final statusText = _getStatusText(status);
+    final statusText = _getStatusText(context, status);
     final statusColor = _getStatusColor(context, status);
     final title = assignment.taskTitle ?? 'Sin título';
 
@@ -56,7 +55,7 @@ class AssignmentCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.m),
           // Botón de iniciar sesión siempre visible
           CustomButton(
-            label: TaskStrings.startStudySession,
+            label: context.l10n.startStudySession,
             variant: CustomButtonVariant.filled,
             icon: Icons.play_arrow,
             onPressed: () => _navigateToTimer(context),
@@ -75,20 +74,20 @@ class AssignmentCard extends StatelessWidget {
 
     if (daysRemainingValue != null) {
       if (daysRemainingValue < 0) {
-        dueDateMessage = TaskStrings.overdueDays(-daysRemainingValue);
+        dueDateMessage = context.l10n.overdueDays(-daysRemainingValue);
         dueDateColor = Theme.of(context).colorScheme.error;
       } else if (daysRemainingValue == 0) {
-        dueDateMessage = TaskStrings.dueToday;
+        dueDateMessage = context.l10n.dueToday;
         dueDateColor = Colors.orange;
       } else if (daysRemainingValue == 1) {
-        dueDateMessage = TaskStrings.dueTomorrow;
+        dueDateMessage = context.l10n.dueTomorrow;
         dueDateColor = Colors.orange;
       } else {
-        dueDateMessage = TaskStrings.daysRemaining(daysRemainingValue);
+        dueDateMessage = context.l10n.daysRemaining(daysRemainingValue);
         dueDateColor = Theme.of(context).colorScheme.primary;
       }
     } else {
-      dueDateMessage = TaskStrings.noDueDate;
+      dueDateMessage = context.l10n.noDueDate;
       dueDateColor = Theme.of(context).colorScheme.outline;
     }
 
@@ -98,12 +97,12 @@ class AssignmentCard extends StatelessWidget {
 
     if (remainingSeconds < 0) {
       final extraMinutes = (-remainingSeconds / 60).round();
-      studyMessage = TaskStrings.extraStudyTime('$extraMinutes min');
+      studyMessage = context.l10n.extraStudyTime('$extraMinutes min');
     } else if (remainingSeconds == 0) {
-      studyMessage = TaskStrings.studyGoalReached;
+      studyMessage = context.l10n.studyGoalReached;
     } else {
       final minutes = (remainingSeconds / 60).round();
-      studyMessage = TaskStrings.studyTimeRemaining('$minutes min');
+      studyMessage = context.l10n.studyTimeRemaining('$minutes min');
     }
 
     showModalBottomSheet(
@@ -115,7 +114,7 @@ class AssignmentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              TaskStrings.taskProgressTitle,
+              context.l10n.taskProgressTitle,
               style: context.titleLargeBold,
               textAlign: TextAlign.center,
             ),
@@ -133,14 +132,14 @@ class AssignmentCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.m),
             Text(
-              TaskStrings.keepGoing,
+              context.l10n.keepGoing,
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.l),
             FilledButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(CommonStrings.close),
+              child: Text(context.l10n.close),
             ),
           ],
         ),
@@ -163,14 +162,14 @@ class AssignmentCard extends StatelessWidget {
     );
   }
 
-  String _getStatusText(TaskStatus status) {
+  String _getStatusText(BuildContext context, TaskStatus status) {
     switch (status) {
       case TaskStatus.pending:
-        return TaskStrings.pending;
+        return context.l10n.pending;
       case TaskStatus.inProgress:
-        return TaskStrings.inProgress;
+        return context.l10n.inProgress;
       case TaskStatus.completed:
-        return TaskStrings.completed;
+        return context.l10n.completed;
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../domain/enums/task_status.dart';
 import '../../domain/value_objects/task_filters.dart';
 import '../cubit/assignment_cubit.dart';
@@ -18,10 +18,7 @@ class AssignmentFiltersBottomSheet extends StatefulWidget {
   /// Filtros iniciales a mostrar en el bottom sheet
   final TaskFilters initialFilters;
 
-  const AssignmentFiltersBottomSheet({
-    super.key,
-    required this.initialFilters,
-  });
+  const AssignmentFiltersBottomSheet({super.key, required this.initialFilters});
 
   @override
   State<AssignmentFiltersBottomSheet> createState() =>
@@ -111,14 +108,14 @@ class _AssignmentFiltersBottomSheetState
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              TaskStrings.filters,
+              context.l10n.filters,
               style: theme.textTheme.titleLarge,
               textAlign: TextAlign.left,
             ),
             const SizedBox(height: AppSpacing.m),
             // Filtro por estado de asignación
             Text(
-              TaskStrings.filterByAssignmentStatus,
+              context.l10n.filterByAssignmentStatus,
               style: theme.textTheme.titleSmall,
             ),
             const SizedBox(height: AppSpacing.s),
@@ -126,15 +123,15 @@ class _AssignmentFiltersBottomSheetState
               segments: [
                 ButtonSegment<TaskStatus?>(
                   value: TaskStatus.pending,
-                  label: Text(TaskStrings.pending),
+                  label: Text(context.l10n.pending),
                 ),
                 ButtonSegment<TaskStatus?>(
                   value: TaskStatus.inProgress,
-                  label: Text(TaskStrings.inProgress),
+                  label: Text(context.l10n.inProgress),
                 ),
                 ButtonSegment<TaskStatus?>(
                   value: TaskStatus.completed,
-                  label: Text(TaskStrings.completed),
+                  label: Text(context.l10n.completed),
                 ),
               ],
               selected: _selectedStatus != null ? {_selectedStatus} : {},
@@ -148,10 +145,7 @@ class _AssignmentFiltersBottomSheetState
             ),
             const SizedBox(height: AppSpacing.m),
             // Rango de fechas de asignación
-            Text(
-              TaskStrings.filterByDate,
-              style: theme.textTheme.titleSmall,
-            ),
+            Text(context.l10n.filterByDate, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.s),
             Row(
               children: [
@@ -163,8 +157,8 @@ class _AssignmentFiltersBottomSheetState
                     ),
                     child: Text(
                       _assignedFrom != null
-                          ? TaskStrings.formatShortDate(_assignedFrom!)
-                          : TaskStrings.fromLabel,
+                          ? '${_assignedFrom!.day.toString().padLeft(2, '0')}/${_assignedFrom!.month.toString().padLeft(2, '0')}/${_assignedFrom!.year}'
+                          : context.l10n.fromLabel,
                     ),
                   ),
                 ),
@@ -177,8 +171,8 @@ class _AssignmentFiltersBottomSheetState
                     ),
                     child: Text(
                       _assignedTo != null
-                          ? TaskStrings.formatShortDate(_assignedTo!)
-                          : TaskStrings.toLabel,
+                          ? '${_assignedTo!.day.toString().padLeft(2, '0')}/${_assignedTo!.month.toString().padLeft(2, '0')}/${_assignedTo!.year}'
+                          : context.l10n.toLabel,
                     ),
                   ),
                 ),
@@ -190,14 +184,14 @@ class _AssignmentFiltersBottomSheetState
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _handleClear,
-                    child: const Text(TaskStrings.clearFilters),
+                    child: Text(context.l10n.clearFilters),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.s),
                 Expanded(
                   child: FilledButton(
                     onPressed: _handleApply,
-                    child: const Text(TaskStrings.applyFilters),
+                    child: Text(context.l10n.applyFilters),
                   ),
                 ),
               ],
@@ -208,4 +202,3 @@ class _AssignmentFiltersBottomSheetState
     );
   }
 }
-

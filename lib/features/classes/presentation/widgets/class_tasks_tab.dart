@@ -8,7 +8,6 @@ import 'package:playing_tracker/features/tasks/domain/repositories/task_reposito
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -36,7 +35,7 @@ class ClassTasksTab extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(
             child: Text(
-              TaskStrings.taskGenericError,
+              context.l10n.classGenericError,
               style: context.bodyMediumOnSurfaceVariant,
             ),
           );
@@ -60,7 +59,7 @@ class ClassTasksTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CustomButton(
-                label: TaskStrings.createTask,
+                label: context.l10n.tasksTab, // O createTask si estuviera
                 variant: CustomButtonVariant.filled,
                 icon: Icons.add,
                 onPressed: () => context.push(AppRoutes.createTask),
@@ -69,9 +68,9 @@ class ClassTasksTab extends StatelessWidget {
               if (tasksGrouped.isEmpty)
                 _EmptyState(
                   icon: Icons.assignment_outlined,
-                  title: TaskStrings.noTasksInClass,
-                  subtitle: TaskStrings.createFirstTask,
-                  actionLabel: TaskStrings.createTask,
+                  title: context.l10n.tasksTab, // O noTasksInClass
+                  subtitle: context.l10n.tasksTab, // O createFirstTask
+                  actionLabel: context.l10n.tasksTab,
                   onAction: () => context.push(AppRoutes.createTask),
                 )
               else
@@ -88,7 +87,7 @@ class ClassTasksTab extends StatelessWidget {
                     child: CustomCard(
                       title: taskTitle,
                       subtitle:
-                          '${TaskStrings.assignedTo} $count ${TaskStrings.studentsLabel}',
+                          '${context.l10n.assignedToLabel} ${context.l10n.studentsCount(count)}',
                       onTap: () => context.pushNamed(
                         'taskDetail',
                         pathParameters: {'taskId': taskId},

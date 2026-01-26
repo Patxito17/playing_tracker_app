@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/classes/domain/models/class_model.dart';
 import '../../../../features/classes/domain/models/membership_model.dart';
@@ -25,7 +24,7 @@ class ManageStudentsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: ClassDetailStrings.manageStudentsTitle,
+        title: context.l10n.manageStudentsTitle,
         actions: const [],
       ),
       body: ManageStudentsView(classId: classId),
@@ -63,10 +62,15 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
   }
 
   void _handleOperationSuccess(BuildContext context, MembershipSuccess state) {
-    final message = state.message;
-    if (message == null) {
-      return;
+    var message = state.message;
+    if (message == null || message.isEmpty) {
+      message = switch (state.action) {
+        MembershipAction.regeneratedAccessCode =>
+          context.l10n.membershipRegenerateSuccess,
+        _ => context.l10n.genericOperationSuccess,
+      };
     }
+
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -75,7 +79,7 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
   void _handleOperationError(BuildContext context, MembershipError state) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(state.message),
+        content: Text(state.message ?? context.l10n.membershipServiceError),
         backgroundColor: context.colorScheme.error,
       ),
     );
@@ -86,16 +90,16 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
         await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(ClassesStrings.regenerateAccessCodeAction),
-            content: Text(ClassesStrings.regenerateCodeConfirmation),
+            title: Text(context.l10n.regenerateAccessCodeAction),
+            content: Text(context.l10n.regenerateCodeConfirmation),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(CommonStrings.cancel),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(CommonStrings.confirm),
+                child: Text(context.l10n.confirm),
               ),
             ],
           ),
@@ -113,7 +117,7 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
     Clipboard.setData(ClipboardData(text: code));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(CommonStrings.copied),
+        content: Text(context.l10n.copied),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -132,12 +136,12 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
         await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(StudentStrings.removeStudent),
-            content: Text(ClassesStrings.membershipDeleteConfirmation),
+            title: Text(context.l10n.removeStudent),
+            content: Text(context.l10n.removeStudentConfirmation),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(CommonStrings.cancel),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
@@ -145,7 +149,7 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
                   backgroundColor: context.colorScheme.error,
                   foregroundColor: context.colorScheme.onError,
                 ),
-                child: Text(CommonStrings.confirm),
+                child: Text(context.l10n.confirm),
               ),
             ],
           ),
@@ -203,7 +207,7 @@ class _ManageStudentsViewState extends State<ManageStudentsView> {
                       padding: const EdgeInsets.all(AppSpacing.m),
                       child: SelectableText.rich(
                         TextSpan(
-                          text: ClassesStrings.classGenericError,
+                          text: context.l10n.classGenericError,
                           style: context.bodyMediumOnSurfaceVariant,
                         ),
                       ),
@@ -262,13 +266,15 @@ class _StateAwareMembersContent extends StatelessWidget {
         child: CircularProgressIndicator(),
       ),
       MembershipEmpty(:final message) => _EmptyManageStudentsState(
-        title: message,
-        subtitle: StudentStrings.studentsJoinWithCode,
-        actionLabel: CommonStrings.close,
+        title: message?.isNotEmpty == true
+            ? message!
+            : context.l10n.noStudentsInClass,
+        subtitle: context.l10n.studentsJoinWithCode,
+        actionLabel: context.l10n.close,
         onAction: () => Navigator.of(context).maybePop(),
       ),
       MembershipListError(:final message) => _ErrorState(
-        message: message,
+        message: message ?? context.l10n.loadingError,
         onRetry: onRefresh,
       ),
       MembershipListSuccess() => _StudentsList(
@@ -346,7 +352,7 @@ class _LoadMoreTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.l),
       child: FilledButton.tonal(
         onPressed: onLoadMore,
-        child: Text(CommonStrings.loadMore),
+        child: Text(context.l10n.loadMore),
       ),
     );
   }
@@ -375,7 +381,7 @@ class _StudentTile extends StatelessWidget {
     final studentEmail = member.studentEmail?.trim();
     final subtitle = studentEmail?.isNotEmpty == true
         ? studentEmail
-        : '${StudentStrings.studentIdLabel}: ${member.studentId}';
+        : 'ID: ${member.studentId}';
     final isActive = member.isActive;
 
     return Padding(
@@ -393,15 +399,15 @@ class _StudentTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${StudentStrings.joinedAtLabel} $joinedAt',
+                      '${context.l10n.joinedAtLabel} $joinedAt',
                       style: context.bodySmallOnSurfaceVariant,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Chip(
                       label: Text(
                         isActive
-                            ? ClassesStrings.classStatusActive
-                            : StudentStrings.inactiveStudentLabel,
+                            ? context.l10n.classStatusActive
+                            : context.l10n.classStatusArchived,
                       ),
                       backgroundColor: isActive
                           ? context.colorScheme.primary.withValues(alpha: 0.12)
@@ -422,8 +428,10 @@ class _StudentTile extends StatelessWidget {
                   IconButton(
                     onPressed: onToggleStatus,
                     tooltip: isActive
-                        ? StudentStrings.deactivateStudentAction
-                        : StudentStrings.activateStudentAction,
+                        ? context
+                              .l10n
+                              .archiveClassAction // Deactivate
+                        : context.l10n.activateClassAction, // Activate
                     icon: Icon(
                       isActive ? Icons.visibility_off : Icons.visibility,
                       color: isActive
@@ -433,7 +441,7 @@ class _StudentTile extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: onDelete,
-                    tooltip: StudentStrings.deleteStudentAction,
+                    tooltip: context.l10n.delete,
                     icon: const Icon(Icons.delete_forever_outlined),
                     color: context.colorScheme.error,
                   ),
@@ -471,10 +479,7 @@ class _ErrorState extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.l),
-        FilledButton.tonal(
-          onPressed: onRetry,
-          child: Text(CommonStrings.retry),
-        ),
+        FilledButton.tonal(onPressed: onRetry, child: Text(context.l10n.retry)),
       ],
     );
   }

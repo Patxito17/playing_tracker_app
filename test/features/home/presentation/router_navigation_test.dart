@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/config/routes/app_routes.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../helpers/mock_hydrated_storage.dart';
 
@@ -38,7 +39,16 @@ void main() {
       value: mockAuthRepository,
       child: BlocProvider<AuthCubit>.value(
         value: testAuthCubit,
-        child: MaterialApp.router(routerConfig: appRoutes.router),
+        child: MaterialApp.router(
+          routerConfig: appRoutes.router,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('es')],
+        ),
       ),
     );
   }
@@ -49,7 +59,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text(AuthStrings.loginSubtitle), findsOneWidget);
+    expect(find.text('Inicia sesión para continuar'), findsOneWidget);
   });
 
   testWidgets('docente autenticado llega a su home', (tester) async {
@@ -60,7 +70,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text(HomeStrings.teacherWelcomeTitle), findsOneWidget);
+    expect(find.text('Tus clases están listas'), findsOneWidget);
   });
 
   testWidgets(
@@ -73,13 +83,13 @@ void main() {
       await tester.pumpWidget(buildRouter());
       await tester.pumpAndSettle();
 
-      expect(find.text(HomeStrings.studentWelcomeTitle), findsOneWidget);
+      expect(find.text('Tu práctica continúa'), findsOneWidget);
 
       appRoutes.router.go(AppRoutes.teacherClassesList);
       await tester.pumpAndSettle();
 
-      expect(find.text(HomeStrings.studentWelcomeTitle), findsOneWidget);
-      expect(find.text(HomeStrings.teacherWelcomeTitle), findsNothing);
+      expect(find.text('Tu práctica continúa'), findsOneWidget);
+      expect(find.text('Tus clases están listas'), findsNothing);
     },
   );
 }

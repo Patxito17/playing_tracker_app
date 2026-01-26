@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart'
     show ClassRepository, ClassRepositoryException, InvalidAccessCodeException;
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
@@ -32,10 +31,7 @@ void main() {
     },
     expect: () => const [
       MembershipLoading(),
-      MembershipSuccess(
-        action: MembershipAction.invitedStudent,
-        message: ClassesStrings.membershipInviteSuccess,
-      ),
+      MembershipSuccess(action: MembershipAction.invitedStudent, message: ''),
     ],
   );
 
@@ -69,10 +65,7 @@ void main() {
     },
     expect: () => const [
       MembershipLoading(),
-      MembershipSuccess(
-        action: MembershipAction.joinedClass,
-        message: ClassesStrings.membershipJoinSuccess,
-      ),
+      MembershipSuccess(action: MembershipAction.joinedClass, message: ''),
     ],
     verify: (_) => verify(() => repository.joinClassWithCode(any())).called(1),
   );

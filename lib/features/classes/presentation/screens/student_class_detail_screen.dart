@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../../config/routes/app_routes.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -81,11 +82,15 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
               return;
             }
             if (classModel == null) {
-              _handleForcedExit(ClassDetailStrings.classDeletedExitMessage);
+              _handleForcedExit(
+                AppLocalizations.of(context)!.classDeletedExitMessage,
+              );
               return;
             }
             if (!classModel.isActive) {
-              _handleForcedExit(ClassDetailStrings.classArchivedExitMessage);
+              _handleForcedExit(
+                AppLocalizations.of(context)!.classArchivedExitMessage,
+              );
               return;
             }
             setState(() {
@@ -96,7 +101,7 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
             if (!mounted || _hasForcedExit) {
               return;
             }
-            _handleForcedExit(ClassesStrings.classGenericError);
+            _handleForcedExit(context.l10n.classGenericError);
           },
         );
   }
@@ -119,7 +124,7 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
             final membership = _findMembership(memberships);
             if (membership == null || !membership.isActive) {
               _handleForcedExit(
-                ClassDetailStrings.membershipRevokedExitMessage,
+                AppLocalizations.of(context)!.membershipRevokedExitMessage,
               );
               return;
             }
@@ -133,7 +138,7 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
             if (!mounted || _hasForcedExit) {
               return;
             }
-            _handleForcedExit(ClassesStrings.classGenericError);
+            _handleForcedExit(context.l10n.classGenericError);
           },
         );
   }
@@ -171,25 +176,25 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(ClassDetailStrings.classDetailTitle),
+            title: Text(context.l10n.classDetailTitle),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.pop(),
-              tooltip: CommonStrings.back,
+              tooltip: context.l10n.back,
             ),
             bottom: CustomTabBar(
-              tabs: const [
+              tabs: [
                 Tab(
-                  icon: Icon(Icons.info_outline),
-                  text: ClassDetailStrings.infoTab,
+                  icon: const Icon(Icons.info_outline),
+                  text: context.l10n.infoTab,
                 ),
                 Tab(
-                  icon: Icon(Icons.assignment),
-                  text: ClassDetailStrings.tasksTab,
+                  icon: const Icon(Icons.assignment),
+                  text: context.l10n.tasksTab,
                 ),
                 Tab(
-                  icon: Icon(Icons.bar_chart),
-                  text: ClassDetailStrings.statisticsTab,
+                  icon: const Icon(Icons.bar_chart),
+                  text: context.l10n.statisticsTab,
                 ),
               ],
             ),

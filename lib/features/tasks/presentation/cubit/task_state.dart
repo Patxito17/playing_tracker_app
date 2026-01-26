@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/value_objects/task_filters.dart';
 
@@ -23,9 +22,9 @@ final class TaskLoading extends TaskState {
 
 /// Estado que representa ausencia de tareas disponibles.
 final class TaskEmpty extends TaskState {
-  const TaskEmpty({this.message = TaskStrings.noTasksCreated});
+  const TaskEmpty({this.message});
 
-  final String message;
+  final String? message;
 
   @override
   List<Object?> get props => [message];
@@ -59,9 +58,9 @@ final class TaskActionSuccess extends TaskState {
 
 /// Estado que encapsula errores de negocio o de infraestructura.
 final class TaskError extends TaskState {
-  const TaskError({required this.message, this.cause});
+  const TaskError({this.message, this.cause});
 
-  final String message;
+  final String? message;
   final Object? cause;
 
   @override

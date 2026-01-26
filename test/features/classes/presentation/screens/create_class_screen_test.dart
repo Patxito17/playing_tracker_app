@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
@@ -15,6 +15,7 @@ import 'package:playing_tracker/features/classes/presentation/cubit/class_cubit.
 import 'package:playing_tracker/features/classes/presentation/cubit/class_state.dart';
 import 'package:playing_tracker/features/classes/presentation/screens/create_class_screen.dart';
 import 'package:playing_tracker/shared/widgets/custom_button.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockClassRepository extends Mock implements ClassRepository {}
 
@@ -62,7 +63,16 @@ void main() {
         ),
       ],
     );
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
+    );
   }
 
   testWidgets('invoca createClass cuando el formulario es válido', (
@@ -84,16 +94,14 @@ void main() {
     await tester.pumpWidget(buildTestScreen());
 
     await tester.enterText(
-      find.bySemanticsLabel(ClassesStrings.classNameLabel),
+      find.bySemanticsLabel('Nombre de la clase'),
       'Piano nivel 1',
     );
     await tester.enterText(
-      find.bySemanticsLabel(ClassesStrings.classDescriptionLabel),
+      find.bySemanticsLabel('Descripción'),
       'Descripción demo',
     );
-    await tester.tap(
-      find.widgetWithText(CustomButton, ClassesStrings.createClassButton),
-    );
+    await tester.tap(find.widgetWithText(CustomButton, 'Crear clase'));
     await tester.pump();
   });
 

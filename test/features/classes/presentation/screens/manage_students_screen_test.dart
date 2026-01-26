@@ -4,14 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_cubit.dart';
 import 'package:playing_tracker/features/classes/presentation/screens/manage_students_screen.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockClassRepository extends Mock implements ClassRepository {}
 
@@ -70,7 +71,18 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('es')],
+      ),
+    );
   }
 
   testWidgets(
@@ -95,7 +107,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(StudentStrings.noStudentsInClass), findsOneWidget);
+    expect(find.text('No hay estudiantes en esta clase'), findsOneWidget);
   });
 
   testWidgets('renderiza lista cuando el repositorio retorna miembros', (
@@ -119,6 +131,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('ID del alumno: ${member.studentId}'), findsOneWidget);
+    expect(find.text('ID: ${member.studentId}'), findsOneWidget);
   });
 }

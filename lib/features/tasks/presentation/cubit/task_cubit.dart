@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_state.dart';
@@ -22,7 +21,7 @@ final class TaskCubit extends Cubit<TaskState> {
   }) async {
     final sanitizedId = teacherId.trim();
     if (sanitizedId.isEmpty) {
-      emit(const TaskError(message: TaskStrings.taskGenericError));
+      emit(const TaskError(message: 'ID de docente no válido.'));
       return;
     }
     _currentTeacherId = sanitizedId;
@@ -35,7 +34,7 @@ final class TaskCubit extends Cubit<TaskState> {
         .listen(
           (tasks) {
             if (tasks.isEmpty) {
-              emit(const TaskEmpty());
+              emit(const TaskEmpty(message: null));
               return;
             }
             emit(
@@ -52,7 +51,10 @@ final class TaskCubit extends Cubit<TaskState> {
               return;
             }
             emit(
-              TaskError(message: TaskStrings.taskGenericError, cause: error),
+              TaskError(
+                message: 'Ocurrió un error inesperado al cargar tareas.',
+                cause: error,
+              ),
             );
           },
         );
@@ -62,7 +64,9 @@ final class TaskCubit extends Cubit<TaskState> {
   Future<void> refreshTasks() async {
     final teacherId = _currentTeacherId;
     if (teacherId == null) {
-      emit(const TaskError(message: TaskStrings.taskGenericError));
+      emit(
+        const TaskError(message: 'No hay docente autenticado para refrescar.'),
+      );
       return;
     }
     await watchTasks(teacherId: teacherId, filters: _currentFilters);
@@ -73,7 +77,9 @@ final class TaskCubit extends Cubit<TaskState> {
     _currentFilters = filters;
     final teacherId = _currentTeacherId;
     if (teacherId == null) {
-      emit(const TaskError(message: TaskStrings.taskGenericError));
+      emit(
+        const TaskError(message: 'No hay docente autenticado para filtrar.'),
+      );
       return;
     }
     await watchTasks(teacherId: teacherId, filters: filters);
@@ -87,14 +93,14 @@ final class TaskCubit extends Cubit<TaskState> {
       emit(
         TaskActionSuccess(
           action: TaskAction.created,
-          message: TaskStrings.taskCreateSuccess,
+          message: null,
           taskId: task.id,
         ),
       );
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
-      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+      emit(TaskError(message: '', cause: error));
     }
   }
 
@@ -103,16 +109,11 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.updateTask(input);
-      emit(
-        const TaskActionSuccess(
-          action: TaskAction.updated,
-          message: TaskStrings.taskUpdateSuccess,
-        ),
-      );
+      emit(const TaskActionSuccess(action: TaskAction.updated, message: ''));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
-      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+      emit(TaskError(message: '', cause: error));
     }
   }
 
@@ -130,7 +131,7 @@ final class TaskCubit extends Cubit<TaskState> {
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
-      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+      emit(TaskError(message: '', cause: error));
     }
   }
 
@@ -139,16 +140,11 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.deleteTask(taskId);
-      emit(
-        const TaskActionSuccess(
-          action: TaskAction.deleted,
-          message: TaskStrings.taskDeleteSuccess,
-        ),
-      );
+      emit(const TaskActionSuccess(action: TaskAction.deleted, message: ''));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
-      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+      emit(TaskError(message: '', cause: error));
     }
   }
 
@@ -157,16 +153,11 @@ final class TaskCubit extends Cubit<TaskState> {
     emit(const TaskLoading());
     try {
       await _repository.assignTaskToClass(input);
-      emit(
-        const TaskActionSuccess(
-          action: TaskAction.assigned,
-          message: TaskStrings.taskAssignSuccess,
-        ),
-      );
+      emit(const TaskActionSuccess(action: TaskAction.assigned, message: ''));
     } on TaskRepositoryException catch (error) {
       emit(TaskError(message: error.message, cause: error));
     } catch (error) {
-      emit(TaskError(message: TaskStrings.taskGenericError, cause: error));
+      emit(TaskError(message: '', cause: error));
     }
   }
 

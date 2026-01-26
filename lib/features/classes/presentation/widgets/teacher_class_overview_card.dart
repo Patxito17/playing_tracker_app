@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/classes/domain/models/class_model.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -30,8 +29,8 @@ class TeacherClassOverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = classModel.canJoin;
     final statusLabel = isActive
-        ? ClassesStrings.classStatusActive
-        : ClassesStrings.classStatusArchived;
+        ? context.l10n.classStatusActive
+        : context.l10n.classStatusArchived;
     final statusColor = isActive
         ? context.colorScheme.primary
         : context.colorScheme.outline;
@@ -39,10 +38,10 @@ class TeacherClassOverviewCard extends StatelessWidget {
       'dd/MM/yyyy',
     ).format(classModel.createdAt.toDate());
     final studentsLabel = studentsCount != null
-        ? '${studentsCount!} ${ClassesStrings.studentsCount}'
+        ? context.l10n.studentsCount(studentsCount!)
         : null;
     final tasksLabel = activeTasksCount != null
-        ? '${activeTasksCount!} ${TaskStrings.tasksTitle.toLowerCase()}'
+        ? context.l10n.tasksCount(activeTasksCount!)
         : null;
 
     final textTheme = Theme.of(context).textTheme;
@@ -64,7 +63,7 @@ class TeacherClassOverviewCard extends StatelessWidget {
               ),
               Chip(
                 avatar: const Icon(Icons.event, size: 16),
-                label: Text('${ClassDetailStrings.created}: $createdAt'),
+                label: Text('${context.l10n.createdDateLabel}: $createdAt'),
               ),
               if (studentsLabel != null)
                 Chip(
@@ -83,18 +82,18 @@ class TeacherClassOverviewCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${ClassesStrings.accessCodeValueLabel}: ${classModel.accessCode}',
+                  '${context.l10n.accessCodeLabel}: ${classModel.accessCode}',
                   style: textTheme.bodyMedium,
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.copy_outlined),
-                tooltip: CommonStrings.copy,
+                tooltip: context.l10n.copy,
                 onPressed: () => onCopyCode(classModel.accessCode),
               ),
               IconButton(
                 icon: const Icon(Icons.refresh_rounded),
-                tooltip: ClassesStrings.regenerateAccessCodeAction,
+                tooltip: context.l10n.regenerateAccessCodeAction,
                 onPressed: onRegenerateCode,
               ),
             ],
@@ -102,7 +101,7 @@ class TeacherClassOverviewCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.s),
           if (showStudentsHint)
             Text(
-              StudentStrings.studentsJoinWithCode,
+              context.l10n.studentsJoinWithCode,
               style: textTheme.bodySmall?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
               ),

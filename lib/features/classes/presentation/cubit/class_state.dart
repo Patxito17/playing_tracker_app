@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 
 /// Estados posibles del [ClassCubit].
@@ -22,9 +21,9 @@ final class ClassLoading extends ClassState {
 
 /// Estado que representa ausencia de clases disponibles.
 final class ClassEmpty extends ClassState {
-  const ClassEmpty({this.message = ClassesStrings.noClassesCreated});
+  const ClassEmpty({this.message}); // El mensaje vendrá de l10n en la UI
 
-  final String message;
+  final String? message;
 
   @override
   List<Object?> get props => [message];
@@ -57,9 +56,9 @@ final class ClassActionSuccess extends ClassState {
 
 /// Estado que encapsula errores de negocio o de infraestructura.
 final class ClassError extends ClassState {
-  const ClassError({required this.message, this.cause});
+  const ClassError({this.message, this.cause});
 
-  final String message;
+  final String? message;
   final Object? cause;
 
   @override

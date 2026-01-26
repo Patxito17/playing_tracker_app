@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -55,17 +54,19 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: ClassesStrings.myClassesTitle,
+            title: context.l10n.myClassesTitle,
             actions: [
               IconButton(
                 icon: const Icon(Icons.home_rounded),
-                tooltip: HomeStrings.teacherHomeTitle,
+                tooltip: context.l10n.teacherHomeTitle,
                 onPressed: goHome,
               ),
               IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: isLoading ? null : () => _openCreateClass(context),
-                tooltip: ClassesStrings.createNewClass,
+                tooltip: context
+                    .l10n
+                    .createTask, // Reutilizando o deberia ser "Crear nueva clase"
               ),
             ],
           ),
@@ -82,7 +83,7 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: isLoading ? null : () => _openCreateClass(context),
             icon: const Icon(Icons.add),
-            label: Text(ClassesStrings.createClass),
+            label: Text(context.l10n.createClassAction),
           ),
         );
       },
@@ -119,9 +120,11 @@ class _StateAwareContent extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
                   child: _EmptyState(
                     icon: Icons.class_outlined,
-                    title: message,
-                    subtitle: ClassesStrings.createFirstClass,
-                    actionLabel: ClassesStrings.createClass,
+                    title: message?.isNotEmpty == true
+                        ? message!
+                        : context.l10n.noClassesCreated,
+                    subtitle: context.l10n.createFirstClass,
+                    actionLabel: context.l10n.createClassAction,
                     onAction: onCreateClass,
                   ),
                 ),
@@ -131,7 +134,7 @@ class _StateAwareContent extends StatelessWidget {
         },
       ),
       ClassError(:final message) => _ErrorState(
-        message: message,
+        message: message ?? context.l10n.classGenericError,
         onRetry: onRetry,
       ),
       ClassSuccess(:final classes) => _ClassesList(
@@ -157,7 +160,7 @@ class _ClassesList extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.l),
       children: [
         Text(
-          ClassesStrings.classesCreatedTitle,
+          context.l10n.classesCreatedTitle,
           style: context.headlineMediumBold,
         ),
         const SizedBox(height: AppSpacing.l),
@@ -184,8 +187,8 @@ class _ClassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = classModel.canJoin;
     final statusLabel = isActive
-        ? ClassesStrings.classStatusActive
-        : ClassesStrings.classStatusArchived;
+        ? context.l10n.classStatusActive
+        : context.l10n.classStatusArchived;
     final statusColor = isActive
         ? context.colorScheme.primary
         : context.colorScheme.outline;
@@ -229,7 +232,7 @@ class _ClassCard extends StatelessWidget {
                   _InfoChip(
                     icon: Icons.password_rounded,
                     label:
-                        '${ClassesStrings.accessCodeValueLabel}: ${classModel.accessCode}',
+                        '${context.l10n.accessCodeLabel}: ${classModel.accessCode}',
                   ),
                   _InfoChip(icon: Icons.calendar_month, label: creationDate),
                 ],
@@ -360,10 +363,7 @@ class _ErrorState extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.l),
-        FilledButton.tonal(
-          onPressed: onRetry,
-          child: Text(CommonStrings.retry),
-        ),
+        FilledButton.tonal(onPressed: onRetry, child: Text(context.l10n.retry)),
       ],
     );
   }

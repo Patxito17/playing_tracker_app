@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
@@ -423,9 +422,8 @@ final class MembershipService implements MembershipServiceContract {
           return;
         }
 
-        // Si existe pero está inactivo, el alumno NO puede reactivarse solo
         throw FirebaseErrorMapperException(
-          ClassesStrings.membershipRevokedError,
+          'No puedes unirte a esta clase porque tu membresía ha sido desactivada. Contacta con tu profesor.',
         );
       }
 

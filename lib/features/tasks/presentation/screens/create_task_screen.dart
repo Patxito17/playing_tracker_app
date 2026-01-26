@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -81,7 +80,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     final authState = context.read<AuthCubit>().state;
     if (authState is! AuthAuthenticated) {
       setState(() {
-        _formError = TaskStrings.taskGenericError;
+        _formError = context.l10n.classGenericError; // O similar
       });
       return;
     }
@@ -117,7 +116,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
 
     if (_selectedClasses.isEmpty) {
       setState(() {
-        _formError = ValidationStrings.atLeastOneClassRequired;
+        _formError = context.l10n.atLeastOneClassRequired;
       });
       return;
     }
@@ -134,7 +133,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         if (membersPage.members.isEmpty) {
           if (!mounted) return;
           setState(() {
-            _formError = TaskStrings.noStudentsInClassError;
+            _formError = context.l10n.noStudentsInClassError;
           });
           return;
         }
@@ -142,7 +141,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         // Si hay error al verificar, mejor prevenir la creación
         if (!mounted) return;
         setState(() {
-          _formError = TaskStrings.taskGenericError;
+          _formError = context.l10n.classGenericError;
         });
         return;
       }
@@ -206,7 +205,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     }
 
     setState(() {
-      _successMessage = state.message ?? TaskStrings.taskCreateSuccess;
+      _successMessage = state.message ?? context.l10n.taskCreateSuccess;
       _formError = null;
     });
 
@@ -305,7 +304,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: TaskStrings.createTask),
+      appBar: CustomAppBar(title: context.l10n.createTaskButton),
       body: MultiBlocListener(
         listeners: [
           // Escucha original de TaskCubit
@@ -340,27 +339,27 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      TaskStrings.newTaskTitle,
+                      context.l10n.createTaskButton, // O newTaskTitle
                       style: context.textTheme.headlineMedium,
                     ),
                     const SizedBox(height: AppSpacing.l),
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
-                        labelText: TaskStrings.taskTitleLabel,
-                        hintText: TaskStrings.taskTitleHint,
+                        labelText: context.l10n.taskTitleLabel,
+                        hintText: context.l10n.taskTitleHint,
                       ),
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return ValidationStrings.required(
-                            TaskStrings.taskTitleLabel,
+                          return context.l10n.fieldRequired(
+                            context.l10n.taskTitleLabel,
                           );
                         }
                         if (value.trim().length < 3) {
-                          return ValidationStrings.nameMinLength(
-                            TaskStrings.taskTitleLabel,
+                          return context.l10n.nameMinLength(
+                            context.l10n.taskTitleLabel,
                           );
                         }
                         return null;
@@ -376,16 +375,16 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        labelText: TaskStrings.taskDescriptionLabel,
-                        hintText: TaskStrings.taskDescriptionHint,
+                        labelText: context.l10n.taskDescriptionLabel,
+                        hintText: context.l10n.taskDescriptionHint,
                       ),
                       maxLines: 5,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return ValidationStrings.required(
-                            TaskStrings.taskDescriptionLabel,
+                          return context.l10n.fieldRequired(
+                            context.l10n.taskDescriptionLabel,
                           );
                         }
                         return null;
@@ -401,16 +400,16 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     TextFormField(
                       controller: _estimatedTimeController,
                       decoration: InputDecoration(
-                        labelText: TaskStrings.estimatedTimeLabel,
-                        hintText: TaskStrings.estimatedTimeHint,
+                        labelText: context.l10n.estimatedTimeLabel,
+                        hintText: context.l10n.estimatedTimeHint,
                       ),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         final text = value?.trim() ?? '';
                         if (text.isEmpty) {
-                          return ValidationStrings.required(
-                            TaskStrings.estimatedTimeLabel,
+                          return context.l10n.fieldRequired(
+                            context.l10n.estimatedTimeLabel,
                           );
                         }
                         final minutes = int.tryParse(text);
@@ -430,13 +429,13 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.event),
-                      title: Text(TaskStrings.dueDate),
+                      title: Text(context.l10n.dueDateRowLabel),
                       subtitle: Text(
                         _dueDate != null
                             ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.month.toString().padLeft(2, '0')}/'
                                   '${_dueDate!.year}'
-                            : TaskStrings.dueDateHint,
+                            : context.l10n.dueDateHint,
                       ),
                       onTap: _pickDueDate,
                     ),
@@ -449,7 +448,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             : <ClassModel>[];
 
                         return CustomCard(
-                          title: TaskStrings.selectClassToAssign,
+                          title: context.l10n.selectClassToAssign,
                           subtitle: classes.isEmpty
                               ? 'Cargando o sin clases...'
                               : _selectedClasses.isEmpty
@@ -478,8 +477,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       child: Text(
                                         _selectedClasses.length ==
                                                 classes.length
-                                            ? TaskStrings.deselectAllStudents
-                                            : TaskStrings.selectAllStudents,
+                                            ? context.l10n.deselectAllStudents
+                                            : context.l10n.selectAllStudents,
                                       ),
                                     ),
                                 ],
@@ -560,16 +559,16 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     ],
                     const SizedBox(height: AppSpacing.m),
                     CustomCard(
-                      title: TaskStrings.attachmentsLabel,
+                      title: context.l10n.attachmentsLabel,
                       subtitle: _attachments.isEmpty
-                          ? TaskStrings.noAttachments
+                          ? context.l10n.noAttachments
                           : '${_attachments.length} archivos',
                       margin: EdgeInsets.zero,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            TaskStrings.attachmentsHint,
+                            context.l10n.attachmentsHint,
                             style: context.bodySmallOnSurfaceVariant,
                           ),
                           const SizedBox(height: AppSpacing.m),
@@ -578,7 +577,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                               // Placeholder: agregar adjunto
                             },
                             icon: const Icon(Icons.attach_file),
-                            label: Text(TaskStrings.addAttachment),
+                            label: Text(context.l10n.addAttachment),
                           ),
                           if (_attachments.isNotEmpty) ...[
                             const SizedBox(height: AppSpacing.m),
@@ -593,7 +592,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       _attachments.remove(attachment);
                                     });
                                   },
-                                  tooltip: CommonStrings.delete,
+                                  tooltip: context.l10n.delete,
                                 ),
                               );
                             }),
@@ -619,7 +618,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     ],
                     const SizedBox(height: AppSpacing.xl),
                     CustomButton(
-                      label: TaskStrings.createTaskButton,
+                      label: context.l10n.createTaskButton,
                       variant: CustomButtonVariant.filled,
                       icon: Icons.add,
                       onPressed: (isLoading || !isFormValid)

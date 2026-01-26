@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -113,8 +112,8 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.taskId != null
-            ? 'Historial de la tarea'
-            : SessionStrings.sessionHistoryTitle,
+            ? context.l10n.taskHistory
+            : context.l10n.sessionHistoryTitle,
       ),
       body: BlocBuilder<HistoryCubit, HistoryState>(
         builder: (context, state) {
@@ -128,8 +127,8 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
 
           if (state is HistoryEmpty) {
             return _EmptyState(
-              title: SessionStrings.noSessions,
-              subtitle: SessionStrings.startFirstSession,
+              title: context.l10n.noSessions,
+              subtitle: context.l10n.startFirstSession,
               icon: Icons.history_outlined,
             );
           }
@@ -139,8 +138,8 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
 
             if (filteredSessions.isEmpty) {
               return _EmptyState(
-                title: 'No hay sesiones para este filtro',
-                subtitle: 'Intenta cambiar el filtro de fecha',
+                title: context.l10n.noFilteredSessions,
+                subtitle: context.l10n.adjustDateFilter,
                 icon: Icons.filter_list_off,
               );
             }
@@ -157,13 +156,13 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
                 children: [
                   // Filtros por fecha
                   CustomCard(
-                    title: SessionStrings.filterByDate,
+                    title: context.l10n.filterByDate,
                     child: Wrap(
                       spacing: AppSpacing.s,
                       runSpacing: AppSpacing.s,
                       children: [
                         _FilterChip(
-                          label: SessionStrings.today,
+                          label: context.l10n.today,
                           selected: _selectedFilter == 'today',
                           onSelected: (selected) {
                             setState(() {
@@ -172,7 +171,7 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
                           },
                         ),
                         _FilterChip(
-                          label: SessionStrings.thisWeek,
+                          label: context.l10n.thisWeek,
                           selected: _selectedFilter == 'week',
                           onSelected: (selected) {
                             setState(() {
@@ -181,7 +180,7 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
                           },
                         ),
                         _FilterChip(
-                          label: SessionStrings.thisMonth,
+                          label: context.l10n.thisMonth,
                           selected: _selectedFilter == 'month',
                           onSelected: (selected) {
                             setState(() {
@@ -190,7 +189,7 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
                           },
                         ),
                         _FilterChip(
-                          label: SessionStrings.all,
+                          label: context.l10n.all,
                           selected: _selectedFilter == 'all',
                           onSelected: (selected) {
                             setState(() {
@@ -270,13 +269,13 @@ class _SessionCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.s),
           _InfoRow(
             icon: Icons.access_time,
-            label: SessionStrings.sessionDuration,
+            label: context.l10n.sessionDuration,
             value: formatDuration(session.totalDuration),
           ),
           const SizedBox(height: AppSpacing.s),
           _InfoRow(
             icon: Icons.calendar_today,
-            label: SessionStrings.sessionDate,
+            label: context.l10n.sessionDate,
             value: formatDateTime(session.endTime),
           ),
           if (session.notes != null && session.notes!.isNotEmpty) ...[
@@ -422,7 +421,7 @@ class _ErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.l),
             Text(
-              'Error al cargar el historial',
+              context.l10n.errorLoadingHistory,
               style: context.titleLargeBold?.copyWith(
                 color: context.colorScheme.error,
               ),

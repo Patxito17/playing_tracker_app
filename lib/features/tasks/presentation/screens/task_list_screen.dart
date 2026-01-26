@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -57,7 +56,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   String _getStatusText(bool isActive) {
-    return isActive ? TaskStrings.active : TaskStrings.archived;
+    return isActive
+        ? context.l10n.classStatusActive
+        : context.l10n.classStatusArchived;
   }
 
   Color _getStatusColor(bool isActive) {
@@ -69,12 +70,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: TaskStrings.myTasksTitle,
+        title: context.l10n.myTasksTitle,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _openFilters,
-            tooltip: TaskStrings.filters,
+            tooltip: context.l10n.filters,
           ),
           IconButton(
             icon: const Icon(Icons.add),
@@ -82,7 +83,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               AppRoutes.createTask,
               extra: context.read<TaskCubit>(),
             ),
-            tooltip: TaskStrings.createTask,
+            tooltip: context.l10n.createTaskAction,
           ),
         ],
       ),
@@ -106,14 +107,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
           if (state is TaskActionSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message ?? TaskStrings.taskUpdateSuccess),
+                content: Text(state.message ?? context.l10n.taskUpdateSuccess),
                 backgroundColor: context.colorScheme.primary,
               ),
             );
           } else if (state is TaskError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message ?? context.l10n.loadingError),
                 backgroundColor: context.colorScheme.error,
               ),
             );
@@ -131,7 +132,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               child: Center(
                 child: SelectableText.rich(
                   TextSpan(
-                    text: state.message,
+                    text: state.message ?? context.l10n.loadingError,
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.error,
                     ),
@@ -151,9 +152,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 children: [
                   _EmptyState(
                     icon: Icons.assignment_outlined,
-                    title: state.message,
-                    subtitle: TaskStrings.adjustFilters,
-                    actionLabel: TaskStrings.createTask,
+                    title: state.message?.isNotEmpty == true
+                        ? state.message!
+                        : context.l10n.noTasksFound,
+                    subtitle: context.l10n.adjustFilters,
+                    actionLabel: context.l10n.createTaskAction,
                     onAction: () => context.push(
                       AppRoutes.createTask,
                       extra: context.read<TaskCubit>(),
@@ -181,9 +184,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   if (tasks.isEmpty)
                     _EmptyState(
                       icon: Icons.assignment_outlined,
-                      title: TaskStrings.noTasksFound,
-                      subtitle: TaskStrings.adjustFilters,
-                      actionLabel: TaskStrings.createTask,
+                      title: context.l10n.noTasksFound,
+                      subtitle: context.l10n.adjustFilters,
+                      actionLabel: context.l10n.createTaskAction,
                       onAction: () => context.push(
                         AppRoutes.createTask,
                         extra: context.read<TaskCubit>(),
@@ -253,7 +256,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           extra: context.read<TaskCubit>(),
         ),
         icon: const Icon(Icons.add),
-        label: Text(TaskStrings.createTask),
+        label: Text(context.l10n.createTaskAction),
       ),
     );
   }

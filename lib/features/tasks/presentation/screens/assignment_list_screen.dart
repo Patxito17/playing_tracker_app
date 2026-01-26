@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -56,7 +55,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: TaskStrings.myAssignmentsTitle,
+        title: context.l10n.myAssignmentsTitle,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -74,7 +73,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                 context.read<AssignmentCubit>().applyFilters(result);
               }
             },
-            tooltip: TaskStrings.filters,
+            tooltip: context.l10n.filters,
           ),
         ],
       ),
@@ -111,8 +110,10 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                 children: [
                   _EmptyState(
                     icon: Icons.assignment_outlined,
-                    title: state.message,
-                    subtitle: TaskStrings.adjustFilters,
+                    title: state.message.isNotEmpty
+                        ? state.message
+                        : context.l10n.noAssignmentsReceived,
+                    subtitle: context.l10n.adjustFilters,
                   ),
                 ],
               ),
@@ -137,8 +138,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                   if (assignments.isEmpty)
                     _EmptyState(
                       icon: Icons.assignment_outlined,
-                      title: TaskStrings.noAssignmentsReceived,
-                      subtitle: TaskStrings.adjustFilters,
+                      title: context.l10n.noAssignmentsReceived,
+                      subtitle: context.l10n.adjustFilters,
                     )
                   else
                     ...assignments.map((assignment) {

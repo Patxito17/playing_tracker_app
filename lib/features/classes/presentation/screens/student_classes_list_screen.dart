@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -62,17 +61,17 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: ClassesStrings.myClassesTitle,
+        title: context.l10n.myClassesTitle,
         actions: [
           IconButton(
             icon: const Icon(Icons.home_rounded),
             onPressed: goHome,
-            tooltip: HomeStrings.studentHomeTitle,
+            tooltip: context.l10n.studentHomeTitle,
           ),
           IconButton(
             icon: const Icon(Icons.group_add_rounded),
             onPressed: () => _openJoinClass(context),
-            tooltip: ClassesStrings.joinClass,
+            tooltip: context.l10n.joinClassAction,
           ),
         ],
       ),
@@ -81,12 +80,12 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
           return switch (state) {
             StudentClassesLoading() => _LoadingState(onRefresh: _handleRefresh),
             StudentClassesEmpty(:final message) => _EmptyClassesState(
-              message: message,
+              message: message ?? context.l10n.noClassesJoined,
               onRefresh: _handleRefresh,
               onAction: () => _openJoinClass(context),
             ),
             StudentClassesError(:final message) => _ErrorState(
-              message: message,
+              message: message ?? context.l10n.classGenericError,
               onRetry: _handleRefresh,
             ),
             StudentClassesSuccess(:final memberships) => _ClassesList(
@@ -102,7 +101,7 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openJoinClass(context),
         icon: const Icon(Icons.add),
-        label: Text(ClassesStrings.joinClassAction),
+        label: Text(context.l10n.joinClassAction),
       ),
     );
   }
@@ -180,7 +179,7 @@ class _ClassesList extends StatelessWidget {
           final joinedAt = dateFormat.format(membership.joinedAt.toDate());
           final teacherName = membership.teacherName?.trim();
           final teacherSubtitle =
-              '${ClassesStrings.teacherLabel}'
+              '${context.l10n.teacherLabel}'
               '${teacherName?.isNotEmpty == true ? teacherName : membership.teacherId}';
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.m),
@@ -193,7 +192,7 @@ class _ClassesList extends StatelessWidget {
                 children: [
                   const SizedBox(height: AppSpacing.s),
                   Text(
-                    '${StudentStrings.joinedAtLabel} $joinedAt',
+                    '${context.l10n.joinedAtLabel} $joinedAt',
                     style: context.bodySmallOnSurfaceVariant,
                   ),
                 ],
@@ -249,8 +248,8 @@ class _EmptyClassesState extends StatelessWidget {
           _EmptyState(
             icon: Icons.class_outlined,
             title: message,
-            subtitle: ClassesStrings.joinClassWithCode,
-            actionLabel: ClassesStrings.joinClassAction,
+            subtitle: context.l10n.joinClassWithCode,
+            actionLabel: context.l10n.joinClassAction,
             onAction: onAction,
           ),
         ],
@@ -287,7 +286,7 @@ class _ErrorState extends StatelessWidget {
           const SizedBox(height: AppSpacing.l),
           FilledButton.tonal(
             onPressed: () => onRetry(),
-            child: Text(CommonStrings.retry),
+            child: Text(context.l10n.retry),
           ),
         ],
       ),

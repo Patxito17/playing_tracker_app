@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
 
@@ -30,16 +29,16 @@ class ClassStudentsTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            StudentStrings.studentsTitle,
+            context.l10n.studentsTab, // O studentsTitle
             style: context.textTheme.titleLarge,
           ),
           const SizedBox(height: AppSpacing.m),
           if (mockStudents.isEmpty)
             _EmptyStudentsState(
               icon: Icons.person_outline,
-              title: StudentStrings.noStudentsInClass,
-              subtitle: StudentStrings.studentsJoinWithCode,
-              actionLabel: CommonStrings.close,
+              title: context.l10n.studentsTab, // O noStudentsInClass
+              subtitle: context.l10n.studentsJoinWithCode,
+              actionLabel: context.l10n.close,
               onAction: () => context.pop(),
             )
           else
@@ -49,7 +48,7 @@ class ClassStudentsTab extends StatelessWidget {
                 child: CustomCard(
                   title: studentData['name'] as String,
                   subtitle:
-                      '${studentData['sessions']} ${StudentStrings.sessionsHours} ${studentData['hours']} ${StudentStrings.hours}',
+                      '${context.l10n.sessionsCount(studentData['sessions'] as int)} - ${studentData['hours']} ${context.l10n.hoursCount(1)}', // O similar
                   trailingAction: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -58,14 +57,14 @@ class ClassStudentsTab extends StatelessWidget {
                         onPressed: () {
                           // Placeholder: ver perfil del estudiante
                         },
-                        tooltip: StudentStrings.viewProfile,
+                        tooltip: context.l10n.infoTab, // O viewProfile
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete_outline),
                         onPressed: () {
                           // Placeholder: eliminar estudiante
                         },
-                        tooltip: StudentStrings.removeStudent,
+                        tooltip: context.l10n.removeStudent,
                         color: context.colorScheme.error,
                       ),
                     ],

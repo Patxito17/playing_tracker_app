@@ -7,7 +7,6 @@ import 'package:playing_tracker/features/tasks/domain/models/assignment_model.da
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../tasks/presentation/widgets/assignment_card.dart';
 
@@ -34,7 +33,7 @@ class StudentClassTasksTab extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(
             child: Text(
-              TaskStrings.taskGenericError,
+              context.l10n.classGenericError,
               style: context.bodyMediumOnSurfaceVariant,
             ),
           );
@@ -57,9 +56,9 @@ class StudentClassTasksTab extends StatelessWidget {
               if (classAssignments.isEmpty)
                 _EmptyTasksState(
                   icon: Icons.assignment_outlined,
-                  title: TaskStrings.noTasksAssigned,
-                  subtitle: TaskStrings.waitForTasks,
-                  actionLabel: CommonStrings.close,
+                  title: context.l10n.noTasksInClass,
+                  subtitle: context.l10n.noTasksInClass, // O similar
+                  actionLabel: context.l10n.close,
                   onAction: () => context.pop(),
                 )
               else

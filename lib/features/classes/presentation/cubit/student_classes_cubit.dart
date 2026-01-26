@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/class_model.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
@@ -21,7 +20,9 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
       emit(
-        const StudentClassesError(message: ClassesStrings.classGenericError),
+        const StudentClassesError(
+          message: 'El identificador del estudiante es inválido.',
+        ),
       );
       return;
     }
@@ -52,7 +53,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
       if (memberships.isEmpty) {
         _visibleMemberships = [];
         await _disposeClassWatchers();
-        emit(const StudentClassesEmpty());
+        emit(const StudentClassesEmpty(message: null));
         return;
       }
       final filtered = await _filterMemberships(memberships);
@@ -84,7 +85,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
   void _emitMemberships(List<MembershipModel> memberships) {
     _visibleMemberships = memberships;
     if (memberships.isEmpty) {
-      emit(const StudentClassesEmpty());
+      emit(const StudentClassesEmpty(message: null));
       return;
     }
     emit(
@@ -127,9 +128,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
   }
 
   void _handleError(Object error, StackTrace stackTrace) {
-    final message = error is ClassRepositoryException
-        ? error.message
-        : ClassesStrings.classGenericError;
+    final message = error is ClassRepositoryException ? error.message : null;
     emit(StudentClassesError(message: message, cause: error));
   }
 

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
@@ -14,6 +14,7 @@ import 'package:playing_tracker/features/tasks/domain/repositories/task_reposito
 import 'package:playing_tracker/features/tasks/presentation/cubit/assignment_cubit.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/assignment_state.dart';
 import 'package:playing_tracker/features/tasks/presentation/screens/assignment_list_screen.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -64,7 +65,16 @@ void main() {
       ],
     );
 
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('es')],
+    );
   }
 
   testWidgets('muestra loading cuando el estado es AssignmentLoading', (
@@ -80,11 +90,12 @@ void main() {
   testWidgets('muestra estado vacío cuando el estado es AssignmentEmpty', (
     tester,
   ) async {
-    assignmentCubit.emit(const AssignmentEmpty());
+    const emptyMsg = 'No se encontraron asignaciones';
+    assignmentCubit.emit(const AssignmentEmpty(message: emptyMsg));
 
     await tester.pumpWidget(buildTestScreen());
 
-    expect(find.text(TaskStrings.noAssignmentsReceived), findsOneWidget);
+    expect(find.text(emptyMsg), findsOneWidget);
   });
 
   testWidgets('muestra asignaciones cuando el estado es AssignmentSuccess', (
@@ -118,13 +129,13 @@ void main() {
   testWidgets('abre bottom sheet de filtros al pulsar el icono de filtros', (
     tester,
   ) async {
-    assignmentCubit.emit(const AssignmentEmpty());
+    assignmentCubit.emit(const AssignmentEmpty(message: 'Empty'));
 
     await tester.pumpWidget(buildTestScreen());
 
     await tester.tap(find.byIcon(Icons.filter_list));
     await tester.pumpAndSettle();
 
-    expect(find.text(TaskStrings.filters), findsOneWidget);
+    expect(find.text('Filtros'), findsOneWidget);
   });
 }

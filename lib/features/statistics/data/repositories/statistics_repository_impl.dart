@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/statistics/data/services/statistics_service.dart';
 import 'package:playing_tracker/features/statistics/domain/exceptions/statistics_exception.dart';
@@ -95,13 +94,13 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
 
     if (month < 1 || month > 12) {
       throw const InvalidDateRangeException(
-        userMessage: StatisticsStrings.invalidDateRangeError,
+        userMessage: '',
       );
     }
 
     if (year < 2000 || year > 2100) {
       throw const InvalidDateRangeException(
-        userMessage: StatisticsStrings.invalidDateRangeError,
+        userMessage: '',
       );
     }
 
@@ -131,7 +130,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       throw const ResourceNotFoundException(
         resourceType: 'Task',
         resourceId: '',
-        userMessage: StatisticsStrings.resourceNotFoundError,
+        userMessage: '',
       );
     }
 
@@ -161,13 +160,13 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       throw const ResourceNotFoundException(
         resourceType: 'Class',
         resourceId: '',
-        userMessage: StatisticsStrings.resourceNotFoundError,
+        userMessage: '',
       );
     }
 
     if (sanitizedTeacherId.isEmpty) {
       throw const PermissionDeniedException(
-        userMessage: StatisticsStrings.permissionDeniedError,
+        userMessage: '',
       );
     }
 
@@ -194,7 +193,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       throw const ResourceNotFoundException(
         resourceType: 'Student',
         resourceId: '',
-        userMessage: StatisticsStrings.resourceNotFoundError,
+        userMessage: '',
       );
     }
 
@@ -214,7 +213,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
         throw const ResourceNotFoundException(
           resourceType: 'Student',
           resourceId: '',
-          userMessage: StatisticsStrings.resourceNotFoundError,
+          userMessage: '',
         );
       }
 
@@ -362,14 +361,14 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     // Mapear excepciones de Firebase
     if (error is FirebaseErrorMapperException) {
       throw StatisticsServiceException(
-        userMessage: StatisticsStrings.statisticsServiceError,
+        userMessage: '',
         message: error.message,
       );
     }
 
     // Excepciones genéricas
     throw const StatisticsServiceException(
-      userMessage: StatisticsStrings.statisticsGenericError,
+      userMessage: '',
       message: 'Unknown error occurred',
     );
   }

@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -130,21 +129,19 @@ class _TimerScreenState extends State<TimerScreen>
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Descartar sesión?'),
-        content: const Text(
-          'Perderás todo el progreso de esta sesión de práctica. ¿Estás seguro?',
-        ),
+        title: Text(context.l10n.discardSessionTitle),
+        content: Text(context.l10n.discardSessionMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: context.colorScheme.error,
             ),
-            child: const Text('Descartar'),
+            child: Text(context.l10n.discardAction),
           ),
         ],
       ),
@@ -184,7 +181,7 @@ class _TimerScreenState extends State<TimerScreen>
             }
           },
           child: Scaffold(
-            appBar: const CustomAppBar(title: SessionStrings.timerTitle),
+            appBar: CustomAppBar(title: context.l10n.timerTitle),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSpacing.l),
               child: Column(
@@ -214,8 +211,8 @@ class _TimerScreenState extends State<TimerScreen>
                       controller: _notesController,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        labelText: 'Notas de la sesión (opcional)',
-                        hintText: 'Escribe aquí tus observaciones...',
+                        labelText: context.l10n.notesLabel,
+                        hintText: context.l10n.notesHint,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
                             AppBorderRadius.medium,
@@ -261,21 +258,21 @@ class _TimerScreenState extends State<TimerScreen>
         // Botón principal (Start/Pause/Resume)
         if (isIdle)
           _BigButton(
-            label: SessionStrings.start,
+            label: context.l10n.timerStart,
             icon: Icons.play_arrow_rounded,
             color: context.colorScheme.primary,
             onPressed: () => _handleStart(context),
           )
         else if (isRunning)
           _BigButton(
-            label: SessionStrings.pause,
+            label: context.l10n.timerPause,
             icon: Icons.pause_rounded,
             color: context.colorScheme.tertiary,
             onPressed: () => _handlePause(context),
           )
         else if (isPaused)
           _BigButton(
-            label: SessionStrings.resume,
+            label: context.l10n.timerResume,
             icon: Icons.play_arrow_rounded,
             color: context.colorScheme.primary,
             onPressed: () => _handleResume(context),
@@ -291,7 +288,7 @@ class _TimerScreenState extends State<TimerScreen>
               Expanded(
                 flex: 3,
                 child: CustomButton(
-                  label: 'Descartar',
+                  label: context.l10n.discardAction,
                   icon: Icons.close_rounded,
                   variant: CustomButtonVariant.outlined,
                   onPressed: () => _handleStop(context),
@@ -302,7 +299,7 @@ class _TimerScreenState extends State<TimerScreen>
               Expanded(
                 flex: 5,
                 child: CustomButton(
-                  label: 'Guardar sesión',
+                  label: context.l10n.save,
                   icon: Icons.check_rounded,
                   variant: CustomButtonVariant.filled,
                   onPressed: () => _handleSave(context),
@@ -320,7 +317,7 @@ class _TimerScreenState extends State<TimerScreen>
       children: [
         Expanded(
           child: CustomButton(
-            label: 'Cancelar',
+            label: context.l10n.cancel,
             variant: CustomButtonVariant.outlined,
             onPressed: () {
               setState(() {
@@ -334,7 +331,7 @@ class _TimerScreenState extends State<TimerScreen>
         Expanded(
           flex: 2,
           child: CustomButton(
-            label: 'Confirmar y guardar',
+            label: context.l10n.confirmAndSaveAction,
             icon: Icons.save_rounded,
             variant: CustomButtonVariant.filled,
             onPressed: () => _confirmSave(context),
@@ -368,7 +365,7 @@ class _TimerScreenState extends State<TimerScreen>
               ),
             ),
             const SizedBox(height: AppSpacing.m),
-            Text('¡Sesión Guardada!', style: context.titleLargeBold),
+            Text(context.l10n.sessionSavedTitle, style: context.titleLargeBold),
           ],
         ),
         content: Column(
@@ -396,7 +393,7 @@ class _TimerScreenState extends State<TimerScreen>
                   ),
                   const SizedBox(width: AppSpacing.s),
                   Text(
-                    'Tiempo practicado: ${_formatTime(duration)}',
+                    context.l10n.timePracticedLabel(_formatTime(duration)),
                     style: context.titleMediumBold?.copyWith(
                       color: context.colorScheme.primary,
                     ),
@@ -420,7 +417,7 @@ class _TimerScreenState extends State<TimerScreen>
                 ),
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
               ),
-              child: const Text('Continuar'),
+              child: Text(context.l10n.continueAction),
             ),
           ),
         ],
@@ -582,10 +579,10 @@ class _CircularTimer extends StatelessWidget {
                         },
                         child: Text(
                           isRunning
-                              ? 'En progreso...'
+                              ? context.l10n.runningStatus
                               : duration > 0
-                              ? 'Pausado'
-                              : 'Listo para empezar',
+                              ? context.l10n.pausedStatus
+                              : context.l10n.readyToStartStatus,
                           key: ValueKey(
                             isRunning
                                 ? 'running'

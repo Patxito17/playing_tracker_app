@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:playing_tracker/core/constants/app_strings.dart';
 import 'package:playing_tracker/features/classes/domain/models/membership_model.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
 import 'package:playing_tracker/features/classes/domain/value_objects/invite_student_input.dart';
@@ -24,7 +23,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(
         const MembershipSuccess(
           action: MembershipAction.invitedStudent,
-          message: ClassesStrings.membershipInviteSuccess,
+          message: null,
         ),
       );
       await _refreshMembersAfterMutation();
@@ -32,9 +31,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(MembershipError(message: error.message, cause: error));
       await _restoreMembersAfterOperation();
     } catch (error) {
-      emit(
-        const MembershipError(message: ClassesStrings.membershipGenericError),
-      );
+      emit(const MembershipError(message: null));
       await _restoreMembersAfterOperation();
     }
   }
@@ -47,7 +44,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(
         const MembershipSuccess(
           action: MembershipAction.joinedClass,
-          message: ClassesStrings.membershipJoinSuccess,
+          message: null,
         ),
       );
       await _refreshMembersAfterMutation();
@@ -55,9 +52,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(MembershipError(message: error.message, cause: error));
       await _restoreMembersAfterOperation();
     } catch (error) {
-      emit(
-        const MembershipError(message: ClassesStrings.membershipGenericError),
-      );
+      emit(const MembershipError(message: null));
       await _restoreMembersAfterOperation();
     }
   }
@@ -92,9 +87,7 @@ class MembershipCubit extends Cubit<MembershipState> {
           action: isActive
               ? MembershipAction.activatedStudent
               : MembershipAction.deactivatedStudent,
-          message: isActive
-              ? ClassesStrings.membershipActivateSuccess
-              : ClassesStrings.membershipDeactivateSuccess,
+          message: null,
         ),
       );
       await loadMembers(classId: classId, refresh: true);
@@ -102,9 +95,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(MembershipError(message: error.message, cause: error));
       await _restoreMembersAfterOperation();
     } catch (error) {
-      emit(
-        const MembershipError(message: ClassesStrings.membershipGenericError),
-      );
+      emit(const MembershipError(message: null));
       await _restoreMembersAfterOperation();
     }
   }
@@ -123,7 +114,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(
         const MembershipSuccess(
           action: MembershipAction.deletedStudent,
-          message: ClassesStrings.membershipDeleteSuccess,
+          message: null,
         ),
       );
       await loadMembers(classId: classId, refresh: true);
@@ -131,9 +122,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(MembershipError(message: error.message, cause: error));
       await _restoreMembersAfterOperation();
     } catch (error) {
-      emit(
-        const MembershipError(message: ClassesStrings.membershipGenericError),
-      );
+      emit(const MembershipError(message: null));
       await _restoreMembersAfterOperation();
     }
   }
@@ -146,7 +135,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(
         const MembershipSuccess(
           action: MembershipAction.regeneratedAccessCode,
-          message: ClassesStrings.membershipRegenerateSuccess,
+          message: null,
         ),
       );
       await _restoreMembersAfterOperation();
@@ -154,9 +143,7 @@ class MembershipCubit extends Cubit<MembershipState> {
       emit(MembershipError(message: error.message, cause: error));
       await _restoreMembersAfterOperation();
     } catch (error) {
-      emit(
-        const MembershipError(message: ClassesStrings.membershipGenericError),
-      );
+      emit(const MembershipError(message: null));
       await _restoreMembersAfterOperation();
     }
   }
@@ -168,11 +155,7 @@ class MembershipCubit extends Cubit<MembershipState> {
   }) async {
     final normalizedClassId = classId.trim();
     if (normalizedClassId.isEmpty) {
-      _emitMembersState(
-        const MembershipListError(
-          message: ClassesStrings.membershipGenericError,
-        ),
-      );
+      _emitMembersState(const MembershipListError(message: null));
       return;
     }
     final isSameClass = _currentClassId == normalizedClassId;
@@ -228,7 +211,7 @@ class MembershipCubit extends Cubit<MembershipState> {
           page.members.length == _membersPageSize;
 
       if (_membersCache.isEmpty) {
-        _emitMembersState(const MembershipEmpty());
+        _emitMembersState(const MembershipEmpty(message: null));
       } else {
         _emitMembersState(
           MembershipListSuccess(
@@ -243,11 +226,7 @@ class MembershipCubit extends Cubit<MembershipState> {
         MembershipListError(message: error.message, cause: error),
       );
     } catch (error) {
-      _emitMembersState(
-        const MembershipListError(
-          message: ClassesStrings.membershipGenericError,
-        ),
-      );
+      _emitMembersState(const MembershipListError(message: null));
     }
   }
 

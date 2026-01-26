@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -123,15 +122,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(TaskStrings.confirmDeleteTask),
-          content: const Text(
-            'ATENCIÓN: Esta acción eliminará PERMANENTEMENTE la tarea y todas las asignaciones de los alumnos. '
-            'No se podrá recuperar ninguna información. ¿Deseas continuar?',
-          ),
+          title: Text(context.l10n.confirmDeleteTask),
+          content: Text(context.l10n.confirmDeleteTaskWarning),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(CommonStrings.cancel),
+              child: Text(context.l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -142,7 +138,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 taskCubit.deleteTask(task.id);
                 Navigator.of(dialogContext).pop();
               },
-              child: Text(TaskStrings.deleteTask),
+              child: Text(context.l10n.deleteTaskAction),
             ),
           ],
         );
@@ -157,7 +153,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
         authState is AuthAuthenticated && authState.role == UserRole.teacher;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: TaskStrings.taskDetailTitle),
+      appBar: CustomAppBar(title: context.l10n.taskDetailTitle),
       body: BlocConsumer<TaskCubit, TaskState>(
         listenWhen: (previous, current) =>
             current is TaskActionSuccess || current is TaskError,
@@ -166,7 +162,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             if (state.action == TaskAction.deleted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text(TaskStrings.taskDeleteSuccess),
+                  content: Text(context.l10n.taskDeleteSuccess),
                   backgroundColor: context.colorScheme.primary,
                 ),
               );
@@ -178,7 +174,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message ?? TaskStrings.taskUpdateSuccess),
+                  content: Text(
+                    state.message ?? context.l10n.taskUpdateSuccess,
+                  ),
                   backgroundColor: context.colorScheme.primary,
                 ),
               );
@@ -188,7 +186,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             // mostramos el error como un SnackBar en lugar de romper la pantalla.
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message ?? context.l10n.loadingError),
                 backgroundColor: context.colorScheme.error,
               ),
             );
@@ -230,11 +228,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       color: context.colorScheme.error,
                     ),
                     const SizedBox(height: AppSpacing.m),
-                    Text(state.message, textAlign: TextAlign.center),
+                    Text(
+                      state.message ?? context.l10n.loadingError,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: AppSpacing.m),
                     TextButton(
                       onPressed: () => _refreshTask(context),
-                      child: const Text('Reintentar carga'),
+                      child: Text(context.l10n.reTryLoadAction),
                     ),
                   ],
                 ),
@@ -255,7 +256,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 padding: const EdgeInsets.all(AppSpacing.l),
                 child: SelectableText.rich(
                   TextSpan(
-                    text: TaskStrings.noTasksFound,
+                    text: context.l10n.noTasksFound,
                     style: context.bodyMediumOnSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
@@ -277,7 +278,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   title: selectedTask.title,
                   subtitle: selectedTask.description ?? '',
                   trailingAction: Chip(
-                    label: Text(TaskStrings.pending),
+                    label: Text(context.l10n.pending),
                     backgroundColor: context.colorScheme.outline.withValues(
                       alpha: 0.2,
                     ),
@@ -297,20 +298,20 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       const SizedBox(height: AppSpacing.s),
                       _InfoRow(
                         icon: Icons.access_time,
-                        label: TaskStrings.estimatedTime,
+                        label: context.l10n.estimatedTimeRowLabel,
                         value: selectedTask.durationFormatted,
                       ),
                       const SizedBox(height: AppSpacing.s),
                       _InfoRow(
                         icon: Icons.calendar_today,
-                        label: TaskStrings.createdDate,
+                        label: context.l10n.createdDateRowLabel,
                         value: _formatDate(createdDate),
                       ),
                       if (dueDate != null) ...[
                         const SizedBox(height: AppSpacing.s),
                         _InfoRow(
                           icon: Icons.event,
-                          label: TaskStrings.dueDate,
+                          label: context.l10n.dueDateRowLabel,
                           value: _formatDate(dueDate),
                         ),
                       ],
@@ -319,24 +320,24 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.m),
                 CustomCard(
-                  title: TaskStrings.recipients,
-                  subtitle: TaskStrings.noRecipients,
+                  title: context.l10n.recipientsRowLabel,
+                  subtitle: context.l10n.noRecipientsLabel,
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.m),
                     child: Text(
-                      TaskStrings.noRecipients,
+                      context.l10n.noRecipientsLabel,
                       style: context.bodyMediumOnSurfaceVariant,
                     ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.m),
                 CustomCard(
-                  title: TaskStrings.attachments,
-                  subtitle: TaskStrings.noAttachments,
+                  title: context.l10n.attachmentsLabel,
+                  subtitle: context.l10n.noAttachments,
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.m),
                     child: Text(
-                      TaskStrings.noAttachments,
+                      context.l10n.noAttachments,
                       style: context.bodyMediumOnSurfaceVariant,
                     ),
                   ),
@@ -348,11 +349,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     child: SwitchListTile(
                       value: selectedTask.isActive,
                       onChanged: _toggleStatus,
-                      title: const Text('Tarea activa'),
+                      title: Text(context.l10n.activeTaskLabel),
                       subtitle: Text(
                         selectedTask.isActive
-                            ? 'Visible para los estudiantes'
-                            : 'No visible para los estudiantes',
+                            ? context.l10n.activeTaskSubtitle
+                            : context.l10n.inactiveTaskSubtitle,
                         style: context.bodySmallOnSurfaceVariant,
                       ),
                       secondary: Icon(
@@ -367,14 +368,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   ),
                   const SizedBox(height: AppSpacing.m),
                   CustomButton(
-                    label: TaskStrings.editTask,
+                    label: context.l10n.editTaskAction,
                     variant: CustomButtonVariant.filled,
                     icon: Icons.edit,
                     onPressed: () => _showEditDialog(context, selectedTask),
                   ),
                   const SizedBox(height: AppSpacing.m),
                   CustomButton(
-                    label: TaskStrings.assignTask,
+                    label: context.l10n.assignTask,
                     variant: CustomButtonVariant.outlined,
                     icon: Icons.person_add,
                     onPressed: () => _showAssignDialog(context, selectedTask),
@@ -387,7 +388,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                       color: context.colorScheme.error,
                     ),
                     label: Text(
-                      TaskStrings.deleteTask,
+                      context.l10n.deleteTaskAction,
                       style: TextStyle(color: context.colorScheme.error),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -396,7 +397,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   ),
                 ] else ...[
                   CustomButton(
-                    label: TaskStrings.startTimer,
+                    label: context.l10n.startTimerAction,
                     variant: CustomButtonVariant.filled,
                     icon: Icons.play_arrow,
                     onPressed: () => context.push(
@@ -467,21 +468,21 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(TaskStrings.editTask),
+      title: Text(context.l10n.editTaskAction),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _titleController,
-            decoration: InputDecoration(labelText: TaskStrings.taskTitleLabel),
+            decoration: InputDecoration(labelText: context.l10n.taskTitleLabel),
             textCapitalization: TextCapitalization.sentences,
           ),
           const SizedBox(height: AppSpacing.m),
           TextField(
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: TaskStrings.taskDescriptionLabel,
+              labelText: context.l10n.taskDescriptionLabel,
             ),
             maxLines: 3,
             textCapitalization: TextCapitalization.sentences,
@@ -490,7 +491,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
           TextField(
             controller: _durationController,
             decoration: InputDecoration(
-              labelText: TaskStrings.estimatedTimeLabel,
+              labelText: context.l10n.estimatedTimeRowLabel,
               suffixText: ' min',
             ),
             keyboardType: TextInputType.number,
@@ -499,11 +500,11 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.event),
-            title: Text(TaskStrings.dueDate),
+            title: Text(context.l10n.dueDateRowLabel),
             subtitle: Text(
               _dueDate != null
                   ? DateFormat('dd/MM/yyyy').format(_dueDate!)
-                  : TaskStrings.dueDateHint,
+                  : context.l10n.dueDateHint,
             ),
             onTap: _pickDueDate,
           ),
@@ -512,7 +513,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(CommonStrings.cancel),
+          child: Text(context.l10n.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -536,7 +537,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
             context.read<TaskCubit>().updateTask(input);
             Navigator.of(context).pop();
           },
-          child: Text(CommonStrings.save),
+          child: Text(context.l10n.save),
         ),
       ],
     );

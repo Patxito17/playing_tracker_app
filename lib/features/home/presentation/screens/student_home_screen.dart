@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -21,11 +20,11 @@ class StudentHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: HomeStrings.studentHomeTitle,
+        title: context.l10n.studentHomeTitle,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            tooltip: SettingsStrings.logout,
+            tooltip: context.l10n.logout,
             icon: const Icon(Icons.logout_rounded),
             onPressed: () => context.read<AuthCubit>().logout(),
           ),
@@ -39,23 +38,23 @@ class StudentHomeScreen extends StatelessWidget {
             children: [
               HomeHeroCard(
                 icon: Icons.emoji_events_outlined,
-                title: HomeStrings.studentWelcomeTitle,
-                subtitle: HomeStrings.studentWelcomeSubtitle,
-                buttonLabel: HomeStrings.studentClassesAction,
+                title: context.l10n.studentWelcomeTitle,
+                subtitle: context.l10n.studentWelcomeSubtitle,
+                buttonLabel: context.l10n.studentClassesAction,
                 onPressed: () => context.go(AppRoutes.studentClassesList),
                 backgroundColor: colorScheme.secondaryContainer,
                 foregroundColor: colorScheme.onSecondaryContainer,
               ),
               const SizedBox(height: AppSpacing.xl),
               HomeQuickActionsSection(
-                title: HomeStrings.quickActionsTitle,
-                subtitle: HomeStrings.studentQuickActionsSubtitle,
+                title: context.l10n.quickActionsTitle,
+                subtitle: context.l10n.studentQuickActionsSubtitle,
                 actions: quickActions,
               ),
               const SizedBox(height: AppSpacing.xl),
-              const HomeHighlightsCard(
+              HomeHighlightsCard(
                 icon: Icons.auto_graph_outlined,
-                description: HomeStrings.studentHighlightsDescription,
+                description: context.l10n.studentHighlightsDescription,
               ),
             ],
           ),
@@ -68,26 +67,26 @@ class StudentHomeScreen extends StatelessWidget {
     return [
       HomeQuickActionConfig(
         icon: Icons.class_rounded,
-        title: HomeStrings.studentClassesAction,
-        description: HomeStrings.studentClassesDescription,
+        title: context.l10n.studentClassesAction,
+        description: context.l10n.studentClassesDescription,
         onTap: () => context.go(AppRoutes.studentClassesList),
       ),
       HomeQuickActionConfig(
         icon: Icons.assignment_outlined,
-        title: TaskStrings.myAssignmentsTitle,
-        description: 'Ver todas tus tareas en un solo lugar',
+        title: context.l10n.myTasksTitle,
+        description: context.l10n.studentTasksDescription,
         onTap: () => context.push(AppRoutes.assignmentList),
       ),
       HomeQuickActionConfig(
         icon: Icons.history,
-        title: SessionStrings.sessionHistoryTitle,
-        description: 'Revisa todas tus sesiones de práctica',
+        title: context.l10n.sessionHistoryTitle,
+        description: context.l10n.sessionHistoryDescription,
         onTap: () => context.go(AppRoutes.studentHistory),
       ),
       HomeQuickActionConfig(
         icon: Icons.group_add_outlined,
-        title: HomeStrings.joinClassAction,
-        description: HomeStrings.joinClassDescription,
+        title: context.l10n.joinClassAction,
+        description: context.l10n.joinClassDescription,
         onTap: () => context.push(AppRoutes.joinClass),
       ),
     ];

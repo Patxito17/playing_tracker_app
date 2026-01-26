@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../domain/value_objects/task_filters.dart';
 import '../cubit/task_cubit.dart';
 
@@ -100,7 +100,7 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              TaskStrings.filters,
+              context.l10n.filters,
               style: theme.textTheme.titleLarge,
               textAlign: TextAlign.left,
             ),
@@ -114,14 +114,14 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        TaskStrings.filterByActiveStatus,
+                        context.l10n.filterByActiveStatus,
                         style: theme.textTheme.titleSmall,
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         _showOnlyActive
-                            ? TaskStrings.showActiveOnly
-                            : TaskStrings.showArchivedOnly,
+                            ? context.l10n.showActiveOnly
+                            : context.l10n.showArchivedOnly,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -141,17 +141,17 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
             ),
             const SizedBox(height: AppSpacing.m),
             // Rango de fechas: creación o vencimiento (mutuamente excluyentes).
-            Text(TaskStrings.filterByDate, style: theme.textTheme.titleSmall),
+            Text(context.l10n.filterByDate, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.s),
             SegmentedButton<bool>(
-              segments: const [
+              segments: [
                 ButtonSegment<bool>(
                   value: true,
-                  label: Text(TaskStrings.selectCreatedDate),
+                  label: Text(context.l10n.selectCreatedDate),
                 ),
                 ButtonSegment<bool>(
                   value: false,
-                  label: Text(TaskStrings.selectDueDate),
+                  label: Text(context.l10n.selectDueDate),
                 ),
               ],
               selected: {_useCreatedRange},
@@ -181,8 +181,8 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                       ),
                       child: Text(
                         _createdFrom != null
-                            ? TaskStrings.formatShortDate(_createdFrom!)
-                            : TaskStrings.fromLabel,
+                            ? '${_createdFrom!.day.toString().padLeft(2, '0')}/${_createdFrom!.month.toString().padLeft(2, '0')}/${_createdFrom!.year}'
+                            : context.l10n.fromLabel,
                       ),
                     ),
                   ),
@@ -195,8 +195,8 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                       ),
                       child: Text(
                         _createdTo != null
-                            ? TaskStrings.formatShortDate(_createdTo!)
-                            : TaskStrings.toLabel,
+                            ? '${_createdTo!.day.toString().padLeft(2, '0')}/${_createdTo!.month.toString().padLeft(2, '0')}/${_createdTo!.year}'
+                            : context.l10n.toLabel,
                       ),
                     ),
                   ),
@@ -213,8 +213,8 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                       ),
                       child: Text(
                         _dueFrom != null
-                            ? TaskStrings.formatShortDate(_dueFrom!)
-                            : TaskStrings.fromLabel,
+                            ? '${_dueFrom!.day.toString().padLeft(2, '0')}/${_dueFrom!.month.toString().padLeft(2, '0')}/${_dueFrom!.year}'
+                            : context.l10n.fromLabel,
                       ),
                     ),
                   ),
@@ -227,8 +227,8 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                       ),
                       child: Text(
                         _dueTo != null
-                            ? TaskStrings.formatShortDate(_dueTo!)
-                            : TaskStrings.toLabel,
+                            ? '${_dueTo!.day.toString().padLeft(2, '0')}/${_dueTo!.month.toString().padLeft(2, '0')}/${_dueTo!.year}'
+                            : context.l10n.toLabel,
                       ),
                     ),
                   ),
@@ -240,14 +240,14 @@ class _TaskFiltersBottomSheetState extends State<TaskFiltersBottomSheet> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _handleClear,
-                    child: const Text(TaskStrings.clearFilters),
+                    child: Text(context.l10n.clearFilters),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.s),
                 Expanded(
                   child: FilledButton(
                     onPressed: _handleApply,
-                    child: const Text(TaskStrings.applyFilters),
+                    child: Text(context.l10n.applyFilters),
                   ),
                 ),
               ],
