@@ -591,3 +591,127 @@ class SessionStrings {
   static const String sessionTask = 'Tarea';
   static const String viewDetails = 'Ver detalles';
 }
+
+/// Strings relacionados con estadísticas
+class StatisticsStrings {
+  // Títulos de pantallas
+  static const String statisticsTitle = 'Estadísticas';
+  static const String myStatsTitle = 'Mis estadísticas';
+  static const String classStatsTitle = 'Estadísticas de clase';
+  static const String studentStatsTitle = 'Estadísticas del alumno';
+  static const String taskStatsTitle = 'Estadísticas de tarea';
+
+  // Períodos de tiempo
+  static const String today = 'Hoy';
+  static const String thisWeek = 'Esta semana';
+  static const String thisMonth = 'Este mes';
+  static const String thisYear = 'Este año';
+  static const String customPeriod = 'Período personalizado';
+  static const String selectPeriod = 'Selecciona período';
+
+  // Etiquetas de métricas
+  static const String totalTime = 'Tiempo total';
+  static const String totalSessions = 'Sesiones totales';
+  static const String averageTime = 'Tiempo promedio';
+  static const String averagePerSession = 'Promedio por sesión';
+  static const String averagePerDay = 'Promedio diario';
+  static const String averagePerStudent = 'Promedio por alumno';
+  static const String uniqueTasks = 'Tareas trabajadas';
+  static const String activeDays = 'Días activos';
+  static const String currentStreak = 'Racha actual';
+  static const String longestStreak = 'Mejor racha';
+  static const String completionRate = 'Tasa de completitud';
+  static const String activeStudents = 'Alumnos activos';
+  static const String progressPercentage = 'Progreso';
+
+  // Etiquetas de gráficos
+  static const String dailyStats = 'Estadísticas diarias';
+  static const String weeklyStats = 'Estadísticas semanales';
+  static const String monthlyStats = 'Estadísticas mensuales';
+  static const String yearlyStats = 'Estadísticas anuales';
+  static const String progressChart = 'Gráfico de progreso';
+  static const String distributionChart = 'Distribución por tarea';
+  static const String trendChart = 'Tendencia';
+  static const String comparisonChart = 'Comparativa';
+
+  // Estados y mensajes informativos
+  static const String noDataAvailable = 'No hay datos disponibles';
+  static const String noDataForPeriod =
+      'No hay datos para el período seleccionado';
+  static const String selectDifferentPeriod = 'Selecciona otro período';
+  static const String loadingStatistics = 'Cargando estadísticas...';
+  static const String calculatingStats = 'Calculando estadísticas...';
+  static const String tapForDetails = 'Toca para ver detalles';
+
+  // Comparativas
+  static const String vsLastWeek = 'vs. semana anterior';
+  static const String vsLastMonth = 'vs. mes anterior';
+  static const String improvement = 'Mejora';
+  static const String decrease = 'Disminución';
+  static const String noChange = 'Sin cambios';
+
+  // Rachas
+  static String daysStreak(int days) => '$days días seguidos';
+  static const String keepItUp = '¡Sigue así!';
+  static const String startYourStreak = 'Inicia tu racha hoy';
+  static const String streakBroken = 'Racha interrumpida';
+
+  // Mensajes motivacionales
+  static const String greatProgress = '¡Excelente progreso!';
+  static const String keepGoing = '¡Continúa así!';
+  static const String almostThere = '¡Casi lo logras!';
+  static const String goalReached = '¡Objetivo alcanzado!';
+
+  // Mensajes de error
+  static const String statisticsGenericError =
+      'Ocurrió un error al cargar las estadísticas.';
+  static const String noDataFoundError =
+      'No hay datos disponibles para el período seleccionado.';
+  static const String invalidDateRangeError =
+      'El rango de fechas seleccionado no es válido.';
+  static const String statisticsServiceError =
+      'Error al consultar las estadísticas. Intenta nuevamente.';
+  static const String resourceNotFoundError =
+      'No se encontró el recurso solicitado.';
+  static const String permissionDeniedError =
+      'No tienes permisos para ver estas estadísticas.';
+
+  // Filtros
+  static const String filterByPeriod = 'Filtrar por período';
+  static const String filterByTask = 'Filtrar por tarea';
+  static const String filterByClass = 'Filtrar por clase';
+  static const String filterByStudent = 'Filtrar por alumno';
+  static const String allTasks = 'Todas las tareas';
+  static const String allStudents = 'Todos los alumnos';
+
+  // Exportación
+  static const String exportData = 'Exportar datos';
+  static const String exportCSV = 'Exportar a CSV';
+  static const String exportPDF = 'Exportar a PDF';
+  static const String shareStatistics = 'Compartir estadísticas';
+
+  // Ranking
+  static const String topStudents = 'Mejores alumnos';
+  static const String topTasks = 'Tareas más practicadas';
+  static const String ranking = 'Ranking';
+  static String position(int pos) => '#$pos';
+
+  // Formatos de tiempo
+  static String hoursFormat(int hours) => '$hours h';
+  static String minutesFormat(int minutes) => '$minutes min';
+  static String secondsFormat(int seconds) => '$seconds s';
+  static String hoursMinutesFormat(int hours, int minutes) =>
+      '$hours h $minutes min';
+
+  // Ayuda contextual
+  static const String dailyStatsHelp =
+      'Muestra tu actividad diaria de estudio y sesiones completadas.';
+  static const String weeklyStatsHelp =
+      'Compara tu progreso semanal y visualiza tendencias.';
+  static const String monthlyStatsHelp =
+      'Analiza tu evolución mensual y alcanza tus objetivos.';
+  static const String streakHelp =
+      'Mantén días consecutivos de práctica para mejorar tu racha.';
+  static const String distributionHelp =
+      'Visualiza cómo distribuyes tu tiempo entre diferentes tareas.';
+}
