@@ -49,14 +49,13 @@
     - Componentes cubiertos: `CustomButton` (4 variantes: filled, outlined, loading, con icón), `CustomCard` (simple y con header), `CustomTextField` (normal y error), `LoadingOverlay` (con y sin mensaje).
     - Imágenes de referencia en `test/golden/goldens/` (10 archivos `.png`).
     - **10 Golden Tests ✅ | 0 fallos | 0 regresiones**.
-
 - [x] **Hotfix: Error de Permisos (Race Condition)**:
     - Diagnosticada la causa: condición de carrera entre el registro en Firestore y la asignación del rol vía Cloud Functions.
     - `AuthRepositoryImpl`: polling robusto de hasta 15 segundos (reintentos con backoff) esperando al Custom Claim.
     - `AuthCubit`: el estado `AuthAuthenticated` solo se emite tras confirmar el rol en el token JWT.
     - 12 tests unitarios de `AuthCubit` actualizados para cubrir el nuevo flujo sincronizado.
 
-
+### 📊 Fase 3: Estadísticas Avanzadas y Optimización
 **Objetivo:** Finalizar los compromisos de datos y mejorar la eficiencia.
 
 - [ ] **Filtro Temporal Avanzado (Docente)**:
