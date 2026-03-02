@@ -950,6 +950,8 @@
   "@languageSpanish": { "description": "Idioma español" },
   "languageEnglish": "English",
   "@languageEnglish": { "description": "Idioma inglés" },
+  "languageSystem": "Automático (Sistema)",
+  "@languageSystem": { "description": "Opción detección automática del idioma del sistema" },
   "appearanceSection": "Apariencia",
   "@appearanceSection": { "description": "Sección apariencia" },
   "colorSettings": "Color principal",

@@ -37,16 +37,22 @@ class SettingsService {
     await _prefs.setString(_themeModeKey, value);
   }
 
-  /// Lee el código de idioma guardado (ej: 'es', 'en'). Retorna null si no hay guardado.
+  /// Lee el código de idioma guardado. Retorna `null` si no hay ninguno
+  /// guardado, lo que indica que se debe usar el idioma del sistema.
   Locale? getLocale() {
     final code = _prefs.getString(_localeCodeKey);
     if (code == null) return null;
     return Locale(code);
   }
 
-  /// Guarda el código de idioma.
-  Future<void> setLocale(Locale locale) async {
-    await _prefs.setString(_localeCodeKey, locale.languageCode);
+  /// Guarda el código de idioma. Si [locale] es `null`, borra la preferencia
+  /// para que la app use la detección automática del sistema.
+  Future<void> setLocale(Locale? locale) async {
+    if (locale == null) {
+      await _prefs.remove(_localeCodeKey);
+    } else {
+      await _prefs.setString(_localeCodeKey, locale.languageCode);
+    }
   }
 
   /// Lee el color semilla guardado (valor int ARGB). Retorna null si no hay guardado (usar default).

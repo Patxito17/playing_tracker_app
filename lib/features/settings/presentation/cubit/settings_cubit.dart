@@ -13,13 +13,14 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   void _loadSettings() {
     final themeMode = _settingsService.getThemeMode();
-    final locale = _settingsService.getLocale();
+    final locale = _settingsService.getLocale(); // Puede ser null (automático)
     final seedColor = _settingsService.getSeedColor();
 
     emit(
       state.copyWith(
         themeMode: themeMode,
-        locale: locale,
+        locale:
+            locale, // null = automático, se pasa correctamente con el sentinel
         seedColor: seedColor,
       ),
     );
@@ -30,7 +31,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(themeMode: mode));
   }
 
-  Future<void> updateLocale(Locale locale) async {
+  /// Actualiza el idioma seleccionado. Pasa [null] para activar la detección
+  /// automática del idioma del sistema.
+  Future<void> updateLocale(Locale? locale) async {
     await _settingsService.setLocale(locale);
     emit(state.copyWith(locale: locale));
   }

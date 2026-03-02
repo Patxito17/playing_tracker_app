@@ -24,7 +24,7 @@
     - [x] Configurar `flutter_localizations` y generar archivos `.arb`.
     - [x] Migrar `app_strings.dart` y constantes relacionadas a `AppLocalizations`.
     - [x] Implementar selectores y extensión `context.l10n`.
-    - [ ] Implementar selector de idioma en la pestaña settings (para estudiantes y docentes) o detección automática.
+    - [x] Implementar selector de idioma en la pestaña settings (para estudiantes y docentes) o detección automática.
 
 ### 🧪 Fase 2: Suite de Testing Automatizado
 **Objetivo:** Garantizar la estabilidad regresiva y la calidad del software.

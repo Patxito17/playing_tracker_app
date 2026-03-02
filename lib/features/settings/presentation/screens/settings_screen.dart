@@ -145,11 +145,12 @@ class SettingsScreen extends StatelessWidget {
     };
   }
 
-  String _getLocaleLabel(BuildContext context, Locale locale) {
+  String _getLocaleLabel(BuildContext context, Locale? locale) {
+    if (locale == null) return context.l10n.languageSystem;
     return switch (locale.languageCode) {
       'es' => context.l10n.languageSpanish,
       'en' => context.l10n.languageEnglish,
-      _ => context.l10n.languageSpanish,
+      _ => context.l10n.languageSystem,
     };
   }
 
@@ -205,7 +206,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showLanguageSelector(BuildContext context, Locale currentLocale) {
+  void _showLanguageSelector(BuildContext context, Locale? currentLocale) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -213,6 +214,14 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Opción: Automático (Sistema)
+            _buildLocaleOption(
+              context,
+              dialogContext,
+              null,
+              context.l10n.languageSystem,
+              currentLocale,
+            ),
             _buildLocaleOption(
               context,
               dialogContext,
@@ -236,13 +245,14 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildLocaleOption(
     BuildContext context,
     BuildContext dialogContext,
-    Locale locale,
+    Locale? locale,
     String label,
-    Locale currentLocale,
+    Locale? currentLocale,
   ) {
+    final isSelected = locale == currentLocale;
     return ListTile(
       title: Text(label),
-      trailing: currentLocale == locale ? const Icon(Icons.check) : null,
+      trailing: isSelected ? const Icon(Icons.check) : null,
       onTap: () {
         context.read<SettingsCubit>().updateLocale(locale);
         Navigator.of(dialogContext).pop();
