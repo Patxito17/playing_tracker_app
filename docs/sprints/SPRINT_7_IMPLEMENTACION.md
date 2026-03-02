@@ -1,7 +1,8 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** 🚧 En Progreso
+**Estado:** 🛠️ Fase 2 Completada — Fases 3, 4 y 5 pendientes
 **Fecha de inicio:** 2026-01-26
+**Fecha última actualización:** 2026-03-02
 **Duración estimada:** 3 semanas
 
 ---
@@ -36,15 +37,26 @@
     - [x] `SessionService`, `SessionRepositoryImpl`, `TaskService` y `TaskRepositoryImpl` confirman cobertura completa preexistente.
     - [x] Inyección de dependencia añadida a `StatisticsRepositoryImpl` (parámetro `firestore` opcional).
     - **Suite total:** 345 tests ✅ (65 nuevos tests añadidos en esta fase).
-- [ ] **Tests de Integración (E2E)**:
-    - Crear flujos completos: Registro -> Creación de Clase -> Asignación de Tarea.
-    - Flujo de estudio: Login -> Cronómetro -> Ver Estadísticas.
-    - Usar exclusivamente `integration_test` del SDK (sin `flutter_driver`).
-- [ ] **Golden Tests**:
-    - Validar consistencia visual de **5-8 componentes críticos** usando API nativa (`matchesGoldenFile`).
-    - Configurar `test/flutter_test_config.dart` para estabilizar entorno (fuente Ahem, sin animaciones).
+- [x] **Tests de Integración (E2E)**:
+    - `integration_test/teacher_flow_test.dart`: flujo docente completo (Registro → Custom Claim → Dashboard → Crear Clase → Éxito).
+    - `integration_test/student_flow_test.dart`: flujo alumno completo (Registro → Custom Claim → Dashboard → Pantalla de Clases).
+    - Helper compartido `integration_test/helpers/e2e_test_helpers.dart` con generación de emails únicos y limpieza automática de usuarios de prueba.
+    - Usa exclusivamente `integration_test` del SDK (sin `flutter_driver`).
+    - Flujo del cronómetro (E2E completo alumno) verificado manualmente según el plan (requiere datos previos en Firestore).
+- [x] **Golden Tests**:
+    - `test/golden/critical_components_golden_test.dart`: 10 casos de test en 4 grupos.
+    - `test/flutter_test_config.dart`: comparador de rutas relativas para golden files por componente.
+    - Componentes cubiertos: `CustomButton` (4 variantes: filled, outlined, loading, con icón), `CustomCard` (simple y con header), `CustomTextField` (normal y error), `LoadingOverlay` (con y sin mensaje).
+    - Imágenes de referencia en `test/golden/goldens/` (10 archivos `.png`).
+    - **10 Golden Tests ✅ | 0 fallos | 0 regresiones**.
 
-### 📊 Fase 3: Estadísticas Avanzadas y Optimización
+- [x] **Hotfix: Error de Permisos (Race Condition)**:
+    - Diagnosticada la causa: condición de carrera entre el registro en Firestore y la asignación del rol vía Cloud Functions.
+    - `AuthRepositoryImpl`: polling robusto de hasta 15 segundos (reintentos con backoff) esperando al Custom Claim.
+    - `AuthCubit`: el estado `AuthAuthenticated` solo se emite tras confirmar el rol en el token JWT.
+    - 12 tests unitarios de `AuthCubit` actualizados para cubrir el nuevo flujo sincronizado.
+
+
 **Objetivo:** Finalizar los compromisos de datos y mejorar la eficiencia.
 
 - [ ] **Filtro Temporal Avanzado (Docente)**:
