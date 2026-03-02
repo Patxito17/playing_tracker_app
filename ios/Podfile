@@ -1,5 +1,5 @@
-# Definir plataforma mínima iOS requerida por algunos pods (e.g. cloud_firestore)
-platform :ios, '15.0'
+# Definir plataforma mínima iOS requerida por firebase_app_check (^0.4.x requiere iOS 16.0+)
+platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -39,5 +39,9 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # Forzar deployment target mínimo en todos los pods (necesario para firebase_app_check ^0.4.x)
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+    end
   end
 end

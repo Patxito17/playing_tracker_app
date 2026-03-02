@@ -58,6 +58,14 @@ class TeacherModel {
   /// Indica si el perfil está activo (true) o inactivo/eliminado (false)
   final bool isActive;
 
+  /// Versión de los Términos y Condiciones aceptada por el docente (e.g. "1.0").
+  /// Null si el usuario fue creado antes del versionado legal.
+  final String? acceptedTermsVersion;
+
+  /// Fecha y hora en que el docente aceptó los Términos y Condiciones.
+  @TimestampConverter()
+  final Timestamp? acceptedTermsAt;
+
   /// Constructor del modelo de docente
   const TeacherModel({
     required this.id,
@@ -67,6 +75,8 @@ class TeacherModel {
     required this.createdAt,
     required this.updatedAt,
     this.isActive = true,
+    this.acceptedTermsVersion,
+    this.acceptedTermsAt,
   });
 
   /// Crea una instancia desde un mapa JSON
@@ -88,6 +98,8 @@ class TeacherModel {
     Timestamp? createdAt,
     Timestamp? updatedAt,
     bool? isActive,
+    String? acceptedTermsVersion,
+    Timestamp? acceptedTermsAt,
   }) {
     return TeacherModel(
       id: id ?? this.id,
@@ -97,6 +109,8 @@ class TeacherModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
+      acceptedTermsVersion: acceptedTermsVersion ?? this.acceptedTermsVersion,
+      acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
     );
   }
 
@@ -111,7 +125,9 @@ class TeacherModel {
           email == other.email &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
-          isActive == other.isActive;
+          isActive == other.isActive &&
+          acceptedTermsVersion == other.acceptedTermsVersion &&
+          acceptedTermsAt == other.acceptedTermsAt;
 
   @override
   int get hashCode =>
@@ -121,7 +137,9 @@ class TeacherModel {
       email.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
-      isActive.hashCode;
+      isActive.hashCode ^
+      acceptedTermsVersion.hashCode ^
+      acceptedTermsAt.hashCode;
 
   @override
   String toString() =>

@@ -1065,4 +1065,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterAllTime => 'All time';
+
+  @override
+  String get legalConsentTitle => 'Terms & Privacy';
+
+  @override
+  String get legalConsentScrollInstruction =>
+      'Read the full content to continue';
+
+  @override
+  String get legalConsentCheckboxLabel =>
+      'I have read and accept the Terms and Conditions and Privacy Policy';
+
+  @override
+  String get legalConsentAcceptButton => 'Accept and continue';
+
+  @override
+  String get legalConsentDeclineButton => 'I do not accept';
+
+  @override
+  String legalConsentVersionLabel(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get legalConsentUpdatedTitle => 'Terms updated';
+
+  @override
+  String get legalConsentUpdatedMessage =>
+      'We have updated our Terms and Conditions and Privacy Policy. Please read and accept them to continue using the app.';
+
+  @override
+  String get privacyPolicyTitle => 'Privacy Policy';
+
+  @override
+  String get termsAndConditionsTitle => 'Terms and Conditions';
 }

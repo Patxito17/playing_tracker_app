@@ -1,0 +1,166 @@
+name: Production Build
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Se activa en tags como v1.0.0, v1.2.3, etc.
+
+env:
+  FLUTTER_VERSION: '3.38.0'
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Validación de calidad (debe pasar antes de compilar)
+  # ──────────────────────────────────────────────────────────────────────────
+  quality_check:
+    name: Lint & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate code (build_runner)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Build Android (App Bundle para Google Play)
+  # ──────────────────────────────────────────────────────────────────────────
+  build_android:
+    name: Build Android AAB
+    runs-on: ubuntu-latest
+    needs: quality_check
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Decode Android keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
+
+      - name: Build App Bundle (obfuscated)
+        run: |
+          flutter build appbundle \
+            --release \
+            --obfuscate \
+            --split-debug-info=build/symbols/android \
+            --build-name="${{ github.ref_name }}" \
+            --build-number="${{ github.run_number }}"
+        env:
+          ANDROID_KEYSTORE_PATH: android/app/release.jks
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab-${{ github.ref_name }}
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload debug symbols artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-symbols-${{ github.ref_name }}
+          path: build/symbols/android/
+
+      # ── Subida de símbolos a Firebase Crashlytics ─────────────────────────
+      # Requiere: FIREBASE_CLI_TOKEN (secret) y APP_ID_ANDROID (var de entorno)
+      - name: Setup Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Upload Crashlytics symbols (Android)
+        run: |
+          firebase crashlytics:symbols:upload \
+            --app="${{ vars.FIREBASE_APP_ID_ANDROID }}" \
+            build/symbols/android/
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Build iOS (IPA para App Store Connect)
+  # ──────────────────────────────────────────────────────────────────────────
+  build_ios:
+    name: Build iOS IPA
+    runs-on: macos-latest
+    needs: quality_check
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: "Install iOS certificates (TODO: configure fastlane match with secrets)"
+        run: echo "iOS signing placeholder - configure fastlane match for production"
+
+      - name: Build IPA (obfuscated)
+        run: |
+          flutter build ipa \
+            --release \
+            --obfuscate \
+            --split-debug-info=build/symbols/ios \
+            --build-name="${{ github.ref_name }}" \
+            --build-number="${{ github.run_number }}"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-${{ github.ref_name }}
+          path: build/ios/ipa/*.ipa
+
+      - name: Upload iOS debug symbols artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-symbols-${{ github.ref_name }}
+          path: build/symbols/ios/
+
+      # ── Subida de símbolos dSYM a Firebase Crashlytics ───────────────────
+      - name: Setup Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Upload Crashlytics dSYM symbols (iOS)
+        run: |
+          firebase crashlytics:symbols:upload \
+            --app="${{ vars.FIREBASE_APP_ID_IOS }}" \
+            build/symbols/ios/
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}

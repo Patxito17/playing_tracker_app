@@ -1073,4 +1073,39 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get filterAllTime => 'Histórico';
+
+  @override
+  String get legalConsentTitle => 'Términos y Privacidad';
+
+  @override
+  String get legalConsentScrollInstruction =>
+      'Lee el contenido completo para continuar';
+
+  @override
+  String get legalConsentCheckboxLabel =>
+      'He leído y acepto los Términos y Condiciones y la Política de Privacidad';
+
+  @override
+  String get legalConsentAcceptButton => 'Aceptar y continuar';
+
+  @override
+  String get legalConsentDeclineButton => 'No acepto';
+
+  @override
+  String legalConsentVersionLabel(String version) {
+    return 'Versión $version';
+  }
+
+  @override
+  String get legalConsentUpdatedTitle => 'Términos actualizados';
+
+  @override
+  String get legalConsentUpdatedMessage =>
+      'Hemos actualizado nuestros Términos y Condiciones y Política de Privacidad. Por favor, léelos y acéptalos para continuar usando la aplicación.';
+
+  @override
+  String get privacyPolicyTitle => 'Política de Privacidad';
+
+  @override
+  String get termsAndConditionsTitle => 'Términos y Condiciones';
 }

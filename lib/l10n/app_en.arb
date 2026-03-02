@@ -999,5 +999,31 @@
   "filterLast9Months": "Last 9 months",
   "@filterLast9Months": { "description": "Time filter: Last 9 months" },
   "filterAllTime": "All time",
-  "@filterAllTime": { "description": "Time filter: All time" }
+  "@filterAllTime": { "description": "Time filter: All time" },
+
+  "legalConsentTitle": "Terms & Privacy",
+  "@legalConsentTitle": { "description": "Legal consent dialog title" },
+  "legalConsentScrollInstruction": "Read the full content to continue",
+  "@legalConsentScrollInstruction": { "description": "Scroll instruction in legal dialog" },
+  "legalConsentCheckboxLabel": "I have read and accept the Terms and Conditions and Privacy Policy",
+  "@legalConsentCheckboxLabel": { "description": "Acceptance checkbox label" },
+  "legalConsentAcceptButton": "Accept and continue",
+  "@legalConsentAcceptButton": { "description": "Accept consent button" },
+  "legalConsentDeclineButton": "I do not accept",
+  "@legalConsentDeclineButton": { "description": "Decline consent button" },
+  "legalConsentVersionLabel": "Version {version}",
+  "@legalConsentVersionLabel": {
+    "description": "Terms version",
+    "placeholders": {
+      "version": { "type": "String", "example": "1.0" }
+    }
+  },
+  "legalConsentUpdatedTitle": "Terms updated",
+  "@legalConsentUpdatedTitle": { "description": "Title when terms have changed" },
+  "legalConsentUpdatedMessage": "We have updated our Terms and Conditions and Privacy Policy. Please read and accept them to continue using the app.",
+  "@legalConsentUpdatedMessage": { "description": "Message when terms have changed" },
+  "privacyPolicyTitle": "Privacy Policy",
+  "@privacyPolicyTitle": { "description": "Privacy policy section title" },
+  "termsAndConditionsTitle": "Terms and Conditions",
+  "@termsAndConditionsTitle": { "description": "Terms and conditions section title" }
 }
