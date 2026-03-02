@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/student_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/student_stats_state.dart';
@@ -68,7 +69,9 @@ void main() {
     testWidgets('renders loading indicator when state is Loading', (
       tester,
     ) async {
-      when(() => cubit.state).thenReturn(const StudentStatsLoading());
+      when(
+        () => cubit.state,
+      ).thenReturn(const StudentStatsLoading(timeFilter: TimeFilter.thisWeek));
 
       await tester.pumpWidget(createWidgetUnderTest());
 
@@ -79,9 +82,12 @@ void main() {
       tester,
     ) async {
       const errorMessage = 'Ocurrió un error';
-      when(
-        () => cubit.state,
-      ).thenReturn(const StudentStatsError(message: errorMessage));
+      when(() => cubit.state).thenReturn(
+        const StudentStatsError(
+          timeFilter: TimeFilter.thisWeek,
+          message: errorMessage,
+        ),
+      );
 
       await tester.pumpWidget(createWidgetUnderTest());
 
@@ -94,7 +100,11 @@ void main() {
       tester,
     ) async {
       when(() => cubit.state).thenReturn(
-        StudentStatsLoaded(progress: tProgress, weeklyStats: tWeeklyStats),
+        StudentStatsLoaded(
+          timeFilter: TimeFilter.thisWeek,
+          progress: tProgress,
+          weeklyStats: tWeeklyStats,
+        ),
       );
 
       await tester.pumpWidget(createWidgetUnderTest());
@@ -129,6 +139,7 @@ void main() {
 
       when(() => cubit.state).thenReturn(
         StudentStatsLoaded(
+          timeFilter: TimeFilter.thisWeek,
           progress: tProgress,
           weeklyStats: tWeeklyStatsWithTasks,
         ),

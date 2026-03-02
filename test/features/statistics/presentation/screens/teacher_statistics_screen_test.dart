@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
 import 'package:playing_tracker/features/statistics/presentation/screens/teacher_statistics_screen.dart';
@@ -60,7 +61,7 @@ void main() {
     testWidgets('renders app bar title', (WidgetTester tester) async {
       when(
         () => mockTeacherStatsCubit.state,
-      ).thenReturn(const TeacherStatsLoading());
+      ).thenReturn(const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek));
       when(
         () => mockTeacherStatsCubit.stream,
       ).thenAnswer((_) => const Stream.empty());
@@ -85,7 +86,10 @@ void main() {
         totalSessions: 10,
       );
 
-      final state = TeacherStatsLoaded(classStats: classStats);
+      final state = TeacherStatsLoaded(
+        classStats: classStats,
+        timeFilter: TimeFilter.thisWeek,
+      );
       when(() => mockTeacherStatsCubit.state).thenReturn(state);
       when(
         () => mockTeacherStatsCubit.stream,

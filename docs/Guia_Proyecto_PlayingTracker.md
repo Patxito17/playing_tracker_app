@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 2 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅) 🚧
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅) 🚧
 
 ---
 
@@ -278,8 +278,8 @@ lib/
 - 📅 Asignación a uno o varios alumnos
 - 📅 Visualización de:
   - Tiempo total de estudio por alumno
-  - Estadísticas filtradas por tarea o fecha
-- 📅 Dashboard con resumen de actividad
+  - ✅ Estadísticas filtradas por fecha (Esta semana, Este mes, Últimos 3 meses, Últimos 9 meses, Histórico)
+- 📅 Dashboard con resumen de actividad (agregados)
 
 ### 👨‍🎓 Módulo Alumno
 
@@ -307,8 +307,9 @@ lib/
 - 📅 Inicio de estudio mediante **cronómetro**
 - 📅 Posibilidad de **pausar, reiniciar o finalizar** sesión
 - 📅 Registro automático de tiempo (guardado en Firestore)
-- 📅 Visualización de historial y progreso personal
-- 📅 Estadísticas de tiempo de estudio
+- ✅ Visualización de historial y progreso personal
+- ✅ Estadísticas de tiempo de estudio con filtros temporales avanzados
+- ✅ Experiencia de usuario sin parpadeos durante la carga de datos (caché inteligente)
 
 ### 🔐 Módulo de Autenticación (Común)
 
@@ -794,9 +795,9 @@ Sprint 3: ████████████████████ 100% ✅ 
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
-Sprint 7: ████████████░░░░░░░░ ~55% 🛠️ Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E ✅ | Golden ✅ | Fases 3-5 📅)
+Sprint 7: ███████████████░░░░░ ~75% 🛠️ Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E ✅ | Golden ✅ | Fase 3 Stats ✅ | Fases 4-5 📅)
 
-Progreso Total: ████████████████████ ~92% (Sprints 0-6 completados + Fases 1, 2, 2b, 2c, 2d Sprint 7)
+Progreso Total: ████████████████████ ~95% (Sprints 0-6 completados + Fases 1, 2, 2b, 2c, 2d, 3 Sprint 7)
 ```
 
 ---

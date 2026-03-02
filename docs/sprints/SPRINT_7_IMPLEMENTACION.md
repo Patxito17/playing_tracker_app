@@ -1,8 +1,8 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** 🛠️ Fase 2 Completada — Fases 3, 4 y 5 pendientes
+**Estado:** ✅ Fase 3 Completada (Filtros de Stats Docente/Alumno) | Fases 4 y 5 pendientes
 **Fecha de inicio:** 2026-01-26
-**Fecha última actualización:** 2026-03-02
+**Fecha última actualización:** 2 de Marzo 2026
 **Duración estimada:** 3 semanas
 
 ---
@@ -55,15 +55,18 @@
     - `AuthCubit`: el estado `AuthAuthenticated` solo se emite tras confirmar el rol en el token JWT.
     - 12 tests unitarios de `AuthCubit` actualizados para cubrir el nuevo flujo sincronizado.
 
-### 📊 Fase 3: Estadísticas Avanzadas y Optimización
+### ✅ Fase 3: Estadísticas Avanzadas y Optimización (Implementado)
 **Objetivo:** Finalizar los compromisos de datos y mejorar la eficiencia.
 
-- [ ] **Filtro Temporal Avanzado (Docente)**:
-    - Implementar `SegmentedButton` en `TeacherStatisticsScreen`.
-    - Optimizar consultas Firestore usando agregaciones por `monthBucket`.
-- [ ] **Caché y Rendimiento**:
-    - Implementar política de caché para estadísticas históricas.
-    - Perfilado de la app con Flutter DevTools para eliminar frames lentos.
+- [x] **Filtros Temporales Avanzados (Docente y Alumno)**:
+    - [x] Implementar `TimeFilterSelector` (reutilizable) con `SegmentedButton`.
+    - [x] Soporte para: Esta semana, Este mes, Últimos 3 meses, Últimos 9 meses, Histórico.
+    - [x] Integración en `TeacherStatisticsScreen`, `StudentStatisticsScreen` y `ClassStatisticsTab`.
+    - [x] Optimización de consultas Firestore usando `monthBucket` para rangos largos.
+- [x] **Caché y Experiencia de Usuario**:
+    - [x] Implementar política de caché en memoria con TTL (2 min) en `StatisticsRepositoryImpl`.
+    - [x] UI Flicker-free: Preservación de datos previos durante estados de carga (`StudentStatsLoading`, `TeacherStatsLoading`).
+    - [x] Barra de progreso sutil superior para indicar refresco de datos sin interrumpir la visualización.
 
 ### 🔒 Fase 4: Seguridad y Accesibilidad
 **Objetivo:** Preparar la aplicación para el cumplimiento normativo y uso universal.

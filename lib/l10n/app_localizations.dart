@@ -2023,6 +2023,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Rojo'**
   String get colorRed;
+
+  /// Filtro temporal: Esta semana
+  ///
+  /// In es, this message translates to:
+  /// **'Esta semana'**
+  String get filterThisWeek;
+
+  /// Filtro temporal: Este mes
+  ///
+  /// In es, this message translates to:
+  /// **'Este mes'**
+  String get filterThisMonth;
+
+  /// Filtro temporal: Últimos 3 meses
+  ///
+  /// In es, this message translates to:
+  /// **'Últimos 3 meses'**
+  String get filterLast3Months;
+
+  /// Filtro temporal: Últimos 9 meses
+  ///
+  /// In es, this message translates to:
+  /// **'Últimos 9 meses'**
+  String get filterLast9Months;
+
+  /// Filtro temporal: Histórico
+  ///
+  /// In es, this message translates to:
+  /// **'Histórico'**
+  String get filterAllTime;
 }
 
 class _AppLocalizationsDelegate

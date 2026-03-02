@@ -988,5 +988,16 @@
   "colorOrange": "Orange",
   "@colorOrange": { "description": "Orange color" },
   "colorRed": "Red",
-  "@colorRed": { "description": "Red color" }
+  "@colorRed": { "description": "Red color" },
+
+  "filterThisWeek": "This week",
+  "@filterThisWeek": { "description": "Time filter: This week" },
+  "filterThisMonth": "This month",
+  "@filterThisMonth": { "description": "Time filter: This month" },
+  "filterLast3Months": "Last 3 months",
+  "@filterLast3Months": { "description": "Time filter: Last 3 months" },
+  "filterLast9Months": "Last 9 months",
+  "@filterLast9Months": { "description": "Time filter: Last 9 months" },
+  "filterAllTime": "All time",
+  "@filterAllTime": { "description": "Time filter: All time" }
 }
