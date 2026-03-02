@@ -50,8 +50,12 @@ abstract interface class StatisticsRepository {
     required String studentId,
     TimeFilter timeFilter = TimeFilter.thisWeek,
     String? classId,
+    bool forceRefresh = false,
   });
 
   /// Obtiene el progreso individual de un estudiante.
-  Future<StudentProgressModel> getStudentProgress({required String studentId});
+  Future<StudentProgressModel> getStudentProgress({
+    required String studentId,
+    bool forceRefresh = false,
+  });
 }

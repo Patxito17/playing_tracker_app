@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
-import 'package:playing_tracker/features/statistics/data/repositories/cached_class_stats.dart';
+import 'package:playing_tracker/features/statistics/data/repositories/cached_stats.dart';
 import 'package:playing_tracker/features/statistics/data/services/statistics_service.dart';
 import 'package:playing_tracker/features/statistics/domain/exceptions/statistics_exception.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
@@ -31,7 +31,14 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
   static const _cacheTtl = Duration(minutes: 2);
 
   /// Caché en memoria indexada por "classId_filterName".
-  final Map<String, CachedClassStats> _classStatsCache = {};
+  final Map<String, CachedStats<ClassStatsModel>> _classStatsCache = {};
+
+  /// Caché en memoria para las estadísticas de estudiantes.
+  final Map<String, CachedStats<WeeklyStatsModel>> _studentStatsCache = {};
+
+  /// Caché en memoria para el progreso general del estudiante.
+  final Map<String, CachedStats<StudentProgressModel>> _studentProgressCache =
+      {};
 
   @override
   Future<DailyStatsModel> getDailyStats({
@@ -79,6 +86,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     required String studentId,
     TimeFilter timeFilter = TimeFilter.thisWeek,
     String? classId,
+    bool forceRefresh = false,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -87,12 +95,40 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       );
     }
 
+    final activeFilter = timeFilter;
+    final cacheKey = '${sanitizedId}_${activeFilter.name}_${classId ?? "all"}';
+
+    if (!forceRefresh) {
+      final cached = _studentStatsCache[cacheKey];
+      if (cached != null && !cached.isExpired(_cacheTtl)) {
+        log(
+          'StatisticsRepositoryImpl: Cache HIT para $cacheKey',
+          name: 'StatisticsRepositoryImpl',
+        );
+        return cached.stats;
+      }
+    } else {
+      _studentStatsCache.remove(cacheKey);
+    }
+
     try {
-      return await _statisticsService.getStudentStats(
+      log(
+        'StatisticsRepositoryImpl: Cache MISS para $cacheKey. Consultando Firestore...',
+        name: 'StatisticsRepositoryImpl',
+      );
+
+      final stats = await _statisticsService.getStudentStats(
         studentId: sanitizedId,
         timeFilter: timeFilter,
         classId: classId,
       );
+
+      _studentStatsCache[cacheKey] = CachedStats(
+        stats: stats,
+        timestamp: DateTime.now(),
+      );
+
+      return stats;
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'getStudentStats',
@@ -221,7 +257,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
       );
 
       // ② Guardar en caché
-      _classStatsCache[cacheKey] = CachedClassStats(
+      _classStatsCache[cacheKey] = CachedStats(
         stats: stats,
         timestamp: DateTime.now(),
       );
@@ -239,6 +275,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
   @override
   Future<StudentProgressModel> getStudentProgress({
     required String studentId,
+    bool forceRefresh = false,
   }) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -247,6 +284,21 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
         resourceId: '',
         userMessage: '',
       );
+    }
+
+    final cacheKey = sanitizedId;
+
+    if (!forceRefresh) {
+      final cached = _studentProgressCache[cacheKey];
+      if (cached != null && !cached.isExpired(_cacheTtl)) {
+        log(
+          'StatisticsRepositoryImpl: Cache HIT (progress) para $cacheKey',
+          name: 'StatisticsRepositoryImpl',
+        );
+        return cached.stats;
+      }
+    } else {
+      _studentProgressCache.remove(cacheKey);
     }
 
     try {
@@ -300,7 +352,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
           ? (totalDurationLogged / totalSessionsCount).round()
           : 0;
 
-      return StudentProgressModel(
+      final progress = StudentProgressModel(
         studentId: sanitizedId,
         studentName: studentName,
         totalDuration: totalDurationLogged,
@@ -312,6 +364,13 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
         completedTasks: completedTasks,
         averageSessionDuration: averageSessionDuration,
       );
+
+      _studentProgressCache[cacheKey] = CachedStats(
+        stats: progress,
+        timestamp: DateTime.now(),
+      );
+
+      return progress;
     } catch (error, stackTrace) {
       _throwRepositoryException(
         method: 'getStudentProgress',
