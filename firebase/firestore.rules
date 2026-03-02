@@ -4,16 +4,17 @@ rules_version = '2';
 // Reglas de Seguridad de Firestore - Playing Tracker
 // ============================================================================
 //
-// Este archivo define las reglas de seguridad para todas las colecciones
-// de Firestore del proyecto Playing Tracker.
+// Sprint 7 - Optimización: Reglas refactorizadas para usar Custom Claims.
 //
-// Sprint 1 - Fase 4: Reglas de seguridad implementadas
-// Fecha: Noviembre 2025
+// Cambios respecto a la versión anterior:
+//  - isTeacher(): Ahora usa request.auth.token.role == 'teacher' (sin lectura extra).
+//  - isStudent(): Ahora usa request.auth.token.role == 'student' (sin lectura extra).
+//  - teachers/students: Lectura restringida al propietario del perfil (privacidad).
 //
 // Principios de seguridad:
 // - Denegar por defecto, permitir explícitamente
 // - Todos los permisos requieren autenticación
-// - Validación de roles mediante verificación de existencia en colecciones
+// - Validación de roles mediante Custom Claims en el token JWT (sin coste extra)
 // - Separación granular de permisos (create/read/update/delete)
 // - Inmutabilidad de sesiones (no update/delete)
 //
@@ -32,25 +33,20 @@ service cloud.firestore {
     }
 
     /// Verifica si el usuario es el propietario del documento
-    /// @param userId - ID del usuario a verificar
     function isOwner(userId) {
       return isAuth() && request.auth.uid == userId;
     }
 
-    /// Verifica si el usuario autenticado es un docente
-    /// Valida la existencia del documento en la colección teachers
-    /// Nota: Tiene costo de lectura adicional pero es necesario para seguridad
+    /// Verifica si el usuario autenticado es un docente (via Custom Claim).
+    /// Sin coste adicional de lectura en Firestore.
     function isTeacher() {
-      return isAuth() &&
-             exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+      return isAuth() && request.auth.token.role == 'teacher';
     }
 
-    /// Verifica si el usuario autenticado es un alumno
-    /// Valida la existencia del documento en la colección students
-    /// Nota: Tiene costo de lectura adicional pero es necesario para seguridad
+    /// Verifica si el usuario autenticado es un alumno (via Custom Claim).
+    /// Sin coste adicional de lectura en Firestore.
     function isStudent() {
-      return isAuth() &&
-             exists(/databases/$(database)/documents/students/$(request.auth.uid));
+      return isAuth() && request.auth.token.role == 'student';
     }
 
     /// Verifica si el usuario es el creador de la clase
@@ -63,12 +59,12 @@ service cloud.firestore {
     // COLECCIÓN: teachers
     // ==========================================================================
     // Perfiles de docentes
-    // - Read: Solo el propio docente
+    // - Read: Solo el propio docente (ACTUALIZADO: antes era cualquier usuario autenticado)
     // - Write: Solo el propio docente
     // - IDs: UID de Firebase Authentication
 
     match /teachers/{teacherId} {
-      allow read: if isAuth();
+      allow read: if isOwner(teacherId) || isTeacher();
       allow create: if isOwner(teacherId);
       allow update: if isOwner(teacherId);
       allow delete: if isOwner(teacherId);
@@ -78,12 +74,12 @@ service cloud.firestore {
     // COLECCIÓN: students
     // ==========================================================================
     // Perfiles de alumnos con agregados denormalizados
-    // - Read: Solo el propio alumno
+    // - Read: Solo el propio alumno o el docente de su clase (ACTUALIZADO)
     // - Write: Solo el propio alumno
     // - IDs: UID de Firebase Authentication
 
     match /students/{studentId} {
-      allow read: if isAuth();
+      allow read: if isOwner(studentId) || isTeacher();
       allow create: if isOwner(studentId);
       allow update: if isOwner(studentId);
       allow delete: if isOwner(studentId);
@@ -94,7 +90,7 @@ service cloud.firestore {
     // ==========================================================================
     // Definiciones de clases/grupos
     // - Read: Cualquier usuario autenticado
-    // - Create: Solo docentes (validado con isTeacher())
+    // - Create: Solo docentes (validado con Custom Claim)
     // - Update/Delete: Solo el docente propietario (ownerTeacherId)
 
     match /classes/{classId} {
@@ -156,7 +152,7 @@ service cloud.firestore {
     // ==========================================================================
     // Definiciones maestras de tareas
     // - Read: Cualquier usuario autenticado
-    // - Create: Solo docentes (validado con isTeacher())
+    // - Create: Solo docentes (validado con Custom Claim)
     // - Update/Delete: Solo el docente creador (createdBy)
 
     match /tasks/{taskId} {
@@ -182,8 +178,7 @@ service cloud.firestore {
     // - Delete: Solo el docente relacionado
 
     match /assignments/{assignmentId} {
-      // Lectura: Cualquier alumno para su propia tarea, o cualquier docente para gestión.
-      // Permitimos lectura general a docentes para facilitar las consultas de asignación de clase.
+      // Lectura: alumno para su propia tarea, o cualquier docente para gestión
       allow read: if isAuth() && (
         (resource != null && resource.data.studentId == request.auth.uid) ||
         isTeacher()
@@ -210,7 +205,7 @@ service cloud.firestore {
     // COLECCIÓN: sessions
     // ==========================================================================
     // Registros atómicos de sesiones de estudio (INMUTABLES)
-    // - Create: Solo el alumno propietario (validado con isStudent())
+    // - Create: Solo el alumno propietario (validado con Custom Claim)
     // - Read: Alumno propietario o docente relacionado
     // - Update/Delete: NO PERMITIDO (inmutabilidad para integridad histórica)
 
@@ -231,4 +226,3 @@ service cloud.firestore {
     }
   }
 }
-

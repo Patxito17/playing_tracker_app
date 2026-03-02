@@ -43,3 +43,30 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ==========================================
+# Archivos de Seguridad y Credenciales (NO PUBLICAR)
+# ==========================================
+
+# Firebase Auth / Configs
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
+
+# Keystores y claves de firma
+*.jks
+*.keystore
+android/key.properties
+key.properties
+
+# Archivos de entorno y configuraciones locales
+.env
+.env.*
+*.local
+local.properties
+
+# Node/Firebase functions
+functions/node_modules/
+functions/lib/
+functions/.env

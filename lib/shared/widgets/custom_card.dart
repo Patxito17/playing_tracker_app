@@ -134,10 +134,7 @@ class CustomCard extends StatelessWidget {
     if (!hasTitle && !hasSubtitle && hasActions) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (leadingAction != null) leadingAction!,
-          if (trailingAction != null) trailingAction!,
-        ],
+        children: [?leadingAction, ?trailingAction],
       );
     }
 

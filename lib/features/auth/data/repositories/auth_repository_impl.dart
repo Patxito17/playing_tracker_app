@@ -56,13 +56,45 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserRole> getUserRole(String userId) async {
     try {
+      // Intentar obtener el rol directamente desde los Custom Claims del token
+      // (disponible tras el registro o tras una reauthenticación con refresco forzado).
+      final currentUser = _firebaseAuth.currentUser;
+      if (currentUser != null && currentUser.uid == userId) {
+        final tokenResult = await currentUser.getIdTokenResult();
+        final role = tokenResult.claims?['role'] as String?;
+        if (role == 'teacher') return UserRole.teacher;
+        if (role == 'student') return UserRole.student;
+      }
+
+      // Fallback a Firestore si el claim aún no está disponible
+      // (ventana de tiempo entre creación del perfil y la ejecución de la Function).
       final teacherDoc = await _teachersRef.doc(userId).get();
       if (teacherDoc.exists) {
-        return UserRole.teacher;
+        // Si el perfil existe en Firestore pero no teníamos el claim en el token,
+        // intentamos refrescar con un pequeño reintento para dar tiempo a la Function.
+        for (var i = 0; i < 3; i++) {
+          final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
+            true,
+          );
+          final role = tokenResult?.claims?['role'] as String?;
+          if (role == 'teacher') return UserRole.teacher;
+          // Esperar un poco antes del siguiente reintento (0.5s, 1s, 2s)
+          await Future.delayed(Duration(milliseconds: 500 * (i + 1)));
+        }
+        return UserRole
+            .teacher; // Retornamos rol si existe doc, aunque el claim tarde.
       }
 
       final studentDoc = await _studentsRef.doc(userId).get();
       if (studentDoc.exists) {
+        for (var i = 0; i < 3; i++) {
+          final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
+            true,
+          );
+          final role = tokenResult?.claims?['role'] as String?;
+          if (role == 'student') return UserRole.student;
+          await Future.delayed(Duration(milliseconds: 500 * (i + 1)));
+        }
         return UserRole.student;
       }
 
@@ -128,6 +160,12 @@ class AuthRepositoryImpl implements AuthRepository {
         isActive: true,
       );
       await _teachersRef.doc(userId).set(teacher.toJson());
+
+      // Forzar refresco del token para que el Custom Claim 'teacher' (asignado
+      // por la Cloud Function) esté disponible de inmediato en la sesión activa.
+      // La Function se ejecuta aíncrona en el servidor; hay una pequeña ventana,
+      // pero Firebase reintenta el refresco con el claim tan pronto el token expira.
+      await _firebaseAuth.currentUser?.getIdTokenResult(true);
     } catch (error) {
       throw AuthRepositoryException(FirebaseErrorMapper.map(error));
     }
@@ -155,6 +193,10 @@ class AuthRepositoryImpl implements AuthRepository {
         lastSessionDate: null,
       );
       await _studentsRef.doc(userId).set(student.toJson());
+
+      // Forzar refresco del token para que el Custom Claim 'student' (asignado
+      // por la Cloud Function) esté disponible de inmediato en la sesión activa.
+      await _firebaseAuth.currentUser?.getIdTokenResult(true);
     } catch (error) {
       throw AuthRepositoryException(FirebaseErrorMapper.map(error));
     }

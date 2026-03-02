@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 2 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (En Progreso - Fase 1 l10n Completa ✅) 🚧
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Seguridad Firebase ✅) 🚧
 
 ---
 
@@ -760,6 +760,12 @@ service cloud.firestore {
 
 **Entregables:**
 - ✅ **Sistema l10n completo** (Fase 1): `flutter_localizations`, archivos `.arb` (ES y EN), `AppLocalizations`, extensión `context.l10n`, selector de idioma en Settings (Español / English / Automático) con persistencia en `SharedPreferences`.
+- ✅ **Optimización y Seguridad Firebase** (Fase 2):
+  - **Custom Claims**: Cloud Functions (`onTeacherProfileCreated`, `onStudentProfileCreated`) que asignan el rol al token JWT. Las reglas de Firestore son 100% óptimas y no usan `exists()`.
+  - **Sincronización de Perfiles**: Implementada lógica de reintento con backoff en `AuthRepositoryImpl` para garantizar que el Custom Claim esté disponible en el token antes de permitir operaciones de escritura.
+  - **Privacidad de perfiles**: `teachers` y `students` solo son legibles por el propietario del perfil (o docentes).
+  - **Firebase App Check**: Configurado para Android (Play Integrity) e iOS (DeviceCheck/App Attest) con soporte para DebugProvider en desarrollo.
+  - **Nota**: El deploy de Cloud Functions requiere activar el plan **Blaze**. Las reglas de Firestore ya están desplegadas en producción.
 - 📅 Suite completa de tests
 - 📅 Optimizaciones de rendimiento
 - 📅 Auditoría de seguridad
@@ -778,9 +784,9 @@ Sprint 3: ████████████████████ 100% ✅ 
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
-Sprint 7: ████░░░░░░░░░░░░░░░░ ~10% 🚧 Testing y Optimización (Fase 1 l10n ✅)
+Sprint 7: ████████░░░░░░░░░░░░ ~20% 🚧 Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅)
 
-Progreso Total: ████████████████░░░░ ~82% (Sprints 0-6 completados + Fase 1 Sprint 7)
+Progreso Total: ████████████████░░░░ ~85% (Sprints 0-6 completados + Fases 1 y 2 Sprint 7)
 ```
 
 ---
