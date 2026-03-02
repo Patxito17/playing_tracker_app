@@ -272,6 +272,12 @@ abstract class AppLocalizations {
   /// **'Las contraseñas no coinciden'**
   String get passwordsDoNotMatch;
 
+  /// Mensaje de error cuando hay campos vacíos
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor, completa todos los campos'**
+  String get errorEmptyFields;
+
   /// Nombre menor a longitud mínima
   ///
   /// In es, this message translates to:

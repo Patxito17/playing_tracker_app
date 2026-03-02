@@ -218,7 +218,7 @@ final class StatisticsService {
               date: Timestamp.fromDate(currentDay),
               totalDuration: daySessions.fold(
                 0,
-                (sum, s) => sum + s.totalDuration,
+                (acc, s) => acc + s.totalDuration,
               ),
               totalSessions: daySessions.length,
               uniqueTasks: daySessions.map((s) => s.taskId).toSet().length,
@@ -235,7 +235,7 @@ final class StatisticsService {
               date: Timestamp.fromDate(currentDay),
               totalDuration: daySessions.fold(
                 0,
-                (sum, s) => sum + s.totalDuration,
+                (acc, s) => acc + s.totalDuration,
               ),
               totalSessions: daySessions.length,
               uniqueTasks: daySessions.map((s) => s.taskId).toSet().length,
@@ -281,6 +281,9 @@ final class StatisticsService {
     if (sanitizedId.isEmpty) {
       throw ArgumentError('El ID del estudiante es obligatorio');
     }
+    if (month < 1 || month > 12) {
+      throw ArgumentError('El mes debe estar entre 1 y 12');
+    }
 
     try {
       final monthBucket = '$year-${month.toString().padLeft(2, '0')}';
@@ -321,13 +324,17 @@ final class StatisticsService {
     String? studentId,
   }) async {
     final sanitizedTaskId = taskId.trim();
+    if (sanitizedTaskId.isEmpty) {
+      throw ArgumentError('El ID de la tarea es obligatorio');
+    }
     try {
       Query<Map<String, dynamic>> query = _sessionsCollection.where(
         'taskId',
         isEqualTo: sanitizedTaskId,
       );
-      if (studentId != null && studentId.trim().isNotEmpty) {
-        query = query.where('studentId', isEqualTo: studentId.trim());
+      final sanitizedStudentId = studentId?.trim();
+      if (sanitizedStudentId != null && sanitizedStudentId.isNotEmpty) {
+        query = query.where('studentId', isEqualTo: sanitizedStudentId);
       }
 
       final querySnapshot = await query.get();
@@ -340,22 +347,37 @@ final class StatisticsService {
         final endTime = data['endTime'] as Timestamp?;
         if (endTime != null) {
           final sDate = endTime.toDate();
-          if (lastSessionDate == null || sDate.isAfter(lastSessionDate))
+          if (lastSessionDate == null || sDate.isAfter(lastSessionDate)) {
             lastSessionDate = sDate;
+          }
         }
       }
 
-      // Obtener título y otros datos
+      // Obtener título y otros datos de la tarea
       final taskDoc = await _firestore
           .collection('tasks')
           .doc(sanitizedTaskId)
           .get();
       final taskTitle = taskDoc.exists
-          ? (taskDoc.data()?['title'] as String? ?? 'Tarea')
-          : 'Tarea';
+          ? (taskDoc.data()?['title'] as String? ?? 'Tarea desconocida')
+          : 'Tarea desconocida';
       final suggestedDuration = taskDoc.exists
           ? ((taskDoc.data()?['durationSuggested'] as int? ?? 0) * 60)
           : 0;
+
+      // Consultar el assignment para determinar si la tarea está completada
+      bool isCompleted = false;
+      if (sanitizedStudentId != null && sanitizedStudentId.isNotEmpty) {
+        final assignmentId = '${sanitizedTaskId}_$sanitizedStudentId';
+        final assignmentDoc = await _firestore
+            .collection('assignments')
+            .doc(assignmentId)
+            .get();
+        if (assignmentDoc.exists) {
+          isCompleted =
+              (assignmentDoc.data()?['status'] as String?) == 'completed';
+        }
+      }
 
       return TaskStatsModel(
         taskId: sanitizedTaskId,
@@ -364,6 +386,7 @@ final class StatisticsService {
         totalSessions: querySnapshot.docs.length,
         suggestedDuration: suggestedDuration,
         lastSessionDate: lastSessionDate,
+        isCompleted: isCompleted,
       );
     } on FirebaseException catch (error, stackTrace) {
       _logError('getTaskStats', error, stackTrace);
@@ -378,6 +401,12 @@ final class StatisticsService {
     TimeFilter timeFilter = TimeFilter.thisWeek,
   }) async {
     final sanitizedClassId = classId.trim();
+    if (sanitizedClassId.isEmpty) {
+      throw ArgumentError('El ID de la clase es obligatorio');
+    }
+    if (teacherId.trim().isEmpty) {
+      throw ArgumentError('El ID del docente es obligatorio');
+    }
     try {
       final sessionsSnapshot = await _buildFilteredQuery(
         classId: sanitizedClassId,
@@ -389,9 +418,22 @@ final class StatisticsService {
           .collection('classes')
           .doc(sanitizedClassId)
           .get();
+      if (!classDoc.exists) {
+        throw FirebaseException(
+          plugin: 'cloud_firestore',
+          code: 'not-found',
+          message: 'La clase no existe',
+        );
+      }
       final className = classDoc.data()?['name'] as String? ?? 'Clase';
-      final totalStudents =
-          (classDoc.data()?['studentsIds'] as List?)?.length ?? 0;
+
+      // Contar alumnos activos desde la colección memberships
+      final membershipsSnapshot = await _firestore
+          .collection('memberships')
+          .where('classId', isEqualTo: sanitizedClassId)
+          .where('isActive', isEqualTo: true)
+          .get();
+      final totalStudents = membershipsSnapshot.docs.length;
 
       int totalDuration = 0;
       final activeStudentIds = <String>{};

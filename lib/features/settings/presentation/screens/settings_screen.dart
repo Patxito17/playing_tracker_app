@@ -337,7 +337,12 @@ class SettingsScreen extends StatelessWidget {
               final lastName = lastNameController.text.trim();
 
               if (firstName.isEmpty || lastName.isEmpty) {
-                // TODO: Mostrar snackbar de error
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(context.l10n.errorEmptyFields),
+                    backgroundColor: context.colorScheme.error,
+                  ),
+                );
                 return;
               }
 

@@ -17,7 +17,7 @@ import 'helpers/e2e_test_helpers.dart';
 ///    una clase con una tarea asignada. Para aislar el test de E2E del estado
 ///
 /// Cómo ejecutar:
-///   flutter test integration_test/student_flow_test.dart -d <device_id>
+///   flutter test integration_test/student_flow_test.dart -d [device_id]
 ///
 void main() {
   setupIntegrationTest();

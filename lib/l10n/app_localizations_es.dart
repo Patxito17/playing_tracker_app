@@ -99,6 +99,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
 
   @override
+  String get errorEmptyFields => 'Por favor, completa todos los campos';
+
+  @override
   String nameMinLength(String fieldName) {
     return '$fieldName debe tener al menos 3 caracteres';
   }

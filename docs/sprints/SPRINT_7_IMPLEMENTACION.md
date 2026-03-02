@@ -36,7 +36,7 @@
     - [x] Widget tests para componentes compartidos (`CustomButton`, `CustomTextField`, `LoadingOverlay`, `CustomCard`).
     - [x] `SessionService`, `SessionRepositoryImpl`, `TaskService` y `TaskRepositoryImpl` confirman cobertura completa preexistente.
     - [x] Inyección de dependencia añadida a `StatisticsRepositoryImpl` (parámetro `firestore` opcional).
-    - **Suite total:** 345 tests ✅ (65 nuevos tests añadidos en esta fase).
+    - **Suite total:** 360 tests ✅ (100% code stability).
 - [x] **Tests de Integración (E2E)**:
     - `integration_test/teacher_flow_test.dart`: flujo docente completo (Registro → Custom Claim → Dashboard → Crear Clase → Éxito).
     - `integration_test/student_flow_test.dart`: flujo alumno completo (Registro → Custom Claim → Dashboard → Pantalla de Clases).

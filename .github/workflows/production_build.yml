@@ -68,6 +68,11 @@ jobs:
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
 
       - name: Build App Bundle (obfuscated)
+        env:
+          ANDROID_KEYSTORE_PATH: android/app/release.jks
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           flutter build appbundle \
             --release \
@@ -75,11 +80,6 @@ jobs:
             --split-debug-info=build/symbols/android \
             --build-name="${{ github.ref_name }}" \
             --build-number="${{ github.run_number }}"
-        env:
-          ANDROID_KEYSTORE_PATH: android/app/release.jks
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
@@ -99,12 +99,13 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Upload Crashlytics symbols (Android)
-        run: |
-          firebase crashlytics:symbols:upload \
-            --app="${{ vars.FIREBASE_APP_ID_ANDROID }}" \
-            build/symbols/android/
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          FIREBASE_APP_ID_ANDROID: ${{ vars.FIREBASE_APP_ID_ANDROID }}
+        run: |
+          firebase crashlytics:symbols:upload \
+            --app="$FIREBASE_APP_ID_ANDROID" \
+            build/symbols/android/
 
   # ──────────────────────────────────────────────────────────────────────────
   # Build iOS (IPA para App Store Connect)
@@ -158,9 +159,10 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Upload Crashlytics dSYM symbols (iOS)
-        run: |
-          firebase crashlytics:symbols:upload \
-            --app="${{ vars.FIREBASE_APP_ID_IOS }}" \
-            build/symbols/ios/
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          FIREBASE_APP_ID_IOS: ${{ vars.FIREBASE_APP_ID_IOS }}
+        run: |
+          firebase crashlytics:symbols:upload \
+            --app="$FIREBASE_APP_ID_IOS" \
+            build/symbols/ios/
