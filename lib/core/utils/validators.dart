@@ -2,7 +2,18 @@
 ///
 /// Proporciona funciones de validación reutilizables para campos de
 /// formularios. Los mensajes deben ser pasados desde el UI para soporte l10n.
+///
+/// **Límites de longitud** (espejo de Firestore Rules para integridad defensiva):
+/// - Nombres de persona: 3–60 caracteres
+/// - Títulos (clases, tareas): 3–100 caracteres
+/// - Email: hasta 100 caracteres
+/// - Contraseña: mínimo 6 caracteres
 class Validators {
+  // Límites máximos que espejean las reglas de Firestore
+  static const int _maxNameLength = 60;
+  static const int _maxEmailLength = 100;
+  static const int _maxTitleLength = 100;
+
   /// Valida que un campo no esté vacío
   ///
   /// [value] Valor a validar
@@ -27,6 +38,9 @@ class Validators {
   }) {
     if (value == null || value.trim().isEmpty) {
       return requiredMsg;
+    }
+    if (value.trim().length > _maxEmailLength) {
+      return invalidMsg;
     }
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
@@ -54,27 +68,67 @@ class Validators {
     return null;
   }
 
-  /// Valida formato de nombre
+  /// Valida formato de nombre de persona (firstName, lastName).
+  ///
+  /// Aplica sanitización mínima: trim y colapso de espacios múltiples.
+  /// No altera el contenido más allá de lo estrictamente necesario.
   ///
   /// [value] Nombre a validar
   /// [requiredMsg] Mensaje si está vacío
   /// [minLengthMsg] Mensaje si es muy corto
+  /// [maxLengthMsg] Mensaje si supera el límite máximo
   /// [invalidCharactersMsg] Mensaje si contiene caracteres inválidos
   static String? name(
     String? value, {
     String? requiredMsg,
     String? minLengthMsg,
+    String? maxLengthMsg,
     String? invalidCharactersMsg,
   }) {
-    if (value == null || value.trim().isEmpty) {
+    // Sanitización mínima: trim + colapsar espacios múltiples adyacentes
+    final normalized = value?.trim().replaceAll(RegExp(r'\s{2,}'), ' ');
+
+    if (normalized == null || normalized.isEmpty) {
       return requiredMsg;
     }
-    if (value.trim().length < 3) {
+    if (normalized.length < 3) {
       return minLengthMsg;
     }
+    if (normalized.length > _maxNameLength) {
+      return maxLengthMsg;
+    }
     final nameRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$');
-    if (!nameRegex.hasMatch(value.trim())) {
+    if (!nameRegex.hasMatch(normalized)) {
       return invalidCharactersMsg;
+    }
+    return null;
+  }
+
+  /// Valida un título de clase o tarea (texto libre).
+  ///
+  /// Aplica sanitización mínima: trim y colapso de espacios múltiples.
+  ///
+  /// [value] Título a validar
+  /// [requiredMsg] Mensaje si está vacío
+  /// [minLengthMsg] Mensaje si es muy corto (mínimo 3 caracteres)
+  /// [maxLengthMsg] Mensaje si supera el límite máximo
+  static String? title(
+    String? value, {
+    String? requiredMsg,
+    String? minLengthMsg,
+    String? maxLengthMsg,
+  }) {
+    // Sanitización mínima: trim + colapsar espacios múltiples adyacentes
+    final normalized = value?.trim().replaceAll(RegExp(r'\s{2,}'), ' ');
+
+    if (normalized == null || normalized.isEmpty) {
+      return requiredMsg;
+    }
+    if (normalized.length < 3) {
+      return minLengthMsg;
+    }
+    if (normalized.length > _maxTitleLength) {
+      return maxLengthMsg;
     }
     return null;
   }
