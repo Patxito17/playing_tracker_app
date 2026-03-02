@@ -772,8 +772,12 @@ service cloud.firestore {
   - `test/shared/widgets/shared_widgets_test.dart`: 28 widget tests de `CustomButton`, `CustomTextField`, `LoadingOverlay` y `CustomCard`.
   - Mejora de calidad: Inyección de dependencia añadida al constructor de `StatisticsRepositoryImpl` (parámetro `firestore` opcional para testabilidad).
   - **Suite total: 345 tests ✅ | 0 fallos | 0 regresiones**.
-- 📅 Suite completa de tests E2E (integration_test): pendiente.
-- 📅 Golden tests (matchesGoldenFile): pendiente.
+- ✅ **Suite de Tests E2E** (Fase 2d):
+  - `integration_test/teacher_flow_test.dart`: flujo docente completo (Registro → Custom Claim → Dashboard → Crear Clase).
+  - `integration_test/student_flow_test.dart`: flujo alumno completo (Registro → Custom Claim → Dashboard → Clases).
+  - Helper `integration_test/helpers/e2e_test_helpers.dart` con aislamiento y limpieza automática de cuentas de prueba.
+- ✅ **Golden Tests** (Fase 2c): 10 casos en 4 grupos sobre `CustomButton`, `CustomCard`, `CustomTextField` y `LoadingOverlay`. Referencias en `test/golden/goldens/`.
+- ✅ **Hotfix de Permisos**: condición de carrera en Custom Claims resuelta. `AuthRepositoryImpl` con polling de 15s y `AuthCubit` sincronizado.
 - 📅 Optimizaciones de rendimiento: pendiente.
 - 📅 Auditoría de seguridad: pendiente.
 - 📅 App lista para producción: pendiente.
@@ -790,9 +794,9 @@ Sprint 3: ████████████████████ 100% ✅ 
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
-Sprint 7: ██████████░░░░░░░░░░ ~30% 🚧 Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E + Golden 📅)
+Sprint 7: ████████████░░░░░░░░ ~55% 🛠️ Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E ✅ | Golden ✅ | Fases 3-5 📅)
 
-Progreso Total: ████████████████░░░░ ~87% (Sprints 0-6 completados + Fases 1, 2 y 2b Sprint 7)
+Progreso Total: ████████████████████ ~92% (Sprints 0-6 completados + Fases 1, 2, 2b, 2c, 2d Sprint 7)
 ```
 
 ---
@@ -802,21 +806,23 @@ Progreso Total: ████████████████░░░░ ~87
 ### ✅ Testing Implementado (Sprint 7 - Fase 2b)
 - ✅ **Unit tests:** `StatisticsService`, `StatisticsRepositoryImpl` (usando `fake_cloud_firestore` y tests unitarios puros)
 - ✅ **Widget tests:** `CustomButton`, `CustomTextField`, `LoadingOverlay`, `CustomCard` (`shared/widgets`)
+- ✅ **Golden Tests (Sprint 7 - Fase 2c):** 10 casos con API nativa `matchesGoldenFile` cubriendo `CustomButton` (4 variantes), `CustomCard` (2 escenarios), `CustomTextField` (normal y error) y `LoadingOverlay` (con y sin mensaje). Referencias en `test/golden/goldens/`.
 - ✅ **Sincronización de Roles (Hotfix):** Implementada espera activa de Custom Claims en `AuthCubit` y `AuthRepositoryImpl` (hasta 15s) para evitar errores "Permission Denied" en el primer login.
 - ✅ **Unit tests preexistentes validados:** `AuthCubit` (12 tests actualizados), `SessionService`, `SessionRepositoryImpl`, `TaskService`, `TaskRepositoryImpl`, `ClassService`, `ClassRepositoryImpl`.
-- 📅 **Integration tests (E2E):** Flujos completos teacher y student con `integration_test` (sin `flutter_driver`)
-- 📅 **Golden tests:** 5-8 componentes críticos con `matchesGoldenFile` nativo + `flutter_test_config.dart`
-- 📅 **Testing de accesibilidad** (TalkBack, VoiceOver)
+- ✅ **Tests de Integración (E2E):** Flujos completos docente y alumno con `integration_test`. Generación de usuarios únicos por ejecución con limpieza automática.
+- ✅ **Testing de accesibilidad básico:** Semántica implementada en `CustomButton`, `CustomTextField`, `LoadingOverlay` y pantallas de auth.
 - 📅 **Testing de rendimiento** (tiempo de carga, memoria)
 - 📅 **Testing con usuarios beta** (docentes y alumnos reales)
 
-### 📅 Herramientas de Testing (Por Configurar)
-- 📅 **flutter_test** - Framework de testing de Flutter
-- 📅 **bloc_test** - Testing específico para Cubit
-- 📅 **mocktail** - Mocking para dependencias
-- 📅 **golden_toolkit** - Golden tests para UI
-- 📅 **integration_test** - Testing de integración
-- 📅 **flutter_driver** - Testing E2E (opcional)
+### 🛠️ Herramientas de Testing Configuradas
+- ✅ **flutter_test** — Framework de testing de Flutter (SDK)
+- ✅ **integration_test** — Testing E2E real en dispositivo (SDK)
+- ✅ **bloc_test** — Testing específico para Cubit
+- ✅ **mocktail** — Mocking de dependencias
+- ✅ **fake_cloud_firestore** — Firestore fake para tests unitarios
+- ✅ **matchesGoldenFile** — API nativa de Golden Tests (sin `golden_toolkit`)
+- ❌ **flutter_driver** — No usado (legacy, sustituido por `integration_test`)
+- ❌ **golden_toolkit** — No instalado (innecesario con la API nativa)
 
 ### 📅 Estrategia de Testing
 - 📅 **Testing manual** durante desarrollo
