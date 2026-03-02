@@ -1,8 +1,9 @@
-import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
-import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
-import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
+import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
 
 /// Contrato del repositorio de estadísticas.
 ///
@@ -40,6 +41,15 @@ abstract interface class StatisticsRepository {
   Future<ClassStatsModel> getClassStats({
     required String classId,
     required String teacherId,
+    TimeFilter? timeFilter,
+    bool forceRefresh = false,
+  });
+
+  /// Obtiene estadísticas detalladas de un estudiante con filtro de tiempo.
+  Future<WeeklyStatsModel> getStudentStats({
+    required String studentId,
+    TimeFilter timeFilter = TimeFilter.thisWeek,
+    String? classId,
   });
 
   /// Obtiene el progreso individual de un estudiante.

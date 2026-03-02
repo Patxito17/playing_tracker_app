@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
 
@@ -45,6 +46,8 @@ void main() {
           () => repository.getClassStats(
             classId: any(named: 'classId'),
             teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tClassStats);
         return cubit;
@@ -52,13 +55,20 @@ void main() {
       act: (cubit) =>
           cubit.loadClassStats(classId: classId, teacherId: teacherId),
       expect: () => [
-        const TeacherStatsLoading(),
-        TeacherStatsLoaded(classStats: tClassStats),
+        const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek),
+        TeacherStatsLoaded(
+          classStats: tClassStats,
+          timeFilter: TimeFilter.thisWeek,
+        ),
       ],
       verify: (_) {
         verify(
-          () =>
-              repository.getClassStats(classId: classId, teacherId: teacherId),
+          () => repository.getClassStats(
+            classId: classId,
+            teacherId: teacherId,
+            timeFilter: TimeFilter.thisWeek,
+            forceRefresh: false,
+          ),
         ).called(1);
       },
     );
@@ -70,22 +80,29 @@ void main() {
           () => repository.getClassStats(
             classId: any(named: 'classId'),
             teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenThrow(Exception('Failed to load class stats'));
         return cubit;
       },
       act: (cubit) =>
           cubit.loadClassStats(classId: classId, teacherId: teacherId),
-      expect: () => [const TeacherStatsLoading(), isA<TeacherStatsError>()],
+      expect: () => [
+        const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek),
+        isA<TeacherStatsError>(),
+      ],
     );
 
     blocTest<TeacherStatsCubit, TeacherStatsState>(
-      'refreshClassStats calls loadClassStats',
+      'refreshClassStats calls loadClassStats and emits [Loading, Loaded]',
       build: () {
         when(
           () => repository.getClassStats(
             classId: any(named: 'classId'),
             teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tClassStats);
         return cubit;
@@ -93,13 +110,20 @@ void main() {
       act: (cubit) =>
           cubit.refreshClassStats(classId: classId, teacherId: teacherId),
       expect: () => [
-        const TeacherStatsLoading(),
-        TeacherStatsLoaded(classStats: tClassStats),
+        const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek),
+        TeacherStatsLoaded(
+          classStats: tClassStats,
+          timeFilter: TimeFilter.thisWeek,
+        ),
       ],
       verify: (_) {
         verify(
-          () =>
-              repository.getClassStats(classId: classId, teacherId: teacherId),
+          () => repository.getClassStats(
+            classId: classId,
+            teacherId: teacherId,
+            timeFilter: TimeFilter.thisWeek,
+            forceRefresh: true,
+          ),
         ).called(1);
       },
     );

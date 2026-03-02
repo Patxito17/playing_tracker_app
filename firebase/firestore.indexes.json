@@ -471,6 +471,44 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "teacherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "classId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateLogged",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "sessions",
+      "fields": [
+        {
+          "fieldPath": "teacherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "classId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "monthBucket",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateLogged",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

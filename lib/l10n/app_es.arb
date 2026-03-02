@@ -988,5 +988,16 @@
   "colorOrange": "Naranja",
   "@colorOrange": { "description": "Color naranja" },
   "colorRed": "Rojo",
-  "@colorRed": { "description": "Color rojo" }
+  "@colorRed": { "description": "Color rojo" },
+
+  "filterThisWeek": "Esta semana",
+  "@filterThisWeek": { "description": "Filtro temporal: Esta semana" },
+  "filterThisMonth": "Este mes",
+  "@filterThisMonth": { "description": "Filtro temporal: Este mes" },
+  "filterLast3Months": "Últimos 3 meses",
+  "@filterLast3Months": { "description": "Filtro temporal: Últimos 3 meses" },
+  "filterLast9Months": "Últimos 9 meses",
+  "@filterLast9Months": { "description": "Filtro temporal: Últimos 9 meses" },
+  "filterAllTime": "Histórico",
+  "@filterAllTime": { "description": "Filtro temporal: Histórico" }
 }

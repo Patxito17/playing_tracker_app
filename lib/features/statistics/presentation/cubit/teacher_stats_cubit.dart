@@ -1,41 +1,60 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
 
 /// Cubit para gestionar el estado de las estadísticas del docente.
 ///
-/// Carga las estadísticas de una clase específica para que el docente
-/// pueda ver el progreso agregado de sus alumnos.
+/// Carga las estadísticas de una clase específica (y en un periodo concreto)
+/// para que el docente pueda ver el progreso agregado de sus alumnos.
 class TeacherStatsCubit extends Cubit<TeacherStatsState> {
   TeacherStatsCubit(this._repository) : super(const TeacherStatsInitial());
 
   final StatisticsRepository _repository;
 
-  /// Carga las estadísticas de una clase específica.
+  /// Carga las estadísticas de una clase con filtros opcionales.
   ///
   /// Parámetros:
   /// - [classId]: ID de la clase
   /// - [teacherId]: ID del docente
+  /// - [timeFilter]: Filtro de tiempo opcional. Si no se provee, usa el actual.
+  /// - [forceRefresh]: Si es true, ignora la caché local.
   Future<void> loadClassStats({
     required String classId,
     required String teacherId,
+    TimeFilter? timeFilter,
+    bool forceRefresh = false,
   }) async {
-    emit(const TeacherStatsLoading());
+    final activeFilter = timeFilter ?? state.timeFilter;
+    final previousStats = state is TeacherStatsLoaded
+        ? (state as TeacherStatsLoaded).classStats
+        : (state is TeacherStatsLoading
+              ? (state as TeacherStatsLoading).classStats
+              : null);
+
+    emit(
+      TeacherStatsLoading(timeFilter: activeFilter, classStats: previousStats),
+    );
 
     try {
       log(
-        'TeacherStatsCubit: Cargando estadísticas de clase $classId para docente $teacherId',
+        'TeacherStatsCubit: Cargando estadísticas de clase $classId para docente $teacherId con filtro $activeFilter (forceRefresh: $forceRefresh)',
         name: 'TeacherStatsCubit',
       );
 
       final classStats = await _repository.getClassStats(
         classId: classId,
         teacherId: teacherId,
+        timeFilter:
+            activeFilter, // Requiere actualización en la firma del repositorio
+        forceRefresh: forceRefresh,
       );
 
-      emit(TeacherStatsLoaded(classStats: classStats));
+      emit(
+        TeacherStatsLoaded(classStats: classStats, timeFilter: activeFilter),
+      );
 
       log(
         'TeacherStatsCubit: Estadísticas cargadas exitosamente',
@@ -52,17 +71,37 @@ class TeacherStatsCubit extends Cubit<TeacherStatsState> {
       emit(
         TeacherStatsError(
           message: 'No se pudieron cargar las estadísticas: $error',
+          timeFilter: activeFilter,
         ),
       );
     }
   }
 
-  /// Refresca las estadísticas de la clase.
+  /// Cambia el filtro de tiempo y recarga los datos.
+  Future<void> changeFilter({
+    required String classId,
+    required String teacherId,
+    required TimeFilter newFilter,
+  }) async {
+    if (state.timeFilter == newFilter) return;
+
+    await loadClassStats(
+      classId: classId,
+      teacherId: teacherId,
+      timeFilter: newFilter,
+    );
+  }
+
+  /// Refresca los datos forzando la descarga desde Firestore.
   Future<void> refreshClassStats({
     required String classId,
     required String teacherId,
   }) async {
-    // Mantener el estado actual mientras refrescamos
-    await loadClassStats(classId: classId, teacherId: teacherId);
+    await loadClassStats(
+      classId: classId,
+      teacherId: teacherId,
+      timeFilter: state.timeFilter,
+      forceRefresh: true,
+    );
   }
 }

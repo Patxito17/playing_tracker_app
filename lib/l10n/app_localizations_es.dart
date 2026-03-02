@@ -1058,4 +1058,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get colorRed => 'Rojo';
+
+  @override
+  String get filterThisWeek => 'Esta semana';
+
+  @override
+  String get filterThisMonth => 'Este mes';
+
+  @override
+  String get filterLast3Months => 'Últimos 3 meses';
+
+  @override
+  String get filterLast9Months => 'Últimos 9 meses';
+
+  @override
+  String get filterAllTime => 'Histórico';
 }

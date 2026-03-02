@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/student_stats_cubit.dart';
@@ -68,8 +69,12 @@ void main() {
       },
       act: (cubit) => cubit.loadStats(studentId: studentId),
       expect: () => [
-        const StudentStatsLoading(),
-        StudentStatsLoaded(progress: tProgress, weeklyStats: tWeeklyStats),
+        const StudentStatsLoading(timeFilter: TimeFilter.thisWeek),
+        StudentStatsLoaded(
+          timeFilter: TimeFilter.thisWeek,
+          progress: tProgress,
+          weeklyStats: tWeeklyStats,
+        ),
       ],
       verify: (_) {
         verify(
@@ -103,8 +108,12 @@ void main() {
       },
       act: (cubit) => cubit.loadStats(studentId: studentId, classId: classId),
       expect: () => [
-        const StudentStatsLoading(),
-        StudentStatsLoaded(progress: tProgress, weeklyStats: tWeeklyStats),
+        const StudentStatsLoading(timeFilter: TimeFilter.thisWeek),
+        StudentStatsLoaded(
+          timeFilter: TimeFilter.thisWeek,
+          progress: tProgress,
+          weeklyStats: tWeeklyStats,
+        ),
       ],
       verify: (_) {
         verify(
@@ -126,8 +135,10 @@ void main() {
         ).thenThrow(Exception('Failed to load progress'));
         return cubit;
       },
-      act: (cubit) => cubit.loadStats(studentId: studentId),
-      expect: () => [const StudentStatsLoading(), isA<StudentStatsError>()],
+      expect: () => [
+        const StudentStatsLoading(timeFilter: TimeFilter.thisWeek),
+        isA<StudentStatsError>(),
+      ],
     );
   });
 }
