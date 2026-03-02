@@ -1013,6 +1013,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
+  String get languageSystem => 'Automático (Sistema)';
+
+  @override
   String get colorSettings => 'Color principal';
 
   @override

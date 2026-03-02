@@ -42,7 +42,7 @@ void main() {
 
     when(() => mockAuthRepository.currentUser).thenReturn(null);
     when(() => mockSettingsService.getThemeMode()).thenReturn(ThemeMode.system);
-    when(() => mockSettingsService.getLocale()).thenReturn(null);
+    when(() => mockSettingsService.getLocale()).thenReturn(const Locale('es'));
     when(() => mockSettingsService.getSeedColor()).thenReturn(null);
   });
 
