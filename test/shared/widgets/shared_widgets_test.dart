@@ -334,4 +334,117 @@ void main() {
       expect(find.byIcon(Icons.more_vert), findsOneWidget);
     });
   });
+
+  // =========================================================================
+  // A11y: Semantics Tree Tests (Sprint 7 - Fase 4)
+  // Valida que el árbol semántico es correcto y previene regresiones
+  // invisibles que los Golden Tests no pueden detectar.
+  // =========================================================================
+  group('A11y Semantics', () {
+    testWidgets('CustomCard sin acciones tiene MergeSemantics como wrapper', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrapWithApp(
+          const CustomCard(
+            title: 'Clase de Piano',
+            child: Text('Descripción de la clase'),
+          ),
+        ),
+      );
+
+      // El card sin trailingAction/leadingAction debe usar MergeSemantics.
+      expect(find.byType(MergeSemantics), findsOneWidget);
+    });
+
+    testWidgets(
+      'CustomCard con trailingAction No usa MergeSemantics para preservar foco individual',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithApp(
+            CustomCard(
+              title: 'Clase con acción',
+              trailingAction: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {},
+              ),
+              child: const Text('Contenido'),
+            ),
+          ),
+        );
+
+        // Con acciones internas NO debe usar MergeSemantics globalmente.
+        expect(find.byType(MergeSemantics), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'CustomCard con semanticLabel expone la etiqueta personalizada',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithApp(
+            const CustomCard(
+              semanticLabel: 'Tarjeta de clase Piano avanzado',
+              child: Text('Piano'),
+            ),
+          ),
+        );
+
+        final semantics = tester.getSemantics(find.byType(MergeSemantics));
+        expect(semantics.label, contains('Tarjeta de clase Piano avanzado'));
+      },
+    );
+
+    testWidgets('LoadingOverlay envuelve su contenido en un widget Semantics', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrapWithApp(const LoadingOverlay(message: 'Cargando datos')),
+      );
+      // pumpAndSettle no aplica: CircularProgressIndicator tiene animaciones infinitas.
+      await tester.pump();
+
+      // El LoadingOverlay debe tener un widget Semantics en el árbol.
+      // La presencia de Semantics con liveRegion=true se valida en el widget test
+      // inspeccionando el árbol de widgets directamente.
+      final semanticsWidgets = tester.widgetList<Semantics>(
+        find.byType(Semantics),
+      );
+      // Debe haber al menos un Semantics con liveRegion=true en el árbol
+      final hasLiveRegion = semanticsWidgets.any(
+        (s) => s.properties.liveRegion == true,
+      );
+      expect(
+        hasLiveRegion,
+        isTrue,
+        reason:
+            'LoadingOverlay debe contener un Semantics con liveRegion=true '
+            'para que TalkBack/VoiceOver anuncie la carga automáticamente.',
+      );
+    });
+
+    testWidgets('CustomButton tiene Semantics con label correcto', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrapWithApp(CustomButton(label: 'Guardar tarea', onPressed: () {})),
+      );
+      await tester.pumpAndSettle();
+
+      // Verificar que al menos un nodo Semantics tiene el label del botón.
+      final semanticsWidgets = tester.widgetList<Semantics>(
+        find.byType(Semantics),
+      );
+      final hasLabel = semanticsWidgets.any(
+        (s) => s.properties.label == 'Guardar tarea',
+      );
+      expect(
+        hasLabel,
+        isTrue,
+        reason: 'CustomButton debe exponer su label en el árbol semántico.',
+      );
+      // El FilledButton (botón real) debe estar presente
+      expect(find.byType(FilledButton), findsOneWidget);
+    });
+  });
 }

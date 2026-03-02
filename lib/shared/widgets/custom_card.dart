@@ -65,6 +65,14 @@ class CustomCard extends StatelessWidget {
   /// Callback al hacer tap en el card
   final VoidCallback? onTap;
 
+  /// Etiqueta semántica personalizada para lectores de pantalla.
+  ///
+  /// Si no se proporciona, se usa el [title] como etiqueta.
+  /// Cuando el card no tiene acciones interactivas internas, se aplica
+  /// [MergeSemantics] para que TalkBack/VoiceOver lea el card completo
+  /// como un único elemento coherente.
+  final String? semanticLabel;
+
   const CustomCard({
     super.key,
     required this.child,
@@ -76,12 +84,19 @@ class CustomCard extends StatelessWidget {
     this.padding,
     this.margin,
     this.onTap,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     final cardElevation = elevation ?? 1.0;
     final cardPadding = padding ?? const EdgeInsets.all(AppSpacing.m);
+
+    // Determina si hay acciones interactivas en el header.
+    // Si las hay, NO usamos MergeSemantics global para no inhibir
+    // el foco individual de esas acciones.
+    final bool hasInteractiveActions =
+        trailingAction != null || leadingAction != null;
 
     // Construir el contenido del card
     Widget cardContent = Padding(
@@ -112,6 +127,23 @@ class CustomCard extends StatelessWidget {
       );
     }
 
+    // Envolver con semántica apropiada:
+    // - Sin acciones internas: MergeSemantics agrupa el card como un único nodo
+    //   coherente para TalkBack/VoiceOver (ideal para cards informativos simples).
+    // - Con acciones internas: Semantics con label proporciona contexto al card
+    //   pero permite que cada acción interna sea navegable individualmente.
+    Widget semanticWrapper;
+    if (!hasInteractiveActions) {
+      semanticWrapper = MergeSemantics(
+        child: Semantics(label: semanticLabel ?? title, child: cardContent),
+      );
+    } else {
+      semanticWrapper = Semantics(
+        label: semanticLabel ?? title,
+        child: cardContent,
+      );
+    }
+
     return Card(
       elevation: cardElevation,
       margin:
@@ -120,7 +152,7 @@ class CustomCard extends StatelessWidget {
             horizontal: AppSpacing.m,
             vertical: AppSpacing.s,
           ),
-      child: cardContent,
+      child: semanticWrapper,
     );
   }
 

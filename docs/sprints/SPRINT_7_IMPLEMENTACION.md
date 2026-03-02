@@ -1,6 +1,6 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** ✅ Fase 3 Completada (Filtros de Stats Docente/Alumno) | Fases 4 y 5 pendientes
+**Estado:** ✅ Fase 4 Completada (Seguridad y Accesibilidad) | Fase 5 pendiente
 **Fecha de inicio:** 2026-01-26
 **Fecha última actualización:** 2 de Marzo 2026
 **Duración estimada:** 3 semanas
@@ -68,15 +68,19 @@
     - [x] UI Flicker-free: Preservación de datos previos durante estados de carga (`StudentStatsLoading`, `TeacherStatsLoading`).
     - [x] Barra de progreso sutil superior para indicar refresco de datos sin interrumpir la visualización.
 
-### 🔒 Fase 4: Seguridad y Accesibilidad
+### 🔒 Fase 4: Seguridad y Accesibilidad ✅ COMPLETADA
 **Objetivo:** Preparar la aplicación para el cumplimiento normativo y uso universal.
+**Fecha de completación:** 2 de Marzo 2026
 
-- [ ] **Auditoría de Seguridad**:
-    - Revisión final de reglas de Firestore.
-    - Validación de inputs en *edge cases*.
-- [ ] **Accesibilidad (A11y)**:
-    - Asegurar etiquetas de semántica correctas para VoiceOver/TalkBack.
-    - Verificar contraste de colores y escalado de fuentes.
+- [x] **Auditoría de Seguridad**:
+    - [x] Validaciones espejo en Firestore Rules (`isValidName`, `isValidTitle`, `isValidDescription`) para prevenir bypasses via REST API.
+    - [x] `lib/core/utils/validators.dart`: límites de longitud (60 nombres, 100 títulos/email), sanitización mínima (trim + colapso de espacios múltiples). Nuevo validador `Validators.title()`.
+    - [x] Reglas publicadas en Firebase: `firebase deploy --only firestore:rules` ✅ compiladas y publicadas.
+- [x] **Accesibilidad (A11y)**:
+    - [x] `CustomCard`: `MergeSemantics` contextual (sin acciones = merge todo; con acciones = Semantics individual) + propiedad `semanticLabel` personalizable.
+    - [x] `LoadingOverlay`: `Semantics(liveRegion: true)` + anuncio de "Carga completada" via `SemanticsService.sendAnnouncement` al finalizar el `Future`.
+    - [x] Tests semánticos de árbol A11y añadidos en `test/shared/widgets/shared_widgets_test.dart` (5 nuevos tests, **30 tests totales ✅**).
+    - [x] `CustomTextField` expone `FocusNode` externo para focus management desde formularios padre.
 
 ### 🚀 Fase 5: Preparación para Lanzamiento
 **Objetivo:** Generar los artefactos finales para producción.
