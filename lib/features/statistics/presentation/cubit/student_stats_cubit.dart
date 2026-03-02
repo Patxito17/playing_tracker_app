@@ -21,6 +21,7 @@ class StudentStatsCubit extends Cubit<StudentStatsState> {
     required String studentId,
     String? classId,
     TimeFilter? timeFilter,
+    bool forceRefresh = false,
   }) async {
     final activeFilter = timeFilter ?? state.timeFilter;
 
@@ -55,11 +56,15 @@ class StudentStatsCubit extends Cubit<StudentStatsState> {
 
       // Cargar en paralelo
       final results = await Future.wait([
-        _repository.getStudentProgress(studentId: studentId),
+        _repository.getStudentProgress(
+          studentId: studentId,
+          forceRefresh: forceRefresh,
+        ),
         _repository.getStudentStats(
           studentId: studentId,
           timeFilter: activeFilter,
           classId: classId,
+          forceRefresh: forceRefresh,
         ),
       ]);
 
@@ -106,7 +111,7 @@ class StudentStatsCubit extends Cubit<StudentStatsState> {
     );
   }
 
-  /// Refresca las estadísticas con el filtro actual.
+  /// Refresca las estadísticas con el filtro actual (fuerza lectura de red).
   Future<void> refreshStats({
     required String studentId,
     String? classId,
@@ -115,6 +120,7 @@ class StudentStatsCubit extends Cubit<StudentStatsState> {
       studentId: studentId,
       classId: classId,
       timeFilter: state.timeFilter,
+      forceRefresh: true,
     );
   }
 }

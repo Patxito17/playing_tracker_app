@@ -37,6 +37,10 @@ void main() {
     taskBreakdown: const [],
   );
 
+  setUpAll(() {
+    registerFallbackValue(TimeFilter.thisWeek);
+  });
+
   setUp(() {
     repository = MockStatisticsRepository();
     cubit = StudentStatsCubit(repository);
@@ -55,14 +59,17 @@ void main() {
       'emits [Loading, Loaded] when loadStats is successful',
       build: () {
         when(
-          () =>
-              repository.getStudentProgress(studentId: any(named: 'studentId')),
+          () => repository.getStudentProgress(
+            studentId: any(named: 'studentId'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
         ).thenAnswer((_) async => tProgress);
         when(
-          () => repository.getWeeklyStats(
+          () => repository.getStudentStats(
             studentId: any(named: 'studentId'),
-            weekStart: any(named: 'weekStart'),
+            timeFilter: any(named: 'timeFilter'),
             classId: any(named: 'classId'),
+            forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tWeeklyStats);
         return cubit;
@@ -78,13 +85,17 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => repository.getStudentProgress(studentId: studentId),
+          () => repository.getStudentProgress(
+            studentId: studentId,
+            forceRefresh: false,
+          ),
         ).called(1);
         verify(
-          () => repository.getWeeklyStats(
+          () => repository.getStudentStats(
             studentId: studentId,
-            weekStart: any(named: 'weekStart'),
+            timeFilter: TimeFilter.thisWeek,
             classId: null,
+            forceRefresh: false,
           ),
         ).called(1);
       },
@@ -94,14 +105,17 @@ void main() {
       'emits [Loading, Loaded] with classId when loadStats is successful',
       build: () {
         when(
-          () =>
-              repository.getStudentProgress(studentId: any(named: 'studentId')),
+          () => repository.getStudentProgress(
+            studentId: any(named: 'studentId'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
         ).thenAnswer((_) async => tProgress);
         when(
-          () => repository.getWeeklyStats(
+          () => repository.getStudentStats(
             studentId: any(named: 'studentId'),
-            weekStart: any(named: 'weekStart'),
+            timeFilter: any(named: 'timeFilter'),
             classId: any(named: 'classId'),
+            forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tWeeklyStats);
         return cubit;
@@ -117,10 +131,11 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => repository.getWeeklyStats(
+          () => repository.getStudentStats(
             studentId: studentId,
-            weekStart: any(named: 'weekStart'),
+            timeFilter: TimeFilter.thisWeek,
             classId: classId,
+            forceRefresh: false,
           ),
         ).called(1);
       },
@@ -130,11 +145,22 @@ void main() {
       'emits [Loading, Error] when loadStats fails',
       build: () {
         when(
-          () =>
-              repository.getStudentProgress(studentId: any(named: 'studentId')),
+          () => repository.getStudentProgress(
+            studentId: any(named: 'studentId'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
         ).thenThrow(Exception('Failed to load progress'));
+        when(
+          () => repository.getStudentStats(
+            studentId: any(named: 'studentId'),
+            timeFilter: any(named: 'timeFilter'),
+            classId: any(named: 'classId'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
+        ).thenThrow(Exception('Failed to load stats'));
         return cubit;
       },
+      act: (cubit) => cubit.loadStats(studentId: studentId),
       expect: () => [
         const StudentStatsLoading(timeFilter: TimeFilter.thisWeek),
         isA<StudentStatsError>(),
