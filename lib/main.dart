@@ -1,5 +1,6 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,6 +30,21 @@ void main() async {
 
   // 1) Inicializar Firebase primero
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // 2) Activar App Check
+  //    - En modo debug (simuladores/emuladores): DebugProvider, sin registro en consola.
+  //    - En producción Android: Play Integrity (verifica APK firmado).
+  //    - En producción iOS: App Attest / DeviceCheck.
+  await FirebaseAppCheck.instance.activate(
+    // En debug (simuladores/emuladores): proveedor de depuración, sin bloquear.
+    // En producción: Play Integrity (Android) y DeviceCheck (iOS).
+    providerAndroid: kDebugMode
+        ? const AndroidDebugProvider()
+        : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode
+        ? const AppleDebugProvider()
+        : const AppleDeviceCheckProvider(),
+  );
 
   // 2) Construir HydratedStorage
   final storage = await HydratedStorage.build(
