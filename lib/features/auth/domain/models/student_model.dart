@@ -77,6 +77,14 @@ class StudentModel {
   @TimestampConverter()
   final Timestamp? lastSessionDate;
 
+  /// Versión de los Términos y Condiciones aceptada por el alumno (e.g. "1.0").
+  /// Null si el usuario fue creado antes del versionado legal.
+  final String? acceptedTermsVersion;
+
+  /// Fecha y hora en que el alumno aceptó los Términos y Condiciones.
+  @TimestampConverter()
+  final Timestamp? acceptedTermsAt;
+
   /// Constructor del modelo de alumno
   const StudentModel({
     required this.id,
@@ -89,6 +97,8 @@ class StudentModel {
     this.totalSessionsCount = 0,
     this.totalDurationLogged = 0,
     this.lastSessionDate,
+    this.acceptedTermsVersion,
+    this.acceptedTermsAt,
   });
 
   /// Crea una instancia desde un mapa JSON
@@ -113,6 +123,8 @@ class StudentModel {
     int? totalSessionsCount,
     int? totalDurationLogged,
     Timestamp? lastSessionDate,
+    String? acceptedTermsVersion,
+    Timestamp? acceptedTermsAt,
   }) {
     return StudentModel(
       id: id ?? this.id,
@@ -125,6 +137,8 @@ class StudentModel {
       totalSessionsCount: totalSessionsCount ?? this.totalSessionsCount,
       totalDurationLogged: totalDurationLogged ?? this.totalDurationLogged,
       lastSessionDate: lastSessionDate ?? this.lastSessionDate,
+      acceptedTermsVersion: acceptedTermsVersion ?? this.acceptedTermsVersion,
+      acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
     );
   }
 
@@ -142,7 +156,9 @@ class StudentModel {
           isActive == other.isActive &&
           totalSessionsCount == other.totalSessionsCount &&
           totalDurationLogged == other.totalDurationLogged &&
-          lastSessionDate == other.lastSessionDate;
+          lastSessionDate == other.lastSessionDate &&
+          acceptedTermsVersion == other.acceptedTermsVersion &&
+          acceptedTermsAt == other.acceptedTermsAt;
 
   @override
   int get hashCode =>
@@ -155,7 +171,9 @@ class StudentModel {
       isActive.hashCode ^
       totalSessionsCount.hashCode ^
       totalDurationLogged.hashCode ^
-      lastSessionDate.hashCode;
+      lastSessionDate.hashCode ^
+      acceptedTermsVersion.hashCode ^
+      acceptedTermsAt.hashCode;
 
   @override
   String toString() =>

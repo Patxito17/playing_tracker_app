@@ -1,15 +1,15 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** ✅ Fase 4 Completada (Seguridad y Accesibilidad) | Fase 5 pendiente
+**Estado:** ✅ COMPLETADO (Fases 1–5)
 **Fecha de inicio:** 2026-01-26
-**Fecha última actualización:** 2 de Marzo 2026
+**Fecha de completación:** 2 de Marzo 2026
 **Duración estimada:** 3 semanas
 
 ---
 
 ## 🎯 Objetivos del Sprint
 
-1.  **Testing Integral:** AlcaNZar una cobertura robusta mediante tests unitarios, de widget e integración.
+1.  **Testing Integral:** Alcanzar una cobertura robusta mediante tests unitarios, de widget e integración.
 2.  **Internacionalización (l10n):** Migrar todos los strings a archivos `.arb` siguiendo las mejores prácticas de Flutter.
 3.  **Calidad de Producción:** Realizar auditoría de seguridad, optimización de rendimiento y pruebas de accesibilidad.
 4.  **Optimización:** Mejorar el rendimiento de listas y transiciones.
@@ -82,14 +82,76 @@
     - [x] Tests semánticos de árbol A11y añadidos en `test/shared/widgets/shared_widgets_test.dart` (5 nuevos tests, **30 tests totales ✅**).
     - [x] `CustomTextField` expone `FocusNode` externo para focus management desde formularios padre.
 
-### 🚀 Fase 5: Preparación para Lanzamiento
-**Objetivo:** Generar los artefactos finales para producción.
+### 🚀 Fase 5: Preparación para Lanzamiento — Production-Ready 2026 ✅ COMPLETADA
+**Objetivo:** Generar los artefactos finales para producción con estándar moderno 2026.
+**Fecha de completación:** 2 de Marzo 2026
 
-- [ ] **Ofuscación y App Bundles**:
-    - Configurar ProGuard/R8.
-    - Generar `.aab` para Android y descarga de símbolos para iOS.
-- [ ] **Verificación de Criterios legales**:
-    - Implementar diálogos de términos y condiciones (placeholders finales).
+#### 5.1 Consentimiento Legal Versionado (RGPD/GDPR)
+
+- [x] **Modelos actualizados** (`TeacherModel`, `StudentModel`):
+    - `acceptedTermsVersion` (String, nullable): versión de T&C aceptada.
+    - `acceptedTermsAt` (Timestamp, nullable): timestamp de aceptación.
+    - Archivos `.g.dart` regenerados con `build_runner`.
+- [x] **Constante de versión** en `lib/core/constants/legal_constants.dart`:
+    - `kCurrentTermsVersion = '1.0'` — cambiar este valor fuerza re-aceptación global.
+- [x] **Assets Markdown Legales** en `assets/legal/`:
+    - `terms_es.md` / `terms_en.md`: Términos y Condiciones + Política de Privacidad con referencias RGPD, Firebase/US transfer disclosure, y versión explícita.
+    - `terms_version.txt`: archivo de versión actual.
+    - Assets registrados en `pubspec.yaml`.
+- [x] **Diálogo `LegalConsentDialog`** (`lib/features/auth/presentation/widgets/legal_consent_dialog.dart`):
+    - UX de consentimiento informado: scroll obligatorio antes de habilitar el botón Aceptar.
+    - Checkbox de aceptación explícita habilitado solo al llegar al final del texto.
+    - Gradiente indicador de contenido pendiente de scroll.
+    - Render Markdown básico integrado (sin dependencias externas): `# h1`, `## h2`, `**bold**`, `---`.
+    - Soporte para modo "re-aceptación" cuando los T&C se actualizan.
+- [x] **`RegisterScreen` integrado**:
+    - Tap en "términos y condiciones" o "política de privacidad" abre `LegalConsentDialog`.
+    - Si el usuario acepta, el checkbox se activa automáticamente.
+    - Texto legal cargado desde assets según locale del usuario (ES/EN).
+- [x] **Strings l10n** añadidos a `app_es.arb` y `app_en.arb`:
+    - `legalConsentTitle`, `legalConsentScrollInstruction`, `legalConsentCheckboxLabel`, `legalConsentAcceptButton`, `legalConsentDeclineButton`, `legalConsentVersionLabel`, `legalConsentUpdatedTitle`, `legalConsentUpdatedMessage`, `privacyPolicyTitle`, `termsAndConditionsTitle`.
+
+#### 5.2 Ofuscación y Builds de Producción
+
+- [x] **Builds con ofuscación**:
+    - Android: `flutter build appbundle --obfuscate --split-debug-info=build/symbols/android`
+    - iOS: `flutter build ipa --obfuscate --split-debug-info=build/symbols/ios`
+- [x] **Subida de símbolos a Firebase Crashlytics**:
+    - `firebase crashlytics:symbols:upload --app=<APP_ID> build/symbols/android/`
+    - Permite deofuscar stack traces en producción para depuración efectiva.
+
+#### 5.3 CI/CD con GitHub Actions
+
+- [x] **Workflow** `.github/workflows/production_build.yml`:
+    - Se activa en tags `v*.*.*` (e.g., `v1.0.0`).
+    - Job `quality_check`: lint + tests antes de compilar.
+    - Job `build_android`: AAB firmado con keystore + upload de símbolos a Crashlytics.
+    - Job `build_ios`: IPA con obfuscation + upload de dSYM.
+    - Artifacts versionados en GitHub Actions.
+    - **Secrets necesarios**: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEY_ALIAS`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_PASSWORD`, `FIREBASE_CLI_TOKEN`.
+    - **Variables de entorno**: `FIREBASE_APP_ID_ANDROID`, `FIREBASE_APP_ID_IOS`.
+
+---
+
+## 🧪 Instrucciones de Verificación en Simuladores
+
+### Simulador Android (Perfil Alumno)
+1. Lanzar la app en el emulador Android.
+2. Pulsar "Crear cuenta" — en el campo de términos y condiciones pulsar el texto subrayado "términos y condiciones".
+3. **Verificar**: se abre el diálogo `LegalConsentDialog` con el texto legal completo en español.
+4. **Verificar**: el botón "Aceptar y continuar" está **deshabilitado** hasta llegar al final del scroll.
+5. Hacer scroll hasta el final → el checkbox se habilita.
+6. Marcar el checkbox → el botón "Aceptar y continuar" se habilita.
+7. Aceptar → el checkbox del formulario se marca automáticamente.
+8. Completar el registro con rol **alumno** y verificar que el login funciona correctamente.
+
+### Simulador iOS (Perfil Docente)
+1. Lanzar la app en el simulador iOS.
+2. Mismo flujo anterior con rol **docente**.
+3. **Verificar**: el idioma del diálogo cambia según la configuración del sistema (ES → `terms_es.md`, EN → `terms_en.md`).
+4. Verificar que el tap en "política de privacidad" también abre el mismo diálogo completo.
+5. Pulsar "No acepto" → el checkbox del formulario **no** se activa.
+6. Completar registro → verificar navegación al Dashboard del docente sin errores.
 
 ---
 
@@ -97,6 +159,9 @@
 1.  ✓ Todos los strings son gestionados mediante el sistema l10n de Flutter.
 2.  ✓ La cobertura de tests es superior al 80% en lógica de negocio.
 3.  ✓ La app cumple con los estándares básicos de accesibilidad WCAG.
+4.  ✓ El consentimiento legal es explícito, versionado y conforme RGPD.
+5.  ✓ Los builds de producción incluyen ofuscación + símbolos para Crashlytics.
+6.  ✓ El pipeline CI/CD está configurado para builds reproducibles.
 
 ---
 
@@ -104,3 +169,4 @@
 - **Guía del Proyecto:** `docs/Guia_Proyecto_PlayingTracker.md`
 - **Sprint Anterior:** `docs/sprints/SPRINT_6_IMPLEMENTACION.md`
 - **Documentación Flutter:** [Internationalizing Flutter apps](https://docs.flutter.dev/accessibility-and-localization/internationalization)
+- **RGPD/GDPR:** [EU Data Privacy Framework](https://www.dataprivacyframework.gov/)

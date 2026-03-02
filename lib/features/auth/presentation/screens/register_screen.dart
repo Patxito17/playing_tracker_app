@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/legal_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -12,6 +14,7 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../domain/enums/user_role.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../widgets/legal_consent_dialog.dart';
 
 /// Pantalla de registro
 ///
@@ -62,6 +65,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  /// Abre el [LegalConsentDialog] cargando el texto legal desde los assets.
+  /// Si el usuario acepta, marca automáticamente el checkbox de términos.
+  Future<void> _openLegalDialog() async {
+    // Carga el texto según el idioma actual del contexto
+    final locale = Localizations.localeOf(context).languageCode;
+    final assetPath = locale == 'es'
+        ? 'assets/legal/terms_es.md'
+        : 'assets/legal/terms_en.md';
+
+    String legalText;
+    try {
+      legalText = await rootBundle.loadString(assetPath);
+    } catch (_) {
+      // Fallback al español si no se encuentra el asset
+      legalText = await rootBundle.loadString('assets/legal/terms_es.md');
+    }
+
+    if (!mounted) return;
+
+    final accepted = await LegalConsentDialog.show(
+      context,
+      legalText: legalText,
+      version: kCurrentTermsVersion,
+    );
+
+    if (accepted == true && mounted) {
+      setState(() {
+        _termsAccepted = true;
+        _formError = null;
+      });
+    }
   }
 
   /// Valida el campo de nombre
@@ -165,12 +201,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     final cubit = context.read<AuthCubit>();
+    // Solo se persiste la versión si el usuario ha aceptado (validación previa garantiza esto)
+    final acceptedVersion = _termsAccepted ? kCurrentTermsVersion : null;
+
     if (_selectedRole == 'teacher') {
       cubit.registerTeacher(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+        acceptedTermsVersion: acceptedVersion,
       );
     } else {
       cubit.registerStudent(
@@ -178,6 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         lastName: _lastNameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+        acceptedTermsVersion: acceptedVersion,
       );
     }
   }
@@ -465,58 +506,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   _termsAccepted = value ?? false;
-                                  if (_termsAccepted) {
-                                    _formError = null;
-                                  }
+                                  if (_termsAccepted) _formError = null;
                                 });
                               },
                             ),
                             Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _termsAccepted = !_termsAccepted;
-                                    if (_termsAccepted) {
-                                      _formError = null;
-                                    }
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: AppSpacing.s,
-                                  ),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: context.bodySmallOnSurfaceVariant,
-                                      children: [
-                                        TextSpan(
-                                          text: context.l10n.acceptTermsPrefix,
-                                        ),
-                                        TextSpan(
-                                          text: context.l10n.termsAndConditions,
-                                          style: context.textPrimary?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: context
-                                                .textTheme
-                                                .bodySmall
-                                                ?.fontSize,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: AppSpacing.s,
+                                ),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: context.bodySmallOnSurfaceVariant,
+                                    children: [
+                                      TextSpan(
+                                        text: context.l10n.acceptTermsPrefix,
+                                      ),
+                                      WidgetSpan(
+                                        alignment:
+                                            PlaceholderAlignment.baseline,
+                                        baseline: TextBaseline.alphabetic,
+                                        child: GestureDetector(
+                                          onTap: _openLegalDialog,
+                                          child: Text(
+                                            context.l10n.termsAndConditions,
+                                            style: context.textPrimary
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: context
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.fontSize,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
                                           ),
                                         ),
-                                        TextSpan(
-                                          text: context.l10n.acceptTermsMiddle,
-                                        ),
-                                        TextSpan(
-                                          text: context.l10n.privacyPolicy,
-                                          style: context.textPrimary?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: context
-                                                .textTheme
-                                                .bodySmall
-                                                ?.fontSize,
+                                      ),
+                                      TextSpan(
+                                        text: context.l10n.acceptTermsMiddle,
+                                      ),
+                                      WidgetSpan(
+                                        alignment:
+                                            PlaceholderAlignment.baseline,
+                                        baseline: TextBaseline.alphabetic,
+                                        child: GestureDetector(
+                                          onTap: _openLegalDialog,
+                                          child: Text(
+                                            context.l10n.privacyPolicy,
+                                            style: context.textPrimary
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: context
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.fontSize,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

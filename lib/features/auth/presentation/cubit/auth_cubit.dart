@@ -98,6 +98,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String lastName,
     required String email,
     required String password,
+    String? acceptedTermsVersion,
   }) async {
     emit(const AuthLoading());
     try {
@@ -116,6 +117,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         firstName: firstName,
         lastName: lastName,
         email: email,
+        acceptedTermsVersion: acceptedTermsVersion,
       );
 
       // Esperar a que el Custom Claim 'teacher' esté activo en el token.
@@ -141,6 +143,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String lastName,
     required String email,
     required String password,
+    String? acceptedTermsVersion,
   }) async {
     emit(const AuthLoading());
     try {
@@ -159,6 +162,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         firstName: firstName,
         lastName: lastName,
         email: email,
+        acceptedTermsVersion: acceptedTermsVersion,
       );
 
       // Esperar a que el Custom Claim 'student' esté activo en el token.

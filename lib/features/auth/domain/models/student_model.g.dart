@@ -20,6 +20,11 @@ StudentModel _$StudentModelFromJson(Map<String, dynamic> json) => StudentModel(
     json['lastSessionDate'],
     const TimestampConverter().fromJson,
   ),
+  acceptedTermsVersion: json['acceptedTermsVersion'] as String?,
+  acceptedTermsAt: _$JsonConverterFromJson<Object, Timestamp>(
+    json['acceptedTermsAt'],
+    const TimestampConverter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$StudentModelToJson(StudentModel instance) =>
@@ -35,6 +40,11 @@ Map<String, dynamic> _$StudentModelToJson(StudentModel instance) =>
       'totalDurationLogged': instance.totalDurationLogged,
       'lastSessionDate': _$JsonConverterToJson<Object, Timestamp>(
         instance.lastSessionDate,
+        const TimestampConverter().toJson,
+      ),
+      'acceptedTermsVersion': instance.acceptedTermsVersion,
+      'acceptedTermsAt': _$JsonConverterToJson<Object, Timestamp>(
+        instance.acceptedTermsAt,
         const TimestampConverter().toJson,
       ),
     };

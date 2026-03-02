@@ -999,5 +999,31 @@
   "filterLast9Months": "Últimos 9 meses",
   "@filterLast9Months": { "description": "Filtro temporal: Últimos 9 meses" },
   "filterAllTime": "Histórico",
-  "@filterAllTime": { "description": "Filtro temporal: Histórico" }
+  "@filterAllTime": { "description": "Filtro temporal: Histórico" },
+
+  "legalConsentTitle": "Términos y Privacidad",
+  "@legalConsentTitle": { "description": "Título diálogo de consentimiento legal" },
+  "legalConsentScrollInstruction": "Lee el contenido completo para continuar",
+  "@legalConsentScrollInstruction": { "description": "Instrucción de scroll en el diálogo legal" },
+  "legalConsentCheckboxLabel": "He leído y acepto los Términos y Condiciones y la Política de Privacidad",
+  "@legalConsentCheckboxLabel": { "description": "Label del checkbox de aceptación" },
+  "legalConsentAcceptButton": "Aceptar y continuar",
+  "@legalConsentAcceptButton": { "description": "Botón de aceptación del consentimiento" },
+  "legalConsentDeclineButton": "No acepto",
+  "@legalConsentDeclineButton": { "description": "Botón de rechazo del consentimiento" },
+  "legalConsentVersionLabel": "Versión {version}",
+  "@legalConsentVersionLabel": {
+    "description": "Versión de los términos",
+    "placeholders": {
+      "version": { "type": "String", "example": "1.0" }
+    }
+  },
+  "legalConsentUpdatedTitle": "Términos actualizados",
+  "@legalConsentUpdatedTitle": { "description": "Título cuando los términos han cambiado" },
+  "legalConsentUpdatedMessage": "Hemos actualizado nuestros Términos y Condiciones y Política de Privacidad. Por favor, léelos y acéptalos para continuar usando la aplicación.",
+  "@legalConsentUpdatedMessage": { "description": "Mensaje cuando los términos han cambiado" },
+  "privacyPolicyTitle": "Política de Privacidad",
+  "@privacyPolicyTitle": { "description": "Título sección política de privacidad" },
+  "termsAndConditionsTitle": "Términos y Condiciones",
+  "@termsAndConditionsTitle": { "description": "Título sección términos y condiciones" }
 }

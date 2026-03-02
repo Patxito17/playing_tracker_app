@@ -2053,6 +2053,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Histórico'**
   String get filterAllTime;
+
+  /// Título diálogo de consentimiento legal
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Privacidad'**
+  String get legalConsentTitle;
+
+  /// Instrucción de scroll en el diálogo legal
+  ///
+  /// In es, this message translates to:
+  /// **'Lee el contenido completo para continuar'**
+  String get legalConsentScrollInstruction;
+
+  /// Label del checkbox de aceptación
+  ///
+  /// In es, this message translates to:
+  /// **'He leído y acepto los Términos y Condiciones y la Política de Privacidad'**
+  String get legalConsentCheckboxLabel;
+
+  /// Botón de aceptación del consentimiento
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar y continuar'**
+  String get legalConsentAcceptButton;
+
+  /// Botón de rechazo del consentimiento
+  ///
+  /// In es, this message translates to:
+  /// **'No acepto'**
+  String get legalConsentDeclineButton;
+
+  /// Versión de los términos
+  ///
+  /// In es, this message translates to:
+  /// **'Versión {version}'**
+  String legalConsentVersionLabel(String version);
+
+  /// Título cuando los términos han cambiado
+  ///
+  /// In es, this message translates to:
+  /// **'Términos actualizados'**
+  String get legalConsentUpdatedTitle;
+
+  /// Mensaje cuando los términos han cambiado
+  ///
+  /// In es, this message translates to:
+  /// **'Hemos actualizado nuestros Términos y Condiciones y Política de Privacidad. Por favor, léelos y acéptalos para continuar usando la aplicación.'**
+  String get legalConsentUpdatedMessage;
+
+  /// Título sección política de privacidad
+  ///
+  /// In es, this message translates to:
+  /// **'Política de Privacidad'**
+  String get privacyPolicyTitle;
+
+  /// Título sección términos y condiciones
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Condiciones'**
+  String get termsAndConditionsTitle;
 }
 
 class _AppLocalizationsDelegate

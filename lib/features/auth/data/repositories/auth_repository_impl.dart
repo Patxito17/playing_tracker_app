@@ -146,6 +146,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String firstName,
     required String lastName,
     required String email,
+    String? acceptedTermsVersion,
   }) async {
     try {
       final now = Timestamp.now();
@@ -157,12 +158,10 @@ class AuthRepositoryImpl implements AuthRepository {
         createdAt: now,
         updatedAt: now,
         isActive: true,
+        acceptedTermsVersion: acceptedTermsVersion,
+        acceptedTermsAt: acceptedTermsVersion != null ? now : null,
       );
       await _teachersRef.doc(userId).set(teacher.toJson());
-
-      // Ya no forzamos el refresco aquí, ya que getUserRole() se encargará
-      // de poll-ear y refrescar hasta que el claim esté listo.
-      // await _firebaseAuth.currentUser?.getIdTokenResult(true);
     } catch (error) {
       throw AuthRepositoryException(FirebaseErrorMapper.map(error));
     }
@@ -174,6 +173,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String firstName,
     required String lastName,
     required String email,
+    String? acceptedTermsVersion,
   }) async {
     try {
       final now = Timestamp.now();
@@ -188,10 +188,10 @@ class AuthRepositoryImpl implements AuthRepository {
         totalSessionsCount: 0,
         totalDurationLogged: 0,
         lastSessionDate: null,
+        acceptedTermsVersion: acceptedTermsVersion,
+        acceptedTermsAt: acceptedTermsVersion != null ? now : null,
       );
       await _studentsRef.doc(userId).set(student.toJson());
-
-      // await _firebaseAuth.currentUser?.getIdTokenResult(true);
     } catch (error) {
       throw AuthRepositoryException(FirebaseErrorMapper.map(error));
     }

@@ -32,6 +32,7 @@ abstract class AuthRepository {
     required String firstName,
     required String lastName,
     required String email,
+    String? acceptedTermsVersion,
   });
 
   /// Crea el documento del alumno en Firestore.
@@ -40,6 +41,7 @@ abstract class AuthRepository {
     required String firstName,
     required String lastName,
     required String email,
+    String? acceptedTermsVersion,
   });
 
   /// Envía un email para restablecer la contraseña del usuario.

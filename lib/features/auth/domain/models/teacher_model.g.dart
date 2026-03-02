@@ -14,6 +14,11 @@ TeacherModel _$TeacherModelFromJson(Map<String, dynamic> json) => TeacherModel(
   createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   updatedAt: const TimestampConverter().fromJson(json['updatedAt'] as Object),
   isActive: json['isActive'] as bool? ?? true,
+  acceptedTermsVersion: json['acceptedTermsVersion'] as String?,
+  acceptedTermsAt: _$JsonConverterFromJson<Object, Timestamp>(
+    json['acceptedTermsAt'],
+    const TimestampConverter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$TeacherModelToJson(TeacherModel instance) =>
@@ -25,4 +30,19 @@ Map<String, dynamic> _$TeacherModelToJson(TeacherModel instance) =>
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
       'isActive': instance.isActive,
+      'acceptedTermsVersion': instance.acceptedTermsVersion,
+      'acceptedTermsAt': _$JsonConverterToJson<Object, Timestamp>(
+        instance.acceptedTermsAt,
+        const TimestampConverter().toJson,
+      ),
     };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);
