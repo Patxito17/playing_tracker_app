@@ -125,6 +125,10 @@
   "@passwordsDoNotMatch": {
     "description": "Entered passwords do not match"
   },
+  "errorEmptyFields": "Please fill in all fields",
+  "@errorEmptyFields": {
+    "description": "Error message when there are empty fields"
+  },
   "nameMinLength": "{fieldName} must be at least 3 characters long",
   "@nameMinLength": {
     "description": "Name shorter than minimum length",

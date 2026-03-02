@@ -18,7 +18,7 @@ import 'helpers/e2e_test_helpers.dart';
 ///    evitar colisiones y elimina el usuario al finalizar (tearDown).
 ///
 /// Cómo ejecutar:
-///   flutter test integration_test/teacher_flow_test.dart -d <device_id>
+///   flutter test integration_test/teacher_flow_test.dart -d [device_id]
 ///
 void main() {
   setupIntegrationTest();

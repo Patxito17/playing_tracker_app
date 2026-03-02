@@ -37,9 +37,8 @@ Future<void> _addSession(
     'dateLogged': ts,
     'monthBucket':
         '${dateLogged.year}-${dateLogged.month.toString().padLeft(2, '0')}',
-    'status': 'completed',
     'createdAt': ts,
-    if (taskTitle != null) 'taskTitle': taskTitle,
+    'taskTitle': ?taskTitle,
   });
 }
 
@@ -254,7 +253,10 @@ void main() {
   // ---------------------------------------------------------------------------
   group('StatisticsService.getWeeklyStats', () {
     test('genera desglose diario de 7 días correctamente', () async {
-      final monday = DateTime(2026, 2, 9); // lunes
+      final now = DateTime.now();
+      final monday = DateTime(now.year, now.month, now.day).subtract(
+        Duration(days: now.weekday - 1),
+      ); // Lunes de ESTA semana en curso
 
       // Sesiones el lunes y el miércoles
       await _addSession(
@@ -296,7 +298,12 @@ void main() {
     });
 
     test('genera desglose por tareas correctamente', () async {
-      final monday = DateTime(2026, 2, 9);
+      final now = DateTime.now();
+      final monday = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
 
       await _addSession(
         fakeFirestore,
@@ -457,8 +464,6 @@ void main() {
   // ---------------------------------------------------------------------------
   group('StatisticsService.getClassStats', () {
     test('calcula métricas de clase con alumnos y sesiones', () async {
-      final now = DateTime(2026, 2, 10);
-
       // Crear la clase
       await fakeFirestore.collection('classes').doc('class-1').set({
         'id': 'class-1',
@@ -486,7 +491,7 @@ void main() {
         taskId: 'task-1',
         teacherId: 'teacher-1',
         classId: 'class-1',
-        dateLogged: now,
+        dateLogged: DateTime.now(),
         totalDuration: 1800,
         taskTitle: 'Escalas',
       );
@@ -497,7 +502,7 @@ void main() {
         taskId: 'task-1',
         teacherId: 'teacher-1',
         classId: 'class-1',
-        dateLogged: now,
+        dateLogged: DateTime.now(),
         totalDuration: 900,
         taskTitle: 'Escalas',
       );
@@ -537,7 +542,7 @@ void main() {
       },
     );
 
-    test('lanza excepción si la clase no existe', () {
+    test('lanza excepción apropiada si la clase consultada falla', () async {
       expect(
         () => service.getClassStats(
           classId: 'nonexistent',

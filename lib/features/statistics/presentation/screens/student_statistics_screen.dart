@@ -121,8 +121,9 @@ class StudentStatisticsScreen extends StatelessWidget {
   ({StudentProgressModel progress, WeeklyStatsModel weeklyStats})? _getStats(
     StudentStatsState state,
   ) {
-    if (state is StudentStatsLoaded)
+    if (state is StudentStatsLoaded) {
       return (progress: state.progress, weeklyStats: state.weeklyStats);
+    }
     if (state is StudentStatsLoading &&
         state.progress != null &&
         state.weeklyStats != null) {

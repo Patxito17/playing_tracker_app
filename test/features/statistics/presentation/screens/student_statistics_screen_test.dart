@@ -15,6 +15,7 @@ import 'package:playing_tracker/features/statistics/presentation/screens/student
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_bar_chart.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_pie_chart.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_progress_chart.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
 
 class MockStudentStatsCubit extends MockCubit<StudentStatsState>
     implements StudentStatsCubit {}
@@ -62,13 +63,44 @@ void main() {
       ],
     );
 
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) {
+        return MediaQuery(
+          data: const MediaQueryData(size: Size(1080, 2400)),
+          child: child!,
+        );
+      },
+    );
   }
 
   group('StudentStatisticsScreen', () {
+    setUp(() {
+      // Evitar RenderFlex overflow al renderizar pantallas con mucho contenido
+      // en el entorno de test (viewport artificialmente pequeño por defecto).
+      TestWidgetsFlutterBinding.ensureInitialized();
+    });
+
+    setUpAll(() {
+      // Tamaño grande para simular un dispositivo real (1080x1920 @1x)
+      WidgetsBinding
+          .instance
+          .platformDispatcher
+          .implicitView
+          // ignore: invalid_use_of_protected_member
+          ?.physicalSize;
+    });
+
     testWidgets('renders loading indicator when state is Loading', (
       tester,
     ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       when(
         () => cubit.state,
       ).thenReturn(const StudentStatsLoading(timeFilter: TimeFilter.thisWeek));
@@ -81,6 +113,11 @@ void main() {
     testWidgets('renders error message and retry button when state is Error', (
       tester,
     ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       const errorMessage = 'Ocurrió un error';
       when(() => cubit.state).thenReturn(
         const StudentStatsError(
@@ -99,6 +136,11 @@ void main() {
     testWidgets('renders statistics charts and cards when state is Loaded', (
       tester,
     ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       when(() => cubit.state).thenReturn(
         StudentStatsLoaded(
           timeFilter: TimeFilter.thisWeek,
@@ -120,6 +162,11 @@ void main() {
     testWidgets('renders PieChart when there are task breakdown data', (
       tester,
     ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       final tWeeklyStatsWithTasks = WeeklyStatsModel(
         weekStart: Timestamp.now(),
         weekEnd: Timestamp.now(),
@@ -133,6 +180,12 @@ void main() {
             taskTitle: 'Tarea 1',
             totalDuration: 1000,
             totalSessions: 1,
+          ),
+          const TaskStatsModel(
+            taskId: '2',
+            taskTitle: 'Tarea 2',
+            totalDuration: 800,
+            totalSessions: 2,
           ),
         ],
       );

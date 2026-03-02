@@ -38,9 +38,8 @@ Future<void> _addSession(
     'dateLogged': ts,
     'monthBucket':
         '${dateLogged.year}-${dateLogged.month.toString().padLeft(2, '0')}',
-    'status': 'completed',
     'createdAt': ts,
-    if (taskTitle != null) 'taskTitle': taskTitle,
+    'taskTitle': ?taskTitle,
   });
 }
 
@@ -118,7 +117,12 @@ void main() {
     });
 
     test('devuelve WeeklyStatsModel con desglose de 7 días', () async {
-      final monday = DateTime(2026, 2, 9);
+      final now = DateTime.now();
+      final monday = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
       await _addSession(
         fakeFirestore,
         id: 'ws1',
@@ -276,7 +280,7 @@ void main() {
         taskId: 'task-1',
         teacherId: 'teacher-1',
         classId: 'class-r',
-        dateLogged: DateTime(2026, 2, 10),
+        dateLogged: DateTime.now(),
         totalDuration: 900,
       );
 
