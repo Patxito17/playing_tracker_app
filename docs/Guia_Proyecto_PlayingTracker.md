@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 2 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Seguridad Firebase ✅) 🚧
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅) 🚧
 
 ---
 
@@ -766,11 +766,17 @@ service cloud.firestore {
   - **Privacidad de perfiles**: `teachers` y `students` solo son legibles por el propietario del perfil (o docentes).
   - **Firebase App Check**: Configurado para Android (Play Integrity) e iOS (DeviceCheck/App Attest) con soporte para DebugProvider en desarrollo.
   - **Nota**: El deploy de Cloud Functions requiere activar el plan **Blaze**. Las reglas de Firestore ya están desplegadas en producción.
-- 📅 Suite completa de tests
-- 📅 Optimizaciones de rendimiento
-- 📅 Auditoría de seguridad
-- 📅 Testing de accesibilidad
-- 📅 App lista para producción
+- ✅ **Suite de Testing de Cobertura** (Fase 2b):
+  - `test/features/statistics/data/services/statistics_service_test.dart`: 19 tests unitarios de `StatisticsService` (getDailyStats, getWeeklyStats, getMonthlyStats, getTaskStats, getClassStats) usando `fake_cloud_firestore`.
+  - `test/features/statistics/data/repositories/statistics_repository_impl_test.dart`: 18 tests unitarios de `StatisticsRepositoryImpl`, validando mapeo de excepciones de dominio y argumentos.
+  - `test/shared/widgets/shared_widgets_test.dart`: 28 widget tests de `CustomButton`, `CustomTextField`, `LoadingOverlay` y `CustomCard`.
+  - Mejora de calidad: Inyección de dependencia añadida al constructor de `StatisticsRepositoryImpl` (parámetro `firestore` opcional para testabilidad).
+  - **Suite total: 345 tests ✅ | 0 fallos | 0 regresiones**.
+- 📅 Suite completa de tests E2E (integration_test): pendiente.
+- 📅 Golden tests (matchesGoldenFile): pendiente.
+- 📅 Optimizaciones de rendimiento: pendiente.
+- 📅 Auditoría de seguridad: pendiente.
+- 📅 App lista para producción: pendiente.
 
 ---
 
@@ -784,20 +790,22 @@ Sprint 3: ████████████████████ 100% ✅ 
 Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
-Sprint 7: ████████░░░░░░░░░░░░ ~20% 🚧 Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅)
+Sprint 7: ██████████░░░░░░░░░░ ~30% 🚧 Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E + Golden 📅)
 
-Progreso Total: ████████████████░░░░ ~85% (Sprints 0-6 completados + Fases 1 y 2 Sprint 7)
+Progreso Total: ████████████████░░░░ ~87% (Sprints 0-6 completados + Fases 1, 2 y 2b Sprint 7)
 ```
 
 ---
 
 ## 🧪 Pruebas y Validación
 
-### 📅 Testing Planificado (Sprint 7)
-- 📅 **Unit tests:** Cubits, Repositories, Services, Validators
-- 📅 **Widget tests:** Screens, Widgets reutilizables
-- 📅 **Integration tests:** Flujos completos E2E
-- 📅 **Golden tests:** Validación visual de componentes
+### ✅ Testing Implementado (Sprint 7 - Fase 2b)
+- ✅ **Unit tests:** `StatisticsService`, `StatisticsRepositoryImpl` (usando `fake_cloud_firestore` y tests unitarios puros)
+- ✅ **Widget tests:** `CustomButton`, `CustomTextField`, `LoadingOverlay`, `CustomCard` (`shared/widgets`)
+- ✅ **Sincronización de Roles (Hotfix):** Implementada espera activa de Custom Claims en `AuthCubit` y `AuthRepositoryImpl` (hasta 15s) para evitar errores "Permission Denied" en el primer login.
+- ✅ **Unit tests preexistentes validados:** `AuthCubit` (12 tests actualizados), `SessionService`, `SessionRepositoryImpl`, `TaskService`, `TaskRepositoryImpl`, `ClassService`, `ClassRepositoryImpl`.
+- 📅 **Integration tests (E2E):** Flujos completos teacher y student con `integration_test` (sin `flutter_driver`)
+- 📅 **Golden tests:** 5-8 componentes críticos con `matchesGoldenFile` nativo + `flutter_test_config.dart`
 - 📅 **Testing de accesibilidad** (TalkBack, VoiceOver)
 - 📅 **Testing de rendimiento** (tiempo de carga, memoria)
 - 📅 **Testing con usuarios beta** (docentes y alumnos reales)

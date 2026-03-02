@@ -118,6 +118,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
         email: email,
       );
 
+      // Esperar a que el Custom Claim 'teacher' esté activo en el token.
+      // getUserRole implementa reintentos para dar tiempo a la Cloud Function.
+      await _authRepository.getUserRole(userId);
+
       // Cargar el modelo recién creado
       final teacherModel = await _authRepository.getTeacherProfile(userId);
       if (teacherModel == null) {
@@ -156,6 +160,9 @@ class AuthCubit extends HydratedCubit<AuthState> {
         lastName: lastName,
         email: email,
       );
+
+      // Esperar a que el Custom Claim 'student' esté activo en el token.
+      await _authRepository.getUserRole(userId);
 
       // Cargar el modelo recién creado
       final studentModel = await _authRepository.getStudentProfile(userId);

@@ -16,11 +16,14 @@ import 'package:playing_tracker/features/statistics/domain/repositories/statisti
 /// Orquesta el [StatisticsService] y mapea errores de Firestore a
 /// excepciones de dominio con mensajes en español desde [StatisticsStrings].
 final class StatisticsRepositoryImpl implements StatisticsRepository {
-  StatisticsRepositoryImpl({StatisticsService? statisticsService})
-    : _statisticsService = statisticsService ?? StatisticsService();
+  StatisticsRepositoryImpl({
+    StatisticsService? statisticsService,
+    FirebaseFirestore? firestore,
+  }) : _statisticsService = statisticsService ?? StatisticsService(),
+       _firestore = firestore ?? FirebaseFirestore.instance;
 
   final StatisticsService _statisticsService;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
 
   @override
   Future<DailyStatsModel> getDailyStats({
@@ -93,15 +96,11 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     }
 
     if (month < 1 || month > 12) {
-      throw const InvalidDateRangeException(
-        userMessage: '',
-      );
+      throw const InvalidDateRangeException(userMessage: '');
     }
 
     if (year < 2000 || year > 2100) {
-      throw const InvalidDateRangeException(
-        userMessage: '',
-      );
+      throw const InvalidDateRangeException(userMessage: '');
     }
 
     try {
@@ -165,9 +164,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     }
 
     if (sanitizedTeacherId.isEmpty) {
-      throw const PermissionDeniedException(
-        userMessage: '',
-      );
+      throw const PermissionDeniedException(userMessage: '');
     }
 
     try {
@@ -360,10 +357,7 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
 
     // Mapear excepciones de Firebase
     if (error is FirebaseErrorMapperException) {
-      throw StatisticsServiceException(
-        userMessage: '',
-        message: error.message,
-      );
+      throw StatisticsServiceException(userMessage: '', message: error.message);
     }
 
     // Excepciones genéricas

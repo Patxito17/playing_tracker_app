@@ -134,6 +134,10 @@ void main() {
       ),
     ).thenAnswer((_) async {});
 
+    when(
+      () => mockAuthRepository.getUserRole(any()),
+    ).thenAnswer((_) async => UserRole.teacher);
+
     final mockTeacher = createMockTeacher(id: 'teacher-uid');
     when(
       () => mockAuthRepository.getTeacherProfile('teacher-uid'),
@@ -173,6 +177,10 @@ void main() {
         email: any(named: 'email'),
       ),
     ).thenAnswer((_) async {});
+
+    when(
+      () => mockAuthRepository.getUserRole(any()),
+    ).thenAnswer((_) async => UserRole.student);
 
     final mockStudent = createMockStudent(id: 'student-uid');
     when(
