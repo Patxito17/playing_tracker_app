@@ -1,6 +1,6 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** 📅 Planificado
+**Estado:** 🚧 En Progreso
 **Fecha de inicio:** 2026-01-26
 **Duración estimada:** 3 semanas
 
@@ -29,14 +29,20 @@
 ### 🧪 Fase 2: Suite de Testing Automatizado
 **Objetivo:** Garantizar la estabilidad regresiva y la calidad del software.
 
-- [ ] **Testing de Cobertura**:
-    - Implementar tests unitarios faltantes en Repositorios y Servicios.
-    - Completar widget tests para componentes compartidos (`shared/widgets`).
+- [x] **Testing de Cobertura**:
+    - [x] Tests unitarios de `StatisticsService` (getDailyStats, getWeeklyStats, getMonthlyStats, getTaskStats, getClassStats) usando `fake_cloud_firestore`.
+    - [x] Tests unitarios de `StatisticsRepositoryImpl` (validaciones de argumentos, mapeo de excepciones de dominio).
+    - [x] Widget tests para componentes compartidos (`CustomButton`, `CustomTextField`, `LoadingOverlay`, `CustomCard`).
+    - [x] `SessionService`, `SessionRepositoryImpl`, `TaskService` y `TaskRepositoryImpl` confirman cobertura completa preexistente.
+    - [x] Inyección de dependencia añadida a `StatisticsRepositoryImpl` (parámetro `firestore` opcional).
+    - **Suite total:** 345 tests ✅ (65 nuevos tests añadidos en esta fase).
 - [ ] **Tests de Integración (E2E)**:
     - Crear flujos completos: Registro -> Creación de Clase -> Asignación de Tarea.
     - Flujo de estudio: Login -> Cronómetro -> Ver Estadísticas.
+    - Usar exclusivamente `integration_test` del SDK (sin `flutter_driver`).
 - [ ] **Golden Tests**:
-    - Validar consistencia visual de componentes críticos en diferentes resoluciones.
+    - Validar consistencia visual de **5-8 componentes críticos** usando API nativa (`matchesGoldenFile`).
+    - Configurar `test/flutter_test_config.dart` para estabilizar entorno (fuente Ahem, sin animaciones).
 
 ### 📊 Fase 3: Estadísticas Avanzadas y Optimización
 **Objetivo:** Finalizar los compromisos de datos y mejorar la eficiencia.
