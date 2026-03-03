@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 2 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅) 🚧
+**Última actualización:** 3 de Marzo 2026
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅) 🚧
 
 ---
 
@@ -873,7 +873,7 @@ Cumplimiento del **RGPD (Reglamento General de Protección de Datos)** y **LOPDG
 - ☁️ **Cloud Functions** para lógica del servidor
 - 📈 **Analytics** con Firebase Analytics
 - 🔍 **Search** avanzado con Algolia o Elasticsearch
-- 🚀 **CI/CD** con GitHub Actions
+  - 🚀 **CI/CD** con GitHub Actions → Ver [CONFIGURACION_SECRETS_CI.md](workflow-github/CONFIGURACION_SECRETS_CI.md)
 - 📦 **App bundles** para reducir tamaño
 - 🌐 **Versión web** con Flutter Web
 - 💻 **Versión desktop** (Windows, macOS, Linux)
@@ -945,6 +945,7 @@ dev_dependencies:
 - ✅ [Guia_Proyecto_PlayingTracker.md](Guia_Proyecto_PlayingTracker.md) - Este documento
 - 📄 [docs/FIRESTORE_SCHEMA.md](docs/FIRESTORE_SCHEMA.md) - Esquema de base de datos (backlog Sprint 3)
 - 📄 [docs/DEVTOOLS_SETUP.md](docs/DEVTOOLS_SETUP.md) - Configuración de herramientas (pendiente)
+- ✅ [docs/workflow-github/CONFIGURACION_SECRETS_CI.md](workflow-github/CONFIGURACION_SECRETS_CI.md) - Guía completa de configuración CI/CD para GitHub Actions (2026)
 
 ### Documentación de Sprints
 - ✅ [docs/sprints/SPRINT_0_IMPLEMENTACION.md](sprints/SPRINT_0_IMPLEMENTACION.md) - Diseño UI/UX (Sprint 0)
