@@ -53,14 +53,22 @@ class TolerantComparator extends LocalFileComparator {
 }
 
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
-  // Configurar el comparador de goldens para usar rutas relativas y tolerancia
-  goldenFileComparator = TolerantComparator(
-    Uri.file(
-      '${Directory.current.path}/test/golden/critical_components_golden_test.dart',
-    ),
-    tolerance:
-        0.005, // 0.5% de los píxeles (suficiente para antialiasing/sombras suaves)
-  );
+  // En lugar de usar una ruta estática, heredamos el `basedir` del
+  // comparador que Flutter pre-configuró automáticamente para el archivo
+  // de test actual. Esto garantiza que funcione en subdirectorios y en CI.
+  if (goldenFileComparator is LocalFileComparator) {
+    var testUrl = (goldenFileComparator as LocalFileComparator).basedir;
+    goldenFileComparator = TolerantComparator(
+      Uri.parse('${testUrl}foo.dart'),
+      tolerance: 0.005, // 0.5% de tolerancia de píxeles
+    );
+  } else {
+    // Respaldo (fallback)
+    goldenFileComparator = TolerantComparator(
+      Uri.file('${Directory.current.path}/test/foo.dart'),
+      tolerance: 0.005,
+    );
+  }
 
   return testMain();
 }
