@@ -204,6 +204,26 @@ Dado que el archivo `lib/firebase_options.dart` incluye configuraciones específ
 |---|---|---|
 | `FIREBASE_OPTIONS_BASE64` | Contenido base64 del archivo | El archivo `firebase_options.dart` codificado |
 
+### 4.6. Archivos de Google Services (Archivos Nativos)
+
+De manera similar al `firebase_options.dart`, los archivos nativos de configuración que conectan las apps de Android e iOS a Firebase (`google-services.json` y `GoogleService-Info.plist` correspondientemente) tampoco deben subirse al repositorio Git. Sin embargo, las fases de build nativas (Gradle / Xcode) los exigen estrictamente para compilar con éxito.
+
+Debemos convertirlos en base64 y guardarlos como secretos de igual manera para inyectarlos durante el CI:
+
+1. **Para Android (`google-services.json`)**:
+   - En tu terminal, ejecuta para codificar y copiar:
+     ```bash
+     base64 -i android/app/google-services.json | pbcopy
+     ```
+   - Crea el secreto en GitHub con el nombre `GOOGLE_SERVICES_JSON_BASE64`.
+
+2. **Para iOS (`GoogleService-Info.plist`)**:
+   - En tu terminal, ejecuta para codificar y copiar:
+     ```bash
+     base64 -i ios/Runner/GoogleService-Info.plist | pbcopy
+     ```
+   - Crea el secreto en GitHub con el nombre `GOOGLE_SERVICE_INFO_PLIST_BASE64`.
+
 ---
 
 ## 📊 Paso 5: Variables de Entorno (No secretas)
@@ -241,6 +261,8 @@ Usando el **MCP de Firebase** (ya configurado en este proyecto), los IDs se pued
 - [ ] `APP_STORE_CONNECT_API_KEY_KEY`
 - [ ] `FIREBASE_CLI_TOKEN` *(legacy)* o `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` *(recomendado)*
 - [ ] `FIREBASE_OPTIONS_BASE64`
+- [ ] `GOOGLE_SERVICES_JSON_BASE64`
+- [ ] `GOOGLE_SERVICE_INFO_PLIST_BASE64`
 
 ### Variables (pestaña "Variables")
 - [ ] `FIREBASE_APP_ID_ANDROID`
