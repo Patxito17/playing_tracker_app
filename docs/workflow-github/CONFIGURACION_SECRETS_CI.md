@@ -99,44 +99,61 @@ Esto copia el contenido codificado al portapapeles de Mac. Lo pegarás como valo
 
 ---
 
-## 🍏 Paso 3: Secrets de iOS (App Store Connect API Key)
+## 🍏 Paso 3: Secrets de iOS (Firma Definitiva con Certificado)
 
-**¿Por qué usar una API Key en lugar de certificados manuales?**
-Las API Keys de App Store Connect no caducan nunca, no requieren mantenimiento manual y evitan el caos de gestionar perfiles de aprovisionamiento que expiran silenciosamente.
+El workflow implementa la **solución oficial y estándar de GitHub** para firmar apps de iOS: se inyecta el Certificado de Distribución y el Perfil de Aprovisionamiento directamente en un llavero (Keychain) temporal del runner macOS. Esto produce un `.ipa` real, firmado y listo para subir a la App Store.
 
-### 3.1. Crear la API Key en App Store Connect
+### 3.1. Obtener el Certificado de Distribución (`.p12`)
 
-1. Ve a [App Store Connect](https://appstoreconnect.apple.com) → inicia sesión con tu Apple ID (debe ser rol **Admin** o **Account Holder**).
-2. Ve a **Users and Access** (menú superior derecho).
-3. Haz clic en la pestaña **Integrations** → columna izquierda → **App Store Connect API**.
-4. Asegúrate de que estás en la subpestaña **Team Keys**.
-5. Haz clic en el botón **"+"** (Generate API Key).
-6. Ponle un nombre descriptivo (ej: `Playing Tracker CI/CD`) y asígnale el rol **App Manager**.
-7. Haz clic en **Generate**.
-8. En la tabla aparecerá la nueva API Key. **Descarga el archivo `.p8` inmediatamente** (solo se puede descargar una vez).
-9. Anota también el **Key ID** (columna "Key ID" de la tabla) y el **Issuer ID** (que aparece arriba de la tabla).
+Necesitas el certificado **"Apple Distribution"** exportado desde el llavero de tu Mac de desarrollo (donde ya tienes el Xcode configurado).
 
-### 3.2. Codificar la API Key en Base64
+1. Abre **Xcode → Settings → Accounts** → tu Apple ID → **Manage Certificates**.
+2. Si no tienes un certificado de tipo **"Apple Distribution"**, haz clic en **"+"** → **"Apple Distribution"** para crearlo.
+3. Abre la aplicación **Llavero de Acceso** (`/Applications/Utilities/Keychain Access.app`).
+4. En el panel izquierdo selecciona **"login"** en Llaveros y **"Mis certificados"** en Categoría.
+5. Busca el certificado **"Apple Distribution: Tu Nombre"**, haz clic derecho sobre él → **"Exportar..."**.
+6. Elige formato **Personal Information Exchange (`.p12`)** y guárdalo en una carpeta segura fuera del repo.
+7. Durante la exportación te pedirá una **contraseña de protección** — **anótala**, será el valor de `P12_PASSWORD`.
+
+### 3.2. Obtener el Provisioning Profile (`.mobileprovision`)
+
+1. Ve al [Apple Developer Portal](https://developer.apple.com/account/resources/profiles/list).
+2. En **Profiles** → haz clic en **"+"** para crear uno nuevo.
+3. Selecciona **"App Store Connect"** como tipo de distribución → **Continue**.
+4. Selecciona el **App ID `com.gabriom.playingtrackerapp`** → **Continue**.
+5. Selecciona tu certificado de distribución → **Continue**.
+6. Ponle un nombre descriptivo (ej: "Playing Tracker AppStore") → **Generate**.
+7. Descarga el archivo `.mobileprovision`.
+
+### 3.3. Codificar los archivos en Base64
 
 ```bash
-base64 -i AuthKey_XXXXXXXXXX.p8 | pbcopy
+# Certificado .p12 → al portapapeles
+base64 -i /ruta/a/tu/certificado.p12 | pbcopy
+
+# Provisioning Profile → al portapapeles (recuerda guardarlo antes de hacer el siguiente)
+base64 -i /ruta/a/tu/profile.mobileprovision | pbcopy
 ```
 
-*(Reemplaza `XXXXXXXXXX` con tu Key ID real)*
-
-### 3.3. Crear los Secrets en GitHub
+### 3.4. Crear los Secrets en GitHub
 
 📦 **Ajustes del Repositorio** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
 
-| Secret | Dónde encontrarlo | Descripción |
+| Secret | Valor | Descripción |
 |---|---|---|
-| `APP_STORE_CONNECT_API_KEY_KEY_ID` | Tabla de la API Key (columna "Key ID") | Ej: `ABC1234DEF` |
-| `APP_STORE_CONNECT_API_KEY_ISSUER_ID` | Encima de la tabla de API Keys ("Issuer ID") | Ej: `57246542-96fe-1a63-e053...` |
-| `APP_STORE_CONNECT_API_KEY_KEY` | Contenido base64 del archivo `.p8` | El archivo descargado |
-| `MATCH_PASSWORD` | Contraseña que tú decides | Clave maestra para cifrar el repo de Fastlane Match |
+| `BUILD_CERTIFICATE_BASE64` | Contenido base64 del `.p12` | El certificado de distribución |
+| `P12_PASSWORD` | Contraseña elegida al exportar el `.p12` | Contraseña del certificado |
+| `BUILD_PROVISION_PROFILE_BASE64` | Contenido base64 del `.mobileprovision` | El perfil de aprovisionamiento |
+| `KEYCHAIN_PASSWORD` | Cualquier contraseña aleatoria segura (ej: `generada por 1Password`) | Protege el llavero temporal del runner |
 
-> [!NOTE]
-> El secret `MATCH_PASSWORD` es solo necesario si configuras **Fastlane Match** para sincronizar certificados. Para una configuración inicial básica con `flutter build ipa`, puedes omitirlo.
+> [!IMPORTANT]
+> El `KEYCHAIN_PASSWORD` no es para Apple — es solo la contraseña que usamos para proteger el llavero virtual que se crea y se destruye dentro del runner de GitHub Actions en cada ejecución. Puede ser cualquier cadena segura aleatoria.
+
+> [!TIP]
+> Puedes verificar que tu `.p12` es válido antes de subirlo ejecutando:
+> `openssl pkcs12 -info -in /ruta/a/certificado.p12 -noout`
+
+---
 
 ---
 
@@ -247,18 +264,39 @@ Usando el **MCP de Firebase** (ya configurado en este proyecto), los IDs se pued
 
 ---
 
-## 📋 Resumen: Checklist de Configuración
+## � Workarounds Activos (Solución Temporal)
+
+Debido a los recientes errores en GitHub Actions, hemos modificado temporalmente el archivo `production_build.yml` para evitar fallos mientras completas la configuración de tus credenciales:
+
+1. **Android (Crashlytics)**: El volcado de símbolos a Crashlytics falló porque faltaban las credenciales. Se ha añadido un condicional (`if`) para que este paso **sólo** se ejecute si `FIREBASE_APP_ID_ANDROID` y `FIREBASE_CLI_TOKEN` no están en blanco.
+2. **iOS (Code Signing)**: El paso `flutter build ipa` fallaba debido a certificados faltantes. Se ha añadido el *flag* `--no-codesign`. Esto compilará exitosamente la app garantizando la integridad de tu código Dart, pero solo producirá un **`.xcarchive`** no instalable. No producirá un `.ipa`.
+
+> [!WARNING]
+> **Para eliminar estos *workarounds* y tener un CI 100% funcional, DEBES configurar prioritariamente los siguientes pasos de este documento:**
+> - [Paso 3](#-paso-3-secrets-de-ios-firma-definitiva-con-certificado) para habilitar el firmado real en iOS (configurando `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64` y `KEYCHAIN_PASSWORD`).
+> - [Paso 4](#-paso-4-secrets-de-firebase-crashlytics-y-cli) y [Paso 5](#-paso-5-variables-de-entorno-no-secretas) para arreglar Crashlytics en Android (configurando `FIREBASE_APP_ID_ANDROID` y `FIREBASE_CLI_TOKEN`).
+
+---
+
+## �📋 Resumen: Checklist de Configuración
 
 📦 **Ajustes del Repositorio** → **Settings** → **Secrets and variables** → **Actions**
 
 ### Secrets (pestaña "Secrets")
+
+**Android:**
 - [ ] `ANDROID_KEYSTORE_BASE64`
 - [ ] `ANDROID_STORE_PASSWORD`
 - [ ] `ANDROID_KEY_ALIAS`
 - [ ] `ANDROID_KEY_PASSWORD`
-- [ ] `APP_STORE_CONNECT_API_KEY_KEY_ID`
-- [ ] `APP_STORE_CONNECT_API_KEY_ISSUER_ID`
-- [ ] `APP_STORE_CONNECT_API_KEY_KEY`
+
+**iOS (firma definitiva):**
+- [ ] `BUILD_CERTIFICATE_BASE64`
+- [ ] `P12_PASSWORD`
+- [ ] `BUILD_PROVISION_PROFILE_BASE64`
+- [ ] `KEYCHAIN_PASSWORD`
+
+**Firebase:**
 - [ ] `FIREBASE_CLI_TOKEN` *(legacy)* o `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` *(recomendado)*
 - [ ] `FIREBASE_OPTIONS_BASE64`
 - [ ] `GOOGLE_SERVICES_JSON_BASE64`
