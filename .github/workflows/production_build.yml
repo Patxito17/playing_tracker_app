@@ -7,7 +7,7 @@ on:
   workflow_dispatch:    # Permite lanzar el workflow manualmente desde GitHub Actions UI
 
 env:
-  FLUTTER_VERSION: '3.38.0'
+  FLUTTER_VERSION: '3.41.3'
 
 jobs:
   # ──────────────────────────────────────────────────────────────────────────
