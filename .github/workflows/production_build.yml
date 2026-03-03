@@ -80,9 +80,14 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: Decode Android keystore
+      - name: Decode Android keystore and Google Services configuration
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
+          if [ -n "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
+            echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+          else
+            echo "Warning: GOOGLE_SERVICES_JSON_BASE64 secret is missing. Android build might fail."
+          fi
 
       - name: Build App Bundle (obfuscated)
         env:
@@ -154,6 +159,14 @@ jobs:
 
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Inject GoogleService-Info.plist
+        run: |
+          if [ -n "${{ secrets.GOOGLE_SERVICE_INFO_PLIST_BASE64 }}" ]; then
+            echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST_BASE64 }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          else
+            echo "Warning: GOOGLE_SERVICE_INFO_PLIST_BASE64 secret is missing. iOS build might fail."
+          fi
 
       - name: "Install iOS certificates (TODO: configure fastlane match with secrets)"
         run: echo "iOS signing placeholder - configure fastlane match for production"
