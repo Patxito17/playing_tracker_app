@@ -190,6 +190,20 @@ Copia el token generado y créalo como secret:
 |---|---|
 | `FIREBASE_CLI_TOKEN` | Token copiado del comando anterior |
 
+### 4.5. Archivo Firebase Options (`firebase_options.dart`)
+
+Dado que el archivo `lib/firebase_options.dart` incluye configuraciones específicas de tu proyecto Firebase, está excluido del control de versiones (`.gitignore`). Para que el workflow pueda compilar la aplicación, necesitamos inyectarlo como un Secret.
+
+1. En tu máquina local, codifica el archivo base64:
+   ```bash
+   base64 -i lib/firebase_options.dart | pbcopy
+   ```
+2. Crea un nuevo Secret en GitHub:
+
+| Secret | Valor | Descripción |
+|---|---|---|
+| `FIREBASE_OPTIONS_BASE64` | Contenido base64 del archivo | El archivo `firebase_options.dart` codificado |
+
 ---
 
 ## 📊 Paso 5: Variables de Entorno (No secretas)
@@ -226,6 +240,7 @@ Usando el **MCP de Firebase** (ya configurado en este proyecto), los IDs se pued
 - [ ] `APP_STORE_CONNECT_API_KEY_ISSUER_ID`
 - [ ] `APP_STORE_CONNECT_API_KEY_KEY`
 - [ ] `FIREBASE_CLI_TOKEN` *(legacy)* o `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` *(recomendado)*
+- [ ] `FIREBASE_OPTIONS_BASE64`
 
 ### Variables (pestaña "Variables")
 - [ ] `FIREBASE_APP_ID_ANDROID`

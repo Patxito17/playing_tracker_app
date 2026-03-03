@@ -26,6 +26,14 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
+      - name: Inject firebase_options.dart
+        run: |
+          if [ -n "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" ]; then
+            echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode > lib/firebase_options.dart
+          else
+            echo "Warning: FIREBASE_OPTIONS_BASE64 secret is missing. The build might fail."
+          fi
+
       - name: Get dependencies
         run: flutter pub get
 
@@ -57,6 +65,14 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
+
+      - name: Inject firebase_options.dart
+        run: |
+          if [ -n "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" ]; then
+            echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode > lib/firebase_options.dart
+          else
+            echo "Warning: FIREBASE_OPTIONS_BASE64 secret is missing. The build might fail."
+          fi
 
       - name: Get dependencies
         run: flutter pub get
@@ -124,6 +140,14 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
+
+      - name: Inject firebase_options.dart
+        run: |
+          if [ -n "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" ]; then
+            echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode > lib/firebase_options.dart
+          else
+            echo "Warning: FIREBASE_OPTIONS_BASE64 secret is missing. The build might fail."
+          fi
 
       - name: Get dependencies
         run: flutter pub get
