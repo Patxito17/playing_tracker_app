@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'  # Se activa en tags como v1.0.0, v1.2.3, etc.
+  workflow_dispatch:    # Permite lanzar el workflow manualmente desde GitHub Actions UI
 
 env:
   FLUTTER_VERSION: '3.38.0'
