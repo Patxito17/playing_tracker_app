@@ -52,14 +52,14 @@ Antes de añadir los secrets, crea un **Environment** de producción para contro
 
 El sistema de **Play App Signing** de Google separa la *upload key* (la que tú controlas en el pipeline) de la *signing key* real de la app (que Google custodia). Esto significa que si tu upload key se ve comprometida, puedes resetearla sin perder el acceso a tu app en la Play Store.
 
-### 2.1. Generar el Upload Key Keystore (Si aún no lo tienes)
+### 2.1. Generar el Upload Key Keystore
 
-Ejecuta este comando en tu terminal (en cualquier directorio):
+Usa directamente el formato **PKCS12** (estándar moderno, recomendado desde Java 9+). Evita JKS ya que es un formato propietario en desuso:
 
 ```bash
 keytool -genkey -v \
   -keystore upload_key.jks \
-  -storetype JKS \
+  -storetype PKCS12 \
   -keyalg RSA \
   -keysize 2048 \
   -validity 10000 \
@@ -69,11 +69,21 @@ keytool -genkey -v \
 
 Durante el proceso te pedirá:
 - **Store password**: Elige una contraseña segura → esta será `ANDROID_STORE_PASSWORD`
-- **Key password**: Puede ser la misma que la anterior → esta será `ANDROID_KEY_PASSWORD`
+- **Key password**: En PKCS12 es la misma que la del almacén → también `ANDROID_KEY_PASSWORD`
 - **Key alias**: En este caso usa `upload` → este será `ANDROID_KEY_ALIAS`
 
+> [!NOTE]
+> **¿Ya creaste un keystore con formato JKS?** No pasa nada, puedes migrarlo a PKCS12 con un solo comando:
+> ```bash
+> keytool -importkeystore \
+>   -srckeystore upload_key.jks \
+>   -destkeystore upload_key.jks \
+>   -deststoretype pkcs12
+> ```
+> Te pedirá la contraseña del keystore actual y el resultado sobreescribirá el archivo ya en formato PKCS12. El aviso "Warning: JKS..." desaparecerá.
+
 > [!IMPORTANT]
-> Guarda el archivo `upload_key.jks` en un lugar **muy seguro** (fuera del repositorio Git). Si lo pierdes, no podrás subir actualizaciones a la Play Store con esa upload key.
+> Guarda el archivo `upload_key.jks` en un lugar **muy seguro** fuera del repositorio Git. Si lo pierdes, no podrás subir actualizaciones a la Play Store con esa upload key.
 
 ### 2.2. Codificar el Keystore en Base64
 
@@ -89,10 +99,10 @@ Esto copia el contenido codificado al portapapeles de Mac. Lo pegarás como valo
 
 | Secret | Valor | Descripción |
 |---|---|---|
-| `ANDROID_KEYSTORE_BASE64` | Contenido base64 del `.jks` | El keystore codificado |
-| `ANDROID_STORE_PASSWORD` | Contraseña del keystore | La que elegiste al crear el `.jks` |
+| `ANDROID_KEYSTORE_BASE64` | Contenido base64 del archivo keystore | El keystore codificado |
+| `ANDROID_STORE_PASSWORD` | Contraseña del keystore | La que elegiste al crearlo |
 | `ANDROID_KEY_ALIAS` | `upload` | El alias de la clave dentro del keystore |
-| `ANDROID_KEY_PASSWORD` | Contraseña de la clave | Generalmente la misma que `ANDROID_STORE_PASSWORD` |
+| `ANDROID_KEY_PASSWORD` | Contraseña de la clave | La misma que `ANDROID_STORE_PASSWORD` en PKCS12 |
 
 > [!TIP]
 > Para **verificar** que el base64 es correcto, puedes decodificarlo localmente: `echo "TU_BASE64" | base64 --decode > verificacion.jks` y luego `keytool -list -keystore verificacion.jks`.
