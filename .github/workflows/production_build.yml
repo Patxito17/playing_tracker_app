@@ -198,53 +198,35 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
-          # Instalar el provisioning profile
+          # Instalar el provisioning profile con su UUID como nombre de archivo
+          # (Xcode busca los perfiles por UUID.mobileprovision, no por nombre arbitrario)
+          PROFILE_UUID=$(security cms -D -i "$PP_PATH" 2>/dev/null | plutil -extract UUID raw -)
+          if [ -z "$PROFILE_UUID" ]; then
+            echo "ERROR: No se pudo extraer el UUID del perfil de aprovisionamiento."
+            exit 1
+          fi
+          echo "UUID del perfil: $PROFILE_UUID"
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+          echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
 
       - name: Generate ExportOptions.plist
         run: |
-          # Extraer el nombre del perfil de aprovisionamiento instalado
-          PP_PATH=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | head -n1)
-          if [ -z "$PP_PATH" ]; then
-            echo "ERROR: No se encontró ningún perfil de aprovisionamiento instalado."
+          PP_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+          if [ ! -f "$PP_FILE" ]; then
+            echo "ERROR: No se encontró el perfil '$PP_FILE'."
             exit 1
           fi
 
-          PROFILE_NAME=$(security cms -D -i "$PP_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null)
+          PROFILE_NAME=$(security cms -D -i "$PP_FILE" 2>/dev/null | plutil -extract Name raw - 2>/dev/null)
           if [ -z "$PROFILE_NAME" ]; then
-            echo "ERROR: No se pudo extraer el nombre del perfil de '$PP_PATH'."
+            echo "ERROR: No se pudo extraer el nombre del perfil."
             exit 1
           fi
-          echo "Perfil encontrado: $PROFILE_NAME"
+          echo "Perfil: $PROFILE_NAME (UUID: $PROFILE_UUID)"
 
-          TEAM_ID="A795NXART6"
-          BUNDLE_ID="com.gabriom.playingtrackerapp"
-
-          # Forzar firma Manual en el pbxproj (por si Xcode ignora el ExportOptions durante el archive)
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' \
-            ios/Runner.xcodeproj/project.pbxproj
-
-          cat > ios/ExportOptions.plist << EXPORTEOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>${TEAM_ID}</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>${BUNDLE_ID}</key>
-              <string>${PROFILE_NAME}</string>
-            </dict>
-          </dict>
-          </plist>
-          EXPORTEOF
-          echo "ExportOptions.plist generado para perfil: $PROFILE_NAME"
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n  <key>method</key><string>app-store</string>\n  <key>teamID</key><string>A795NXART6</string>\n  <key>signingStyle</key><string>manual</string>\n  <key>provisioningProfiles</key>\n  <dict><key>com.gabriom.playingtrackerapp</key><string>%s</string></dict>\n</dict></plist>\n' "$PROFILE_NAME" > ios/ExportOptions.plist
+          echo "ExportOptions.plist generado: $PROFILE_NAME ($PROFILE_UUID)"
 
       - name: Build IPA (signed for App Store)
         run: |
