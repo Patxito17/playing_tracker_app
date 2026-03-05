@@ -209,24 +209,7 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
           echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
-
-      - name: Generate ExportOptions.plist
-        run: |
-          PP_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
-          if [ ! -f "$PP_FILE" ]; then
-            echo "ERROR: No se encontró el perfil '$PP_FILE'."
-            exit 1
-          fi
-
-          PROFILE_NAME=$(security cms -D -i "$PP_FILE" 2>/dev/null | plutil -extract Name raw - 2>/dev/null)
-          if [ -z "$PROFILE_NAME" ]; then
-            echo "ERROR: No se pudo extraer el nombre del perfil."
-            exit 1
-          fi
-          echo "Perfil: $PROFILE_NAME (UUID: $PROFILE_UUID)"
-
-          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n  <key>method</key><string>app-store</string>\n  <key>teamID</key><string>A795NXART6</string>\n  <key>signingStyle</key><string>manual</string>\n  <key>provisioningProfiles</key>\n  <dict><key>com.gabriom.playingtrackerapp</key><string>%s</string></dict>\n</dict></plist>\n' "$PROFILE_NAME" > ios/ExportOptions.plist
-          echo "ExportOptions.plist generado: $PROFILE_NAME ($PROFILE_UUID)"
+          echo "Perfil instalado correctamente: $PROFILE_UUID"
 
       - name: Build IPA (signed for App Store)
         run: |
@@ -247,8 +230,10 @@ jobs:
         if: ${{ always() }}
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          security delete-keychain $KEYCHAIN_PATH
-          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+          security delete-keychain $KEYCHAIN_PATH || true
+          if [ -n "$PROFILE_UUID" ]; then
+            rm -f ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+          fi
 
 
       - name: Upload iOS debug symbols artifact
