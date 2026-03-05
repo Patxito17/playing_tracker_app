@@ -100,7 +100,6 @@ jobs:
             --release \
             --obfuscate \
             --split-debug-info=build/symbols/android \
-            --build-name="${{ github.ref_name }}" \
             --build-number="${{ github.run_number }}"
 
       - name: Upload AAB artifact
@@ -203,14 +202,43 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
+      - name: Generate ExportOptions.plist
+        run: |
+          # Extraer el nombre del perfil de aprovisionamiento instalado
+          PP_PATH=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | head -n1)
+          PROFILE_NAME=$(security cms -D -i "$PP_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c 'Print :Name' /dev/stdin <<< "$(security cms -D -i "$PP_PATH")")
+          TEAM_ID="A795NXART6"
+          BUNDLE_ID="com.gabriom.playingtrackerapp"
+          cat > ios/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${TEAM_ID}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${BUNDLE_ID}</key>
+              <string>${PROFILE_NAME}</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+          echo "ExportOptions.plist generado para perfil: $PROFILE_NAME"
+
       - name: Build IPA (signed for App Store)
         run: |
           flutter build ipa \
             --release \
             --obfuscate \
             --split-debug-info=build/symbols/ios \
-            --build-name="${{ github.ref_name }}" \
-            --build-number="${{ github.run_number }}"
+            --build-number="${{ github.run_number }}" \
+            --export-options-plist=ios/ExportOptions.plist
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
