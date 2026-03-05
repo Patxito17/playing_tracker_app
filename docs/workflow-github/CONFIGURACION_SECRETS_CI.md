@@ -139,10 +139,10 @@ Necesitas el certificado **"Apple Distribution"** exportado desde el llavero de 
 
 ```bash
 # Certificado .p12 → al portapapeles
-base64 -i /ruta/a/tu/certificado.p12 | pbcopy
+base64 -i "/Users/ormog/Desarrollos Flutter/playing_tracker_app_psswd/apple_distribution_gom.p12" | pbcopy
 
 # Provisioning Profile → al portapapeles (recuerda guardarlo antes de hacer el siguiente)
-base64 -i /ruta/a/tu/profile.mobileprovision | pbcopy
+base64 -i "/Users/ormog/Desarrollos Flutter/playing_tracker_app_psswd/Playing_Tracker_AppStore.mobileprovision" | pbcopy
 ```
 
 ### 3.4. Crear los Secrets en GitHub
@@ -188,7 +188,7 @@ El uso de `FIREBASE_CLI_TOKEN` (generado con `firebase login:ci`) está **oficia
 ### 4.2. Codificar el JSON en Base64
 
 ```bash
-base64 -i tu-proyecto-firebase-XXXXXX.json | pbcopy
+base64 -i "/Users/ormog/Desarrollos Flutter/playing_tracker_app_psswd/playing-tracker-app-008a97840c5f.json" | pbcopy
 ```
 
 ### 4.3. Crear el Secret en GitHub
@@ -199,25 +199,9 @@ base64 -i tu-proyecto-firebase-XXXXXX.json | pbcopy
 |---|---|---|
 | `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | Contenido base64 del JSON | Credenciales de la cuenta de servicio |
 
-> [!IMPORTANT]
-> El workflow actual usa el secret `FIREBASE_CLI_TOKEN`. Para migrar al nuevo método, deberás actualizar el yml para decodificar este JSON y apuntar `GOOGLE_APPLICATION_CREDENTIALS` al archivo resultante. De momento, si quieres que funcione rápidamente sin la migración, puedes crear el secret `FIREBASE_CLI_TOKEN` usando el método legacy: ejecuta `firebase login:ci` en tu terminal y copia el token generado.
 
-### 4.4. Alternativa Rápida (Legacy, Compatibilidad Inmediata)
 
-Si prefieres que funcione inmediatamente sin reestructurar el workflow:
-
-```bash
-# En tu terminal local (con Firebase CLI instalado y sesión iniciada)
-firebase login:ci
-```
-
-Copia el token generado y créalo como secret:
-
-| Secret | Valor |
-|---|---|
-| `FIREBASE_CLI_TOKEN` | Token copiado del comando anterior |
-
-### 4.5. Archivo Firebase Options (`firebase_options.dart`)
+### 4.4. Archivo Firebase Options (`firebase_options.dart`)
 
 Dado que el archivo `lib/firebase_options.dart` incluye configuraciones específicas de tu proyecto Firebase, está excluido del control de versiones (`.gitignore`). Para que el workflow pueda compilar la aplicación, necesitamos inyectarlo como un Secret.
 
@@ -231,7 +215,7 @@ Dado que el archivo `lib/firebase_options.dart` incluye configuraciones específ
 |---|---|---|
 | `FIREBASE_OPTIONS_BASE64` | Contenido base64 del archivo | El archivo `firebase_options.dart` codificado |
 
-### 4.6. Archivos de Google Services (Archivos Nativos)
+### 4.5. Archivos de Google Services (Archivos Nativos)
 
 De manera similar al `firebase_options.dart`, los archivos nativos de configuración que conectan las apps de Android e iOS a Firebase (`google-services.json` y `GoogleService-Info.plist` correspondientemente) tampoco deben subirse al repositorio Git. Sin embargo, las fases de build nativas (Gradle / Xcode) los exigen estrictamente para compilar con éxito.
 
@@ -267,54 +251,56 @@ Usando el **MCP de Firebase** (ya configurado en este proyecto), los IDs se pued
 2. Haz clic en el ⚙️ (engranaje) → **Configuración del proyecto**.
 3. En la sección **Tus apps**, cada app muestra su **ID de aplicación**.
 
-| Variable | Ejemplo de valor | Descripción |
+| Variable | Valor Real | Descripción |
 |---|---|---|
-| `FIREBASE_APP_ID_ANDROID` | `1:123456789:android:abc123def456` | ID de la app Android en Firebase |
-| `FIREBASE_APP_ID_IOS` | `1:123456789:ios:abc123def456` | ID de la app iOS en Firebase |
+| `FIREBASE_APP_ID_ANDROID` | `1:537954318009:android:35845aaeaf3eeaf89f8d68` | ID de la app Android en Firebase |
+| `FIREBASE_APP_ID_IOS` | `1:537954318009:ios:36f47ece6fe9a0d59f8d68` | ID de la app iOS en Firebase |
 
 ---
 
-## � Workarounds Activos (Solución Temporal)
+## ✅ Estado del Workflow (Producción)
 
-Debido a los recientes errores en GitHub Actions, hemos modificado temporalmente el archivo `production_build.yml` para evitar fallos mientras completas la configuración de tus credenciales:
+Todos los secrets y variables requeridos están configurados. El workflow está en modo **producción real**: si falta algún secret o variable, el build **fallará explícitamente** para que puedas identificar el problema.
 
-1. **Android (Crashlytics)**: El volcado de símbolos a Crashlytics falló porque faltaban las credenciales. Se ha añadido un condicional (`if`) para que este paso **sólo** se ejecute si `FIREBASE_APP_ID_ANDROID` y `FIREBASE_CLI_TOKEN` no están en blanco.
-2. **iOS (Code Signing)**: El paso `flutter build ipa` fallaba debido a certificados faltantes. Se ha añadido el *flag* `--no-codesign`. Esto compilará exitosamente la app garantizando la integridad de tu código Dart, pero solo producirá un **`.xcarchive`** no instalable. No producirá un `.ipa`.
+1. **Android (Crashlytics)**: El paso solo se ejecuta si `FIREBASE_APP_ID_ANDROID` está configurado. Si la variable está presente pero `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` falta, el paso fallará con un error de autenticación claro.
+2. **iOS (Firma)**: El workflow realiza el **firmado real** para App Store. Si alguno de los certificados o el provisioning profile no está disponible, el build fallará.
 
-> [!WARNING]
-> **Para eliminar estos *workarounds* y tener un CI 100% funcional, DEBES configurar prioritariamente los siguientes pasos de este documento:**
-> - [Paso 3](#-paso-3-secrets-de-ios-firma-definitiva-con-certificado) para habilitar el firmado real en iOS (configurando `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64` y `KEYCHAIN_PASSWORD`).
-> - [Paso 4](#-paso-4-secrets-de-firebase-crashlytics-y-cli) y [Paso 5](#-paso-5-variables-de-entorno-no-secretas) para arreglar Crashlytics en Android (configurando `FIREBASE_APP_ID_ANDROID` y `FIREBASE_CLI_TOKEN`).
+> [!NOTE]
+> Si el build falla inesperadamente, revisa primero el checklist de abajo y verifica que ningún secret haya caducado (los certificados de distribución duran 1 año).
 
 ---
 
-## �📋 Resumen: Checklist de Configuración
+## 📋 Resumen: Checklist de Configuración
+
+> [!IMPORTANT]
+> **Vigencia de esta configuración:** Secrets y variables verificados y activos el **05 de Marzo de 2026**.
+> Si el build falla por "Provisioning Profile" o "Certificates", comprueba si han caducado en el [Apple Developer Portal](https://developer.apple.com/account) (duran 1 año). Para Crashlytics, verifica que la cuenta de servicio siga activa en [Google Cloud IAM](https://console.cloud.google.com/iam-admin).
 
 📦 **Ajustes del Repositorio** → **Settings** → **Secrets and variables** → **Actions**
 
 ### Secrets (pestaña "Secrets")
 
 **Android:**
-- [ ] `ANDROID_KEYSTORE_BASE64`
-- [ ] `ANDROID_STORE_PASSWORD`
-- [ ] `ANDROID_KEY_ALIAS`
-- [ ] `ANDROID_KEY_PASSWORD`
+- [x] `ANDROID_KEYSTORE_BASE64`
+- [x] `ANDROID_STORE_PASSWORD`
+- [x] `ANDROID_KEY_ALIAS`
+- [x] `ANDROID_KEY_PASSWORD`
 
 **iOS (firma definitiva):**
-- [ ] `BUILD_CERTIFICATE_BASE64`
-- [ ] `P12_PASSWORD`
-- [ ] `BUILD_PROVISION_PROFILE_BASE64`
-- [ ] `KEYCHAIN_PASSWORD`
+- [x] `BUILD_CERTIFICATE_BASE64`
+- [x] `P12_PASSWORD`
+- [x] `BUILD_PROVISION_PROFILE_BASE64`
+- [x] `KEYCHAIN_PASSWORD`
 
 **Firebase:**
-- [ ] `FIREBASE_CLI_TOKEN` *(legacy)* o `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` *(recomendado)*
-- [ ] `FIREBASE_OPTIONS_BASE64`
-- [ ] `GOOGLE_SERVICES_JSON_BASE64`
-- [ ] `GOOGLE_SERVICE_INFO_PLIST_BASE64`
+- [x] `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
+- [x] `FIREBASE_OPTIONS_BASE64`
+- [x] `GOOGLE_SERVICES_JSON_BASE64`
+- [x] `GOOGLE_SERVICE_INFO_PLIST_BASE64`
 
 ### Variables (pestaña "Variables")
-- [ ] `FIREBASE_APP_ID_ANDROID`
-- [ ] `FIREBASE_APP_ID_IOS`
+- [x] `FIREBASE_APP_ID_ANDROID`
+- [x] `FIREBASE_APP_ID_IOS`
 
 ---
 
