@@ -206,11 +206,26 @@ jobs:
         run: |
           # Extraer el nombre del perfil de aprovisionamiento instalado
           PP_PATH=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | head -n1)
-          PROFILE_NAME=$(security cms -D -i "$PP_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null || \
-            /usr/libexec/PlistBuddy -c 'Print :Name' /dev/stdin <<< "$(security cms -D -i "$PP_PATH")")
+          if [ -z "$PP_PATH" ]; then
+            echo "ERROR: No se encontró ningún perfil de aprovisionamiento instalado."
+            exit 1
+          fi
+
+          PROFILE_NAME=$(security cms -D -i "$PP_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null)
+          if [ -z "$PROFILE_NAME" ]; then
+            echo "ERROR: No se pudo extraer el nombre del perfil de '$PP_PATH'."
+            exit 1
+          fi
+          echo "Perfil encontrado: $PROFILE_NAME"
+
           TEAM_ID="A795NXART6"
           BUNDLE_ID="com.gabriom.playingtrackerapp"
-          cat > ios/ExportOptions.plist <<EOF
+
+          # Forzar firma Manual en el pbxproj (por si Xcode ignora el ExportOptions durante el archive)
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' \
+            ios/Runner.xcodeproj/project.pbxproj
+
+          cat > ios/ExportOptions.plist << EXPORTEOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -228,7 +243,7 @@ jobs:
             </dict>
           </dict>
           </plist>
-          EOF
+          EXPORTEOF
           echo "ExportOptions.plist generado para perfil: $PROFILE_NAME"
 
       - name: Build IPA (signed for App Store)
