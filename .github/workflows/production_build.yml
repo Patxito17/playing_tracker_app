@@ -108,6 +108,25 @@ jobs:
           name: android-aab-${{ github.ref_name }}
           path: build/app/outputs/bundle/release/app-release.aab
 
+      - name: Build APK (instalacion directa en dispositivo)
+        env:
+          ANDROID_KEYSTORE_PATH: android/app/release.jks
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          flutter build apk \
+            --release \
+            --obfuscate \
+            --split-debug-info=build/symbols/android \
+            --build-number="${{ github.run_number }}"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-${{ github.ref_name }}
+          path: build/app/outputs/flutter-apk/app-release.apk
+
       - name: Upload debug symbols artifact
         uses: actions/upload-artifact@v4
         with:
@@ -242,12 +261,17 @@ jobs:
           name: ios-symbols-${{ github.ref_name }}
           path: build/symbols/ios/
 
-      # ── Subida de símbolos dSYM a Firebase Crashlytics ───────────────────
+      # ── Subida de simbolos Dart a Firebase Crashlytics ───────────────────
+      # Nota: los dSYMs nativos de iOS los sube Xcode automaticamente
+      # via la Run Script build phase de firebase_crashlytics.
+      # Este paso sube los simbolos de Dart (generados con --split-debug-info)
+      # que permiten deobfuscar los stack traces del codigo Dart.
       - name: Setup Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Upload Crashlytics dSYM symbols (iOS)
+      - name: Upload Crashlytics Dart symbols (iOS)
         if: vars.FIREBASE_APP_ID_IOS != ''
+        continue-on-error: true   # No bloquea el IPA si falla
         env:
           FIREBASE_APP_ID_IOS: ${{ vars.FIREBASE_APP_ID_IOS }}
           GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}
@@ -256,5 +280,53 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa_key.json
           firebase crashlytics:symbols:upload \
             --app="$FIREBASE_APP_ID_IOS" \
-            build/ios/archive/Runner.xcarchive/dSYMs
+            build/symbols/ios/
           rm /tmp/sa_key.json
+
+  # ------------------------------------------------------------------------------
+  # GitHub Release (solo en push de tag tipo v1.0.0)
+  # Adjunta APK, AAB e IPA al Release publico del repositorio
+  # ------------------------------------------------------------------------------
+  create_release:
+    name: Create GitHub Release
+    # Solo se ejecuta cuando el trigger fue un tag (no en workflow_dispatch manual)
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: [build_android, build_ios]
+    permissions:
+      contents: write   # Necesario para crear releases
+    steps:
+      - name: Download Android APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk-${{ github.ref_name }}
+          path: release-files/
+
+      - name: Download Android AAB artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-aab-${{ github.ref_name }}
+          path: release-files/
+
+      - name: Download iOS IPA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa-${{ github.ref_name }}
+          path: release-files/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Playing Tracker ${{ github.ref_name }}"
+          body: |
+            ## Playing Tracker ${{ github.ref_name }}
+
+            ### Instalacion en dispositivo real
+            - **Android (APK):** Descarga `app-release.apk` e instalalo directamente en tu Android.
+            - **Android (AAB):** Formato para subir a Google Play Store.
+            - **iOS (IPA):** Usalo con Apple Transporter o TestFlight.
+
+            > Build #${{ github.run_number }} generado automaticamente por GitHub Actions.
+          draft: false
+          prerelease: false
+          files: release-files/*
