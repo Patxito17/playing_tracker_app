@@ -116,19 +116,22 @@ jobs:
           path: build/symbols/android/
 
       # ── Subida de símbolos a Firebase Crashlytics ─────────────────────────
-      # Requiere: FIREBASE_CLI_TOKEN (secret) y APP_ID_ANDROID (var de entorno)
+      # Requiere: GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 (secret) y FIREBASE_APP_ID_ANDROID (var)
       - name: Setup Firebase CLI
         run: npm install -g firebase-tools
 
       - name: Upload Crashlytics symbols (Android)
-        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_APP_ID_ANDROID != ''
+        if: vars.FIREBASE_APP_ID_ANDROID != ''
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
           FIREBASE_APP_ID_ANDROID: ${{ vars.FIREBASE_APP_ID_ANDROID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}
         run: |
+          echo "$GOOGLE_SERVICE_ACCOUNT_JSON_BASE64" | base64 --decode > /tmp/sa_key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa_key.json
           firebase crashlytics:symbols:upload \
             --app="$FIREBASE_APP_ID_ANDROID" \
             build/symbols/android/
+          rm /tmp/sa_key.json
 
   # ──────────────────────────────────────────────────────────────────────────
   # Build iOS (IPA para App Store Connect)
@@ -234,11 +237,14 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Upload Crashlytics dSYM symbols (iOS)
-        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_APP_ID_IOS != ''
+        if: vars.FIREBASE_APP_ID_IOS != ''
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
           FIREBASE_APP_ID_IOS: ${{ vars.FIREBASE_APP_ID_IOS }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}
         run: |
+          echo "$GOOGLE_SERVICE_ACCOUNT_JSON_BASE64" | base64 --decode > /tmp/sa_key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa_key.json
           firebase crashlytics:symbols:upload \
             --app="$FIREBASE_APP_ID_IOS" \
             build/symbols/ios/
+          rm /tmp/sa_key.json
