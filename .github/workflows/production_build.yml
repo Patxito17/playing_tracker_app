@@ -256,5 +256,5 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa_key.json
           firebase crashlytics:symbols:upload \
             --app="$FIREBASE_APP_ID_IOS" \
-            build/symbols/ios/
+            build/ios/archive/Runner.xcarchive/dSYMs
           rm /tmp/sa_key.json
