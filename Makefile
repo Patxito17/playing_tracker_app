@@ -16,7 +16,7 @@
 #   make aab-prod       → Genera App Bundle ofuscado (igual que CI/CD)
 #   make ipa            → Genera IPA de release para iOS (requiere Mac + Xcode)
 #   make ipa-prod       → Genera IPA de release ofuscado (igual que CI/CD)
-#   make build-all      → Genera APK + IPA en modo producción (requiere Mac)
+#   make build-all      → Genera IPA, APK y AAB en modo producción (requiere Mac)
 # ==============================================================================
 
 # Colores para la salida en terminal
@@ -75,7 +75,7 @@ help:
 	@echo "                   ⚠️  Requiere certificado y provisioning profile en Xcode"
 	@echo ""
 	@echo "$(BOLD)── Todo en uno ──────────────────────────────────────────$(RESET)"
-	@echo "  $(GREEN)make build-all$(RESET)   Genera APK + IPA en modo producción (solo en Mac)"
+	@echo "  $(GREEN)make build-all$(RESET)   Genera IPA, APK y AAB en modo producción (solo en Mac)"
 	@echo ""
 
 
@@ -209,15 +209,23 @@ ipa-prod:
 
 
 # ==============================================================================
-# Build completo (APK + IPA) — Solo en Mac
+# Build completo (IPA + APK + AAB) — Solo en Mac
 # ==============================================================================
 
-## Genera APK + IPA en modo producción. Equivale a ejecutar el pipeline CI/CD localmente.
+## Genera IPA, APK y AAB en modo producción. Equivale a ejecutar el pipeline CI/CD localmente.
 ## Solo funciona en macOS (el build de iOS requiere Xcode).
 .PHONY: build-all
-build-all: apk-prod ipa-prod
+build-all: ipa-prod apk-prod aab-prod
+	@echo ""
+	@echo "$(BLUE)📦 Copiando todos los artefactos generados a la carpeta 'releases/'...$(RESET)"
+	@mkdir -p releases/apk releases/aab releases/ipa
+	@cp -R build/app/outputs/flutter-apk/* releases/apk/ 2>/dev/null || true
+	@cp -R build/app/outputs/bundle/release/* releases/aab/ 2>/dev/null || true
+	@cp -R build/ios/ipa/* releases/ipa/ 2>/dev/null || true
 	@echo ""
 	@echo "$(BOLD)$(GREEN)🎉 Build completo finalizado.$(RESET)"
-	@echo "   APK → build/app/outputs/flutter-apk/app-release.apk"
-	@echo "   IPA → build/ios/ipa/"
+	@echo "   Todos los archivos y metadatos listos para distribuir están en la carpeta $(BOLD)releases/$(RESET):"
+	@echo "   📱 APKs → releases/apk/"
+	@echo "   📦 AABs → releases/aab/"
+	@echo "   🍏 IPAs → releases/ipa/"
 	@echo ""

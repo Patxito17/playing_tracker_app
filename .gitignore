@@ -73,3 +73,6 @@ functions/.env
 
 # Firebase CLI cache
 .firebase/
+
+# Builds y releases empaquetados locamente
+/releases/
