@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -87,17 +88,37 @@ class SettingsScreen extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.description_outlined),
                     title: Text(context.l10n.termsAndConditionsLink),
-                    trailing: const Icon(Icons.open_in_new),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // Placeholder: abrir términos
+                      final locale =
+                          settingsState.locale?.languageCode ??
+                          Localizations.localeOf(context).languageCode;
+                      final langSuffix = locale == 'es' ? 'es' : 'en';
+                      context.push(
+                        '/legal',
+                        extra: {
+                          'title': context.l10n.termsAndConditionsTitle,
+                          'assetPath': 'assets/legal/terms_$langSuffix.md',
+                        },
+                      );
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.privacy_tip_outlined),
                     title: Text(context.l10n.privacyPolicyLink),
-                    trailing: const Icon(Icons.open_in_new),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // Placeholder: abrir privacidad
+                      final locale =
+                          settingsState.locale?.languageCode ??
+                          Localizations.localeOf(context).languageCode;
+                      final langSuffix = locale == 'es' ? 'es' : 'en';
+                      context.push(
+                        '/legal',
+                        extra: {
+                          'title': context.l10n.privacyPolicyTitle,
+                          'assetPath': 'assets/legal/privacy_$langSuffix.md',
+                        },
+                      );
                     },
                   ),
                 ],

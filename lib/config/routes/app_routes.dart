@@ -45,6 +45,7 @@ import '../../features/tasks/presentation/screens/assignment_list_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../../features/tasks/presentation/screens/task_list_screen.dart';
+import '../../features/settings/presentation/screens/legal_document_screen.dart';
 import '../../shared/widgets/custom_bottom_navigation_bar.dart';
 import '../../shared/widgets/error_screen.dart';
 
@@ -64,6 +65,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
+  static const String legal = '/legal';
 
   // Rutas de Home (redirigen a lista de clases)
   static const String teacherHome = '/home/teacher';
@@ -586,6 +588,19 @@ class AppRoutes {
           return BlocProvider(
             create: (context) => HistoryCubit(sessionRepository),
             child: SessionHistoryScreen(studentId: studentId),
+          );
+        },
+      ),
+
+      // Ruta de documentos legales (Términos y Privacidad)
+      GoRoute(
+        path: legal,
+        name: 'legal',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String>?;
+          return LegalDocumentScreen(
+            title: extra?['title'] ?? '',
+            assetPath: extra?['assetPath'] ?? '',
           );
         },
       ),

@@ -76,6 +76,9 @@ dependencies:
   fl_chart: ^1.1.1              # Librería de gráficos para estadísticas
   shared_preferences: ^2.5.4
 
+  # Renderizado de documentos Markdown (T&C y Privacidad)
+  flutter_markdown_plus: ^1.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -88,6 +91,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+  # Generadores de iconos y splash screen (se pueden eliminar tras generar los assets nativos)
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.3
   build_runner: ^2.10.4          # Generación de código
   json_serializable: ^6.11.2    # Serialización JSON
   go_router_builder: ^4.1.3      # Generación de rutas tipadas
@@ -111,6 +118,7 @@ flutter:
   # Assets de la aplicación
   assets:
     - assets/legal/  # Textos legales (T&C + Política de Privacidad) y versión
+    - assets/images/ # Logo e imágenes de la aplicación
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -137,3 +145,37 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# ============================================================
+# Configuración de flutter_launcher_icons
+# (Se puede eliminar la sección una vez generados los assets)
+# ============================================================
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
+
+# ============================================================
+# Configuración de flutter_native_splash
+# (Se puede eliminar la sección una vez generados los assets)
+# ============================================================
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/logo.png
+  image_dark: assets/images/logo.png
+  color_dark: "#121212"
+  android: true
+  ios: true
+  android_12:
+    image: assets/images/logo.png
+    icon_background_color: "#FFFFFF"
+    image_dark: assets/images/logo.png
+    icon_background_color_dark: "#121212"
