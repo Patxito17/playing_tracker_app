@@ -5,6 +5,16 @@ on:
     tags:
       - 'v*.*.*'  # Se activa en tags como v1.0.0, v1.2.3, etc.
   workflow_dispatch:    # Permite lanzar el workflow manualmente desde GitHub Actions UI
+    inputs:
+      release_name:
+        description: 'Nombre del release (ej: v1.0.0-RC1). Si se deja vacío, se genera automáticamente.'
+        required: false
+        default: ''
+      prerelease:
+        description: '¿Es un pre-release (beta/RC)?'
+        required: false
+        type: boolean
+        default: true
 
 env:
   FLUTTER_VERSION: '3.41.3'
@@ -284,18 +294,41 @@ jobs:
           rm /tmp/sa_key.json
 
   # ------------------------------------------------------------------------------
-  # GitHub Release (solo en push de tag tipo v1.0.0)
-  # Adjunta APK, AAB e IPA al Release publico del repositorio
+  # GitHub Release
+  # Se ejecuta:
+  #   - Automáticamente al hacer push de un tag tipo v1.0.0
+  #   - Manualmente desde la UI de GitHub Actions (workflow_dispatch)
+  # Adjunta APK, AAB e IPA al Release del repositorio
   # ------------------------------------------------------------------------------
   create_release:
     name: Create GitHub Release
-    # Solo se ejecuta cuando el trigger fue un tag (no en workflow_dispatch manual)
-    if: startsWith(github.ref, 'refs/tags/')
+    # Se ejecuta tanto en push de tag como en ejecución manual
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: [build_android, build_ios]
     permissions:
       contents: write   # Necesario para crear releases
     steps:
+      # Determinar el nombre del release y si es prerelease
+      # - En tags: usa el nombre del tag (github.ref_name) y siempre es release final
+      # - En manual: usa el input o genera uno con la fecha y número de run
+      - name: Set release metadata
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ -n "${{ github.event.inputs.release_name }}" ]; then
+              RELEASE_NAME="${{ github.event.inputs.release_name }}"
+            else
+              RELEASE_NAME="manual-build-$(date +'%Y%m%d')-run${{ github.run_number }}"
+            fi
+            IS_PRERELEASE="${{ github.event.inputs.prerelease }}"
+          else
+            RELEASE_NAME="${{ github.ref_name }}"
+            IS_PRERELEASE="false"
+          fi
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
       - name: Download Android APK artifact
         uses: actions/download-artifact@v4
         with:
@@ -317,9 +350,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Playing Tracker ${{ github.ref_name }}"
+          tag_name: ${{ steps.meta.outputs.release_name }}
+          name: "Playing Tracker ${{ steps.meta.outputs.release_name }}"
           body: |
-            ## Playing Tracker ${{ github.ref_name }}
+            ## Playing Tracker ${{ steps.meta.outputs.release_name }}
 
             ### Instalacion en dispositivo real
             - **Android (APK):** Descarga `app-release.apk` e instalalo directamente en tu Android.
@@ -327,6 +361,7 @@ jobs:
             - **iOS (IPA):** Usalo con Apple Transporter o TestFlight.
 
             > Build #${{ github.run_number }} generado automaticamente por GitHub Actions.
+            > Trigger: `${{ github.event_name }}`${{ github.event_name == 'workflow_dispatch' && ' (lanzado manualmente)' || '' }}
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.meta.outputs.is_prerelease }}
           files: release-files/*
