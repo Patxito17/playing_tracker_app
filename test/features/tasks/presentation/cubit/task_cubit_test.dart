@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_cubit.dart';
@@ -136,7 +135,7 @@ CreateTaskInput _createTaskInput() => (
   description: 'Practicar escalas',
   createdBy: 'teacher-1',
   durationSuggested: 1800,
-  attachments: <AttachmentModel>[],
+  attachmentUrl: null,
   dueDate: DateTime(2025, 1, 1),
 );
 
@@ -145,7 +144,7 @@ UpdateTaskInput _updateTaskInput() => (
   title: 'Nuevo título',
   description: null,
   durationSuggested: 2400,
-  attachments: null,
+  attachmentUrl: null,
   dueDate: null,
   isActive: null,
 );
@@ -176,7 +175,7 @@ TaskModel _taskModel() {
     description: 'Practicar escalas',
     createdBy: 'teacher-1',
     durationSuggested: 1800,
-    attachments: const [],
+    attachmentUrl: null,
     createdAt: now,
     updatedAt: now,
     dueDate: null,

@@ -1008,6 +1008,14 @@
   "@attachmentsHint": {
     "description": "Attachments hint"
   },
+  "attachmentUrlLabel": "Material Link",
+  "@attachmentUrlLabel": {
+    "description": "Label for the attachment url input field"
+  },
+  "attachmentUrlHint": "Enter the material URL",
+  "@attachmentUrlHint": {
+    "description": "Hint for the attachment url input field"
+  },
   "createTaskButton": "Create task",
   "@createTaskButton": {
     "description": "Create task button"
