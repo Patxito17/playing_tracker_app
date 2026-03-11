@@ -402,6 +402,18 @@
   "@googleSignInError": {
     "description": "Error genérico de Google Sign-In"
   },
+  "continueWithApple": "Continuar con Apple",
+  "@continueWithApple": {
+    "description": "Botón de inicio de sesión / registro con Apple"
+  },
+  "appleSignInCanceled": "El inicio de sesión con Apple fue cancelado.",
+  "@appleSignInCanceled": {
+    "description": "Mensaje cuando el usuario cancela el flujo de Apple"
+  },
+  "appleSignInError": "Ocurrió un error al iniciar sesión con Apple. Intenta de nuevo.",
+  "@appleSignInError": {
+    "description": "Error genérico de Apple Sign-In"
+  },
   "completeProfileTitle": "Completa tu perfil",
   "@completeProfileTitle": {
     "description": "Título de la pantalla de completar perfil (flujo Google)"

@@ -319,6 +319,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'An error occurred while signing in with Google. Please try again.';
 
   @override
+  String get continueWithApple => 'Continue with Apple';
+
+  @override
+  String get appleSignInCanceled => 'Apple sign-in was canceled.';
+
+  @override
+  String get appleSignInError =>
+      'An error occurred during Apple sign-in. Please try again.';
+
+  @override
   String get completeProfileTitle => 'Complete your profile';
 
   @override

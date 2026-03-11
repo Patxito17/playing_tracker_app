@@ -244,15 +244,61 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  /// Completa el registro de un docente autenticado vía Google.
-  Future<void> completeGoogleTeacherProfile({
+  /// Inicia sesión con Apple Sign-In (iOS).
+  Future<void> signInWithApple() async {
+    emit(const AuthLoading());
+    try {
+      final credential = await _authRepository.signInWithApple();
+      final userId = credential.user?.uid;
+      if (userId == null) {
+        emit(const AuthError('No se pudo obtener el usuario autenticado.'));
+        return;
+      }
+
+      final role = await _authRepository.getUserRole(userId);
+
+      dynamic userModel;
+      if (role == UserRole.teacher) {
+        userModel = await _authRepository.getTeacherProfile(userId);
+      } else {
+        userModel = await _authRepository.getStudentProfile(userId);
+      }
+
+      if (userModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del usuario.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: userModel));
+    } on ProfileNotFoundException {
+      // Nuevo usuario de Apple: autenticado en Firebase pero sin perfil.
+      final fbUser = _authRepository.currentUser;
+      emit(
+        AuthProfileIncomplete(
+          email: fbUser?.email,
+          displayName: fbUser?.displayName,
+        ),
+      );
+    } on AuthRepositoryException catch (e) {
+      if (e.message == 'appleSignInCanceled') {
+        emit(const AuthUnauthenticated());
+      } else {
+        emit(AuthError(e.message));
+      }
+    } catch (error) {
+      emit(AuthError(_mapError(error)));
+    }
+  }
+
+  /// Completa el registro de un docente autenticado vía proveedor social (Google o Apple).
+  Future<void> completeSocialTeacherProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,
   }) async {
     emit(const AuthLoading());
     try {
-      await _authRepository.completeGoogleTeacherProfile(
+      await _authRepository.completeSocialTeacherProfile(
         firstName: firstName,
         lastName: lastName,
         acceptedTermsVersion: acceptedTermsVersion,
@@ -277,15 +323,15 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
-  /// Completa el registro de un alumno autenticado vía Google.
-  Future<void> completeGoogleStudentProfile({
+  /// Completa el registro de un alumno autenticado vía proveedor social (Google o Apple).
+  Future<void> completeSocialStudentProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,
   }) async {
     emit(const AuthLoading());
     try {
-      await _authRepository.completeGoogleStudentProfile(
+      await _authRepository.completeSocialStudentProfile(
         firstName: firstName,
         lastName: lastName,
         acceptedTermsVersion: acceptedTermsVersion,

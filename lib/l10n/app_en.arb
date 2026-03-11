@@ -402,6 +402,18 @@
   "@googleSignInError": {
     "description": "Generic Google Sign-In error"
   },
+  "continueWithApple": "Continue with Apple",
+  "@continueWithApple": {
+    "description": "Apple Sign-In / Sign-Up button"
+  },
+  "appleSignInCanceled": "Apple sign-in was canceled.",
+  "@appleSignInCanceled": {
+    "description": "Message when user cancels Apple flow"
+  },
+  "appleSignInError": "An error occurred during Apple sign-in. Please try again.",
+  "@appleSignInError": {
+    "description": "Generic Apple Sign-In error"
+  },
   "completeProfileTitle": "Complete your profile",
   "@completeProfileTitle": {
     "description": "Title of complete profile screen (Google flow)"

@@ -64,6 +64,7 @@ dependencies:
   # App Check - Protección contra abusos (solo apps legítimas pueden usar Firebase)
   firebase_app_check: ^0.4.1+4
   google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
 
   # Persistencia de estado
   hydrated_bloc: ^10.1.1

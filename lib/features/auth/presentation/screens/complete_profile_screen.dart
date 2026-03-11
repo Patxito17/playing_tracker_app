@@ -16,7 +16,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/legal_consent_dialog.dart';
 
-/// Pantalla de completar perfil para usuarios que se registran vía Google.
+/// Pantalla de completar perfil para usuarios que se registran vía proveedores sociales (Google, Apple).
 ///
 /// Se muestra cuando [AuthProfileIncomplete] es emitido por [AuthCubit].
 /// El usuario elige su rol (docente/alumno), introduce nombre y apellidos,
@@ -24,10 +24,10 @@ import '../widgets/legal_consent_dialog.dart';
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key, this.email, this.displayName});
 
-  /// Email del usuario de Google (pre-rellenado, no editable).
+  /// Email del usuario social (pre-rellenado, no editable).
   final String? email;
 
-  /// Nombre de visualización de Google (opcional, como referencia).
+  /// Nombre de visualización social (opcional, como referencia).
   final String? displayName;
 
   @override
@@ -48,7 +48,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Recuperar datos de Google del estado actual si no vienen por GoRouter
+    // Recuperar datos sociales del estado actual si no vienen por GoRouter
     final cubit = context.read<AuthCubit>();
     final state = cubit.state;
 
@@ -141,13 +141,13 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
     final cubit = context.read<AuthCubit>();
     if (_selectedRole == UserRole.teacher) {
-      cubit.completeGoogleTeacherProfile(
+      cubit.completeSocialTeacherProfile(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         acceptedTermsVersion: kCurrentTermsVersion,
       );
     } else {
-      cubit.completeGoogleStudentProfile(
+      cubit.completeSocialStudentProfile(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         acceptedTermsVersion: kCurrentTermsVersion,

@@ -674,6 +674,24 @@ abstract class AppLocalizations {
   /// **'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.'**
   String get googleSignInError;
 
+  /// Botón de inicio de sesión / registro con Apple
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Apple'**
+  String get continueWithApple;
+
+  /// Mensaje cuando el usuario cancela el flujo de Apple
+  ///
+  /// In es, this message translates to:
+  /// **'El inicio de sesión con Apple fue cancelado.'**
+  String get appleSignInCanceled;
+
+  /// Error genérico de Apple Sign-In
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error al iniciar sesión con Apple. Intenta de nuevo.'**
+  String get appleSignInError;
+
   /// Título de la pantalla de completar perfil (flujo Google)
   ///
   /// In es, this message translates to:

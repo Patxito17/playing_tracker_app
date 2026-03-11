@@ -325,6 +325,17 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.';
 
   @override
+  String get continueWithApple => 'Continuar con Apple';
+
+  @override
+  String get appleSignInCanceled =>
+      'El inicio de sesión con Apple fue cancelado.';
+
+  @override
+  String get appleSignInError =>
+      'Ocurrió un error al iniciar sesión con Apple. Intenta de nuevo.';
+
+  @override
   String get completeProfileTitle => 'Completa tu perfil';
 
   @override
