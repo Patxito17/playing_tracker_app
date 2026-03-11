@@ -78,6 +78,7 @@ dependencies:
 
   # Renderizado de documentos Markdown (T&C y Privacidad)
   flutter_markdown_plus: ^1.0.7
+  wakelock_plus: ^1.4.0
 
 dev_dependencies:
   flutter_test:

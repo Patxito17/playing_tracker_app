@@ -162,6 +162,10 @@
   - Sincronización de todos los commits de Google Sign-In, Apple Sign-In y correcciones de flujo de perfil.
   - Verificación de consistencia del sistema l10n y suite de tests.
 
+- **Persistencia de Pantalla - Wakelock (11/03/2026)**: 
+  - Integración de `wakelock_plus` para evitar el apagado de pantalla en `TimerScreen`.
+  - Configuración automática en el ciclo de vida del widget (`initState`/`dispose`).
+
 ### Estado de Verificación Automática
 - [x] Unit Tests: 360/360 pass.
 - [x] Integration Tests: Pass.

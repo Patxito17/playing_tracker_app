@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -55,10 +56,15 @@ class _TimerScreenState extends State<TimerScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     )..repeat(reverse: true);
+
+    // Habilitar el bloqueo de pantalla mientras el alumno está en el cronómetro
+    WakelockPlus.enable();
   }
 
   @override
   void dispose() {
+    // Asegurar que el bloqueo de pantalla se deshabilite al salir
+    WakelockPlus.disable();
     _pulseController.dispose();
     _notesController.dispose();
     super.dispose();
