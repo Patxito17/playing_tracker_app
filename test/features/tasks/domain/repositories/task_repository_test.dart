@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 
@@ -18,7 +17,7 @@ void main() {
       description: 'Descripción demo',
       createdBy: 'teacher-1',
       durationSuggested: 1800,
-      attachments: <AttachmentModel>[],
+      attachmentUrl: null,
       dueDate: DateTime(2025, 1, 1),
     ));
 
@@ -27,7 +26,7 @@ void main() {
       title: 'Nuevo título',
       description: 'Nueva descripción',
       durationSuggested: 1200,
-      attachments: <AttachmentModel>[],
+      attachmentUrl: null,
       dueDate: DateTime(2025, 2, 1),
       isActive: true,
     ));
@@ -62,7 +61,7 @@ void main() {
         description: 'Desc',
         createdBy: 'teacher-1',
         durationSuggested: 1800,
-        attachments: <AttachmentModel>[],
+        attachmentUrl: null,
         dueDate: null,
       );
 
@@ -78,7 +77,7 @@ void main() {
         description: 'Desc',
         createdBy: 'teacher-1',
         durationSuggested: 0,
-        attachments: <AttachmentModel>[],
+        attachmentUrl: null,
         dueDate: null,
       );
 
@@ -96,7 +95,7 @@ void main() {
         title: null,
         description: null,
         durationSuggested: null,
-        attachments: null,
+        attachmentUrl: null,
         dueDate: null,
         isActive: null,
       );
@@ -113,7 +112,7 @@ void main() {
         title: 'Nuevo título',
         description: null,
         durationSuggested: null,
-        attachments: null,
+        attachmentUrl: null,
         dueDate: null,
         isActive: null,
       );
@@ -190,7 +189,7 @@ void main() {
           description: 'Practicar escalas',
           createdBy: 'teacher-1',
           durationSuggested: 1800,
-          attachments: <AttachmentModel>[],
+          attachmentUrl: null,
           dueDate: DateTime(2025, 1, 1),
         );
         final now = Timestamp.now();
@@ -200,7 +199,7 @@ void main() {
           description: input.description,
           createdBy: input.createdBy,
           durationSuggested: input.durationSuggested,
-          attachments: input.attachments,
+          attachmentUrl: input.attachmentUrl,
           createdAt: now,
           updatedAt: now,
           dueDate: now,
@@ -233,7 +232,7 @@ void main() {
         description: 'Practicar escalas',
         createdBy: 'teacher-1',
         durationSuggested: 1800,
-        attachments: const [],
+        attachmentUrl: null,
         createdAt: now,
         updatedAt: now,
         dueDate: null,

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:playing_tracker/features/tasks/data/services/task_service.dart';
-import 'package:playing_tracker/features/tasks/domain/enums/attachment_type.dart';
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 
 void main() {
@@ -21,13 +19,7 @@ void main() {
       description: 'Practicar escalas en dos octavas',
       createdBy: 'teacher-1',
       durationSuggested: 1800,
-      attachments: <AttachmentModel>[
-        AttachmentModel(
-          name: 'Video tutorial',
-          url: 'https://youtube.com/test',
-          type: AttachmentType.link,
-        ),
-      ],
+      attachmentUrl: 'https://youtube.com/test',
       dueDate: DateTime(2025, 1, 10),
     );
 
@@ -47,7 +39,6 @@ void main() {
       'title': 'Viejo título',
       'createdBy': 'teacher-1',
       'durationSuggested': 1200,
-      'attachments': [],
       'createdAt': now,
       'updatedAt': now,
       'isActive': true,
@@ -58,7 +49,7 @@ void main() {
       title: 'Nuevo título',
       description: null,
       durationSuggested: 2400,
-      attachments: null,
+      attachmentUrl: null,
       dueDate: null,
       isActive: null,
     );
@@ -77,7 +68,6 @@ void main() {
       'title': 'Tarea reciente',
       'createdBy': 'teacher-1',
       'durationSuggested': 600,
-      'attachments': [],
       'createdAt': Timestamp.fromDate(DateTime(2025, 1, 5)),
       'updatedAt': Timestamp.fromDate(DateTime(2025, 1, 5)),
       'isActive': true,
@@ -87,7 +77,6 @@ void main() {
       'title': 'Tarea antigua',
       'createdBy': 'teacher-1',
       'durationSuggested': 900,
-      'attachments': [],
       'createdAt': Timestamp.fromDate(DateTime(2024, 12, 20)),
       'updatedAt': Timestamp.fromDate(DateTime(2024, 12, 20)),
       'isActive': true,

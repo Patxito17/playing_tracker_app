@@ -430,13 +430,7 @@ tasks/{taskId}
   description: string,           // Descripción detallada
   createdBy: string,            // ID del docente creador
   durationSuggested: number,     // Minutos sugeridos de estudio
-  attachments: [                 // Enlaces adjuntos (opcional)
-    {
-      name: string,
-      url: string,
-      type: string               // solo "link"
-    }
-  ],
+  attachmentUrl: string,         // URL del material adjunto (opcional)
   createdAt: Timestamp,          // Fecha de creación
   updatedAt: Timestamp,          // Última actualización
   dueDate: Timestamp,            // Fecha límite (opcional)

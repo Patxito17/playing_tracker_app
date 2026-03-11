@@ -45,9 +45,7 @@ final class TaskService implements TaskServiceContract {
         'description': input.description?.trim(),
         'createdBy': input.createdBy.trim(),
         'durationSuggested': input.durationSuggested,
-        'attachments': input.attachments
-            .map((attachment) => attachment.toJson())
-            .toList(),
+        'attachmentUrl': input.attachmentUrl?.trim(),
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
         'dueDate': input.dueDate != null
@@ -83,10 +81,8 @@ final class TaskService implements TaskServiceContract {
     if (input.durationSuggested != null) {
       updates['durationSuggested'] = input.durationSuggested;
     }
-    if (input.attachments != null) {
-      updates['attachments'] = input.attachments!
-          .map((attachment) => attachment.toJson())
-          .toList();
+    if (input.attachmentUrl != null) {
+      updates['attachmentUrl'] = input.attachmentUrl!.trim();
     }
     if (input.dueDate != null) {
       updates['dueDate'] = Timestamp.fromDate(input.dueDate!);
@@ -227,11 +223,6 @@ final class TaskService implements TaskServiceContract {
         data['updatedAt'] ??
         data['createdAt'] ??
         Timestamp.fromDate(DateTime.now());
-    data['attachments'] =
-        (data['attachments'] as List?)
-            ?.map((attachment) => attachment as Map<String, dynamic>)
-            .toList() ??
-        const <Map<String, dynamic>>[];
     return TaskModel.fromJson(data);
   }
 

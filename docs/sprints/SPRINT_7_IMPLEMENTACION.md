@@ -166,6 +166,11 @@
   - Integración de `wakelock_plus` para evitar el apagado de pantalla en `TimerScreen`.
   - Configuración automática en el ciclo de vida del widget (`initState`/`dispose`).
 
+- **Refactorización de Tareas (11/03/2026)**:
+  - Sustitución de la lista de adjuntos (`attachments`) por un campo de URL único (`attachmentUrl`) en `TaskModel` para simplificar la entrada de datos.
+  - Actualización de `CreateTaskScreen` y `TaskDetailScreen` para manejar enlaces con un input de texto directo.
+  - Traducciones correspondientes añadidas en `app_es.arb` y `app_en.arb`.
+
 ### Estado de Verificación Automática
 - [x] Unit Tests: 360/360 pass.
 - [x] Integration Tests: Pass.

@@ -15,7 +15,6 @@ import 'package:playing_tracker/features/classes/presentation/cubit/class_cubit.
 import 'package:playing_tracker/features/classes/presentation/cubit/class_state.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_cubit.dart';
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_state.dart';
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/models/task_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/features/tasks/presentation/cubit/task_cubit.dart';
@@ -50,7 +49,7 @@ void main() {
       description: 'desc',
       createdBy: 'teacher',
       durationSuggested: 60,
-      attachments: <AttachmentModel>[],
+      attachmentUrl: null,
       dueDate: null,
     ));
   });
@@ -130,7 +129,7 @@ void main() {
           description: 'Demo',
           createdBy: 'teacher-1',
           durationSuggested: 900,
-          attachments: const [],
+          attachmentUrl: null,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
           dueDate: null,
@@ -159,7 +158,7 @@ void main() {
         description: 'Practicar escalas',
         createdBy: 'teacher-1',
         durationSuggested: 900,
-        attachments: const [],
+        attachmentUrl: null,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         dueDate: null,

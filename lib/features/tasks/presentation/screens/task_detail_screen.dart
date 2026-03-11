@@ -109,7 +109,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       title: null,
       description: null,
       durationSuggested: null,
-      attachments: null,
+      attachmentUrl: null,
       dueDate: null,
       isActive: value,
     );
@@ -332,14 +332,21 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.m),
                 CustomCard(
-                  title: context.l10n.attachmentsLabel,
-                  subtitle: context.l10n.noAttachments,
+                  title: context.l10n.attachmentUrlLabel,
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.m),
-                    child: Text(
-                      context.l10n.noAttachments,
-                      style: context.bodyMediumOnSurfaceVariant,
-                    ),
+                    child: selectedTask.attachmentUrl != null
+                        ? SelectableText(
+                            selectedTask.attachmentUrl!,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: context.colorScheme.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          )
+                        : Text(
+                            context.l10n.noAttachments,
+                            style: context.bodyMediumOnSurfaceVariant,
+                          ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -530,7 +537,7 @@ class _EditTaskDialogState extends State<_EditTaskDialog> {
               title: title,
               description: description.isEmpty ? null : description,
               durationSuggested: minutes * 60,
-              attachments: null,
+              attachmentUrl: null,
               dueDate: _dueDate,
               isActive: null,
             );

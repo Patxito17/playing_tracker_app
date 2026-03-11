@@ -12,11 +12,7 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
   description: json['description'] as String?,
   createdBy: json['createdBy'] as String,
   durationSuggested: (json['durationSuggested'] as num).toInt(),
-  attachments:
-      (json['attachments'] as List<dynamic>?)
-          ?.map((e) => AttachmentModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const [],
+  attachmentUrl: json['attachmentUrl'] as String?,
   createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   updatedAt: const TimestampConverter().fromJson(json['updatedAt'] as Object),
   dueDate: _$JsonConverterFromJson<Object, Timestamp>(
@@ -32,7 +28,7 @@ Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
   'description': instance.description,
   'createdBy': instance.createdBy,
   'durationSuggested': instance.durationSuggested,
-  'attachments': instance.attachments.map((e) => e.toJson()).toList(),
+  'attachmentUrl': instance.attachmentUrl,
   'createdAt': const TimestampConverter().toJson(instance.createdAt),
   'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
   'dueDate': _$JsonConverterToJson<Object, Timestamp>(

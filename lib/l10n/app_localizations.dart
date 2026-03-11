@@ -1490,6 +1490,18 @@ abstract class AppLocalizations {
   /// **'Puedes agregar enlaces o archivos'**
   String get attachmentsHint;
 
+  /// Etiqueta para URL de material adjunto
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace de material'**
+  String get attachmentUrlLabel;
+
+  /// Hint para la URL de material adjunto
+  ///
+  /// In es, this message translates to:
+  /// **'Introduce la URL del material'**
+  String get attachmentUrlHint;
+
   /// Botón crear tarea
   ///
   /// In es, this message translates to:

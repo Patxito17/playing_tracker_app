@@ -1000,6 +1000,14 @@
   "@attachmentsHint": {
     "description": "Hint adjuntos"
   },
+  "attachmentUrlLabel": "Enlace de material",
+  "@attachmentUrlLabel": {
+    "description": "Etiqueta para URL de material adjunto"
+  },
+  "attachmentUrlHint": "Introduce la URL del material",
+  "@attachmentUrlHint": {
+    "description": "Hint para la URL de material adjunto"
+  },
   "createTaskButton": "Crear tarea",
   "@createTaskButton": {
     "description": "Botón crear tarea"

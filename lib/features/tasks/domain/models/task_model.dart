@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:playing_tracker/core/utils/timestamp_converter.dart';
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
 
 part 'task_model.g.dart';
 
@@ -11,7 +10,7 @@ part 'task_model.g.dart';
 /// deben realizar. Una tarea puede incluir:
 /// - Título y descripción detallada
 /// - Duración sugerida de práctica en segundos
-/// - Enlaces adjuntos (videos, recursos web)
+/// - URL de material de referencia (video, recurso web)
 /// - Fecha de vencimiento opcional
 ///
 /// Las tareas se almacenan en la colección `tasks` de Firestore y luego
@@ -25,13 +24,7 @@ part 'task_model.g.dart';
 ///   description: 'Practicar escalas en 2 octavas, ascendente y descendente',
 ///   createdBy: 'teacher_uid_456',
 ///   durationSuggested: 1800, // 30 minutos en segundos
-///   attachments: [
-///     AttachmentModel(
-///       name: 'Video tutorial',
-///       url: 'https://youtube.com/...',
-///       type: AttachmentType.link,
-///     ),
-///   ],
+///   attachmentUrl: 'https://youtube.com/...',
 ///   createdAt: Timestamp.now(),
 ///   updatedAt: Timestamp.now(),
 ///   dueDate: Timestamp.fromDate(DateTime.now().add(Duration(days: 7))),
@@ -55,8 +48,8 @@ class TaskModel {
   /// Duración sugerida de práctica en segundos
   final int durationSuggested;
 
-  /// Lista de enlaces asociados a la tarea
-  final List<AttachmentModel> attachments;
+  /// URL de material de referencia asociado a la tarea (opcional)
+  final String? attachmentUrl;
 
   /// Fecha y hora de creación de la tarea
   @TimestampConverter()
@@ -80,7 +73,7 @@ class TaskModel {
     this.description,
     required this.createdBy,
     required this.durationSuggested,
-    this.attachments = const [],
+    this.attachmentUrl,
     required this.createdAt,
     required this.updatedAt,
     this.dueDate,
@@ -112,7 +105,7 @@ class TaskModel {
     String? description,
     String? createdBy,
     int? durationSuggested,
-    List<AttachmentModel>? attachments,
+    String? attachmentUrl,
     Timestamp? createdAt,
     Timestamp? updatedAt,
     Timestamp? dueDate,
@@ -124,7 +117,7 @@ class TaskModel {
       description: description ?? this.description,
       createdBy: createdBy ?? this.createdBy,
       durationSuggested: durationSuggested ?? this.durationSuggested,
-      attachments: attachments ?? this.attachments,
+      attachmentUrl: attachmentUrl ?? this.attachmentUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       dueDate: dueDate ?? this.dueDate,
@@ -142,6 +135,7 @@ class TaskModel {
           description == other.description &&
           createdBy == other.createdBy &&
           durationSuggested == other.durationSuggested &&
+          attachmentUrl == other.attachmentUrl &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
           dueDate == other.dueDate &&
@@ -151,12 +145,13 @@ class TaskModel {
   int get hashCode =>
       id.hashCode ^
       title.hashCode ^
-      description.hashCode ^
+      (description?.hashCode ?? 0) ^
       createdBy.hashCode ^
       durationSuggested.hashCode ^
+      (attachmentUrl?.hashCode ?? 0) ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
-      dueDate.hashCode ^
+      (dueDate?.hashCode ?? 0) ^
       isActive.hashCode;
 
   @override

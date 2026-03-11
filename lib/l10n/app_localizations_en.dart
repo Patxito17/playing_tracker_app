@@ -775,6 +775,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachmentsHint => 'You can add links or files';
 
   @override
+  String get attachmentUrlLabel => 'Material Link';
+
+  @override
+  String get attachmentUrlHint => 'Enter the material URL';
+
+  @override
   String get createTaskButton => 'Create task';
 
   @override

@@ -51,7 +51,7 @@ void main() {
       description: 'Practicar escalas',
       createdBy: 'teacher-1',
       durationSuggested: 900,
-      attachments: const [],
+      attachmentUrl: null,
       createdAt: timestamp,
       updatedAt: timestamp,
       dueDate: null,

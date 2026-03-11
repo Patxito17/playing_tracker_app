@@ -17,7 +17,7 @@ import '../../../classes/domain/repositories/class_repository.dart';
 import '../../../classes/presentation/cubit/class_cubit.dart';
 import '../../../classes/presentation/cubit/class_state.dart';
 import '../../../classes/presentation/cubit/membership_cubit.dart';
-import '../../domain/models/attachment_model.dart';
+
 import '../../domain/repositories/task_repository.dart';
 import '../cubit/task_cubit.dart';
 import '../cubit/task_state.dart';
@@ -40,10 +40,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _estimatedTimeController = TextEditingController();
+  final _attachmentUrlController = TextEditingController();
   final Set<String> _selectedClasses = {};
   final Set<String> _selectedStudentIds =
       {}; // IDs de alumnos seleccionados (vacío = todos)
-  final List<String> _attachments = [];
   DateTime? _dueDate;
   String? _formError;
   String? _successMessage;
@@ -67,6 +67,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _estimatedTimeController.dispose();
+    _attachmentUrlController.dispose();
     super.dispose();
   }
 
@@ -96,12 +97,13 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       return;
     }
 
+    final attachmentUrl = _attachmentUrlController.text.trim();
     final input = (
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       createdBy: authState.userId,
       durationSuggested: minutes * 60,
-      attachments: const <AttachmentModel>[],
+      attachmentUrl: attachmentUrl.isNotEmpty ? attachmentUrl : null,
       dueDate: _dueDate,
     );
 
@@ -162,6 +164,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     _titleController.clear();
     _descriptionController.clear();
     _estimatedTimeController.clear();
+    _attachmentUrlController.clear();
     setState(() {
       _formError = null;
       // NO borramos _successMessage aquí para que el banner se pueda mostrar
@@ -558,47 +561,21 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                       ),
                     ],
                     const SizedBox(height: AppSpacing.m),
-                    CustomCard(
-                      title: context.l10n.attachmentsLabel,
-                      subtitle: _attachments.isEmpty
-                          ? context.l10n.noAttachments
-                          : '${_attachments.length} archivos',
-                      margin: EdgeInsets.zero,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.attachmentsHint,
-                            style: context.bodySmallOnSurfaceVariant,
-                          ),
-                          const SizedBox(height: AppSpacing.m),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              // Placeholder: agregar adjunto
-                            },
-                            icon: const Icon(Icons.attach_file),
-                            label: Text(context.l10n.addAttachment),
-                          ),
-                          if (_attachments.isNotEmpty) ...[
-                            const SizedBox(height: AppSpacing.m),
-                            ..._attachments.map((attachment) {
-                              return ListTile(
-                                leading: const Icon(Icons.insert_drive_file),
-                                title: Text(attachment),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete_outline),
-                                  onPressed: () {
-                                    setState(() {
-                                      _attachments.remove(attachment);
-                                    });
-                                  },
-                                  tooltip: context.l10n.delete,
-                                ),
-                              );
-                            }),
-                          ],
-                        ],
+                    TextFormField(
+                      controller: _attachmentUrlController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.attachmentUrlLabel,
+                        hintText: context.l10n.attachmentUrlHint,
+                        prefixIcon: const Icon(Icons.link),
                       ),
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.done,
+                      autocorrect: false,
+                      onChanged: (_) {
+                        if (_formError != null) {
+                          setState(() => _formError = null);
+                        }
+                      },
                     ),
                     if (_formError != null) ...[
                       const SizedBox(height: AppSpacing.l),

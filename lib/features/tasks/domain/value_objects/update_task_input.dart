@@ -1,5 +1,3 @@
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
-
 /// Record que encapsula los datos necesarios para actualizar una tarea.
 ///
 /// Este value object permite realizar actualizaciones parciales de una tarea
@@ -12,7 +10,8 @@ import 'package:playing_tracker/features/tasks/domain/models/attachment_model.da
 /// - [description]: Nueva descripción opcional.
 /// - [durationSuggested]: Nueva duración sugerida en segundos (> 0 si se
 ///   proporciona).
-/// - [attachments]: Lista completa de adjuntos a reemplazar (opcional).
+/// - [attachmentUrl]: Nueva URL de material de referencia opcional. Pasar
+///   cadena vacía para eliminar la URL existente.
 /// - [dueDate]: Nueva fecha de vencimiento opcional.
 /// - [isActive]: Permite archivar/activar la tarea.
 typedef UpdateTaskInput = ({
@@ -20,7 +19,7 @@ typedef UpdateTaskInput = ({
   String? title,
   String? description,
   int? durationSuggested,
-  List<AttachmentModel>? attachments,
+  String? attachmentUrl,
   DateTime? dueDate,
   bool? isActive,
 });
@@ -40,7 +39,7 @@ void validateUpdateTaskInput(UpdateTaskInput input) {
       input.title != null ||
       input.description != null ||
       input.durationSuggested != null ||
-      input.attachments != null ||
+      input.attachmentUrl != null ||
       input.dueDate != null ||
       input.isActive != null;
 
@@ -62,12 +61,11 @@ void validateUpdateTaskInput(UpdateTaskInput input) {
     throw ArgumentError('La duración sugerida debe ser mayor a 0 segundos');
   }
 
-  final attachments = input.attachments;
-  if (attachments != null &&
-      attachments.any(
-        (attachment) =>
-            attachment.name.trim().isEmpty || attachment.url.trim().isEmpty,
-      )) {
-    throw ArgumentError('Los adjuntos deben incluir nombre y URL válidos');
+  final url = input.attachmentUrl?.trim();
+  if (url != null && url.isNotEmpty) {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme) {
+      throw ArgumentError('La URL del material de referencia no es válida');
+    }
   }
 }

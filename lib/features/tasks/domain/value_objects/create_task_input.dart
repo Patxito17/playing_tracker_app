@@ -1,5 +1,3 @@
-import 'package:playing_tracker/features/tasks/domain/models/attachment_model.dart';
-
 /// Record que encapsula los datos necesarios para crear una tarea.
 ///
 /// Este value object garantiza que todas las capas compartan el mismo contrato
@@ -11,7 +9,7 @@ import 'package:playing_tracker/features/tasks/domain/models/attachment_model.da
 /// - [description]: Descripción opcional mostrada en la UI.
 /// - [createdBy]: Identificador único del docente que crea la tarea.
 /// - [durationSuggested]: Duración sugerida de práctica en segundos (> 0).
-/// - [attachments]: Lista opcional de adjuntos ya normalizados.
+/// - [attachmentUrl]: URL opcional de material de referencia (video, enlace web).
 /// - [dueDate]: Fecha de vencimiento opcional (nivel dominio, DateTime).
 ///
 /// Ejemplo de uso:
@@ -21,7 +19,7 @@ import 'package:playing_tracker/features/tasks/domain/models/attachment_model.da
 ///   description: 'Practicar escalas en dos octavas',
 ///   createdBy: 'teacher_uid_123',
 ///   durationSuggested: 1800,
-///   attachments: <AttachmentModel>[],
+///   attachmentUrl: 'https://youtube.com/...',
 ///   dueDate: DateTime.now().add(const Duration(days: 7)),
 /// );
 /// validateCreateTaskInput(input);
@@ -32,7 +30,7 @@ typedef CreateTaskInput = ({
   String? description,
   String createdBy,
   int durationSuggested,
-  List<AttachmentModel> attachments,
+  String? attachmentUrl,
   DateTime? dueDate,
 });
 
@@ -55,10 +53,11 @@ void validateCreateTaskInput(CreateTaskInput input) {
     throw ArgumentError('La duración sugerida debe ser mayor a 0 segundos');
   }
 
-  if (input.attachments.any(
-    (attachment) =>
-        attachment.name.trim().isEmpty || attachment.url.trim().isEmpty,
-  )) {
-    throw ArgumentError('Los adjuntos deben incluir nombre y URL válidos');
+  final url = input.attachmentUrl?.trim();
+  if (url != null && url.isNotEmpty) {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme) {
+      throw ArgumentError('La URL del material de referencia no es válida');
+    }
   }
 }
