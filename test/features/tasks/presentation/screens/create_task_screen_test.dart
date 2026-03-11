@@ -214,15 +214,15 @@ void main() {
 
     // Rellenar formulario
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Título de la tarea'),
+      find.byType(TextFormField).at(0),
       'Escalas mayores',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Descripción'),
+      find.byType(TextFormField).at(1),
       'Practicar escalas',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Tiempo estimado (minutos)'),
+      find.byType(TextFormField).at(2),
       '30',
     );
 

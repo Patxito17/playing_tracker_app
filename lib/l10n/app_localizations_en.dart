@@ -69,7 +69,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy => 'Copy';
 
   @override
-  String get copied => 'Copied to clipboard';
+  String get copied => 'Copied';
 
   @override
   String get download => 'Download';
@@ -255,6 +255,29 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not send recovery link.';
 
   @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get googleSignInCanceled => 'Google sign-in was canceled.';
+
+  @override
+  String get googleSignInError =>
+      'An error occurred while signing in with Google. Please try again.';
+
+  @override
+  String get completeProfileTitle => 'Complete your profile';
+
+  @override
+  String get completeProfileSubtitle =>
+      'Select your role and accept the terms to continue.';
+
+  @override
+  String get completeProfileButton => 'Complete registration';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
   String get teacherHomeTitle => 'Teacher Home';
 
   @override
@@ -352,7 +375,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check your personal metrics and celebrate your achievements.';
 
   @override
-  String get highlightsTitle => 'Quick summary';
+  String get highlightsTitle => 'Quick Summary';
 
   @override
   String get teacherHighlightsDescription =>
@@ -410,10 +433,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accessCodeInvalidFormat => 'The code must be 6 valid characters';
 
   @override
-  String get classStatusActive => 'Active';
+  String get classStatusActive => 'Active class';
 
   @override
-  String get classStatusArchived => 'Archived';
+  String get classStatusArchived => 'Archived class';
 
   @override
   String get archiveClassAction => 'Archive class';
@@ -423,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteClassConfirmation =>
-      'Are you sure you want to permanently delete this class? This action cannot be undone.';
+      'This action will permanently delete the class and all its memberships.';
 
   @override
   String get regenerateAccessCodeAction => 'Regenerate code';
@@ -598,16 +621,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startStudySession => 'Start study session';
 
   @override
-  String get taskTitleLabel => 'Task title';
+  String get taskTitleLabel => 'Title';
 
   @override
-  String get taskTitleHint => 'Ex: C Major Scales';
+  String get taskTitleHint => 'Task title';
 
   @override
   String get taskDescriptionLabel => 'Description';
 
   @override
-  String get estimatedTimeLabel => 'Estimated time (minutes)';
+  String get estimatedTimeLabel => 'Estimated time';
 
   @override
   String get noTasksInClass => 'No tasks in this class';
@@ -654,13 +677,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get profileSection => 'Profile';
-
-  @override
-  String get taskDescriptionHint => 'Explain what the student should practice';
-
-  @override
   String get estimatedTimeHint => 'Ex: 20';
+
+  @override
+  String get dueDate => 'Due date';
 
   @override
   String get dueDateHint => 'No due date';
@@ -875,48 +895,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get timerStart => 'Start';
-
-  @override
-  String get timerPause => 'Pause';
-
-  @override
-  String get timerResume => 'Resume';
-
-  @override
-  String get timerReset => 'Reset';
-
-  @override
-  String get timerFinish => 'Finish session';
-
-  @override
-  String get startFirstSession => 'Start your first study session to begin';
-
-  @override
-  String get today => 'Today';
-
-  @override
-  String get thisWeek => 'This week';
-
-  @override
-  String get thisMonth => 'This month';
-
-  @override
-  String get all => 'All';
-
-  @override
-  String get settingsTitle => 'Settings';
-
-  @override
-  String get notificationsSection => 'Notifications';
-
-  @override
-  String get appearanceSection => 'Appearance';
-
-  @override
-  String get accountSection => 'Account';
-
-  @override
   String get inDevelopment => 'This section is under development.';
 
   @override
@@ -1011,6 +989,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSystem => 'Automatic (System)';
 
   @override
+  String get appearanceSection => 'Appearance';
+
+  @override
   String get colorSettings => 'Primary color';
 
   @override
@@ -1018,6 +999,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generalSection => 'General';
+
+  @override
+  String get accountSection => 'Account';
 
   @override
   String versionLabel(String version) {
@@ -1103,4 +1087,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsAndConditionsTitle => 'Terms and Conditions';
+
+  @override
+  String get legalTextLoadError => 'Could not load terms.';
+
+  @override
+  String get firstNameRequired => 'First name is required';
+
+  @override
+  String get lastNameRequired => 'Last name is required';
+
+  @override
+  String get termsNotAccepted => 'You must accept the terms';
+
+  @override
+  String get roleLabel => 'Role';
+
+  @override
+  String get roleTeacher => 'Teacher';
+
+  @override
+  String get roleStudent => 'Student';
+
+  @override
+  String get termsLinkText => 'Terms and Conditions';
+
+  @override
+  String get startFirstSession => 'Start your first study session to begin';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get thisWeek => 'This week';
+
+  @override
+  String get thisMonth => 'This month';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get profileSection => 'Profile';
+
+  @override
+  String get taskDescriptionHint => 'Explain what the student should practice';
+
+  @override
+  String get timerStart => 'Start';
+
+  @override
+  String get timerPause => 'Pause';
+
+  @override
+  String get timerResume => 'Resume';
 }

@@ -106,6 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     context.go(destination);
                   }
+                  if (state is AuthProfileIncomplete) {
+                    if (!mounted) return;
+                    context.go(
+                      AppRoutes.completeProfile,
+                      extra: {
+                        'email': state.email,
+                        'displayName': state.displayName,
+                      },
+                    );
+                  }
                 },
                 builder: (context, state) {
                   final isLoading = state is AuthLoading;
@@ -228,6 +238,44 @@ class _LoginScreenState extends State<LoginScreen> {
                           variant: CustomButtonVariant.filled,
                           isLoading: isLoading,
                           onPressed: isLoading ? null : _handleLogin,
+                        ),
+                        const SizedBox(height: AppSpacing.l),
+
+                        // Separador OAuth
+                        Row(
+                          children: [
+                            const Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.s,
+                              ),
+                              child: Text(
+                                context.l10n.orDivider,
+                                style: context.bodyMediumOnSurfaceVariant,
+                              ),
+                            ),
+                            const Expanded(child: Divider()),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.l),
+
+                        // Botón de Google Sign-In
+                        CustomButton(
+                          label: context.l10n.continueWithGoogle,
+                          variant: CustomButtonVariant.outlined,
+                          isLoading: isLoading,
+                          prefixWidget: Image.asset(
+                            'assets/icons/google_logo.png',
+                            width: 20,
+                            height: 20,
+                            errorBuilder: (_, _, _) =>
+                                const Icon(Icons.login, size: 20),
+                          ),
+                          onPressed: isLoading
+                              ? null
+                              : () => context
+                                    .read<AuthCubit>()
+                                    .signInWithGoogle(),
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Row(

@@ -192,6 +192,124 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  /// Inicia sesión con Google Sign-In.
+  ///
+  /// Si el usuario ya tiene perfil en Firestore, emite [AuthAuthenticated].
+  /// Si es un usuario nuevo, emite [AuthProfileIncomplete] para que el router
+  /// redirija a `CompleteProfileScreen`.
+  Future<void> signInWithGoogle() async {
+    emit(const AuthLoading());
+    try {
+      final credential = await _authRepository.signInWithGoogle();
+      final userId = credential.user?.uid;
+      if (userId == null) {
+        emit(const AuthError('No se pudo obtener el usuario autenticado.'));
+        return;
+      }
+
+      final role = await _authRepository.getUserRole(userId);
+
+      dynamic userModel;
+      if (role == UserRole.teacher) {
+        userModel = await _authRepository.getTeacherProfile(userId);
+      } else {
+        userModel = await _authRepository.getStudentProfile(userId);
+      }
+
+      if (userModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del usuario.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: userModel));
+    } on ProfileNotFoundException {
+      // Nuevo usuario de Google: autenticado en Firebase pero sin perfil.
+      // Pasamos el email y displayName del usuario de Firebase para pre-rellenar.
+      final fbUser = _authRepository.currentUser;
+      emit(
+        AuthProfileIncomplete(
+          email: fbUser?.email,
+          displayName: fbUser?.displayName,
+        ),
+      );
+    } on AuthRepositoryException catch (e) {
+      if (e.message == 'googleSignInCanceled') {
+        // El usuario canceló el selector: volvemos al estado anterior sin mostrar error.
+        emit(const AuthUnauthenticated());
+      } else {
+        emit(AuthError(e.message));
+      }
+    } catch (error) {
+      emit(AuthError(_mapError(error)));
+    }
+  }
+
+  /// Completa el registro de un docente autenticado vía Google.
+  Future<void> completeGoogleTeacherProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  }) async {
+    emit(const AuthLoading());
+    try {
+      await _authRepository.completeGoogleTeacherProfile(
+        firstName: firstName,
+        lastName: lastName,
+        acceptedTermsVersion: acceptedTermsVersion,
+      );
+
+      final userId = _authRepository.currentUser?.uid;
+      if (userId == null) {
+        emit(const AuthError('No se pudo obtener el usuario autenticado.'));
+        return;
+      }
+
+      await _authRepository.getUserRole(userId);
+      final teacherModel = await _authRepository.getTeacherProfile(userId);
+      if (teacherModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del docente.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: teacherModel));
+    } catch (error) {
+      emit(AuthError(_mapError(error)));
+    }
+  }
+
+  /// Completa el registro de un alumno autenticado vía Google.
+  Future<void> completeGoogleStudentProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  }) async {
+    emit(const AuthLoading());
+    try {
+      await _authRepository.completeGoogleStudentProfile(
+        firstName: firstName,
+        lastName: lastName,
+        acceptedTermsVersion: acceptedTermsVersion,
+      );
+
+      final userId = _authRepository.currentUser?.uid;
+      if (userId == null) {
+        emit(const AuthError('No se pudo obtener el usuario autenticado.'));
+        return;
+      }
+
+      await _authRepository.getUserRole(userId);
+      final studentModel = await _authRepository.getStudentProfile(userId);
+      if (studentModel == null) {
+        emit(const AuthError('No se pudo cargar el perfil del alumno.'));
+        return;
+      }
+
+      emit(AuthAuthenticated(user: studentModel));
+    } catch (error) {
+      emit(AuthError(_mapError(error)));
+    }
+  }
+
   @override
   AuthState? fromJson(Map<String, dynamic> json) {
     try {
