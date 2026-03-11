@@ -53,8 +53,11 @@ class CustomButton extends StatelessWidget {
   /// Variante del botón (filled, outlined, text)
   final CustomButtonVariant variant;
 
-  /// Icono opcional del botón
+  /// Icono opcional del botón (IconData)
   final IconData? icon;
+
+  /// Widget prefix opcional (por ejemplo logo de Google como imagen)
+  final Widget? prefixWidget;
 
   /// Indica si el botón está en estado de carga
   final bool isLoading;
@@ -71,6 +74,7 @@ class CustomButton extends StatelessWidget {
     this.onPressed,
     this.variant = CustomButtonVariant.filled,
     this.icon,
+    this.prefixWidget,
     this.isLoading = false,
     this.isEnabled = true,
     this.style,
@@ -146,12 +150,15 @@ class CustomButton extends StatelessWidget {
       );
     }
 
-    // Si hay icono, mostrar icono + texto
-    if (icon != null) {
+    // Si hay prefixWidget o icon, mostrar widget + texto
+    if (prefixWidget != null || icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18),
+          if (prefixWidget != null)
+            prefixWidget!
+          else if (icon != null)
+            Icon(icon, size: 18),
           const SizedBox(width: AppSpacing.s),
           Text(label),
         ],

@@ -38,7 +38,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
   Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 y validada nuevamente al incorporar `fake_cloud_firestore` para las pruebas de servicios en Sprint 3.
 - **Backend:** Firebase ✅
-  - Firebase Authentication ✅ (Email/Password)
+  - Firebase Authentication ✅ (Email/Password & Google Sign In)
   - Cloud Firestore ✅ (Base de datos NoSQL)
   - Firebase Storage 📅 (Próximamente)
   - Cloud Functions 📅 (Próximamente)
@@ -622,7 +622,7 @@ service cloud.firestore {
 **Documento:** [`SPRINT_2_IMPLEMENTACION.md`](sprints/SPRINT_2_IMPLEMENTACION.md)
 
 **Objetivos:**
-- 🔐 **Firebase Authentication** integrado (email/password)
+- 🔐 **Firebase Authentication** integrado (email/password y Google Sign In)
 - 👥 **Gestión de perfiles** diferenciados (Teacher/Student) en Firestore
 - 🔄 **Gestión de estado** con Cubit + hydrated_bloc
 - 🧭 **Navegación condicional** por rol con GoRouter
@@ -632,11 +632,13 @@ service cloud.firestore {
 
 **Stack Tecnológico:**
 - `firebase_auth: ^6.1.2` - Autenticación
+- `google_sign_in: ^6.2.1` - Federated Auth
 - `hydrated_bloc: ^10.1.1` - Persistencia automática de estado
 - `go_router: ^17.0.0` - Navegación declarativa con guards reactivos
 - `path_provider: ^2.1.5` - Storage multiplataforma
 
-**Avances recientes (20 nov 2025):**
+**Avances recientes (Marzo 2026):**
+- ✅ Implementación de Google Sign In: Soporte para crear perfiles desde Identity Providers externos. Adición de `AuthProfileIncomplete` y `complete_profile_screen.dart`.
 - ✅ Fase 2 completada con `AuthCubit` hidratado + tests unitarios.
 - ✅ Fase 3 completada con `AuthRepositoryImpl` (Firebase Auth + Firestore) y helper `firebase_error_mapper.dart`.
 - ✅ Fase 4 completada: `AppRoutes` ahora escucha `AuthCubit`, se creó `GoRouterRefreshStream` y se removieron mocks (`AuthWrapper`, `navigation_helper.dart`).

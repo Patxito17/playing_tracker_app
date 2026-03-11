@@ -69,7 +69,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get copy => 'Copiar';
 
   @override
-  String get copied => 'Copiado al portapapeles';
+  String get copied => 'Copiado';
 
   @override
   String get download => 'Descargar';
@@ -257,6 +257,30 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo enviar el enlace de recuperación.';
 
   @override
+  String get continueWithGoogle => 'Continuar con Google';
+
+  @override
+  String get googleSignInCanceled =>
+      'El inicio de sesión con Google fue cancelado.';
+
+  @override
+  String get googleSignInError =>
+      'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.';
+
+  @override
+  String get completeProfileTitle => 'Completa tu perfil';
+
+  @override
+  String get completeProfileSubtitle =>
+      'Selecciona tu rol y acepta los términos para continuar.';
+
+  @override
+  String get completeProfileButton => 'Completar registro';
+
+  @override
+  String get orDivider => 'o';
+
+  @override
   String get teacherHomeTitle => 'Inicio docente';
 
   @override
@@ -415,10 +439,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'El código debe tener 6 caracteres válidos';
 
   @override
-  String get classStatusActive => 'Activa';
+  String get classStatusActive => 'Clase activa';
 
   @override
-  String get classStatusArchived => 'Archivada';
+  String get classStatusArchived => 'Clase archivada';
 
   @override
   String get archiveClassAction => 'Archivar clase';
@@ -428,7 +452,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deleteClassConfirmation =>
-      '¿Estás seguro de que deseas eliminar esta clase de forma permanente? Esta acción no se puede deshacer.';
+      'Esta acción eliminará definitivamente la clase y todas sus membresías.';
 
   @override
   String get regenerateAccessCodeAction => 'Regenerar código';
@@ -605,16 +629,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get startStudySession => 'Iniciar sesión de estudio';
 
   @override
-  String get taskTitleLabel => 'Título de la tarea';
+  String get taskTitleLabel => 'Título';
 
   @override
-  String get taskTitleHint => 'Ej: Escalas de Do Mayor';
+  String get taskTitleHint => 'Título de la tarea';
 
   @override
   String get taskDescriptionLabel => 'Descripción';
 
   @override
-  String get estimatedTimeLabel => 'Tiempo estimado (minutos)';
+  String get estimatedTimeLabel => 'Tiempo estimado';
 
   @override
   String get noTasksInClass => 'No hay tareas en esta clase';
@@ -661,13 +685,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get profileSection => 'Perfil';
-
-  @override
-  String get taskDescriptionHint => 'Explica qué debe practicar el alumno';
-
-  @override
   String get estimatedTimeHint => 'Ej: 20';
+
+  @override
+  String get dueDate => 'Fecha de entrega';
 
   @override
   String get dueDateHint => 'Sin fecha de entrega';
@@ -882,49 +903,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get timerStart => 'Iniciar';
-
-  @override
-  String get timerPause => 'Pausar';
-
-  @override
-  String get timerResume => 'Reanudar';
-
-  @override
-  String get timerReset => 'Reiniciar';
-
-  @override
-  String get timerFinish => 'Finalizar sesión';
-
-  @override
-  String get startFirstSession =>
-      'Inicia tu primera sesión de estudio para comenzar';
-
-  @override
-  String get today => 'Hoy';
-
-  @override
-  String get thisWeek => 'Esta semana';
-
-  @override
-  String get thisMonth => 'Este mes';
-
-  @override
-  String get all => 'Todas';
-
-  @override
-  String get settingsTitle => 'Configuración';
-
-  @override
-  String get notificationsSection => 'Notificaciones';
-
-  @override
-  String get appearanceSection => 'Apariencia';
-
-  @override
-  String get accountSection => 'Cuenta';
-
-  @override
   String get inDevelopment => 'Esta sección está en desarrollo.';
 
   @override
@@ -1019,6 +997,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get languageSystem => 'Automático (Sistema)';
 
   @override
+  String get appearanceSection => 'Apariencia';
+
+  @override
   String get colorSettings => 'Color principal';
 
   @override
@@ -1026,6 +1007,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get generalSection => 'General';
+
+  @override
+  String get accountSection => 'Cuenta';
 
   @override
   String versionLabel(String version) {
@@ -1111,4 +1095,61 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get termsAndConditionsTitle => 'Términos y Condiciones';
+
+  @override
+  String get legalTextLoadError => 'No se pudieron cargar los términos.';
+
+  @override
+  String get firstNameRequired => 'El nombre es requerido';
+
+  @override
+  String get lastNameRequired => 'Los apellidos son requeridos';
+
+  @override
+  String get termsNotAccepted => 'Debes aceptar los términos y condiciones';
+
+  @override
+  String get roleLabel => 'Rol';
+
+  @override
+  String get roleTeacher => 'Profesor';
+
+  @override
+  String get roleStudent => 'Estudiante';
+
+  @override
+  String get termsLinkText => 'Términos y Condiciones';
+
+  @override
+  String get startFirstSession => 'Comienza tu primera sesión';
+
+  @override
+  String get today => 'Hoy';
+
+  @override
+  String get thisWeek => 'Esta semana';
+
+  @override
+  String get thisMonth => 'Este mes';
+
+  @override
+  String get all => 'Todos';
+
+  @override
+  String get settingsTitle => 'Ajustes';
+
+  @override
+  String get profileSection => 'Perfil';
+
+  @override
+  String get taskDescriptionHint => 'Descripción de la tarea';
+
+  @override
+  String get timerStart => 'Empezar';
+
+  @override
+  String get timerPause => 'Pausar';
+
+  @override
+  String get timerResume => 'Reanudar';
 }

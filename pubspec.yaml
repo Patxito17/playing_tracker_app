@@ -63,8 +63,7 @@ dependencies:
 
   # App Check - Protección contra abusos (solo apps legítimas pueden usar Firebase)
   firebase_app_check: ^0.4.1+4
-
-
+  google_sign_in: ^7.2.0
 
   # Persistencia de estado
   hydrated_bloc: ^10.1.1
@@ -119,6 +118,7 @@ flutter:
   assets:
     - assets/legal/  # Textos legales (T&C + Política de Privacidad) y versión
     - assets/images/ # Logo e imágenes de la aplicación
+    - assets/icons/  # Iconos y logos (Google, etc.)
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

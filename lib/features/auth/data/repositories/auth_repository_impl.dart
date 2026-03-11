@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart'
+    show GoogleSignIn, GoogleSignInException, GoogleSignInExceptionCode;
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
@@ -51,6 +53,105 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (error) {
       throw AuthRepositoryException(FirebaseErrorMapper.map(error));
     }
+  }
+
+  @override
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      // google_sign_in v7: usa el singleton y authenticate().
+      // initialize() se llama una sola vez en main.dart.
+
+      // Lanza el selector de cuenta del sistema.
+      // Si el usuario cancela, lanza GoogleSignInException con
+      // code == GoogleSignInExceptionCode.canceled.
+      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      // En v7, authentication es un getter síncrono.
+      final idToken = googleUser.authentication.idToken;
+
+      if (idToken == null) {
+        throw AuthRepositoryException(
+          'No se pudo obtener el token de Google. Intenta de nuevo.',
+        );
+      }
+
+      // Crear la credencial de Firebase con el idToken.
+      final credential = GoogleAuthProvider.credential(idToken: idToken);
+
+      // Autenticarse en Firebase.
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+
+      // Verificar si el usuario ya tiene perfil en Firestore.
+      final uid = userCredential.user!.uid;
+      final teacherDoc = await _teachersRef.doc(uid).get();
+      final studentDoc = await _studentsRef.doc(uid).get();
+
+      if (!teacherDoc.exists && !studentDoc.exists) {
+        // Usuario nuevo: autenticado en Firebase pero sin perfil.
+        // ProfileNotFoundException indica al Cubit que redirija a
+        // CompleteProfileScreen.
+        throw ProfileNotFoundException();
+      }
+
+      return userCredential;
+    } on GoogleSignInException catch (e) {
+      // Cancelación o interrupción por el usuario: no es un error grave.
+      if (e.code == GoogleSignInExceptionCode.canceled ||
+          e.code == GoogleSignInExceptionCode.interrupted) {
+        throw AuthRepositoryException('googleSignInCanceled');
+      }
+      throw AuthRepositoryException(e.description ?? e.toString());
+    } on ProfileNotFoundException {
+      rethrow;
+    } on AuthRepositoryException {
+      rethrow;
+    } catch (error) {
+      throw AuthRepositoryException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> completeGoogleTeacherProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw AuthRepositoryException(
+        'No hay usuario autenticado para completar el perfil.',
+      );
+    }
+    await createTeacher(
+      userId: user.uid,
+      firstName: firstName,
+      lastName: lastName,
+      email: user.email ?? '',
+      acceptedTermsVersion: acceptedTermsVersion,
+    );
+  }
+
+  @override
+  Future<void> completeGoogleStudentProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw AuthRepositoryException(
+        'No hay usuario autenticado para completar el perfil.',
+      );
+    }
+    await createStudent(
+      userId: user.uid,
+      firstName: firstName,
+      lastName: lastName,
+      email: user.email ?? '',
+      acceptedTermsVersion: acceptedTermsVersion,
+    );
   }
 
   @override

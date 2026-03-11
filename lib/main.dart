@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -46,7 +47,7 @@ void main() async {
         : const AppleDeviceCheckProvider(),
   );
 
-  // 2) Construir HydratedStorage
+  // 3) Inicializar HydratedStorage
   final storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorageDirectory.web
@@ -55,7 +56,10 @@ void main() async {
           ),
   );
 
-  // 3) Inicializar SettingsService
+  // 4) Inicializar GoogleSignIn (API v7: debe llamarse exactamente una vez)
+  await GoogleSignIn.instance.initialize();
+
+  // 5) Inicializar SettingsService
   final settingsService = await SettingsService.init();
 
   // Asignar storage globalmente y ejecutar la app
