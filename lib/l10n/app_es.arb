@@ -1,6 +1,5 @@
 {
   "@@locale": "es",
-
   "homeTab": "Inicio",
   "@homeTab": {
     "description": "Texto pestaña Inicio"
@@ -21,7 +20,6 @@
   "@settingsTab": {
     "description": "Texto pestaña Ajustes"
   },
-
   "showPassword": "Mostrar contraseña",
   "@showPassword": {
     "description": "Texto para mostrar contraseña oculta"
@@ -90,7 +88,6 @@
   "@download": {
     "description": "Botón para descargar archivo"
   },
-
   "fieldRequired": "{fieldName} es requerido",
   "@fieldRequired": {
     "description": "Mensaje genérico de campo requerido",
@@ -129,9 +126,9 @@
   "@errorEmptyFields": {
     "description": "Mensaje de error cuando hay campos vacíos"
   },
-  "nameMinLength": "{fieldName} debe tener al menos 3 caracteres",
+  "nameMinLength": "{fieldName} debe tener al menos 2 caracteres",
   "@nameMinLength": {
-    "description": "Nombre menor a longitud mínima",
+    "description": "Nombre más corto que la longitud mínima",
     "placeholders": {
       "fieldName": {
         "type": "String",
@@ -161,7 +158,6 @@
   "@lastNameField": {
     "description": "Campo apellidos para validaciones"
   },
-
   "loginTitle": "Iniciar sesión",
   "@loginTitle": {
     "description": "Título de pantalla de login"
@@ -200,7 +196,67 @@
   },
   "emailLabel": "Email",
   "@emailLabel": {
-    "description": "Etiqueta del campo email"
+    "description": "Etiqueta del campo de email"
+  },
+  "authErrorEmailAlreadyInUse": "Este correo electrónico ya está asociado a una cuenta.",
+  "@authErrorEmailAlreadyInUse": {
+    "description": "Error cuando el correo ya está registrado"
+  },
+  "authErrorInvalidEmail": "La dirección de correo electrónico no es válida.",
+  "@authErrorInvalidEmail": {
+    "description": "Error cuando el formato del correo es inválido"
+  },
+  "authErrorUserDisabled": "Esta cuenta ha sido desactivada. Por favor, contacta con soporte.",
+  "@authErrorUserDisabled": {
+    "description": "Error cuando la cuenta está desactivada"
+  },
+  "authErrorUserNotFound": "No se encontró ninguna cuenta con este correo.",
+  "@authErrorUserNotFound": {
+    "description": "Error cuando el usuario no existe"
+  },
+  "authErrorWrongPassword": "La contraseña ingresada es incorrecta.",
+  "@authErrorWrongPassword": {
+    "description": "Error cuando la contraseña es incorrecta"
+  },
+  "authErrorTooManyRequests": "Demasiados intentos. Por favor, inténtalo más tarde.",
+  "@authErrorTooManyRequests": {
+    "description": "Error cuando se realizan demasiadas solicitudes"
+  },
+  "authErrorWeakPassword": "La contraseña es muy débil. Por favor, usa una más segura.",
+  "@authErrorWeakPassword": {
+    "description": "Error cuando la contraseña es débil"
+  },
+  "authErrorOperationNotAllowed": "Esta operación no está permitida actualmente.",
+  "@authErrorOperationNotAllowed": {
+    "description": "Error cuando la operación no está habilitada"
+  },
+  "authErrorInvalidCredential": "Las credenciales proporcionadas son inválidas o han caducado.",
+  "@authErrorInvalidCredential": {
+    "description": "Error cuando las credenciales son inválidas"
+  },
+  "errorNetworkRequestFailed": "Ocurrió un error de red. Por favor, verifica tu conexión.",
+  "@errorNetworkRequestFailed": {
+    "description": "Error de fallo en la solicitud de red"
+  },
+  "errorNoInternetConnection": "No se detectó conexión a internet.",
+  "@errorNoInternetConnection": {
+    "description": "Error de falta de conexión a internet"
+  },
+  "errorPermissionDenied": "No tienes permisos para realizar esta acción.",
+  "@errorPermissionDenied": {
+    "description": "Error de permisos denegados de Firebase"
+  },
+  "errorFailedPrecondition": "Falta un índice requerido en la base de datos.",
+  "@errorFailedPrecondition": {
+    "description": "Error de precondición fallida de Firebase (usualmente falta de índice)"
+  },
+  "errorServiceUnavailable": "El servicio no está disponible temporalmente. Intenta más tarde.",
+  "@errorServiceUnavailable": {
+    "description": "Error de servicio no disponible de Firebase"
+  },
+  "errorGeneric": "Ocurrió un error inesperado. Intenta nuevamente.",
+  "@errorGeneric": {
+    "description": "Error genérico inesperado"
   },
   "passwordLabel": "Contraseña",
   "@passwordLabel": {
@@ -334,700 +390,1200 @@
   "@forgotPasswordErrorSemanticLabel": {
     "description": "Etiqueta semántica de error"
   },
-
+  "continueWithGoogle": "Continuar con Google",
+  "@continueWithGoogle": {
+    "description": "Botón de inicio de sesión / registro con Google"
+  },
+  "googleSignInCanceled": "El inicio de sesión con Google fue cancelado.",
+  "@googleSignInCanceled": {
+    "description": "Mensaje cuando el usuario cancela el flujo de Google"
+  },
+  "googleSignInError": "Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.",
+  "@googleSignInError": {
+    "description": "Error genérico de Google Sign-In"
+  },
+  "continueWithApple": "Continuar con Apple",
+  "@continueWithApple": {
+    "description": "Botón de inicio de sesión / registro con Apple"
+  },
+  "appleSignInCanceled": "El inicio de sesión con Apple fue cancelado.",
+  "@appleSignInCanceled": {
+    "description": "Mensaje cuando el usuario cancela el flujo de Apple"
+  },
+  "appleSignInError": "Ocurrió un error al iniciar sesión con Apple. Intenta de nuevo.",
+  "@appleSignInError": {
+    "description": "Error genérico de Apple Sign-In"
+  },
+  "completeProfileTitle": "Completa tu perfil",
+  "@completeProfileTitle": {
+    "description": "Título de la pantalla de completar perfil (flujo Google)"
+  },
+  "completeProfileSubtitle": "Selecciona tu rol y acepta los términos para continuar.",
+  "@completeProfileSubtitle": {
+    "description": "Subtítulo de la pantalla de completar perfil (flujo Google)"
+  },
+  "completeProfileButton": "Completar registro",
+  "@completeProfileButton": {
+    "description": "Botón para finalizar el registro vía Google"
+  },
+  "orDivider": "o",
+  "@orDivider": {
+    "description": "Separador 'o' entre opciones de login"
+  },
   "teacherHomeTitle": "Inicio docente",
-  "@teacherHomeTitle": { "description": "Título home docente" },
+  "@teacherHomeTitle": {
+    "description": "Título home docente"
+  },
   "welcomeUser": "Hola, {name}",
   "@welcomeUser": {
     "description": "Saludo de bienvenida con nombre",
     "placeholders": {
-      "name": { "type": "String", "example": "Juan" }
+      "name": {
+        "type": "String",
+        "example": "Juan"
+      }
     }
   },
   "studentHomeTitle": "Inicio alumno",
-  "@studentHomeTitle": { "description": "Título home alumno" },
+  "@studentHomeTitle": {
+    "description": "Título home alumno"
+  },
   "quickActionsTitle": "Acciones rápidas",
-  "@quickActionsTitle": { "description": "Título acciones rápidas" },
+  "@quickActionsTitle": {
+    "description": "Título acciones rápidas"
+  },
   "teacherWelcomeTitle": "Tus clases están listas",
-  "@teacherWelcomeTitle": { "description": "Bienvenida docente" },
+  "@teacherWelcomeTitle": {
+    "description": "Bienvenida docente"
+  },
   "teacherWelcomeSubtitle": "Gestiona tus clases, asigna tareas y monitorea el progreso de tus estudiantes.",
-  "@teacherWelcomeSubtitle": { "description": "Subtítulo bienvenida docente" },
+  "@teacherWelcomeSubtitle": {
+    "description": "Subtítulo bienvenida docente"
+  },
   "studentWelcomeTitle": "Tu práctica continúa",
-  "@studentWelcomeTitle": { "description": "Bienvenida alumno" },
+  "@studentWelcomeTitle": {
+    "description": "Bienvenida alumno"
+  },
   "studentWelcomeSubtitle": "Revisa tus clases activas, únete a nuevas secciones y mantén tus sesiones registradas.",
-  "@studentWelcomeSubtitle": { "description": "Subtítulo bienvenida alumno" },
+  "@studentWelcomeSubtitle": {
+    "description": "Subtítulo bienvenida alumno"
+  },
   "teacherQuickActionsSubtitle": "Gestiona tu día a día desde un solo lugar.",
-  "@teacherQuickActionsSubtitle": { "description": "Subtítulo acciones docente" },
+  "@teacherQuickActionsSubtitle": {
+    "description": "Subtítulo acciones docente"
+  },
   "studentQuickActionsSubtitle": "Sigue avanzando con tus clases y tareas pendientes.",
-  "@studentQuickActionsSubtitle": { "description": "Subtítulo acciones alumno" },
+  "@studentQuickActionsSubtitle": {
+    "description": "Subtítulo acciones alumno"
+  },
   "manageClassesAction": "Mis clases",
-  "@manageClassesAction": { "description": "Acción gestionar clases" },
+  "@manageClassesAction": {
+    "description": "Acción gestionar clases"
+  },
   "manageClassesDescription": "Consulta o crea clases nuevas para tus estudiantes.",
-  "@manageClassesDescription": { "description": "Descripción acción gestionar clases" },
+  "@manageClassesDescription": {
+    "description": "Descripción acción gestionar clases"
+  },
   "createClassAction": "Crear clase",
-  "@createClassAction": { "description": "Acción crear clase" },
+  "@createClassAction": {
+    "description": "Acción crear clase"
+  },
   "createClassDescription": "Abre una nueva clase y comparte su código de acceso.",
-  "@createClassDescription": { "description": "Descripción acción crear clase" },
+  "@createClassDescription": {
+    "description": "Descripción acción crear clase"
+  },
   "teacherTasksAction": "Tareas asignadas",
-  "@teacherTasksAction": { "description": "Acción tareas asignadas" },
+  "@teacherTasksAction": {
+    "description": "Acción tareas asignadas"
+  },
   "teacherTasksDescription": "Crea, edita o revisa las tareas activas.",
-  "@teacherTasksDescription": { "description": "Descripción acción tareas asignadas" },
+  "@teacherTasksDescription": {
+    "description": "Descripción acción tareas asignadas"
+  },
   "teacherStatsAction": "Estadísticas",
-  "@teacherStatsAction": { "description": "Acción estadísticas docente" },
+  "@teacherStatsAction": {
+    "description": "Acción estadísticas docente"
+  },
   "teacherStatsDescription": "Analiza el progreso semanal y los estudiantes activos.",
-  "@teacherStatsDescription": { "description": "Descripción acción estadísticas docente" },
+  "@teacherStatsDescription": {
+    "description": "Descripción acción estadísticas docente"
+  },
   "studentClassesAction": "Mis clases",
-  "@studentClassesAction": { "description": "Acción clases alumno" },
+  "@studentClassesAction": {
+    "description": "Acción clases alumno"
+  },
   "studentClassesDescription": "Explora las clases en las que estás inscrito.",
-  "@studentClassesDescription": { "description": "Descripción clases alumno" },
+  "@studentClassesDescription": {
+    "description": "Descripción clases alumno"
+  },
   "joinClassAction": "Unirse a clase",
-  "@joinClassAction": { "description": "Acción unirse clase" },
+  "@joinClassAction": {
+    "description": "Acción unirse clase"
+  },
   "joinClassDescription": "Ingresa el código que te compartió tu docente.",
-  "@joinClassDescription": { "description": "Descripción unirse clase" },
+  "@joinClassDescription": {
+    "description": "Descripción unirse clase"
+  },
   "studentTasksAction": "Mis tareas",
-  "@studentTasksAction": { "description": "Acción tareas alumno" },
+  "@studentTasksAction": {
+    "description": "Acción tareas alumno"
+  },
   "studentTasksDescription": "Revisa lo que tienes pendiente y marca tus avances.",
-  "@studentTasksDescription": { "description": "Descripción tareas alumno" },
+  "@studentTasksDescription": {
+    "description": "Descripción tareas alumno"
+  },
   "practiceAction": "Continuar práctica",
-  "@practiceAction": { "description": "Acción continuar práctica" },
+  "@practiceAction": {
+    "description": "Acción continuar práctica"
+  },
   "practiceDescription": "Registra nuevas sesiones y mantén tu racha activa.",
-  "@practiceDescription": { "description": "Descripción continuar práctica" },
+  "@practiceDescription": {
+    "description": "Descripción continuar práctica"
+  },
   "studentStatsAction": "Mis estadísticas",
-  "@studentStatsAction": { "description": "Acción estadísticas alumno" },
+  "@studentStatsAction": {
+    "description": "Acción estadísticas alumno"
+  },
   "studentStatsDescription": "Consulta tus métricas personales y celebra tus logros.",
-  "@studentStatsDescription": { "description": "Descripción estadísticas alumno" },
+  "@studentStatsDescription": {
+    "description": "Descripción estadísticas alumno"
+  },
   "highlightsTitle": "Resumen rápido",
-  "@highlightsTitle": { "description": "Título resumen rápido" },
+  "@highlightsTitle": {
+    "description": "Título resumen rápido"
+  },
   "teacherHighlightsDescription": "Pronto verás alertas de clases con poca actividad y tareas próximas a vencer.",
-  "@teacherHighlightsDescription": { "description": "Descripción resumen docente" },
+  "@teacherHighlightsDescription": {
+    "description": "Descripción resumen docente"
+  },
   "studentHighlightsDescription": "Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.",
-  "@studentHighlightsDescription": { "description": "Descripción resumen alumno" },
-
+  "@studentHighlightsDescription": {
+    "description": "Descripción resumen alumno"
+  },
   "myClassesTitle": "Mis clases",
-  "@myClassesTitle": { "description": "Título mis clases" },
+  "@myClassesTitle": {
+    "description": "Título mis clases"
+  },
   "classesCreatedTitle": "Clases creadas",
-  "@classesCreatedTitle": { "description": "Título clases creadas" },
+  "@classesCreatedTitle": {
+    "description": "Título clases creadas"
+  },
   "noClassesCreated": "No tienes clases creadas",
-  "@noClassesCreated": { "description": "Estado vacío clases docente" },
+  "@noClassesCreated": {
+    "description": "Estado vacío clases docente"
+  },
   "createFirstClass": "Crea tu primera clase para comenzar",
-  "@createFirstClass": { "description": "Instrucción crear primera clase" },
+  "@createFirstClass": {
+    "description": "Instrucción crear primera clase"
+  },
   "noClassesJoined": "No estás en ninguna clase",
-  "@noClassesJoined": { "description": "Estado vacío clases alumno" },
+  "@noClassesJoined": {
+    "description": "Estado vacío clases alumno"
+  },
   "joinClassWithCode": "Únete a una clase con un código",
-  "@joinClassWithCode": { "description": "Instrucción unirse primera clase" },
+  "@joinClassWithCode": {
+    "description": "Instrucción unirse primera clase"
+  },
   "studentsCount": "{count} estudiantes",
   "@studentsCount": {
     "description": "Contador de estudiantes",
     "placeholders": {
-      "count": { "type": "int", "example": "10" }
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
     }
   },
   "teacherLabel": "Profesor: ",
-  "@teacherLabel": { "description": "Etiqueta profesor" },
+  "@teacherLabel": {
+    "description": "Etiqueta profesor"
+  },
   "classNameLabel": "Nombre de la clase",
-  "@classNameLabel": { "description": "Etiqueta nombre clase" },
+  "@classNameLabel": {
+    "description": "Etiqueta nombre clase"
+  },
   "classNameHint": "Ej: Piano Nivel 1",
-  "@classNameHint": { "description": "Hint nombre clase" },
+  "@classNameHint": {
+    "description": "Hint nombre clase"
+  },
   "classDescriptionLabel": "Descripción",
-  "@classDescriptionLabel": { "description": "Etiqueta descripción clase" },
+  "@classDescriptionLabel": {
+    "description": "Etiqueta descripción clase"
+  },
   "classDescriptionHint": "Descripción de la clase",
-  "@classDescriptionHint": { "description": "Hint descripción clase" },
+  "@classDescriptionHint": {
+    "description": "Hint descripción clase"
+  },
   "accessCodeLabel": "Código de acceso",
-  "@accessCodeLabel": { "description": "Etiqueta código acceso" },
+  "@accessCodeLabel": {
+    "description": "Etiqueta código acceso"
+  },
   "accessCodeGenerated": "Se generará automáticamente",
-  "@accessCodeGenerated": { "description": "Mensaje generación automática código" },
+  "@accessCodeGenerated": {
+    "description": "Mensaje generación automática código"
+  },
   "accessCodeInvalidFormat": "El código debe tener 6 caracteres válidos",
-  "@accessCodeInvalidFormat": { "description": "Error formato código" },
+  "@accessCodeInvalidFormat": {
+    "description": "Error formato código"
+  },
   "classStatusActive": "Clase activa",
-  "@classStatusActive": { "description": "Estado clase activa" },
+  "@classStatusActive": {
+    "description": "Estado clase activa"
+  },
   "classStatusArchived": "Clase archivada",
-  "@classStatusArchived": { "description": "Estado clase archivada" },
+  "@classStatusArchived": {
+    "description": "Estado clase archivada"
+  },
   "archiveClassAction": "Archivar clase",
-  "@archiveClassAction": { "description": "Acción archivar clase" },
+  "@archiveClassAction": {
+    "description": "Acción archivar clase"
+  },
   "activateClassAction": "Activar clase",
-  "@activateClassAction": { "description": "Acción activar clase" },
+  "@activateClassAction": {
+    "description": "Acción activar clase"
+  },
   "deleteClassConfirmation": "Esta acción eliminará definitivamente la clase y todas sus membresías.",
-  "@deleteClassConfirmation": { "description": "Mensaje confirmación eliminar clase" },
+  "@deleteClassConfirmation": {
+    "description": "Mensaje confirmación eliminar clase"
+  },
   "regenerateAccessCodeAction": "Regenerar código",
-  "@regenerateAccessCodeAction": { "description": "Acción regenerar código" },
+  "@regenerateAccessCodeAction": {
+    "description": "Acción regenerar código"
+  },
   "regenerateCodeConfirmation": "Generaremos un nuevo código y el anterior dejará de funcionar.",
-  "@regenerateCodeConfirmation": { "description": "Mensaje confirmación regenerar código" },
+  "@regenerateCodeConfirmation": {
+    "description": "Mensaje confirmación regenerar código"
+  },
   "accessCodeHint": "Ingresa el código de la clase",
-  "@accessCodeHint": { "description": "Hint ingresar código" },
+  "@accessCodeHint": {
+    "description": "Hint ingresar código"
+  },
   "accessCodeInstructions": "Pide el código de acceso a tu profesor para unirte a la clase.",
-  "@accessCodeInstructions": { "description": "Instrucciones código acceso" },
+  "@accessCodeInstructions": {
+    "description": "Instrucciones código acceso"
+  },
   "classCreateSuccess": "Clase creada correctamente.",
-  "@classCreateSuccess": { "description": "Éxito crear clase" },
+  "@classCreateSuccess": {
+    "description": "Éxito crear clase"
+  },
   "tasksCount": "{count} tareas",
   "@tasksCount": {
     "description": "Contador de tareas",
     "placeholders": {
-      "count": { "type": "int", "example": "3" }
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
     }
   },
   "createdDateLabel": "Creada el",
-  "@createdDateLabel": { "description": "Etiqueta fecha creación" },
+  "@createdDateLabel": {
+    "description": "Etiqueta fecha creación"
+  },
   "activeStudentsCount": "{count} alumnos activos",
   "@activeStudentsCount": {
     "description": "Contador de alumnos activos",
     "placeholders": {
-      "count": { "type": "int", "example": "5" }
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "assignedToLabel": "Asignada a",
-  "@assignedToLabel": { "description": "Asignada a..." },
+  "@assignedToLabel": {
+    "description": "Asignada a..."
+  },
   "averageDurationLabel": "Promedio por alumno",
-  "@averageDurationLabel": { "description": "Promedio duración por alumno" },
+  "@averageDurationLabel": {
+    "description": "Promedio duración por alumno"
+  },
   "classStatusUpdatedSuccess": "El estado de la clase se actualizó correctamente.",
-  "@classStatusUpdatedSuccess": { "description": "Éxito actualizar estado clase" },
-  "classStatusActive": "Activa",
-  "@classStatusActive": { "description": "Resumen: clase activa" },
-  "classStatusArchived": "Archivada",
-  "@classStatusArchived": { "description": "Resumen: clase archivada" },
-  "regenerateAccessCodeAction": "Regenerar código",
-  "@regenerateAccessCodeAction": { "description": "Acción regenerar código" },
+  "@classStatusUpdatedSuccess": {
+    "description": "Éxito actualizar estado clase"
+  },
   "classDeleteSuccess": "La clase fue eliminada correctamente.",
-  "@classDeleteSuccess": { "description": "Éxito eliminar clase" },
+  "@classDeleteSuccess": {
+    "description": "Éxito eliminar clase"
+  },
   "membershipJoinSuccess": "Te uniste a la clase correctamente.",
-  "@membershipJoinSuccess": { "description": "Éxito unirse clase" },
+  "@membershipJoinSuccess": {
+    "description": "Éxito unirse clase"
+  },
   "membershipRegenerateSuccess": "Código de acceso regenerado correctamente.",
-  "@membershipRegenerateSuccess": { "description": "Éxito regenerar código" },
+  "@membershipRegenerateSuccess": {
+    "description": "Éxito regenerar código"
+  },
   "membershipServiceError": "Ocurrió un error al procesar la solicitud.",
-  "@membershipServiceError": { "description": "Error genérico de membresía" },
+  "@membershipServiceError": {
+    "description": "Error genérico de membresía"
+  },
   "genericOperationSuccess": "Operación realizada correctamente.",
-  "@genericOperationSuccess": { "description": "Éxito genérico" },
+  "@genericOperationSuccess": {
+    "description": "Éxito genérico"
+  },
   "membershipInactiveError": "No puedes unirte a esta clase porque tu membresía ha sido desactivada. Contacta con tu profesor.",
-  "@membershipInactiveError": { "description": "Error cuando un alumno intenta unirse a una clase de la que fue expulsado/desactivado" },
+  "@membershipInactiveError": {
+    "description": "Error cuando un alumno intenta unirse a una clase de la que fue expulsado/desactivado"
+  },
   "classGenericError": "Ocurrió un error al gestionar tus clases.",
-  "@classGenericError": { "description": "Error genérico de clases" },
+  "@classGenericError": {
+    "description": "Error genérico de clases"
+  },
   "classCreateError": "No fue posible crear la clase. Intenta nuevamente.",
-  "@classCreateError": { "description": "Error al crear clase" },
+  "@classCreateError": {
+    "description": "Error al crear clase"
+  },
   "classUpdateError": "No fue posible actualizar la clase.",
-  "@classUpdateError": { "description": "Error al actualizar clase" },
+  "@classUpdateError": {
+    "description": "Error al actualizar clase"
+  },
   "classLoadError": "Ocurrió un error al cargar tus clases.",
-  "@classLoadError": { "description": "Error al cargar clases" },
+  "@classLoadError": {
+    "description": "Error al cargar clases"
+  },
   "classRefreshNoTeacherError": "No se ha configurado un docente para actualizar las clases.",
-  "@classRefreshNoTeacherError": { "description": "Error al refrescar clases sin teacherId" },
+  "@classRefreshNoTeacherError": {
+    "description": "Error al refrescar clases sin teacherId"
+  },
   "deleteClassAction": "Eliminar clase",
-  "@deleteClassAction": { "description": "Acción eliminar clase" },
-  "deleteClassConfirmation": "¿Estás seguro de que deseas eliminar esta clase de forma permanente? Esta acción no se puede deshacer.",
-  "@deleteClassConfirmation": { "description": "Confirmación eliminar clase" },
-  "activateClassAction": "Activar clase",
-  "@activateClassAction": { "description": "Acción activar clase" },
-  "archiveClassAction": "Archivar clase",
-  "@archiveClassAction": { "description": "Acción archivar clase" },
-  "confirm": "Confirmar",
-  "@confirm": { "description": "Etiqueta botón confirmar" },
-  "cancel": "Cancelar",
-  "@cancel": { "description": "Etiqueta botón cancelar" },
-  "retry": "Reintentar",
-  "@retry": { "description": "Etiqueta botón reintentar" },
-  "copy": "Copiar",
-  "@copy": { "description": "Acción copiar" },
-  "copied": "Copiado al portapapeles",
-  "@copied": { "description": "Mensaje copiado" },
-  "back": "Volver",
-  "@back": { "description": "Acción volver" },
-  "delete": "Eliminar",
-  "@delete": { "description": "Acción eliminar" },
-  "close": "Cerrar",
-  "@close": { "description": "Acción cerrar" },
-  "loadMore": "Cargar más",
-  "@loadMore": { "description": "Acción cargar más" },
+  "@deleteClassAction": {
+    "description": "Acción eliminar clase"
+  },
   "joinButtonLabel": "Unirse",
-  "@joinButtonLabel": { "description": "Etiqueta botón unirse" },
+  "@joinButtonLabel": {
+    "description": "Etiqueta botón unirse"
+  },
   "createClassButtonLabel": "Crear clase",
-  "@createClassButtonLabel": { "description": "Etiqueta botón crear clase" },
-
+  "@createClassButtonLabel": {
+    "description": "Etiqueta botón crear clase"
+  },
   "tasksTab": "Tareas",
-  "@tasksTab": { "description": "Pestaña tareas" },
+  "@tasksTab": {
+    "description": "Pestaña tareas"
+  },
   "studentsTab": "Estudiantes",
-  "@studentsTab": { "description": "Pestaña estudiantes" },
+  "@studentsTab": {
+    "description": "Pestaña estudiantes"
+  },
   "infoTab": "Información",
-  "@infoTab": { "description": "Pestaña información" },
+  "@infoTab": {
+    "description": "Pestaña información"
+  },
   "classDetailTitle": "Detalle de clase",
-  "@classDetailTitle": { "description": "Título detalle clase" },
+  "@classDetailTitle": {
+    "description": "Título detalle clase"
+  },
   "manageStudentsTitle": "Gestionar alumnos",
-  "@manageStudentsTitle": { "description": "Título gestionar alumnos" },
+  "@manageStudentsTitle": {
+    "description": "Título gestionar alumnos"
+  },
   "classStatisticsTitle": "Estadísticas de la clase",
-  "@classStatisticsTitle": { "description": "Título estadísticas clase" },
+  "@classStatisticsTitle": {
+    "description": "Título estadísticas clase"
+  },
   "totalTime": "Tiempo total",
-  "@totalTime": { "description": "Etiqueta tiempo total" },
+  "@totalTime": {
+    "description": "Etiqueta tiempo total"
+  },
   "totalTimeDescription": "Tiempo total de todos los estudiantes",
-  "@totalTimeDescription": { "description": "Descripción tiempo total clase" },
+  "@totalTimeDescription": {
+    "description": "Descripción tiempo total clase"
+  },
   "totalSessions": "Sesiones totales",
-  "@totalSessions": { "description": "Etiqueta sesiones totales" },
+  "@totalSessions": {
+    "description": "Etiqueta sesiones totales"
+  },
   "activeStudents": "Estudiantes activos",
-  "@activeStudents": { "description": "Etiqueta estudiantes activos" },
+  "@activeStudents": {
+    "description": "Etiqueta estudiantes activos"
+  },
   "classArchivedExitMessage": "Esta clase fue archivada y ya no está disponible.",
-  "@classArchivedExitMessage": { "description": "Mensaje clase archivada" },
+  "@classArchivedExitMessage": {
+    "description": "Mensaje clase archivada"
+  },
   "classDeletedExitMessage": "La clase fue eliminada y volveremos a la lista.",
-  "@classDeletedExitMessage": { "description": "Mensaje clase eliminada" },
+  "@classDeletedExitMessage": {
+    "description": "Mensaje clase eliminada"
+  },
   "membershipRevokedExitMessage": "Tu acceso a esta clase fue revocado.",
-  "@membershipRevokedExitMessage": { "description": "Mensaje acceso revocado" },
-
+  "@membershipRevokedExitMessage": {
+    "description": "Mensaje acceso revocado"
+  },
   "studentsListTitle": "Alumnos de la clase",
-  "@studentsListTitle": { "description": "Título lista alumnos" },
+  "@studentsListTitle": {
+    "description": "Título lista alumnos"
+  },
   "joinedAtLabel": "Se unió el",
-  "@joinedAtLabel": { "description": "Etiqueta fecha unión" },
+  "@joinedAtLabel": {
+    "description": "Etiqueta fecha unión"
+  },
   "sessionsCount": "{count} sesiones",
   "@sessionsCount": {
     "description": "Contador de sesiones",
     "placeholders": {
-      "count": { "type": "int", "example": "5" }
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "hoursCount": "{count} horas",
   "@hoursCount": {
     "description": "Contador de horas",
     "placeholders": {
-      "count": { "type": "int", "example": "2" }
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
     }
   },
   "removeStudent": "Eliminar estudiante",
-  "@removeStudent": { "description": "Acción eliminar estudiante" },
+  "@removeStudent": {
+    "description": "Acción eliminar estudiante"
+  },
   "removeStudentConfirmation": "Esta acción quitará al alumno de la clase.",
-  "@removeStudentConfirmation": { "description": "Mensaje confirmación eliminar alumno" },
+  "@removeStudentConfirmation": {
+    "description": "Mensaje confirmación eliminar alumno"
+  },
   "noStudentsInClass": "No hay estudiantes en esta clase",
-  "@noStudentsInClass": { "description": "Estado vacío lista estudiantes" },
+  "@noStudentsInClass": {
+    "description": "Estado vacío lista estudiantes"
+  },
   "studentsJoinWithCode": "Los estudiantes pueden unirse con el código de acceso",
-  "@studentsJoinWithCode": { "description": "Instrucción unión alumnos" },
-
+  "@studentsJoinWithCode": {
+    "description": "Instrucción unión alumnos"
+  },
   "createTask": "Crear nueva tarea",
-  "@createTask": { "description": "Acción crear tarea" },
+  "@createTask": {
+    "description": "Acción crear tarea"
+  },
   "myTasksTitle": "Mis tareas",
-  "@myTasksTitle": { "description": "Título mis tareas" },
+  "@myTasksTitle": {
+    "description": "Título mis tareas"
+  },
   "taskDetailTitle": "Detalle de tarea",
-  "@taskDetailTitle": { "description": "Título detalle tarea" },
+  "@taskDetailTitle": {
+    "description": "Título detalle tarea"
+  },
   "assignedTo": "Asignada a",
-  "@assignedTo": { "description": "Etiqueta asignada a" },
+  "@assignedTo": {
+    "description": "Etiqueta asignada a"
+  },
   "startStudySession": "Iniciar sesión de estudio",
-  "@startStudySession": { "description": "Acción iniciar estudio" },
+  "@startStudySession": {
+    "description": "Acción iniciar estudio"
+  },
   "taskTitleLabel": "Título",
-  "@taskTitleLabel": { "description": "Etiqueta título tarea" },
+  "@taskTitleLabel": {
+    "description": "Etiqueta título tarea"
+  },
   "taskTitleHint": "Título de la tarea",
-  "@taskTitleHint": { "description": "Hint título tarea" },
+  "@taskTitleHint": {
+    "description": "Hint título tarea"
+  },
   "taskDescriptionLabel": "Descripción",
-  "@taskDescriptionLabel": { "description": "Etiqueta descripción tarea" },
+  "@taskDescriptionLabel": {
+    "description": "Etiqueta descripción tarea"
+  },
   "estimatedTimeLabel": "Tiempo estimado",
-  "@estimatedTimeLabel": { "description": "Etiqueta tiempo estimado" },
+  "@estimatedTimeLabel": {
+    "description": "Etiqueta tiempo estimado"
+  },
   "noTasksInClass": "No hay tareas en esta clase",
-  "@noTasksInClass": { "description": "Estado vacío tareas clase" },
+  "@noTasksInClass": {
+    "description": "Estado vacío tareas clase"
+  },
   "confirmDeleteTaskMessage": "Esta acción eliminará la tarea para todos los alumnos.",
-  "@confirmDeleteTaskMessage": { "description": "Confirmación eliminar tarea" },
+  "@confirmDeleteTaskMessage": {
+    "description": "Confirmación eliminar tarea"
+  },
   "daysRemaining": "Faltan {days} días",
   "@daysRemaining": {
     "description": "Días restantes",
     "placeholders": {
-      "days": { "type": "int", "example": "3" }
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
     }
   },
   "overdueDays": "Vencida hace {days} días",
   "@overdueDays": {
     "description": "Días de retraso",
     "placeholders": {
-      "days": { "type": "int", "example": "2" }
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
     }
   },
-
   "timerTitle": "Cronómetro",
-  "@timerTitle": { "description": "Título cronómetro" },
+  "@timerTitle": {
+    "description": "Título cronómetro"
+  },
   "sessionHistoryTitle": "Historial de sesiones",
-  "@sessionHistoryTitle": { "description": "Título historial sesiones" },
+  "@sessionHistoryTitle": {
+    "description": "Título historial sesiones"
+  },
   "sessionHistoryDescription": "Consulta tu historial de práctica y progreso.",
-  "@sessionHistoryDescription": { "description": "Descripción acción historial sesiones" },
+  "@sessionHistoryDescription": {
+    "description": "Descripción acción historial sesiones"
+  },
   "elapsedTime": "Tiempo transcurrido",
-  "@elapsedTime": { "description": "Etiqueta tiempo transcurrido" },
+  "@elapsedTime": {
+    "description": "Etiqueta tiempo transcurrido"
+  },
   "noSessions": "No hay sesiones registradas",
-  "@noSessions": { "description": "Estado vacío historial" },
-
+  "@noSessions": {
+    "description": "Estado vacío historial"
+  },
   "generalOverview": "Vista General",
-  "@generalOverview": { "description": "Título vista general estadísticas" },
+  "@generalOverview": {
+    "description": "Título vista general estadísticas"
+  },
   "currentStreak": "Racha actual",
-  "@currentStreak": { "description": "Etiqueta racha actual" },
+  "@currentStreak": {
+    "description": "Etiqueta racha actual"
+  },
   "daysStreak": "{days} días",
   "@daysStreak": {
     "description": "Contador racha",
     "placeholders": {
-      "days": { "type": "int", "example": "5" }
+      "days": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
-
-  "profileSection": "Perfil",
-  "@profileSection": { "description": "Sección perfil ajustes" },
-  "taskTitleLabel": "Título de la tarea",
-  "@taskTitleLabel": { "description": "Etiqueta título tarea" },
-  "taskTitleHint": "Ej: Escalas de Do Mayor",
-  "@taskTitleHint": { "description": "Hint título tarea" },
-  "taskDescriptionLabel": "Descripción",
-  "@taskDescriptionLabel": { "description": "Etiqueta descripción tarea" },
-  "taskDescriptionHint": "Explica qué debe practicar el alumno",
-  "@taskDescriptionHint": { "description": "Hint descripción tarea" },
-  "estimatedTimeLabel": "Tiempo estimado (minutos)",
-  "@estimatedTimeLabel": { "description": "Etiqueta tiempo estimado" },
   "estimatedTimeHint": "Ej: 20",
-  "@estimatedTimeHint": { "description": "Hint tiempo estimado" },
-  "@dueDate": { "description": "Etiqueta fecha entrega" },
+  "@estimatedTimeHint": {
+    "description": "Hint tiempo estimado"
+  },
+  "dueDate": "Fecha de entrega",
+  "@dueDate": {
+    "description": "Etiqueta fecha entrega"
+  },
   "dueDateHint": "Sin fecha de entrega",
-  "@dueDateHint": { "description": "Hint fecha entrega" },
+  "@dueDateHint": {
+    "description": "Hint fecha entrega"
+  },
   "taskCreateSuccess": "Tarea creada correctamente.",
-  "@taskCreateSuccess": { "description": "Éxito crear tarea" },
+  "@taskCreateSuccess": {
+    "description": "Éxito crear tarea"
+  },
   "noStudentsInClassError": "No puedes asignar tareas a una clase sin alumnos.",
-  "@noStudentsInClassError": { "description": "Error asignar clase vacía" },
+  "@noStudentsInClassError": {
+    "description": "Error asignar clase vacía"
+  },
   "addAttachment": "Agregar adjunto",
-  "@addAttachment": { "description": "Acción agregar adjunto" },
+  "@addAttachment": {
+    "description": "Acción agregar adjunto"
+  },
   "deselectAllStudents": "Deseleccionar todos",
-  "@deselectAllStudents": { "description": "Acción deseleccionar todos" },
+  "@deselectAllStudents": {
+    "description": "Acción deseleccionar todos"
+  },
   "selectAllStudents": "Seleccionar todos",
-  "@selectAllStudents": { "description": "Acción seleccionar todos" },
+  "@selectAllStudents": {
+    "description": "Acción seleccionar todos"
+  },
   "attachmentsLabel": "Adjuntos",
-  "@attachmentsLabel": { "description": "Etiqueta adjuntos" },
+  "@attachmentsLabel": {
+    "description": "Etiqueta adjuntos"
+  },
   "noAttachments": "Sin adjuntos",
-  "@noAttachments": { "description": "Estado sin adjuntos" },
+  "@noAttachments": {
+    "description": "Estado sin adjuntos"
+  },
   "attachmentsHint": "Puedes agregar enlaces o archivos",
-  "@attachmentsHint": { "description": "Hint adjuntos" },
+  "@attachmentsHint": {
+    "description": "Hint adjuntos"
+  },
   "createTaskButton": "Crear tarea",
-  "@createTaskButton": { "description": "Botón crear tarea" },
+  "@createTaskButton": {
+    "description": "Botón crear tarea"
+  },
   "myAssignmentsTitle": "Mis tareas asignadas",
-  "@myAssignmentsTitle": { "description": "Título mis tareas (alumno)" },
+  "@myAssignmentsTitle": {
+    "description": "Título mis tareas (alumno)"
+  },
   "filters": "Filtros",
-  "@filters": { "description": "Etiqueta filtros" },
+  "@filters": {
+    "description": "Etiqueta filtros"
+  },
   "adjustFilters": "Ajusta los filtros para ver más resultados",
-  "@adjustFilters": { "description": "Instrucción filtros" },
+  "@adjustFilters": {
+    "description": "Instrucción filtros"
+  },
   "noAssignmentsReceived": "No has recibido tareas aún",
-  "@noAssignmentsReceived": { "description": "Estado vacío tareas alumno" },
+  "@noAssignmentsReceived": {
+    "description": "Estado vacío tareas alumno"
+  },
   "filterByActiveStatus": "Filtrar por estado",
-  "@filterByActiveStatus": { "description": "Filtro estado" },
+  "@filterByActiveStatus": {
+    "description": "Filtro estado"
+  },
   "showActiveOnly": "Solo activas",
-  "@showActiveOnly": { "description": "Opción solo activas" },
+  "@showActiveOnly": {
+    "description": "Opción solo activas"
+  },
   "showArchivedOnly": "Solo archivadas",
-  "@showArchivedOnly": { "description": "Opción solo archivadas" },
+  "@showArchivedOnly": {
+    "description": "Opción solo archivadas"
+  },
   "filterByDate": "Filtrar por fecha",
-  "@filterByDate": { "description": "Filtro fecha" },
+  "@filterByDate": {
+    "description": "Filtro fecha"
+  },
   "selectCreatedDate": "Fecha de creación",
-  "@selectCreatedDate": { "description": "Seleccionar fecha creación" },
+  "@selectCreatedDate": {
+    "description": "Seleccionar fecha creación"
+  },
   "selectDueDate": "Fecha de entrega",
-  "@selectDueDate": { "description": "Seleccionar fecha entrega" },
+  "@selectDueDate": {
+    "description": "Seleccionar fecha entrega"
+  },
   "fromLabel": "Desde",
-  "@fromLabel": { "description": "Etiqueta desde" },
+  "@fromLabel": {
+    "description": "Etiqueta desde"
+  },
   "toLabel": "Hasta",
-  "@toLabel": { "description": "Etiqueta hasta" },
+  "@toLabel": {
+    "description": "Etiqueta hasta"
+  },
   "clearFilters": "Limpiar filtros",
-  "@clearFilters": { "description": "Acción limpiar filtros" },
+  "@clearFilters": {
+    "description": "Acción limpiar filtros"
+  },
   "applyFilters": "Aplicar filtros",
-  "@applyFilters": { "description": "Acción aplicar filtros" },
+  "@applyFilters": {
+    "description": "Acción aplicar filtros"
+  },
   "assignTask": "Asignar tarea",
-  "@assignTask": { "description": "Acción asignar tarea" },
+  "@assignTask": {
+    "description": "Acción asignar tarea"
+  },
   "selectClassToAssign": "Selecciona una clase para asignar",
-  "@selectClassToAssign": { "description": "Instrucción asignar clase" },
+  "@selectClassToAssign": {
+    "description": "Instrucción asignar clase"
+  },
   "recipientsTitle": "Destinatarios",
-  "@recipientsTitle": { "description": "Título destinatarios" },
+  "@recipientsTitle": {
+    "description": "Título destinatarios"
+  },
   "assignToAllStudents": "Todos los estudiantes",
-  "@assignToAllStudents": { "description": "Opción todos alumnos" },
+  "@assignToAllStudents": {
+    "description": "Opción todos alumnos"
+  },
   "selectedRecipients": "{count} seleccionados",
   "@selectedRecipients": {
     "description": "Contador seleccionados",
     "placeholders": {
-      "count": { "type": "int", "example": "3" }
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
     }
   },
   "assignToSelectedStudents": "Estudiantes seleccionados",
-  "@assignToSelectedStudents": { "description": "Opción estudiantes seleccionados" },
+  "@assignToSelectedStudents": {
+    "description": "Opción estudiantes seleccionados"
+  },
   "filterByAssignmentStatus": "Estado de la tarea",
-  "@filterByAssignmentStatus": { "description": "Filtro estado tarea" },
+  "@filterByAssignmentStatus": {
+    "description": "Filtro estado tarea"
+  },
   "pending": "Pendiente",
-  "@pending": { "description": "Estado pendiente" },
+  "@pending": {
+    "description": "Estado pendiente"
+  },
   "inProgress": "En progreso",
-  "@inProgress": { "description": "Estado en progreso" },
+  "@inProgress": {
+    "description": "Estado en progreso"
+  },
   "completed": "Completada",
-  "@completed": { "description": "Estado completada" },
+  "@completed": {
+    "description": "Estado completada"
+  },
   "dueToday": "Entrega hoy",
-  "@dueToday": { "description": "Entrega hoy" },
+  "@dueToday": {
+    "description": "Entrega hoy"
+  },
   "dueTomorrow": "Entrega mañana",
-  "@dueTomorrow": { "description": "Entrega mañana" },
+  "@dueTomorrow": {
+    "description": "Entrega mañana"
+  },
   "noDueDate": "Sin fecha límite",
-  "@noDueDate": { "description": "Sin fecha límite" },
+  "@noDueDate": {
+    "description": "Sin fecha límite"
+  },
   "extraStudyTime": "Estudio extra: {time}",
   "@extraStudyTime": {
     "description": "Tiempo estudio extra",
     "placeholders": {
-      "time": { "type": "String", "example": "10 min" }
+      "time": {
+        "type": "String",
+        "example": "10 min"
+      }
     }
   },
   "studyGoalReached": "¡Objetivo alcanzado!",
-  "@studyGoalReached": { "description": "Objetivo alcanzado" },
+  "@studyGoalReached": {
+    "description": "Objetivo alcanzado"
+  },
   "studyTimeRemaining": "Faltan {time}",
   "@studyTimeRemaining": {
     "description": "Tiempo restante estudio",
     "placeholders": {
-      "time": { "type": "String", "example": "15 min" }
+      "time": {
+        "type": "String",
+        "example": "15 min"
+      }
     }
   },
   "taskProgressTitle": "Progreso de la tarea",
-  "@taskProgressTitle": { "description": "Título progreso tarea" },
+  "@taskProgressTitle": {
+    "description": "Título progreso tarea"
+  },
   "keepGoing": "¡Sigue así!",
-  "@keepGoing": { "description": "Mensaje ánimo progreso" },
+  "@keepGoing": {
+    "description": "Mensaje ánimo progreso"
+  },
   "confirmDeleteTask": "Confirmar eliminación",
-  "@confirmDeleteTask": { "description": "Título confirmar eliminar" },
+  "@confirmDeleteTask": {
+    "description": "Título confirmar eliminar"
+  },
   "confirmDeleteTaskWarning": "ATENCIÓN: Esta acción eliminará PERMANENTEMENTE la tarea y todas las asignaciones de los alumnos. No se podrá recuperar ninguna información. ¿Deseas continuar?",
-  "@confirmDeleteTaskWarning": { "description": "Aviso eliminación permanente" },
+  "@confirmDeleteTaskWarning": {
+    "description": "Aviso eliminación permanente"
+  },
   "deleteTaskAction": "Eliminar tarea",
-  "@deleteTaskAction": { "description": "Acción eliminar tarea" },
+  "@deleteTaskAction": {
+    "description": "Acción eliminar tarea"
+  },
   "editTaskAction": "Editar tarea",
-  "@editTaskAction": { "description": "Acción editar tarea" },
+  "@editTaskAction": {
+    "description": "Acción editar tarea"
+  },
   "activeTaskLabel": "Tarea activa",
-  "@activeTaskLabel": { "description": "Etiqueta tarea activa" },
+  "@activeTaskLabel": {
+    "description": "Etiqueta tarea activa"
+  },
   "activeTaskSubtitle": "Visible para los estudiantes",
-  "@activeTaskSubtitle": { "description": "Subtítulo tarea activa" },
+  "@activeTaskSubtitle": {
+    "description": "Subtítulo tarea activa"
+  },
   "inactiveTaskSubtitle": "No visible para los estudiantes",
-  "@inactiveTaskSubtitle": { "description": "Subtítulo tarea inactiva" },
+  "@inactiveTaskSubtitle": {
+    "description": "Subtítulo tarea inactiva"
+  },
   "startTimerAction": "Iniciar cronómetro",
-  "@startTimerAction": { "description": "Acción iniciar cronómetro" },
+  "@startTimerAction": {
+    "description": "Acción iniciar cronómetro"
+  },
   "estimatedTimeRowLabel": "Tiempo estimado",
-  "@estimatedTimeRowLabel": { "description": "Label fila tiempo estimado" },
+  "@estimatedTimeRowLabel": {
+    "description": "Label fila tiempo estimado"
+  },
   "createdDateRowLabel": "Fecha de creación",
-  "@createdDateRowLabel": { "description": "Label fila fecha creación" },
+  "@createdDateRowLabel": {
+    "description": "Label fila fecha creación"
+  },
   "dueDateRowLabel": "Fecha límite",
-  "@dueDateRowLabel": { "description": "Label fila fecha límite" },
+  "@dueDateRowLabel": {
+    "description": "Label fila fecha límite"
+  },
   "recipientsRowLabel": "Destinatarios",
-  "@recipientsRowLabel": { "description": "Label fila destinatarios" },
+  "@recipientsRowLabel": {
+    "description": "Label fila destinatarios"
+  },
   "noRecipientsLabel": "No hay destinatarios asignados",
-  "@noRecipientsLabel": { "description": "Estado sin destinatarios" },
+  "@noRecipientsLabel": {
+    "description": "Estado sin destinatarios"
+  },
   "reTryLoadAction": "Reintentar carga",
-  "@reTryLoadAction": { "description": "Acción reintentar" },
+  "@reTryLoadAction": {
+    "description": "Acción reintentar"
+  },
   "loadingTaskMessage": "Cargando tarea...",
-  "@loadingTaskMessage": { "description": "Mensaje carga tarea" },
-  "myTasksTitle": "Mis tareas",
-  "@myTasksTitle": { "description": "Título mis tareas (docente)" },
+  "@loadingTaskMessage": {
+    "description": "Mensaje carga tarea"
+  },
   "createTaskAction": "Crear tarea",
-  "@createTaskAction": { "description": "Acción crear tarea docente" },
+  "@createTaskAction": {
+    "description": "Acción crear tarea docente"
+  },
   "noTasksFound": "No se encontraron tareas",
-  "@noTasksFound": { "description": "Estado vacío tareas" },
+  "@noTasksFound": {
+    "description": "Estado vacío tareas"
+  },
   "taskUpdateSuccess": "Tarea actualizada correctamente",
-  "@taskUpdateSuccess": { "description": "Éxito actualización" },
+  "@taskUpdateSuccess": {
+    "description": "Éxito actualización"
+  },
   "taskDeleteSuccess": "Tarea eliminada correctamente",
-  "@taskDeleteSuccess": { "description": "Éxito eliminación" },
+  "@taskDeleteSuccess": {
+    "description": "Éxito eliminación"
+  },
   "loadingError": "Error al cargar los datos",
-  "@loadingError": { "description": "Error carga genérico" },
+  "@loadingError": {
+    "description": "Error carga genérico"
+  },
   "activitySummary": "Resumen de actividad",
-  "@activitySummary": { "description": "Subtítulo resumen actividad" },
+  "@activitySummary": {
+    "description": "Subtítulo resumen actividad"
+  },
   "workedTasks": "Tareas trabajadas",
-  "@workedTasks": { "description": "Título tareas trabajadas" },
+  "@workedTasks": {
+    "description": "Título tareas trabajadas"
+  },
   "sessionsLabelCount": "{count, plural, =0{Sin sesiones} =1{1 sesión} other{{count} sesiones}}",
   "@sessionsLabelCount": {
     "description": "Contador sesiones",
     "placeholders": {
-      "count": { "type": "int", "example": "5" }
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
-  "retry": "Reintentar",
-  "@retry": { "description": "Acción reintentar" },
-  "highlightsTitle": "Resumen rápido",
-  "@highlightsTitle": { "description": "Título resumen rápido" },
-  "teacherHomeTitle": "Inicio docente",
-  "@teacherHomeTitle": { "description": "Título home docente" },
-  "studentHomeTitle": "Inicio alumno",
-  "@studentHomeTitle": { "description": "Título home alumno" },
-  "quickActionsTitle": "Acciones rápidas",
-  "@quickActionsTitle": { "description": "Título acciones rápidas" },
-  "teacherWelcomeTitle": "Tus clases están listas",
-  "@teacherWelcomeTitle": { "description": "Título bienvenida docente" },
-  "teacherWelcomeSubtitle": "Gestiona tus clases, asigna tareas y monitorea el progreso de tus estudiantes.",
-  "@teacherWelcomeSubtitle": { "description": "Subtítulo bienvenida docente" },
-  "studentWelcomeTitle": "Tu práctica continúa",
-  "@studentWelcomeTitle": { "description": "Título bienvenida alumno" },
-  "studentWelcomeSubtitle": "Revisa tus clases activas, únete a nuevas secciones y mantén tus sesiones registradas.",
-  "@studentWelcomeSubtitle": { "description": "Subtítulo bienvenida alumno" },
-  "teacherQuickActionsSubtitle": "Gestiona tu día a día desde un solo lugar.",
-  "@teacherQuickActionsSubtitle": { "description": "Subtítulo acciones docente" },
-  "studentQuickActionsSubtitle": "Sigue avanzando con tus clases y tareas pendientes.",
-  "@studentQuickActionsSubtitle": { "description": "Subtítulo acciones alumno" },
-  "manageClassesAction": "Mis clases",
-  "@manageClassesAction": { "description": "Acción mis clases" },
-  "manageClassesDescription": "Consulta o crea clases nuevas para tus estudiantes.",
-  "@manageClassesDescription": { "description": "Descripción mis clases" },
-  "createClassAction": "Crear clase",
-  "@createClassAction": { "description": "Acción crear clase" },
-  "createClassDescription": "Abre una nueva clase y comparte su código de acceso.",
-  "@createClassDescription": { "description": "Descripción crear clase" },
-  "teacherHighlightsDescription": "Pronto verás alertas de clases con poca actividad y tareas próximas a vencer.",
-  "@teacherHighlightsDescription": { "description": "Resumen docente" },
-  "studentHighlightsDescription": "Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.",
-  "@studentHighlightsDescription": { "description": "Resumen alumno" },
-  "timerTitle": "Cronómetro",
-  "@timerTitle": { "description": "Título cronómetro" },
-  "sessionHistoryTitle": "Historial de sesiones",
-  "@sessionHistoryTitle": { "description": "Título historial sesiones" },
-  "timerStart": "Iniciar",
-  "@timerStart": { "description": "Control iniciar" },
-  "timerPause": "Pausar",
-  "@timerPause": { "description": "Control pausar" },
-  "timerResume": "Reanudar",
-  "@timerResume": { "description": "Control reanudar" },
-  "timerReset": "Reiniciar",
-  "@timerReset": { "description": "Control reiniciar" },
-  "timerFinish": "Finalizar sesión",
-  "@timerFinish": { "description": "Control finalizar" },
-  "noSessions": "No hay sesiones registradas",
-  "@noSessions": { "description": "Estado sin sesiones" },
-  "startFirstSession": "Inicia tu primera sesión de estudio para comenzar",
-  "@startFirstSession": { "description": "Instrucción primera sesión" },
-  "today": "Hoy",
-  "@today": { "description": "Filtro hoy" },
-  "thisWeek": "Esta semana",
-  "@thisWeek": { "description": "Filtro semana" },
-  "thisMonth": "Este mes",
-  "@thisMonth": { "description": "Filtro mes" },
-  "all": "Todas",
-  "@all": { "description": "Filtro todas" },
-  "settingsTitle": "Configuración",
-  "@settingsTitle": { "description": "Título configuración" },
-  "profileSection": "Perfil",
-  "@profileSection": { "description": "Sección perfil" },
-  "notificationsSection": "Notificaciones",
-  "@notificationsSection": { "description": "Sección notificaciones" },
-  "appearanceSection": "Apariencia",
-  "@appearanceSection": { "description": "Sección apariencia" },
-  "accountSection": "Cuenta",
-  "@accountSection": { "description": "Sección cuenta" },
+  "@accountSection": {
+    "description": "Sección cuenta"
+  },
   "inDevelopment": "Esta sección está en desarrollo.",
-  "@inDevelopment": { "description": "Mensaje desarrollo" },
+  "@inDevelopment": {
+    "description": "Mensaje desarrollo"
+  },
   "sessionDuration": "Duración de la sesión",
-  "@sessionDuration": { "description": "Etiqueta duración sesión" },
+  "@sessionDuration": {
+    "description": "Etiqueta duración sesión"
+  },
   "sessionDate": "Fecha de la sesión",
-  "@sessionDate": { "description": "Etiqueta fecha sesión" },
+  "@sessionDate": {
+    "description": "Etiqueta fecha sesión"
+  },
   "noFilteredSessions": "No hay sesiones para este filtro",
-  "@noFilteredSessions": { "description": "Estado vacío filtrado" },
+  "@noFilteredSessions": {
+    "description": "Estado vacío filtrado"
+  },
   "adjustDateFilter": "Intenta cambiar el filtro de fecha",
-  "@adjustDateFilter": { "description": "Instrucción filtros fecha" },
+  "@adjustDateFilter": {
+    "description": "Instrucción filtros fecha"
+  },
   "errorLoadingHistory": "Error al cargar el historial",
-  "@errorLoadingHistory": { "description": "Error carga historial" },
+  "@errorLoadingHistory": {
+    "description": "Error carga historial"
+  },
   "taskHistory": "Historial de la tarea",
-  "@taskHistory": { "description": "Título historial tarea" },
+  "@taskHistory": {
+    "description": "Título historial tarea"
+  },
   "discardSessionTitle": "¿Descartar sesión?",
-  "@discardSessionTitle": { "description": "Título descartar sesión" },
+  "@discardSessionTitle": {
+    "description": "Título descartar sesión"
+  },
   "discardSessionMessage": "Perderás todo el progreso de esta sesión de práctica. ¿Estás seguro?",
-  "@discardSessionMessage": { "description": "Mensaje descartar sesión" },
+  "@discardSessionMessage": {
+    "description": "Mensaje descartar sesión"
+  },
   "discardAction": "Descartar",
-  "@discardAction": { "description": "Acción descartar" },
+  "@discardAction": {
+    "description": "Acción descartar"
+  },
   "sessionSavedTitle": "¡Sesión Guardada!",
-  "@sessionSavedTitle": { "description": "Título éxito guardado" },
+  "@sessionSavedTitle": {
+    "description": "Título éxito guardado"
+  },
   "timePracticedLabel": "Tiempo practicado: {time}",
   "@timePracticedLabel": {
     "description": "Etiqueta tiempo practicado",
     "placeholders": {
-      "time": { "type": "String", "example": "15:00" }
+      "time": {
+        "type": "String",
+        "example": "15:00"
+      }
     }
   },
   "continueAction": "Continuar",
-  "@continueAction": { "description": "Acción continuar" },
+  "@continueAction": {
+    "description": "Acción continuar"
+  },
   "runningStatus": "En progreso...",
-  "@runningStatus": { "description": "Estado corriendo" },
+  "@runningStatus": {
+    "description": "Estado corriendo"
+  },
   "pausedStatus": "Pausado",
-  "@pausedStatus": { "description": "Estado pausado" },
+  "@pausedStatus": {
+    "description": "Estado pausado"
+  },
   "readyToStartStatus": "Listo para empezar",
-  "@readyToStartStatus": { "description": "Estado inicial" },
+  "@readyToStartStatus": {
+    "description": "Estado inicial"
+  },
   "notesLabel": "Notas de la sesión (opcional)",
-  "@notesLabel": { "description": "Label notas" },
+  "@notesLabel": {
+    "description": "Label notas"
+  },
   "notesHint": "Escribe aquí tus observaciones...",
-  "@notesHint": { "description": "Hint notas" },
+  "@notesHint": {
+    "description": "Hint notas"
+  },
   "confirmAndSaveAction": "Confirmar y guardar",
-  "@confirmAndSaveAction": { "description": "Acción confirmar guardado" },
+  "@confirmAndSaveAction": {
+    "description": "Acción confirmar guardado"
+  },
   "editProfile": "Editar perfil",
-  "@editProfile": { "description": "Acción editar perfil" },
+  "@editProfile": {
+    "description": "Acción editar perfil"
+  },
   "notificationSettings": "Configuración de notificaciones",
-  "@notificationSettings": { "description": "Acción notificaciones" },
+  "@notificationSettings": {
+    "description": "Acción notificaciones"
+  },
   "themeSettings": "Configuración de tema",
-  "@themeSettings": { "description": "Acción tema" },
+  "@themeSettings": {
+    "description": "Acción tema"
+  },
   "futureFeatures": "En futuros sprints se añadirá:\n- Gestión de perfil\n- Preferencias de notificaciones\n- Configuración de tema\n- Cerrar sesión",
-  "@futureFeatures": { "description": "Lista funcionalidades futuras" },
+  "@futureFeatures": {
+    "description": "Lista funcionalidades futuras"
+  },
   "studentsLabel": "Estudiantes",
-  "@studentsLabel": { "description": "Etiqueta estudiantes" },
+  "@studentsLabel": {
+    "description": "Etiqueta estudiantes"
+  },
   "logout": "Cerrar sesión",
-  "@logout": { "description": "Acción cerrar sesión" },
-  
+  "@logout": {
+    "description": "Acción cerrar sesión"
+  },
   "languageSection": "Idioma y región",
-  "@languageSection": { "description": "Sección idioma" },
+  "@languageSection": {
+    "description": "Sección idioma"
+  },
   "languageSettings": "Idioma",
-  "@languageSettings": { "description": "Configuración idioma" },
+  "@languageSettings": {
+    "description": "Configuración idioma"
+  },
   "languageSpanish": "Español",
-  "@languageSpanish": { "description": "Idioma español" },
+  "@languageSpanish": {
+    "description": "Idioma español"
+  },
   "languageEnglish": "English",
-  "@languageEnglish": { "description": "Idioma inglés" },
+  "@languageEnglish": {
+    "description": "Idioma inglés"
+  },
   "languageSystem": "Automático (Sistema)",
-  "@languageSystem": { "description": "Opción detección automática del idioma del sistema" },
+  "@languageSystem": {
+    "description": "Opción detección automática del idioma del sistema"
+  },
   "appearanceSection": "Apariencia",
-  "@appearanceSection": { "description": "Sección apariencia" },
+  "@appearanceSection": {
+    "description": "Sección apariencia"
+  },
   "colorSettings": "Color principal",
-  "@colorSettings": { "description": "Configuración color" },
+  "@colorSettings": {
+    "description": "Configuración color"
+  },
   "editProfileTitle": "Editar perfil",
-  "@editProfileTitle": { "description": "Título editar perfil" },
+  "@editProfileTitle": {
+    "description": "Título editar perfil"
+  },
   "generalSection": "General",
-  "@generalSection": { "description": "Sección general" },
+  "@generalSection": {
+    "description": "Sección general"
+  },
   "accountSection": "Cuenta",
-  "@accountSection": { "description": "Sección cuenta" },
   "versionLabel": "Versión {version}",
   "@versionLabel": {
     "description": "Label versión app",
     "placeholders": {
-      "version": { "type": "String", "example": "1.0.0" }
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
     }
   },
   "termsAndConditionsLink": "Términos y condiciones",
-  "@termsAndConditionsLink": { "description": "Link términos" },
+  "@termsAndConditionsLink": {
+    "description": "Link términos"
+  },
   "privacyPolicyLink": "Política de privacidad",
-  "@privacyPolicyLink": { "description": "Link privacidad" },
+  "@privacyPolicyLink": {
+    "description": "Link privacidad"
+  },
   "themeLight": "Claro",
-  "@themeLight": { "description": "Tema claro" },
+  "@themeLight": {
+    "description": "Tema claro"
+  },
   "themeDark": "Oscuro",
-  "@themeDark": { "description": "Tema oscuro" },
+  "@themeDark": {
+    "description": "Tema oscuro"
+  },
   "themeSystem": "Sistema",
-  "@themeSystem": { "description": "Tema del sistema" },
+  "@themeSystem": {
+    "description": "Tema del sistema"
+  },
   "colorBlue": "Azul",
-  "@colorBlue": { "description": "Color azul" },
+  "@colorBlue": {
+    "description": "Color azul"
+  },
   "colorPurple": "Púrpura",
-  "@colorPurple": { "description": "Color púrpura" },
+  "@colorPurple": {
+    "description": "Color púrpura"
+  },
   "colorGreen": "Verde",
-  "@colorGreen": { "description": "Color verde" },
+  "@colorGreen": {
+    "description": "Color verde"
+  },
   "colorOrange": "Naranja",
-  "@colorOrange": { "description": "Color naranja" },
+  "@colorOrange": {
+    "description": "Color naranja"
+  },
   "colorRed": "Rojo",
-  "@colorRed": { "description": "Color rojo" },
-
+  "@colorRed": {
+    "description": "Color rojo"
+  },
   "filterThisWeek": "Esta semana",
-  "@filterThisWeek": { "description": "Filtro temporal: Esta semana" },
+  "@filterThisWeek": {
+    "description": "Filtro temporal: Esta semana"
+  },
   "filterThisMonth": "Este mes",
-  "@filterThisMonth": { "description": "Filtro temporal: Este mes" },
+  "@filterThisMonth": {
+    "description": "Filtro temporal: Este mes"
+  },
   "filterLast3Months": "Últimos 3 meses",
-  "@filterLast3Months": { "description": "Filtro temporal: Últimos 3 meses" },
+  "@filterLast3Months": {
+    "description": "Filtro temporal: Últimos 3 meses"
+  },
   "filterLast9Months": "Últimos 9 meses",
-  "@filterLast9Months": { "description": "Filtro temporal: Últimos 9 meses" },
+  "@filterLast9Months": {
+    "description": "Filtro temporal: Últimos 9 meses"
+  },
   "filterAllTime": "Histórico",
-  "@filterAllTime": { "description": "Filtro temporal: Histórico" },
-
+  "@filterAllTime": {
+    "description": "Filtro temporal: Histórico"
+  },
   "legalConsentTitle": "Términos y Privacidad",
-  "@legalConsentTitle": { "description": "Título diálogo de consentimiento legal" },
+  "@legalConsentTitle": {
+    "description": "Título diálogo de consentimiento legal"
+  },
   "legalConsentScrollInstruction": "Lee el contenido completo para continuar",
-  "@legalConsentScrollInstruction": { "description": "Instrucción de scroll en el diálogo legal" },
+  "@legalConsentScrollInstruction": {
+    "description": "Instrucción de scroll en el diálogo legal"
+  },
   "legalConsentCheckboxLabel": "He leído y acepto los Términos y Condiciones y la Política de Privacidad",
-  "@legalConsentCheckboxLabel": { "description": "Label del checkbox de aceptación" },
+  "@legalConsentCheckboxLabel": {
+    "description": "Label del checkbox de aceptación"
+  },
   "legalConsentAcceptButton": "Aceptar y continuar",
-  "@legalConsentAcceptButton": { "description": "Botón de aceptación del consentimiento" },
+  "@legalConsentAcceptButton": {
+    "description": "Botón de aceptación del consentimiento"
+  },
   "legalConsentDeclineButton": "No acepto",
-  "@legalConsentDeclineButton": { "description": "Botón de rechazo del consentimiento" },
+  "@legalConsentDeclineButton": {
+    "description": "Botón de rechazo del consentimiento"
+  },
   "legalConsentVersionLabel": "Versión {version}",
   "@legalConsentVersionLabel": {
     "description": "Versión de los términos",
     "placeholders": {
-      "version": { "type": "String", "example": "1.0" }
+      "version": {
+        "type": "String",
+        "example": "1.0"
+      }
     }
   },
   "legalConsentUpdatedTitle": "Términos actualizados",
-  "@legalConsentUpdatedTitle": { "description": "Título cuando los términos han cambiado" },
+  "@legalConsentUpdatedTitle": {
+    "description": "Título cuando los términos han cambiado"
+  },
   "legalConsentUpdatedMessage": "Hemos actualizado nuestros Términos y Condiciones y Política de Privacidad. Por favor, léelos y acéptalos para continuar usando la aplicación.",
-  "@legalConsentUpdatedMessage": { "description": "Mensaje cuando los términos han cambiado" },
+  "@legalConsentUpdatedMessage": {
+    "description": "Mensaje cuando los términos han cambiado"
+  },
   "privacyPolicyTitle": "Política de Privacidad",
-  "@privacyPolicyTitle": { "description": "Título sección política de privacidad" },
+  "@privacyPolicyTitle": {
+    "description": "Título sección política de privacidad"
+  },
   "termsAndConditionsTitle": "Términos y Condiciones",
-  "@termsAndConditionsTitle": { "description": "Título sección términos y condiciones" }
+  "@termsAndConditionsTitle": {
+    "description": "Título sección términos y condiciones"
+  },
+  "legalTextLoadError": "No se pudieron cargar los términos.",
+  "@legalTextLoadError": {
+    "description": "Error al cargar texto legal"
+  },
+  "firstNameRequired": "El nombre es requerido",
+  "@firstNameRequired": {
+    "description": "Error de nombre requerido"
+  },
+  "lastNameRequired": "Los apellidos son requeridos",
+  "@lastNameRequired": {
+    "description": "Error de apellido requerido"
+  },
+  "termsNotAccepted": "Debes aceptar los términos y condiciones",
+  "@termsNotAccepted": {
+    "description": "Error términos no aceptados"
+  },
+  "roleLabel": "Rol",
+  "@roleLabel": {
+    "description": "Etiqueta rol"
+  },
+  "roleTeacher": "Profesor",
+  "@roleTeacher": {
+    "description": "Rol profesor"
+  },
+  "roleStudent": "Estudiante",
+  "@roleStudent": {
+    "description": "Rol estudiante"
+  },
+  "termsLinkText": "Términos y Condiciones",
+  "@termsLinkText": {
+    "description": "Texto enlace términos"
+  },
+  "startFirstSession": "Comienza tu primera sesión",
+  "@startFirstSession": {
+    "description": "Texto iniciar primera sesión"
+  },
+  "today": "Hoy",
+  "@today": {
+    "description": "Hoy"
+  },
+  "thisWeek": "Esta semana",
+  "@thisWeek": {
+    "description": "Esta semana"
+  },
+  "thisMonth": "Este mes",
+  "@thisMonth": {
+    "description": "Este mes"
+  },
+  "all": "Todos",
+  "@all": {
+    "description": "Todo el tiempo"
+  },
+  "settingsTitle": "Ajustes",
+  "@settingsTitle": {
+    "description": "Título ajustes"
+  },
+  "profileSection": "Perfil",
+  "@profileSection": {
+    "description": "Sección perfil"
+  },
+  "taskDescriptionHint": "Descripción de la tarea",
+  "@taskDescriptionHint": {
+    "description": "Hint descripción tarea"
+  },
+  "timerStart": "Empezar",
+  "@timerStart": {
+    "description": "Botón empezar cronómetro"
+  },
+  "timerPause": "Pausar",
+  "@timerPause": {
+    "description": "Botón pausar cronómetro"
+  },
+  "timerResume": "Reanudar",
+  "@timerResume": {
+    "description": "Botón reanudar cronómetro"
+  }
 }

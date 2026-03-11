@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseErrorMapper {
   const FirebaseErrorMapper._();
 
-  /// Retorna un mensaje amigable para el usuario final.
+  /// Retorna una clave de traducción para el error.
   static String map(Object error) {
     if (error is FirebaseAuthException) {
       return _mapAuthError(error);
@@ -13,42 +13,49 @@ class FirebaseErrorMapper {
     if (error is FirebaseException) {
       return _mapGenericFirebaseError(error);
     }
-    if (error is FirebaseErrorMapperException) {
-      return error.message;
+    if (error is String) {
+      return error; // Probablemente ya es una clave l10n
     }
-    return 'Ocurrió un error inesperado. Intenta nuevamente.';
+    return 'errorGeneric';
   }
 
   static String _mapAuthError(FirebaseAuthException error) {
     switch (error.code) {
       case 'invalid-email':
-        return 'El correo electrónico no tiene un formato válido.';
+        return 'authErrorInvalidEmail';
       case 'user-disabled':
-        return 'La cuenta fue deshabilitada. Contacta al administrador.';
+        return 'authErrorUserDisabled';
       case 'user-not-found':
+        return 'authErrorUserNotFound';
       case 'wrong-password':
-        return 'Email o contraseña incorrectos.';
+        return 'authErrorWrongPassword';
       case 'email-already-in-use':
-        return 'Este correo ya está registrado.';
+        return 'authErrorEmailAlreadyInUse';
       case 'weak-password':
-        return 'La contraseña debe tener al menos 6 caracteres.';
+        return 'authErrorWeakPassword';
       case 'too-many-requests':
-        return 'Has realizado demasiados intentos. Intenta más tarde.';
+        return 'authErrorTooManyRequests';
+      case 'operation-not-allowed':
+        return 'authErrorOperationNotAllowed';
+      case 'invalid-credential':
+        return 'authErrorInvalidCredential';
+      case 'network-request-failed':
+        return 'errorNetworkRequestFailed';
       default:
-        return 'No fue posible completar la autenticación. Intenta nuevamente.';
+        return 'errorGeneric';
     }
   }
 
   static String _mapGenericFirebaseError(FirebaseException error) {
     switch (error.code) {
       case 'permission-denied':
-        return 'No tienes permisos para realizar esta acción.';
+        return 'errorPermissionDenied';
       case 'failed-precondition':
-        return 'Falta un índice requerido en la base de datos (consulta la consola).';
+        return 'errorFailedPrecondition';
       case 'unavailable':
-        return 'El servicio no está disponible temporalmente.';
+        return 'errorServiceUnavailable';
       default:
-        return 'Ocurrió un error al comunicarse con el servidor.';
+        return 'errorGeneric';
     }
   }
 }

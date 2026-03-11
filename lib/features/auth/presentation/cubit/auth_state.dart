@@ -71,3 +71,19 @@ final class AuthError extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+/// Estado que indica que el usuario se ha autenticado con Google pero aún
+/// no tiene perfil en Firestore. El router debe redirigir a
+/// `CompleteProfileScreen` para que complete su registro.
+final class AuthProfileIncomplete extends AuthState {
+  const AuthProfileIncomplete({this.email, this.displayName});
+
+  /// Email del usuario de Google (puede usarse para pre-rellenar campos).
+  final String? email;
+
+  /// Nombre mostrado por Google (puede usarse para pre-rellenar campos).
+  final String? displayName;
+
+  @override
+  List<Object?> get props => [email, displayName];
+}

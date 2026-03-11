@@ -146,7 +146,7 @@ abstract class AppLocalizations {
   /// **'Cargando...'**
   String get loading;
 
-  /// Etiqueta botón cancelar
+  /// Botón para cancelar acción
   ///
   /// In es, this message translates to:
   /// **'Cancelar'**
@@ -158,7 +158,7 @@ abstract class AppLocalizations {
   /// **'Guardar'**
   String get save;
 
-  /// Acción eliminar
+  /// Botón para eliminar elemento
   ///
   /// In es, this message translates to:
   /// **'Eliminar'**
@@ -170,31 +170,31 @@ abstract class AppLocalizations {
   /// **'Editar'**
   String get edit;
 
-  /// Acción reintentar
+  /// Botón para reintentar acción fallida
   ///
   /// In es, this message translates to:
   /// **'Reintentar'**
   String get retry;
 
-  /// Etiqueta botón confirmar
+  /// Botón de confirmación
   ///
   /// In es, this message translates to:
   /// **'Confirmar'**
   String get confirm;
 
-  /// Acción cargar más
+  /// Botón para cargar más elementos
   ///
   /// In es, this message translates to:
   /// **'Cargar más'**
   String get loadMore;
 
-  /// Acción cerrar
+  /// Botón para cerrar diálogo o pantalla
   ///
   /// In es, this message translates to:
   /// **'Cerrar'**
   String get close;
 
-  /// Acción volver
+  /// Botón para volver atrás
   ///
   /// In es, this message translates to:
   /// **'Volver'**
@@ -212,16 +212,16 @@ abstract class AppLocalizations {
   /// **'Hecho'**
   String get done;
 
-  /// Acción copiar
+  /// Botón para copiar texto
   ///
   /// In es, this message translates to:
   /// **'Copiar'**
   String get copy;
 
-  /// Mensaje copiado
+  /// Mensaje confirmando que se copió
   ///
   /// In es, this message translates to:
-  /// **'Copiado al portapapeles'**
+  /// **'Copiado'**
   String get copied;
 
   /// Botón para descargar archivo
@@ -278,10 +278,10 @@ abstract class AppLocalizations {
   /// **'Por favor, completa todos los campos'**
   String get errorEmptyFields;
 
-  /// Nombre menor a longitud mínima
+  /// Nombre más corto que la longitud mínima
   ///
   /// In es, this message translates to:
-  /// **'{fieldName} debe tener al menos 3 caracteres'**
+  /// **'{fieldName} debe tener al menos 2 caracteres'**
   String nameMinLength(String fieldName);
 
   /// Nombre contiene caracteres inválidos
@@ -362,11 +362,101 @@ abstract class AppLocalizations {
   /// **'Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.'**
   String get forgotPasswordInstructions;
 
-  /// Etiqueta del campo email
+  /// Etiqueta del campo de email
   ///
   /// In es, this message translates to:
   /// **'Email'**
   String get emailLabel;
+
+  /// Error cuando el correo ya está registrado
+  ///
+  /// In es, this message translates to:
+  /// **'Este correo electrónico ya está asociado a una cuenta.'**
+  String get authErrorEmailAlreadyInUse;
+
+  /// Error cuando el formato del correo es inválido
+  ///
+  /// In es, this message translates to:
+  /// **'La dirección de correo electrónico no es válida.'**
+  String get authErrorInvalidEmail;
+
+  /// Error cuando la cuenta está desactivada
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta ha sido desactivada. Por favor, contacta con soporte.'**
+  String get authErrorUserDisabled;
+
+  /// Error cuando el usuario no existe
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró ninguna cuenta con este correo.'**
+  String get authErrorUserNotFound;
+
+  /// Error cuando la contraseña es incorrecta
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña ingresada es incorrecta.'**
+  String get authErrorWrongPassword;
+
+  /// Error cuando se realizan demasiadas solicitudes
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Por favor, inténtalo más tarde.'**
+  String get authErrorTooManyRequests;
+
+  /// Error cuando la contraseña es débil
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña es muy débil. Por favor, usa una más segura.'**
+  String get authErrorWeakPassword;
+
+  /// Error cuando la operación no está habilitada
+  ///
+  /// In es, this message translates to:
+  /// **'Esta operación no está permitida actualmente.'**
+  String get authErrorOperationNotAllowed;
+
+  /// Error cuando las credenciales son inválidas
+  ///
+  /// In es, this message translates to:
+  /// **'Las credenciales proporcionadas son inválidas o han caducado.'**
+  String get authErrorInvalidCredential;
+
+  /// Error de fallo en la solicitud de red
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error de red. Por favor, verifica tu conexión.'**
+  String get errorNetworkRequestFailed;
+
+  /// Error de falta de conexión a internet
+  ///
+  /// In es, this message translates to:
+  /// **'No se detectó conexión a internet.'**
+  String get errorNoInternetConnection;
+
+  /// Error de permisos denegados de Firebase
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permisos para realizar esta acción.'**
+  String get errorPermissionDenied;
+
+  /// Error de precondición fallida de Firebase (usualmente falta de índice)
+  ///
+  /// In es, this message translates to:
+  /// **'Falta un índice requerido en la base de datos.'**
+  String get errorFailedPrecondition;
+
+  /// Error de servicio no disponible de Firebase
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio no está disponible temporalmente. Intenta más tarde.'**
+  String get errorServiceUnavailable;
+
+  /// Error genérico inesperado
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error inesperado. Intenta nuevamente.'**
+  String get errorGeneric;
 
   /// Etiqueta del campo contraseña
   ///
@@ -566,6 +656,66 @@ abstract class AppLocalizations {
   /// **'No se pudo enviar el enlace de recuperación.'**
   String get forgotPasswordErrorSemanticLabel;
 
+  /// Botón de inicio de sesión / registro con Google
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Google'**
+  String get continueWithGoogle;
+
+  /// Mensaje cuando el usuario cancela el flujo de Google
+  ///
+  /// In es, this message translates to:
+  /// **'El inicio de sesión con Google fue cancelado.'**
+  String get googleSignInCanceled;
+
+  /// Error genérico de Google Sign-In
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.'**
+  String get googleSignInError;
+
+  /// Botón de inicio de sesión / registro con Apple
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Apple'**
+  String get continueWithApple;
+
+  /// Mensaje cuando el usuario cancela el flujo de Apple
+  ///
+  /// In es, this message translates to:
+  /// **'El inicio de sesión con Apple fue cancelado.'**
+  String get appleSignInCanceled;
+
+  /// Error genérico de Apple Sign-In
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error al iniciar sesión con Apple. Intenta de nuevo.'**
+  String get appleSignInError;
+
+  /// Título de la pantalla de completar perfil (flujo Google)
+  ///
+  /// In es, this message translates to:
+  /// **'Completa tu perfil'**
+  String get completeProfileTitle;
+
+  /// Subtítulo de la pantalla de completar perfil (flujo Google)
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona tu rol y acepta los términos para continuar.'**
+  String get completeProfileSubtitle;
+
+  /// Botón para finalizar el registro vía Google
+  ///
+  /// In es, this message translates to:
+  /// **'Completar registro'**
+  String get completeProfileButton;
+
+  /// Separador 'o' entre opciones de login
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get orDivider;
+
   /// Título home docente
   ///
   /// In es, this message translates to:
@@ -590,7 +740,7 @@ abstract class AppLocalizations {
   /// **'Acciones rápidas'**
   String get quickActionsTitle;
 
-  /// Título bienvenida docente
+  /// Bienvenida docente
   ///
   /// In es, this message translates to:
   /// **'Tus clases están listas'**
@@ -602,7 +752,7 @@ abstract class AppLocalizations {
   /// **'Gestiona tus clases, asigna tareas y monitorea el progreso de tus estudiantes.'**
   String get teacherWelcomeSubtitle;
 
-  /// Título bienvenida alumno
+  /// Bienvenida alumno
   ///
   /// In es, this message translates to:
   /// **'Tu práctica continúa'**
@@ -626,13 +776,13 @@ abstract class AppLocalizations {
   /// **'Sigue avanzando con tus clases y tareas pendientes.'**
   String get studentQuickActionsSubtitle;
 
-  /// Acción mis clases
+  /// Acción gestionar clases
   ///
   /// In es, this message translates to:
   /// **'Mis clases'**
   String get manageClassesAction;
 
-  /// Descripción mis clases
+  /// Descripción acción gestionar clases
   ///
   /// In es, this message translates to:
   /// **'Consulta o crea clases nuevas para tus estudiantes.'**
@@ -644,7 +794,7 @@ abstract class AppLocalizations {
   /// **'Crear clase'**
   String get createClassAction;
 
-  /// Descripción crear clase
+  /// Descripción acción crear clase
   ///
   /// In es, this message translates to:
   /// **'Abre una nueva clase y comparte su código de acceso.'**
@@ -740,13 +890,13 @@ abstract class AppLocalizations {
   /// **'Resumen rápido'**
   String get highlightsTitle;
 
-  /// Resumen docente
+  /// Descripción resumen docente
   ///
   /// In es, this message translates to:
   /// **'Pronto verás alertas de clases con poca actividad y tareas próximas a vencer.'**
   String get teacherHighlightsDescription;
 
-  /// Resumen alumno
+  /// Descripción resumen alumno
   ///
   /// In es, this message translates to:
   /// **'Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.'**
@@ -842,16 +992,16 @@ abstract class AppLocalizations {
   /// **'El código debe tener 6 caracteres válidos'**
   String get accessCodeInvalidFormat;
 
-  /// Resumen: clase activa
+  /// Estado clase activa
   ///
   /// In es, this message translates to:
-  /// **'Activa'**
+  /// **'Clase activa'**
   String get classStatusActive;
 
-  /// Resumen: clase archivada
+  /// Estado clase archivada
   ///
   /// In es, this message translates to:
-  /// **'Archivada'**
+  /// **'Clase archivada'**
   String get classStatusArchived;
 
   /// Acción archivar clase
@@ -866,10 +1016,10 @@ abstract class AppLocalizations {
   /// **'Activar clase'**
   String get activateClassAction;
 
-  /// Confirmación eliminar clase
+  /// Mensaje confirmación eliminar clase
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que deseas eliminar esta clase de forma permanente? Esta acción no se puede deshacer.'**
+  /// **'Esta acción eliminará definitivamente la clase y todas sus membresías.'**
   String get deleteClassConfirmation;
 
   /// Acción regenerar código
@@ -1154,7 +1304,7 @@ abstract class AppLocalizations {
   /// **'Crear nueva tarea'**
   String get createTask;
 
-  /// Título mis tareas (docente)
+  /// Título mis tareas
   ///
   /// In es, this message translates to:
   /// **'Mis tareas'**
@@ -1181,13 +1331,13 @@ abstract class AppLocalizations {
   /// Etiqueta título tarea
   ///
   /// In es, this message translates to:
-  /// **'Título de la tarea'**
+  /// **'Título'**
   String get taskTitleLabel;
 
   /// Hint título tarea
   ///
   /// In es, this message translates to:
-  /// **'Ej: Escalas de Do Mayor'**
+  /// **'Título de la tarea'**
   String get taskTitleHint;
 
   /// Etiqueta descripción tarea
@@ -1199,7 +1349,7 @@ abstract class AppLocalizations {
   /// Etiqueta tiempo estimado
   ///
   /// In es, this message translates to:
-  /// **'Tiempo estimado (minutos)'**
+  /// **'Tiempo estimado'**
   String get estimatedTimeLabel;
 
   /// Estado vacío tareas clase
@@ -1250,7 +1400,7 @@ abstract class AppLocalizations {
   /// **'Tiempo transcurrido'**
   String get elapsedTime;
 
-  /// Estado sin sesiones
+  /// Estado vacío historial
   ///
   /// In es, this message translates to:
   /// **'No hay sesiones registradas'**
@@ -1274,23 +1424,17 @@ abstract class AppLocalizations {
   /// **'{days} días'**
   String daysStreak(int days);
 
-  /// Sección perfil
-  ///
-  /// In es, this message translates to:
-  /// **'Perfil'**
-  String get profileSection;
-
-  /// Hint descripción tarea
-  ///
-  /// In es, this message translates to:
-  /// **'Explica qué debe practicar el alumno'**
-  String get taskDescriptionHint;
-
   /// Hint tiempo estimado
   ///
   /// In es, this message translates to:
   /// **'Ej: 20'**
   String get estimatedTimeHint;
+
+  /// Etiqueta fecha entrega
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de entrega'**
+  String get dueDate;
 
   /// Hint fecha entrega
   ///
@@ -1682,90 +1826,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Sin sesiones} =1{1 sesión} other{{count} sesiones}}'**
   String sessionsLabelCount(int count);
 
-  /// Control iniciar
-  ///
-  /// In es, this message translates to:
-  /// **'Iniciar'**
-  String get timerStart;
-
-  /// Control pausar
-  ///
-  /// In es, this message translates to:
-  /// **'Pausar'**
-  String get timerPause;
-
-  /// Control reanudar
-  ///
-  /// In es, this message translates to:
-  /// **'Reanudar'**
-  String get timerResume;
-
-  /// Control reiniciar
-  ///
-  /// In es, this message translates to:
-  /// **'Reiniciar'**
-  String get timerReset;
-
-  /// Control finalizar
-  ///
-  /// In es, this message translates to:
-  /// **'Finalizar sesión'**
-  String get timerFinish;
-
-  /// Instrucción primera sesión
-  ///
-  /// In es, this message translates to:
-  /// **'Inicia tu primera sesión de estudio para comenzar'**
-  String get startFirstSession;
-
-  /// Filtro hoy
-  ///
-  /// In es, this message translates to:
-  /// **'Hoy'**
-  String get today;
-
-  /// Filtro semana
-  ///
-  /// In es, this message translates to:
-  /// **'Esta semana'**
-  String get thisWeek;
-
-  /// Filtro mes
-  ///
-  /// In es, this message translates to:
-  /// **'Este mes'**
-  String get thisMonth;
-
-  /// Filtro todas
-  ///
-  /// In es, this message translates to:
-  /// **'Todas'**
-  String get all;
-
-  /// Título configuración
-  ///
-  /// In es, this message translates to:
-  /// **'Configuración'**
-  String get settingsTitle;
-
-  /// Sección notificaciones
-  ///
-  /// In es, this message translates to:
-  /// **'Notificaciones'**
-  String get notificationsSection;
-
-  /// Sección apariencia
-  ///
-  /// In es, this message translates to:
-  /// **'Apariencia'**
-  String get appearanceSection;
-
-  /// Sección cuenta
-  ///
-  /// In es, this message translates to:
-  /// **'Cuenta'**
-  String get accountSection;
-
   /// Mensaje desarrollo
   ///
   /// In es, this message translates to:
@@ -1946,6 +2006,12 @@ abstract class AppLocalizations {
   /// **'Automático (Sistema)'**
   String get languageSystem;
 
+  /// Sección apariencia
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearanceSection;
+
   /// Configuración color
   ///
   /// In es, this message translates to:
@@ -1963,6 +2029,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'General'**
   String get generalSection;
+
+  /// Sección cuenta
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta'**
+  String get accountSection;
 
   /// Label versión app
   ///
@@ -2119,6 +2191,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Términos y Condiciones'**
   String get termsAndConditionsTitle;
+
+  /// Error al cargar texto legal
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los términos.'**
+  String get legalTextLoadError;
+
+  /// Error de nombre requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre es requerido'**
+  String get firstNameRequired;
+
+  /// Error de apellido requerido
+  ///
+  /// In es, this message translates to:
+  /// **'Los apellidos son requeridos'**
+  String get lastNameRequired;
+
+  /// Error términos no aceptados
+  ///
+  /// In es, this message translates to:
+  /// **'Debes aceptar los términos y condiciones'**
+  String get termsNotAccepted;
+
+  /// Etiqueta rol
+  ///
+  /// In es, this message translates to:
+  /// **'Rol'**
+  String get roleLabel;
+
+  /// Rol profesor
+  ///
+  /// In es, this message translates to:
+  /// **'Profesor'**
+  String get roleTeacher;
+
+  /// Rol estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiante'**
+  String get roleStudent;
+
+  /// Texto enlace términos
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Condiciones'**
+  String get termsLinkText;
+
+  /// Texto iniciar primera sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Comienza tu primera sesión'**
+  String get startFirstSession;
+
+  /// Hoy
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get today;
+
+  /// Esta semana
+  ///
+  /// In es, this message translates to:
+  /// **'Esta semana'**
+  String get thisWeek;
+
+  /// Este mes
+  ///
+  /// In es, this message translates to:
+  /// **'Este mes'**
+  String get thisMonth;
+
+  /// Todo el tiempo
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get all;
+
+  /// Título ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTitle;
+
+  /// Sección perfil
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get profileSection;
+
+  /// Hint descripción tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción de la tarea'**
+  String get taskDescriptionHint;
+
+  /// Botón empezar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar'**
+  String get timerStart;
+
+  /// Botón pausar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar'**
+  String get timerPause;
+
+  /// Botón reanudar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Reanudar'**
+  String get timerResume;
 }
 
 class _AppLocalizationsDelegate

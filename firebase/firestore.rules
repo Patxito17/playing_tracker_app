@@ -41,16 +41,24 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == userId;
     }
 
-    /// Verifica si el usuario autenticado es un docente (via Custom Claim).
-    /// Sin coste adicional de lectura en Firestore.
+    /// Verifica si el usuario autenticado es un docente.
+    /// Prioridad 1: Custom Claim (sin lectura extra).
+    /// Prioridad 2: Fallback leyendo la colección `teachers`.
     function isTeacher() {
-      return isAuth() && request.auth.token.role == 'teacher';
+      let isAuthValid = isAuth();
+      let hasClaim = isAuthValid && 'role' in request.auth.token && request.auth.token.role == 'teacher';
+      let hasDbRole = isAuthValid && exists(/databases/$(database)/documents/teachers/$(request.auth.uid));
+      return isAuthValid && (hasClaim || hasDbRole);
     }
 
-    /// Verifica si el usuario autenticado es un alumno (via Custom Claim).
-    /// Sin coste adicional de lectura en Firestore.
+    /// Verifica si el usuario autenticado es un alumno.
+    /// Prioridad 1: Custom Claim (sin lectura extra).
+    /// Prioridad 2: Fallback leyendo la colección `students`.
     function isStudent() {
-      return isAuth() && request.auth.token.role == 'student';
+      let isAuthValid = isAuth();
+      let hasClaim = isAuthValid && 'role' in request.auth.token && request.auth.token.role == 'student';
+      let hasDbRole = isAuthValid && exists(/databases/$(database)/documents/students/$(request.auth.uid));
+      return isAuthValid && (hasClaim || hasDbRole);
     }
 
     /// Verifica si el usuario es el creador de la clase
@@ -60,15 +68,15 @@ service cloud.firestore {
     }
 
     /// Valida que un campo de nombre de persona (firstName, lastName) sea válido.
-    /// Máximo 60 caracteres, mínimo 3 caracteres y no vacío.
+    /// Máximo 60 caracteres, mínimo 2 caracteres y no vacío.
     function isValidName(value) {
-      return value is string && value.size() >= 3 && value.size() <= 60;
+      return value is string && value.size() >= 2 && value.size() <= 60;
     }
 
     /// Valida que un título de clase o tarea sea válido.
-    /// Máximo 100 caracteres, mínimo 3 caracteres.
+    /// Máximo 100 caracteres, mínimo 2 caracteres (permite títulos cortos).
     function isValidTitle(value) {
-      return value is string && value.size() >= 3 && value.size() <= 100;
+      return value is string && value.size() >= 2 && value.size() <= 100;
     }
 
     /// Valida que una descripción sea válida (campo opcional).

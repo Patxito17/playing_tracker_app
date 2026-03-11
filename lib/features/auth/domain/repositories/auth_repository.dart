@@ -17,6 +17,30 @@ abstract class AuthRepository {
   /// Registra un usuario con email y contraseña.
   Future<UserCredential> registerWithEmail(String email, String password);
 
+  /// Inicia sesión con Google Sign-In (iOS y Android).
+  /// Lanza [ProfileNotFoundException] si el usuario aún no tiene perfil en Firestore.
+  Future<UserCredential> signInWithGoogle();
+
+  /// Inicia sesión con Apple Sign-In (solo iOS).
+  /// Lanza [ProfileNotFoundException] si el usuario aún no tiene perfil en Firestore.
+  Future<UserCredential> signInWithApple();
+
+  /// Completa el perfil de un docente autenticado vía proveedor social (Google o Apple),
+  /// creando su documento en Firestore sin pasar por email/password.
+  Future<void> completeSocialTeacherProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  });
+
+  /// Completa el perfil de un alumno autenticado vía proveedor social (Google o Apple),
+  /// creando su documento en Firestore sin pasar por email/password.
+  Future<void> completeSocialStudentProfile({
+    required String firstName,
+    required String lastName,
+    String? acceptedTermsVersion,
+  });
+
   /// Obtiene el rol (`teacher` o `student`) de un usuario dado su UID.
   Future<UserRole> getUserRole(String userId);
 
@@ -67,4 +91,14 @@ class AuthRepositoryException implements Exception {
 
   @override
   String toString() => 'AuthRepositoryException: $message';
+}
+
+/// Excepción lanzada cuando un usuario se autentica con Google pero aún
+/// no tiene un documento de perfil (teacher/student) en Firestore.
+class ProfileNotFoundException extends AuthRepositoryException {
+  ProfileNotFoundException()
+    : super(
+        'El usuario autenticado no tiene un perfil en Firestore. '
+        'Debe completar el proceso de registro.',
+      );
 }
