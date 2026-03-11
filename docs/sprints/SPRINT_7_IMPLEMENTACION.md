@@ -142,6 +142,11 @@
   - Independización de estados de carga en `LoginScreen` para evitar indicadores redundantes en el botón de Google Sign-In.
 - **Validación y Permisos**:
   - Actualización de `Validators.dart` y `firestore.rules` para permitir nombres de **2 caracteres**, resolviendo errores de "Permission Denied" para usuarios con nombres cortos.
+### [2026-03-11] Refinamiento de Autenticación y Localización
+- **Localización de Errores:** Implementación de mapeo de errores de Firebase a claves l10n.
+- **UX de Carga:** Separación de estados de carga para Google y Email en `LoginScreen`.
+- **Simplificación Legal:** Cambio en el comportamiento del checkbox de términos en `CompleteProfileScreen`.
+- **Mantenimiento:** Restauración de `FirebaseErrorMapperException` para compatibilidad global.
 - **Localización**:
   - Implementación de `FirebaseErrorMapper` y extensión `context.translateError()` para mostrar errores de autenticación localizados según el idioma del dispositivo.
 - **Seguridad**: Revisión final y despliegue exitoso de las reglas de Firestore para la arquitectura de 7 colecciones.

@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 11 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅) 🚧
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅ | Refactorización l10n Profesional ✅ | Simplificación Legal UX ✅) 🚧
 
 ---
 
@@ -769,7 +769,11 @@ service cloud.firestore {
   - `integration_test/student_flow_test.dart`: flujo alumno completo (Registro → Custom Claim → Dashboard → Clases).
   - Helper `integration_test/helpers/e2e_test_helpers.dart` con aislamiento y limpieza automática de cuentas de prueba.
 - ✅ **Golden Tests** (Fase 2c): 10 casos en 4 grupos sobre `CustomButton`, `CustomCard`, `CustomTextField` y `LoadingOverlay`. Referencias en `test/golden/goldens/`.
-- ✅ **Hotfix de Permisos**: condición de carrera en Custom Claims resuelta. `AuthRepositoryImpl` con polling de 15s y `AuthCubit` sincronizado.
+- ✅ **Refactorización de Localización y UX Legal** (Fase 4):
+  - **Mapeo técnico**: Eliminación de strings manuales en `FirebaseErrorMapper`. Ahora devuelve códigos técnicos o llaves de l10n.
+  - **Extensión `context.translateError`**: Centraliza la lógica de traducción de errores técnicos de Firebase usando `AppLocalizations`.
+  - **Simplificación Legal**: El checkbox de términos en `RegisterScreen` y `CompleteProfileScreen` ahora es de acción directa. El scroll obligatorio solo se mantiene si se abre el diálogo desde el enlace.
+  - **Independencia de carga**: Se añadieron estados de carga independientes para los botones de Google y Email en el login, evitando spinners redundantes.
 - 📅 Optimizaciones de rendimiento: pendiente.
 - 📅 Auditoría de seguridad: pendiente.
 - 📅 App lista para producción: pendiente.

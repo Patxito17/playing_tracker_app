@@ -151,6 +151,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailLabel => 'Email';
 
   @override
+  String get authErrorEmailAlreadyInUse =>
+      'This email is already associated with an account.';
+
+  @override
+  String get authErrorInvalidEmail => 'The email address is not valid.';
+
+  @override
+  String get authErrorUserDisabled =>
+      'This account has been disabled. Please contact support.';
+
+  @override
+  String get authErrorUserNotFound => 'No account found with this email.';
+
+  @override
+  String get authErrorWrongPassword => 'The password you entered is incorrect.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Too many attempts. Please try again later.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'The password is too weak. Please use a stronger one.';
+
+  @override
+  String get authErrorOperationNotAllowed =>
+      'This operation is not currently allowed.';
+
+  @override
+  String get authErrorInvalidCredential =>
+      'The credentials provided are invalid or have expired.';
+
+  @override
+  String get errorNetworkRequestFailed =>
+      'A network error occurred. Please check your connection.';
+
+  @override
+  String get errorNoInternetConnection => 'No internet connection detected.';
+
+  @override
   String get errorPermissionDenied =>
       'You do not have permission to perform this action.';
 
