@@ -95,55 +95,80 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: context.l10n.loginTitle),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: BlocConsumer<AuthCubit, AuthState>(
-                listener: (context, state) {
-                  if (state is! AuthLoading) {
-                    setState(() {
-                      _isGoogleLoading = false;
-                      _isAppleLoading = false;
-                      _isEmailLoading = false;
-                    });
-                  }
-
-                  if (state is AuthAuthenticated) {
-                    final destination = state.role == UserRole.teacher
-                        ? AppRoutes.teacherHome
-                        : AppRoutes.studentHome;
-                    if (!mounted) {
-                      return;
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              context.colorScheme.surface,
+              context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: BlocConsumer<AuthCubit, AuthState>(
+                  listener: (context, state) {
+                    if (state is! AuthLoading) {
+                      setState(() {
+                        _isGoogleLoading = false;
+                        _isAppleLoading = false;
+                        _isEmailLoading = false;
+                      });
                     }
-                    context.go(destination);
-                  }
-                  if (state is AuthProfileIncomplete) {
-                    if (!mounted) return;
-                    context.go(
-                      AppRoutes.completeProfile,
-                      extra: {
-                        'email': state.email,
-                        'displayName': state.displayName,
-                      },
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  final isLoading = state is AuthLoading;
-                  final errorMessage = state is AuthError
-                      ? state.message
-                      : null;
 
-                  return AutofillGroup(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: context.screenHeight * 0.1),
-                        Text(
-                          context.l10n.welcomeTitle,
+                    if (state is AuthAuthenticated) {
+                      final destination = state.role == UserRole.teacher
+                          ? AppRoutes.teacherHome
+                          : AppRoutes.studentHome;
+                      if (!mounted) {
+                        return;
+                      }
+                      context.go(destination);
+                    }
+                    if (state is AuthProfileIncomplete) {
+                      if (!mounted) return;
+                      context.go(
+                        AppRoutes.completeProfile,
+                        extra: {
+                          'email': state.email,
+                          'displayName': state.displayName,
+                        },
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    final isLoading = state is AuthLoading;
+                    final errorMessage = state is AuthError
+                        ? state.message
+                        : null;
+
+                    return Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      color: context.colorScheme.surface,
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: AutofillGroup(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Icon(
+                                Icons.school_rounded,
+                                size: 64,
+                                color: context.colorScheme.primary,
+                              ),
+                              const SizedBox(height: AppSpacing.l),
+                              Text(
+                                context.l10n.welcomeTitle,
                           style: context.displaySmallBold,
                           textAlign: TextAlign.center,
                         ),
@@ -331,10 +356,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  );
-                },
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                ),
               ),
             ),
           ),

@@ -113,7 +113,12 @@ class CustomButton extends StatelessWidget {
   Widget _buildFilledButton(BuildContext context) {
     return FilledButton(
       onPressed: _isDisabled ? null : onPressed,
-      style: style,
+      style: style ??
+          FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
       child: _buildButtonContent(context),
     );
   }
@@ -122,7 +127,12 @@ class CustomButton extends StatelessWidget {
   Widget _buildOutlinedButton(BuildContext context) {
     return OutlinedButton(
       onPressed: _isDisabled ? null : onPressed,
-      style: style,
+      style: style ??
+          OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
       child: _buildButtonContent(context),
     );
   }
@@ -131,7 +141,12 @@ class CustomButton extends StatelessWidget {
   Widget _buildTextButton(BuildContext context) {
     return TextButton(
       onPressed: _isDisabled ? null : onPressed,
-      style: style,
+      style: style ??
+          TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
       child: _buildButtonContent(context),
     );
   }
