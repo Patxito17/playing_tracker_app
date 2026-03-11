@@ -54,6 +54,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Checkbox de términos aceptados
   bool _termsAccepted = false;
 
+  // Estados de carga independientes
+  bool _isEmailLoading = false;
+
   // Mensaje de error global (por ejemplo, términos no aceptados)
   String? _formError;
 
@@ -189,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     setState(() {
       _formError = null;
+      _isEmailLoading = true;
     });
 
     // Si hay errores, no continuar
@@ -235,6 +239,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: const EdgeInsets.all(AppSpacing.l),
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
+                  if (state is! AuthLoading) {
+                    setState(() {
+                      _isEmailLoading = false;
+                    });
+                  }
+
                   if (state is AuthAuthenticated) {
                     final destination = state.role == UserRole.teacher
                         ? AppRoutes.teacherHome
@@ -581,7 +591,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         CustomButton(
                           label: context.l10n.registerButton,
                           variant: CustomButtonVariant.filled,
-                          isLoading: isLoading,
+                          isLoading: _isEmailLoading,
                           onPressed: isLoading ? null : _handleRegister,
                         ),
 

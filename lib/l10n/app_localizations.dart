@@ -368,6 +368,72 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get emailLabel;
 
+  /// Error cuando el correo ya está registrado
+  ///
+  /// In es, this message translates to:
+  /// **'Este correo electrónico ya está asociado a una cuenta.'**
+  String get authErrorEmailAlreadyInUse;
+
+  /// Error cuando el formato del correo es inválido
+  ///
+  /// In es, this message translates to:
+  /// **'La dirección de correo electrónico no es válida.'**
+  String get authErrorInvalidEmail;
+
+  /// Error cuando la cuenta está desactivada
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta ha sido desactivada. Por favor, contacta con soporte.'**
+  String get authErrorUserDisabled;
+
+  /// Error cuando el usuario no existe
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró ninguna cuenta con este correo.'**
+  String get authErrorUserNotFound;
+
+  /// Error cuando la contraseña es incorrecta
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña ingresada es incorrecta.'**
+  String get authErrorWrongPassword;
+
+  /// Error cuando se realizan demasiadas solicitudes
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Por favor, inténtalo más tarde.'**
+  String get authErrorTooManyRequests;
+
+  /// Error cuando la contraseña es débil
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña es muy débil. Por favor, usa una más segura.'**
+  String get authErrorWeakPassword;
+
+  /// Error cuando la operación no está habilitada
+  ///
+  /// In es, this message translates to:
+  /// **'Esta operación no está permitida actualmente.'**
+  String get authErrorOperationNotAllowed;
+
+  /// Error cuando las credenciales son inválidas
+  ///
+  /// In es, this message translates to:
+  /// **'Las credenciales proporcionadas son inválidas o han caducado.'**
+  String get authErrorInvalidCredential;
+
+  /// Error de fallo en la solicitud de red
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error de red. Por favor, verifica tu conexión.'**
+  String get errorNetworkRequestFailed;
+
+  /// Error de falta de conexión a internet
+  ///
+  /// In es, this message translates to:
+  /// **'No se detectó conexión a internet.'**
+  String get errorNoInternetConnection;
+
   /// Error de permisos denegados de Firebase
   ///
   /// In es, this message translates to:

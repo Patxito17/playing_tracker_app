@@ -105,27 +105,49 @@ extension BuildContextExtensions on BuildContext {
   /// Uso: `context.l10n.miString`
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 
-  /// Traduce una clave de error de Firebase o retorna el mensaje original si no es una clave.
-  String translateError(String errorKeyOrMessage) {
-    switch (errorKeyOrMessage) {
+  /// Helper para traducir errores técnicos de Firebase usando l10n.
+  /// Mapea la clave técnica retornada por FirebaseErrorMapper
+  /// a la propiedad correspondiente en AppLocalizations.
+  String translateError(String errorKey) {
+    final localizations = l10n;
+
+    switch (errorKey) {
+      case 'authErrorInvalidEmail':
+        return localizations.authErrorInvalidEmail;
+      case 'authErrorUserDisabled':
+        return localizations.authErrorUserDisabled;
+      case 'authErrorUserNotFound':
+        return localizations.authErrorUserNotFound;
+      case 'authErrorWrongPassword':
+        return localizations.authErrorWrongPassword;
+      case 'authErrorEmailAlreadyInUse':
+        return localizations.authErrorEmailAlreadyInUse;
+      case 'authErrorWeakPassword':
+        return localizations.authErrorWeakPassword;
+      case 'authErrorTooManyRequests':
+        return localizations.authErrorTooManyRequests;
+      case 'authErrorOperationNotAllowed':
+        return localizations.authErrorOperationNotAllowed;
+      case 'authErrorInvalidCredential':
+        return localizations.authErrorInvalidCredential;
+      case 'errorNetworkRequestFailed':
+        return localizations.errorNetworkRequestFailed;
+      case 'errorNoInternetConnection':
+        return localizations.errorNoInternetConnection;
       case 'errorPermissionDenied':
-        return l10n.errorPermissionDenied;
+        return localizations.errorPermissionDenied;
       case 'errorFailedPrecondition':
-        return l10n.errorFailedPrecondition;
+        return localizations.errorFailedPrecondition;
       case 'errorServiceUnavailable':
-        return l10n.errorServiceUnavailable;
-      case 'errorGeneric':
-        return l10n.errorGeneric;
+        return localizations.errorServiceUnavailable;
       case 'emailInvalidFormat':
-        return l10n.emailInvalidFormat;
+        return localizations.emailInvalidFormat;
       case 'passwordMinLength':
-        return l10n.passwordMinLength;
-      case 'googleSignInCanceled':
-        return l10n.googleSignInCanceled;
+        return localizations.passwordMinLength;
       case 'googleSignInError':
-        return l10n.googleSignInError;
+        return localizations.googleSignInError;
       default:
-        return errorKeyOrMessage;
+        return errorKey;
     }
   }
 }

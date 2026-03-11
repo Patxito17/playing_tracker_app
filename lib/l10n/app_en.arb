@@ -198,6 +198,50 @@
   "@emailLabel": {
     "description": "Email field label"
   },
+  "authErrorEmailAlreadyInUse": "This email is already associated with an account.",
+  "@authErrorEmailAlreadyInUse": {
+    "description": "Error when email is already registered"
+  },
+  "authErrorInvalidEmail": "The email address is not valid.",
+  "@authErrorInvalidEmail": {
+    "description": "Error when email format is invalid"
+  },
+  "authErrorUserDisabled": "This account has been disabled. Please contact support.",
+  "@authErrorUserDisabled": {
+    "description": "Error when account is disabled"
+  },
+  "authErrorUserNotFound": "No account found with this email.",
+  "@authErrorUserNotFound": {
+    "description": "Error when user is not found"
+  },
+  "authErrorWrongPassword": "The password you entered is incorrect.",
+  "@authErrorWrongPassword": {
+    "description": "Error when password is wrong"
+  },
+  "authErrorTooManyRequests": "Too many attempts. Please try again later.",
+  "@authErrorTooManyRequests": {
+    "description": "Error when too many requests are made"
+  },
+  "authErrorWeakPassword": "The password is too weak. Please use a stronger one.",
+  "@authErrorWeakPassword": {
+    "description": "Error when password is weak"
+  },
+  "authErrorOperationNotAllowed": "This operation is not currently allowed.",
+  "@authErrorOperationNotAllowed": {
+    "description": "Error when operation is not enabled"
+  },
+  "authErrorInvalidCredential": "The credentials provided are invalid or have expired.",
+  "@authErrorInvalidCredential": {
+    "description": "Error when credentials are invalid"
+  },
+  "errorNetworkRequestFailed": "A network error occurred. Please check your connection.",
+  "@errorNetworkRequestFailed": {
+    "description": "Network request failed error"
+  },
+  "errorNoInternetConnection": "No internet connection detected.",
+  "@errorNoInternetConnection": {
+    "description": "No internet connection error"
+  },
   "errorPermissionDenied": "You do not have permission to perform this action.",
   "@errorPermissionDenied": {
     "description": "Firebase permission denied error"

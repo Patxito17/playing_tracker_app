@@ -198,6 +198,50 @@
   "@emailLabel": {
     "description": "Etiqueta del campo de email"
   },
+  "authErrorEmailAlreadyInUse": "Este correo electrónico ya está asociado a una cuenta.",
+  "@authErrorEmailAlreadyInUse": {
+    "description": "Error cuando el correo ya está registrado"
+  },
+  "authErrorInvalidEmail": "La dirección de correo electrónico no es válida.",
+  "@authErrorInvalidEmail": {
+    "description": "Error cuando el formato del correo es inválido"
+  },
+  "authErrorUserDisabled": "Esta cuenta ha sido desactivada. Por favor, contacta con soporte.",
+  "@authErrorUserDisabled": {
+    "description": "Error cuando la cuenta está desactivada"
+  },
+  "authErrorUserNotFound": "No se encontró ninguna cuenta con este correo.",
+  "@authErrorUserNotFound": {
+    "description": "Error cuando el usuario no existe"
+  },
+  "authErrorWrongPassword": "La contraseña ingresada es incorrecta.",
+  "@authErrorWrongPassword": {
+    "description": "Error cuando la contraseña es incorrecta"
+  },
+  "authErrorTooManyRequests": "Demasiados intentos. Por favor, inténtalo más tarde.",
+  "@authErrorTooManyRequests": {
+    "description": "Error cuando se realizan demasiadas solicitudes"
+  },
+  "authErrorWeakPassword": "La contraseña es muy débil. Por favor, usa una más segura.",
+  "@authErrorWeakPassword": {
+    "description": "Error cuando la contraseña es débil"
+  },
+  "authErrorOperationNotAllowed": "Esta operación no está permitida actualmente.",
+  "@authErrorOperationNotAllowed": {
+    "description": "Error cuando la operación no está habilitada"
+  },
+  "authErrorInvalidCredential": "Las credenciales proporcionadas son inválidas o han caducado.",
+  "@authErrorInvalidCredential": {
+    "description": "Error cuando las credenciales son inválidas"
+  },
+  "errorNetworkRequestFailed": "Ocurrió un error de red. Por favor, verifica tu conexión.",
+  "@errorNetworkRequestFailed": {
+    "description": "Error de fallo en la solicitud de red"
+  },
+  "errorNoInternetConnection": "No se detectó conexión a internet.",
+  "@errorNoInternetConnection": {
+    "description": "Error de falta de conexión a internet"
+  },
   "errorPermissionDenied": "No tienes permisos para realizar esta acción.",
   "@errorPermissionDenied": {
     "description": "Error de permisos denegados de Firebase"

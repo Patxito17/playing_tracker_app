@@ -13,8 +13,8 @@ class FirebaseErrorMapper {
     if (error is FirebaseException) {
       return _mapGenericFirebaseError(error);
     }
-    if (error is FirebaseErrorMapperException) {
-      return error.message;
+    if (error is String) {
+      return error; // Probablemente ya es una clave l10n
     }
     return 'errorGeneric';
   }
@@ -22,18 +22,25 @@ class FirebaseErrorMapper {
   static String _mapAuthError(FirebaseAuthException error) {
     switch (error.code) {
       case 'invalid-email':
-        return 'emailInvalidFormat';
+        return 'authErrorInvalidEmail';
       case 'user-disabled':
-        return 'errorGeneric'; // O uno específico si existe
+        return 'authErrorUserDisabled';
       case 'user-not-found':
+        return 'authErrorUserNotFound';
       case 'wrong-password':
-        return 'emailInvalidFormat'; // O 'auth/wrong-password'
+        return 'authErrorWrongPassword';
       case 'email-already-in-use':
-        return 'errorGeneric';
+        return 'authErrorEmailAlreadyInUse';
       case 'weak-password':
-        return 'passwordMinLength';
+        return 'authErrorWeakPassword';
       case 'too-many-requests':
-        return 'errorGeneric';
+        return 'authErrorTooManyRequests';
+      case 'operation-not-allowed':
+        return 'authErrorOperationNotAllowed';
+      case 'invalid-credential':
+        return 'authErrorInvalidCredential';
+      case 'network-request-failed':
+        return 'errorNetworkRequestFailed';
       default:
         return 'errorGeneric';
     }

@@ -152,6 +152,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get emailLabel => 'Email';
 
   @override
+  String get authErrorEmailAlreadyInUse =>
+      'Este correo electrónico ya está asociado a una cuenta.';
+
+  @override
+  String get authErrorInvalidEmail =>
+      'La dirección de correo electrónico no es válida.';
+
+  @override
+  String get authErrorUserDisabled =>
+      'Esta cuenta ha sido desactivada. Por favor, contacta con soporte.';
+
+  @override
+  String get authErrorUserNotFound =>
+      'No se encontró ninguna cuenta con este correo.';
+
+  @override
+  String get authErrorWrongPassword => 'La contraseña ingresada es incorrecta.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Demasiados intentos. Por favor, inténtalo más tarde.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'La contraseña es muy débil. Por favor, usa una más segura.';
+
+  @override
+  String get authErrorOperationNotAllowed =>
+      'Esta operación no está permitida actualmente.';
+
+  @override
+  String get authErrorInvalidCredential =>
+      'Las credenciales proporcionadas son inválidas o han caducado.';
+
+  @override
+  String get errorNetworkRequestFailed =>
+      'Ocurrió un error de red. Por favor, verifica tu conexión.';
+
+  @override
+  String get errorNoInternetConnection => 'No se detectó conexión a internet.';
+
+  @override
   String get errorPermissionDenied =>
       'No tienes permisos para realizar esta acción.';
 

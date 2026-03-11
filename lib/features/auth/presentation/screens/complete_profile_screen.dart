@@ -301,13 +301,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             onChanged: isLoading
                                 ? null
                                 : (value) {
-                                    if (value == true) {
-                                      _openLegalDialog();
-                                    } else {
-                                      setState(() {
-                                        _termsAccepted = false;
-                                      });
-                                    }
+                                    setState(() {
+                                      _termsAccepted = value ?? false;
+                                      if (_termsAccepted) {
+                                        _formError = null;
+                                      }
+                                    });
                                   },
                           ),
                           Expanded(
@@ -316,11 +315,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               child: Text.rich(
                                 TextSpan(
                                   text: '${context.l10n.acceptTermsPrefix} ',
-                                  style: context.bodyMediumOnSurface,
+                                  style: context.bodySmallOnSurfaceVariant,
                                   children: [
                                     TextSpan(
                                       text: context.l10n.termsLinkText,
-                                      style: context.textPrimary,
+                                      style: context.textPrimary?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ],
                                 ),
