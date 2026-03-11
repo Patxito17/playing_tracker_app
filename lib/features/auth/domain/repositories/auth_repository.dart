@@ -21,17 +21,21 @@ abstract class AuthRepository {
   /// Lanza [ProfileNotFoundException] si el usuario aún no tiene perfil en Firestore.
   Future<UserCredential> signInWithGoogle();
 
-  /// Completa el perfil de un docente autenticado vía Google,
+  /// Inicia sesión con Apple Sign-In (solo iOS).
+  /// Lanza [ProfileNotFoundException] si el usuario aún no tiene perfil en Firestore.
+  Future<UserCredential> signInWithApple();
+
+  /// Completa el perfil de un docente autenticado vía proveedor social (Google o Apple),
   /// creando su documento en Firestore sin pasar por email/password.
-  Future<void> completeGoogleTeacherProfile({
+  Future<void> completeSocialTeacherProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,
   });
 
-  /// Completa el perfil de un alumno autenticado vía Google,
+  /// Completa el perfil de un alumno autenticado vía proveedor social (Google o Apple),
   /// creando su documento en Firestore sin pasar por email/password.
-  Future<void> completeGoogleStudentProfile({
+  Future<void> completeSocialStudentProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart'
     show GoogleSignIn, GoogleSignInException, GoogleSignInExceptionCode;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
@@ -113,7 +114,49 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> completeGoogleTeacherProfile({
+  Future<UserCredential> signInWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final credential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+
+      // Verificar si el usuario ya tiene perfil en Firestore.
+      final uid = userCredential.user!.uid;
+      final teacherDoc = await _teachersRef.doc(uid).get();
+      final studentDoc = await _studentsRef.doc(uid).get();
+
+      if (!teacherDoc.exists && !studentDoc.exists) {
+        throw ProfileNotFoundException();
+      }
+
+      return userCredential;
+    } on ProfileNotFoundException {
+      rethrow;
+    } on AuthRepositoryException {
+      rethrow;
+    } catch (error) {
+      if (error.toString().contains('SignInWithAppleAuthorizationError.canceled') ||
+          error.toString().contains('canceled')) {
+        throw AuthRepositoryException('appleSignInCanceled');
+      }
+      throw AuthRepositoryException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  @override
+  Future<void> completeSocialTeacherProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,
@@ -134,7 +177,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> completeGoogleStudentProfile({
+  Future<void> completeSocialStudentProfile({
     required String firstName,
     required String lastName,
     String? acceptedTermsVersion,

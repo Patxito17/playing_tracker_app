@@ -150,6 +150,12 @@
 - **Localización**:
   - Implementación de `FirebaseErrorMapper` y extensión `context.translateError()` para mostrar errores de autenticación localizados según el idioma del dispositivo.
 - **Seguridad**: Revisión final y despliegue exitoso de las reglas de Firestore para la arquitectura de 7 colecciones.
+- **Apple Sign-In (iOS)**: 
+  - Integración del paquete `sign_in_with_apple`.
+  - Implementación de `signInWithApple` en `AuthRepository` y `AuthCubit`.
+  - Botón de Apple Sign-In condicional (solo visible en iOS) en `LoginScreen`.
+  - Localización completa (ES/EN) de mensajes y estados de Apple Sign-In.
+  - Flujo de perfil incompleto integrado para nuevos usuarios con Apple.
 
 ### Estado de Verificación Automática
 - [x] Unit Tests: 360/360 pass.
@@ -172,11 +178,14 @@
 
 ### Simulador iOS (Perfil Docente)
 1. Lanzar la app en el simulador iOS.
-2. Mismo flujo anterior con rol **docente**.
-3. **Verificar**: el idioma del diálogo cambia según la configuración del sistema (ES → `terms_es.md`, EN → `terms_en.md`).
-4. Verificar que el tap en "política de privacidad" también abre el mismo diálogo completo.
-5. Pulsar "No acepto" → el checkbox del formulario **no** se activa.
-6. Completar registro → verificar navegación al Dashboard del docente sin errores.
+2. **Verificar**: En la pantalla de Login, aparece el botón "Continuar con Apple" debajo del de Google.
+3. Pulsar "Continuar con Apple".
+4. **Verificar**: Se abre el modal nativo de Apple para autorizar el acceso.
+5. Autorizar y completar el flujo (si es cuenta nueva, redirigirá a `CompleteProfileScreen`).
+6. **Verificar**: El login se completa y se navega al Dashboard tras asignar el rol correspondiente.
+7. Verificar que el tap en "política de privacidad" también abre el mismo diálogo completo.
+8. Pulsar "No acepto" → el checkbox del formulario **no** se activa.
+9. Completar registro → verificar navegación al Dashboard del docente sin errores.
 
 ---
 

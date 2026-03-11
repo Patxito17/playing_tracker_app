@@ -38,7 +38,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
   Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 y validada nuevamente al incorporar `fake_cloud_firestore` para las pruebas de servicios en Sprint 3.
 - **Backend:** Firebase ✅
-  - Firebase Authentication ✅ (Email/Password & Google Sign In)
+  - Firebase Authentication ✅ (Email/Password, Google Sign In & Apple Sign In)
   - Cloud Firestore ✅ (Base de datos NoSQL)
   - Firebase Storage 📅 (Próximamente)
   - Cloud Functions 📅 (Próximamente)
@@ -327,6 +327,7 @@ lib/
 - ✅ Manejo de errores de Firebase en español
 - ✅ Estados de carga y feedback visual
 - ✅ Navegación condicional según rol (docente/alumno)
+- ✅ **Sign In with Apple (iOS only)**: Integrado como proveedor federado, con soporte para perfiles incompletos y localización.
 - ✅ Suite de pruebas unitarias/widget que cubre AuthCubit y las redirecciones del router
 
 #### Estado actual de pruebas

@@ -40,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Estados de carga independientes para evitar spinners redundantes
   bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
   bool _isEmailLoading = false;
 
   @override
@@ -105,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (state is! AuthLoading) {
                     setState(() {
                       _isGoogleLoading = false;
+                      _isAppleLoading = false;
                       _isEmailLoading = false;
                     });
                   }
@@ -290,6 +292,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context.read<AuthCubit>().signInWithGoogle();
                                 },
                         ),
+
+                        // Botón de Apple Sign-In (solo iOS)
+                        if (Theme.of(context).platform ==
+                            TargetPlatform.iOS) ...[
+                          const SizedBox(height: AppSpacing.l),
+                          CustomButton(
+                            label: context.l10n.continueWithApple,
+                            variant: CustomButtonVariant.outlined,
+                            isLoading: _isAppleLoading,
+                            prefixWidget: const Icon(Icons.apple, size: 24),
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    setState(() => _isAppleLoading = true);
+                                    context.read<AuthCubit>().signInWithApple();
+                                  },
+                          ),
+                        ],
                         const SizedBox(height: AppSpacing.xl),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
