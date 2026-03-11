@@ -50,12 +50,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
               emit(AssignmentError(message: error.message, cause: error));
               return;
             }
-            emit(
-              AssignmentError(
-                message: '',
-                cause: error,
-              ),
-            );
+            emit(AssignmentError(message: '', cause: error));
           },
         );
   }

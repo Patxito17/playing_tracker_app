@@ -47,6 +47,7 @@ help:
 	@echo ""
 	@echo "$(BOLD)── Entorno ─────────────────────────────────────────────$(RESET)"
 	@echo "  $(GREEN)make setup$(RESET)       Instala dependencias (pub get) y genera código"
+	@echo "  $(GREEN)make clean-l10n$(RESET)  Elimina claves duplicadas en .arb y regenera l10n"
 	@echo "  $(GREEN)make clean$(RESET)       Limpia artefactos de compilación (flutter clean)"
 	@echo "  $(GREEN)make analyze$(RESET)     Analiza el código Dart en busca de errores/warnings"
 	@echo "  $(GREEN)make test$(RESET)        Ejecuta todos los tests unitarios y de widget"
@@ -93,6 +94,15 @@ setup:
 	@echo "$(BLUE)▶ Generando traducciones (l10n)...$(RESET)"
 	flutter gen-l10n
 	@echo "$(GREEN)✅ Setup completado.$(RESET)"
+
+## Elimina claves duplicadas en los archivos de traducción (.arb)
+.PHONY: clean-l10n
+clean-l10n:
+	@echo "$(YELLOW)🧹 Buscando y eliminando duplicados en archivos .arb...$(RESET)"
+	@python3 scripts/remove_arb_duplicates.py lib/l10n/app_en.arb lib/l10n/app_es.arb
+	@echo "$(BLUE)▶ Regenerando traducciones (l10n)...$(RESET)"
+	flutter gen-l10n
+	@echo "$(GREEN)✅ Archivos de traducción limpiados.$(RESET)"
 
 ## Limpia artefactos de compilación de Flutter
 .PHONY: clean

@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 3 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅) 🚧
+**Última actualización:** 11 de Marzo 2026
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅ | Refactorización l10n Profesional ✅ | Simplificación Legal UX ✅) 🚧
 
 ---
 
@@ -11,10 +11,10 @@
 
 ### 🎯 Enfoque de Desarrollo
 - 🎨 **Diseño primero:** Implementación de UI/UX completa antes de la lógica
-- 🏗️ **Arquitectura escalable:** Base de datos NoSQL optimizada con 6 colecciones top-level
+- 🏗️ **Arquitectura escalable:** Base de datos NoSQL optimizada con 7 colecciones top-level
 - 🔄 **Desarrollo iterativo:** Sprints enfocados en funcionalidades completas
 - 📱 **Material Design 3:** Experiencia de usuario moderna y accesible
-- 🔐 **Seguridad robusta:** Reglas de Firestore optimizadas para roles docente/alumno
+- 🔐 **Seguridad robusta:** Reglas de Firestore optimizadas para roles docente/alumno (Custom Claims)
 
 ---
 
@@ -38,7 +38,7 @@ Desarrollar una app móvil multiplataforma (iOS y Android) que permita **asignar
 - **Frontend:** Flutter 3.38.x (Dart 3.10.x) ✅
   Migración de `environment.sdk` a ^3.10.x documentada en Sprint 2 y validada nuevamente al incorporar `fake_cloud_firestore` para las pruebas de servicios en Sprint 3.
 - **Backend:** Firebase ✅
-  - Firebase Authentication ✅ (Email/Password)
+  - Firebase Authentication ✅ (Email/Password, Google Sign In & Apple Sign In)
   - Cloud Firestore ✅ (Base de datos NoSQL)
   - Firebase Storage 📅 (Próximamente)
   - Cloud Functions 📅 (Próximamente)
@@ -317,7 +317,7 @@ lib/
 - ✅ Registro con firstName, lastName, email, password y rol
 - ✅ Validaciones en español:
   - Email válido
-  - Nombre y apellidos (mínimo 3 caracteres, solo letras y espacios)
+  - Nombre y apellidos (mínimo 2 caracteres, solo letras y espacios)
   - Contraseña (mínimo 6 caracteres)
   - Confirmación de contraseña
   - Aceptación de términos
@@ -327,6 +327,7 @@ lib/
 - ✅ Manejo de errores de Firebase en español
 - ✅ Estados de carga y feedback visual
 - ✅ Navegación condicional según rol (docente/alumno)
+- ✅ **Sign In with Apple (iOS only)**: Integrado como proveedor federado, con soporte para perfiles incompletos y localización.
 - ✅ Suite de pruebas unitarias/widget que cubre AuthCubit y las redirecciones del router
 
 #### Estado actual de pruebas
@@ -339,7 +340,7 @@ lib/
 
 ## 📊 Base de Datos (Firestore) - Arquitectura Optimizada
 
-### 🏗️ Modelo de Colecciones Top-Level (6 Colecciones)
+### 🏗️ Modelo de Colecciones Top-Level (7 Colecciones)
 
 Adoptamos una **arquitectura de colecciones desanidadas de primer nivel** que modela relaciones N:M mediante documentos intermedios, optimizada para **rendimiento en lectura** y **escalabilidad anti-hotspot**.
 
@@ -504,52 +505,41 @@ sessions/{sessionId}
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    // Helpers
     function isAuth() { return request.auth != null; }
-    function isOwner(doc) { return isAuth() && doc.ownerTeacherId == request.auth.uid; }
-
-    // Perfiles de usuarios
-    match /teachers/{teacherId} {
-      allow read, write: if isAuth() && request.auth.uid == teacherId;
+    function isOwner(userId) { return isAuth() && request.auth.uid == userId; }
+    function isTeacher() { 
+      return isAuth() && (request.auth.token.role == 'teacher' || exists(/databases/$(database)/documents/teachers/$(request.auth.uid))); 
+    }
+    function isStudent() { 
+      return isAuth() && (request.auth.token.role == 'student' || exists(/databases/$(database)/documents/students/$(request.auth.uid))); 
     }
 
-    match /students/{studentId} {
-      allow read, write: if isAuth() && request.auth.uid == studentId;
-    }
-
-    // Clases
-    match /classes/{classId} {
-      allow write: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
+    // Colecciones
+    match /teachers/{id} { allow read, write: if isOwner(id); }
+    match /students/{id} { allow read, write: if isOwner(id) || isTeacher(); }
+    match /classes/{id} { 
       allow read: if isAuth();
+      allow create: if isTeacher();
+      allow update, delete: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
     }
-
-    // Membresías
-    match /memberships/{membershipId} {
-      allow write: if isAuth() && request.resource.data.teacherId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
+    match /memberships/{id} { 
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow create, update, delete: if isTeacher();
     }
-
-    // Tareas
-    match /tasks/{taskId} {
-      allow write: if isAuth() && resource.data.createdBy == request.auth.uid;
+    match /tasks/{id} { 
       allow read: if isAuth();
+      allow create: if isTeacher();
+      allow update, delete: if isAuth() && resource.data.createdBy == request.auth.uid;
     }
-
-    // Asignaciones
-    match /assignments/{assignmentId} {
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
-      allow write: if isAuth() && (resource.data.teacherId == request.auth.uid
-                                  || request.resource.data.studentId == request.auth.uid);
+    match /assignments/{id} { 
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow write: if isAuth() && (resource.data.teacherId == request.auth.uid || resource.data.studentId == request.auth.uid);
     }
-
-    // Sesiones
-    match /sessions/{sessionId} {
-      allow create: if isAuth() && request.resource.data.studentId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
-      allow update, delete: if false; // Inmutabilidad de métricas
+    match /sessions/{id} { 
+      allow create: if isStudent();
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow update, delete: if false; // Inmutabilidad
     }
   }
 }
@@ -622,7 +612,7 @@ service cloud.firestore {
 **Documento:** [`SPRINT_2_IMPLEMENTACION.md`](sprints/SPRINT_2_IMPLEMENTACION.md)
 
 **Objetivos:**
-- 🔐 **Firebase Authentication** integrado (email/password)
+- 🔐 **Firebase Authentication** integrado (email/password y Google Sign In)
 - 👥 **Gestión de perfiles** diferenciados (Teacher/Student) en Firestore
 - 🔄 **Gestión de estado** con Cubit + hydrated_bloc
 - 🧭 **Navegación condicional** por rol con GoRouter
@@ -632,11 +622,13 @@ service cloud.firestore {
 
 **Stack Tecnológico:**
 - `firebase_auth: ^6.1.2` - Autenticación
+- `google_sign_in: ^6.2.1` - Federated Auth
 - `hydrated_bloc: ^10.1.1` - Persistencia automática de estado
 - `go_router: ^17.0.0` - Navegación declarativa con guards reactivos
 - `path_provider: ^2.1.5` - Storage multiplataforma
 
-**Avances recientes (20 nov 2025):**
+**Avances recientes (Marzo 2026):**
+- ✅ Implementación de Google Sign In: Soporte para crear perfiles desde Identity Providers externos. Adición de `AuthProfileIncomplete` y `complete_profile_screen.dart`.
 - ✅ Fase 2 completada con `AuthCubit` hidratado + tests unitarios.
 - ✅ Fase 3 completada con `AuthRepositoryImpl` (Firebase Auth + Firestore) y helper `firebase_error_mapper.dart`.
 - ✅ Fase 4 completada: `AppRoutes` ahora escucha `AuthCubit`, se creó `GoRouterRefreshStream` y se removieron mocks (`AuthWrapper`, `navigation_helper.dart`).
@@ -778,7 +770,11 @@ service cloud.firestore {
   - `integration_test/student_flow_test.dart`: flujo alumno completo (Registro → Custom Claim → Dashboard → Clases).
   - Helper `integration_test/helpers/e2e_test_helpers.dart` con aislamiento y limpieza automática de cuentas de prueba.
 - ✅ **Golden Tests** (Fase 2c): 10 casos en 4 grupos sobre `CustomButton`, `CustomCard`, `CustomTextField` y `LoadingOverlay`. Referencias en `test/golden/goldens/`.
-- ✅ **Hotfix de Permisos**: condición de carrera en Custom Claims resuelta. `AuthRepositoryImpl` con polling de 15s y `AuthCubit` sincronizado.
+- ✅ **Refactorización de Localización y UX Legal** (Fase 4):
+  - **Mapeo técnico**: Eliminación de strings manuales en `FirebaseErrorMapper`. Ahora devuelve códigos técnicos o llaves de l10n.
+  - **Extensión `context.translateError`**: Centraliza la lógica de traducción de errores técnicos de Firebase usando `AppLocalizations`.
+  - **Simplificación Legal**: El checkbox de términos en `RegisterScreen` y `CompleteProfileScreen` ahora es de acción directa. El scroll obligatorio solo se mantiene si se abre el diálogo desde el enlace.
+  - **Independencia de carga**: Se añadieron estados de carga independientes para los botones de Google y Email en el login, evitando spinners redundantes.
 - 📅 Optimizaciones de rendimiento: pendiente.
 - 📅 Auditoría de seguridad: pendiente.
 - 📅 App lista para producción: pendiente.

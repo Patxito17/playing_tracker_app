@@ -1,8 +1,8 @@
 # SPRINT 7: Testing, l10n y Optimización Profesional
 
-**Estado:** ✅ COMPLETADO (Fases 1–5)
+**Estado:** ✅ COMPLETADO
 **Fecha de inicio:** 2026-01-26
-**Fecha de completación:** 2 de Marzo 2026
+**Fecha de completación:** 11 de Marzo 2026
 **Duración estimada:** 3 semanas
 
 ---
@@ -75,7 +75,7 @@
 - [x] **Auditoría de Seguridad**:
     - [x] Validaciones espejo en Firestore Rules (`isValidName`, `isValidTitle`, `isValidDescription`) para prevenir bypasses via REST API.
     - [x] `lib/core/utils/validators.dart`: límites de longitud (60 nombres, 100 títulos/email), sanitización mínima (trim + colapso de espacios múltiples). Nuevo validador `Validators.title()`.
-    - [x] Reglas publicadas en Firebase: `firebase deploy --only firestore:rules` ✅ compiladas y publicadas.
+    - [x] Reglas publicadas en Firebase: `firebase deploy --only firestore:rules` ✅ publicadas y validadas el 11 de Marzo de 2026.
 - [x] **Accesibilidad (A11y)**:
     - [x] `CustomCard`: `MergeSemantics` contextual (sin acciones = merge todo; con acciones = Semantics individual) + propiedad `semanticLabel` personalizable.
     - [x] `LoadingOverlay`: `Semantics(liveRegion: true)` + anuncio de "Carga completada" via `SemanticsService.sendAnnouncement` al finalizar el `Future`.
@@ -133,6 +133,37 @@
 
 ---
 
+### Corrección de Errores y Optimizaciones Finales (11/03/2026)
+
+- **Corrección de ruteo**: Se solventó un `_TypeError` al navegar a `CompleteProfileScreen` ajustando el casting de `state.extra` de `Map<String, String?>?` a `Map<String, dynamic>?`.
+- **Persistencia UI**: Se implementó un fallback en `CompleteProfileScreen` para recuperar datos del perfil directamente desde el estado de `AuthCubit`, evitando fallos si los datos de navegación se pierden en una redirección o recarga.
+- **UX y UI**: 
+  - Pre-rellenado automático de nombre y apellidos extraídos del `displayName` de Google.
+  - Independización de estados de carga en `LoginScreen` para evitar indicadores redundantes en el botón de Google Sign-In.
+- **Validación y Permisos**:
+  - Actualización de `Validators.dart` y `firestore.rules` para permitir nombres de **2 caracteres**, resolviendo errores de "Permission Denied" para usuarios con nombres cortos.
+### [2026-03-11] Refinamiento de Autenticación y Localización
+- **Localización de Errores:** Implementación de mapeo de errores de Firebase a claves l10n.
+- **UX de Carga:** Separación de estados de carga para Google y Email en `LoginScreen`.
+- **Simplificación Legal:** Cambio en el comportamiento del checkbox de términos en `CompleteProfileScreen`.
+- **Mantenimiento:** Restauración de `FirebaseErrorMapperException` para compatibilidad global.
+- **Localización**:
+  - Implementación de `FirebaseErrorMapper` y extensión `context.translateError()` para mostrar errores de autenticación localizados según el idioma del dispositivo.
+- **Seguridad**: Revisión final y despliegue exitoso de las reglas de Firestore para la arquitectura de 7 colecciones.
+- **Apple Sign-In (iOS)**: 
+  - Integración del paquete `sign_in_with_apple`.
+  - Implementación de `signInWithApple` en `AuthRepository` y `AuthCubit`.
+  - Botón de Apple Sign-In condicional (solo visible en iOS) en `LoginScreen`.
+  - Localización completa (ES/EN) de mensajes y estados de Apple Sign-In.
+  - Flujo de perfil incompleto integrado para nuevos usuarios con Apple.
+
+### Estado de Verificación Automática
+- [x] Unit Tests: 360/360 pass.
+- [x] Integration Tests: Pass.
+- [x] Golden Tests: Pass.
+
+---
+
 ## 🧪 Instrucciones de Verificación en Simuladores
 
 ### Simulador Android (Perfil Alumno)
@@ -147,11 +178,14 @@
 
 ### Simulador iOS (Perfil Docente)
 1. Lanzar la app en el simulador iOS.
-2. Mismo flujo anterior con rol **docente**.
-3. **Verificar**: el idioma del diálogo cambia según la configuración del sistema (ES → `terms_es.md`, EN → `terms_en.md`).
-4. Verificar que el tap en "política de privacidad" también abre el mismo diálogo completo.
-5. Pulsar "No acepto" → el checkbox del formulario **no** se activa.
-6. Completar registro → verificar navegación al Dashboard del docente sin errores.
+2. **Verificar**: En la pantalla de Login, aparece el botón "Continuar con Apple" debajo del de Google.
+3. Pulsar "Continuar con Apple".
+4. **Verificar**: Se abre el modal nativo de Apple para autorizar el acceso.
+5. Autorizar y completar el flujo (si es cuenta nueva, redirigirá a `CompleteProfileScreen`).
+6. **Verificar**: El login se completa y se navega al Dashboard tras asignar el rol correspondiente.
+7. Verificar que el tap en "política de privacidad" también abre el mismo diálogo completo.
+8. Pulsar "No acepto" → el checkbox del formulario **no** se activa.
+9. Completar registro → verificar navegación al Dashboard del docente sin errores.
 
 ---
 

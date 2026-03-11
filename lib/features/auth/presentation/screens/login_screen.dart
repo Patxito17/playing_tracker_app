@@ -38,6 +38,11 @@ class _LoginScreenState extends State<LoginScreen> {
   // Estado para mostrar/ocultar contraseña
   bool _obscurePassword = true;
 
+  // Estados de carga independientes para evitar spinners redundantes
+  bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
+  bool _isEmailLoading = false;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -79,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    setState(() => _isEmailLoading = true);
     context.read<AuthCubit>().loginWithEmail(
       _emailController.text.trim(),
       _passwordController.text.trim(),
@@ -97,6 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(AppSpacing.l),
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
+                  if (state is! AuthLoading) {
+                    setState(() {
+                      _isGoogleLoading = false;
+                      _isAppleLoading = false;
+                      _isEmailLoading = false;
+                    });
+                  }
+
                   if (state is AuthAuthenticated) {
                     final destination = state.role == UserRole.teacher
                         ? AppRoutes.teacherHome
@@ -105,6 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       return;
                     }
                     context.go(destination);
+                  }
+                  if (state is AuthProfileIncomplete) {
+                    if (!mounted) return;
+                    context.go(
+                      AppRoutes.completeProfile,
+                      extra: {
+                        'email': state.email,
+                        'displayName': state.displayName,
+                      },
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -136,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             liveRegion: true,
                             child: SelectableText.rich(
                               TextSpan(
-                                text: errorMessage,
+                                text: context.translateError(errorMessage),
                                 style: context.bodyMediumOnSurface?.copyWith(
                                   color: context.colorScheme.error,
                                 ),
@@ -226,9 +250,66 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomButton(
                           label: context.l10n.loginButton,
                           variant: CustomButtonVariant.filled,
-                          isLoading: isLoading,
+                          isLoading: _isEmailLoading,
                           onPressed: isLoading ? null : _handleLogin,
                         ),
+                        const SizedBox(height: AppSpacing.l),
+
+                        // Separador OAuth
+                        Row(
+                          children: [
+                            const Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.s,
+                              ),
+                              child: Text(
+                                context.l10n.orDivider,
+                                style: context.bodyMediumOnSurfaceVariant,
+                              ),
+                            ),
+                            const Expanded(child: Divider()),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.l),
+
+                        // Botón de Google Sign-In
+                        CustomButton(
+                          label: context.l10n.continueWithGoogle,
+                          variant: CustomButtonVariant.outlined,
+                          isLoading: _isGoogleLoading,
+                          prefixWidget: Image.asset(
+                            'assets/icons/google_logo.png',
+                            width: 20,
+                            height: 20,
+                            errorBuilder: (_, _, _) =>
+                                const Icon(Icons.login, size: 20),
+                          ),
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  setState(() => _isGoogleLoading = true);
+                                  context.read<AuthCubit>().signInWithGoogle();
+                                },
+                        ),
+
+                        // Botón de Apple Sign-In (solo iOS)
+                        if (Theme.of(context).platform ==
+                            TargetPlatform.iOS) ...[
+                          const SizedBox(height: AppSpacing.l),
+                          CustomButton(
+                            label: context.l10n.continueWithApple,
+                            variant: CustomButtonVariant.outlined,
+                            isLoading: _isAppleLoading,
+                            prefixWidget: const Icon(Icons.apple, size: 24),
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    setState(() => _isAppleLoading = true);
+                                    context.read<AuthCubit>().signInWithApple();
+                                  },
+                          ),
+                        ],
                         const SizedBox(height: AppSpacing.xl),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

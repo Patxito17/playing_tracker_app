@@ -8,6 +8,7 @@ import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
 import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
+import '../../features/auth/presentation/screens/complete_profile_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
@@ -66,6 +67,7 @@ class AppRoutes {
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String legal = '/legal';
+  static const String completeProfile = '/complete-profile';
 
   // Rutas de Home (redirigen a lista de clases)
   static const String teacherHome = '/home/teacher';
@@ -104,7 +106,12 @@ class AppRoutes {
   // Rutas de Estadísticas (deprecated - usar teacherStatistics o studentStatistics)
   static const String statistics = '/statistics';
 
-  static const List<String> _publicRoutes = [login, register, forgotPassword];
+  static const List<String> _publicRoutes = [
+    login,
+    register,
+    forgotPassword,
+    completeProfile,
+  ];
 
   /// Configuración de GoRouter reactivo.
   late final GoRouter router = GoRouter(
@@ -154,6 +161,14 @@ class AppRoutes {
         }
       }
 
+      if (authState is AuthProfileIncomplete) {
+        // Usuario de Google sin perfil: redirigir a completar perfil.
+        if (location != completeProfile) {
+          return completeProfile;
+        }
+        return null;
+      }
+
       return null;
     },
     routes: [
@@ -162,6 +177,19 @@ class AppRoutes {
         path: splash,
         builder: (context, state) =>
             const Scaffold(body: Center(child: CircularProgressIndicator())),
+      ),
+
+      // Pantalla de completar perfil (flujo Google)
+      GoRoute(
+        path: completeProfile,
+        name: 'completeProfile',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return CompleteProfileScreen(
+            email: extra?['email'] as String?,
+            displayName: extra?['displayName'] as String?,
+          );
+        },
       ),
 
       // Rutas de autenticación
