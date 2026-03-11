@@ -157,6 +157,11 @@
   - Localización completa (ES/EN) de mensajes y estados de Apple Sign-In.
   - Flujo de perfil incompleto integrado para nuevos usuarios con Apple.
 
+- **OAuth Merge (11/03/2026)**: 
+  - Fusión completa de la rama `oauth` en `main`.
+  - Sincronización de todos los commits de Google Sign-In, Apple Sign-In y correcciones de flujo de perfil.
+  - Verificación de consistencia del sistema l10n y suite de tests.
+
 ### Estado de Verificación Automática
 - [x] Unit Tests: 360/360 pass.
 - [x] Integration Tests: Pass.
