@@ -184,10 +184,10 @@ class AppRoutes {
         path: completeProfile,
         name: 'completeProfile',
         builder: (context, state) {
-          final extra = state.extra as Map<String, String?>?;
+          final extra = state.extra as Map<String, dynamic>?;
           return CompleteProfileScreen(
-            email: extra?['email'],
-            displayName: extra?['displayName'],
+            email: extra?['email'] as String?,
+            displayName: extra?['displayName'] as String?,
           );
         },
       ),

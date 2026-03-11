@@ -102,7 +102,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String nameMinLength(String fieldName) {
-    return '$fieldName must be at least 3 characters long';
+    return '$fieldName must be at least 2 characters long';
   }
 
   @override
@@ -149,6 +149,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailLabel => 'Email';
+
+  @override
+  String get errorPermissionDenied =>
+      'You do not have permission to perform this action.';
+
+  @override
+  String get errorFailedPrecondition => 'A required database index is missing.';
+
+  @override
+  String get errorServiceUnavailable =>
+      'The service is temporarily unavailable. Please try again later.';
+
+  @override
+  String get errorGeneric => 'An unexpected error occurred. Please try again.';
 
   @override
   String get passwordLabel => 'Password';

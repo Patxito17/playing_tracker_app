@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
-**Última actualización:** 3 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅) 🚧
+**Última actualización:** 11 de Marzo 2026
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅) 🚧
 
 ---
 
@@ -11,10 +11,10 @@
 
 ### 🎯 Enfoque de Desarrollo
 - 🎨 **Diseño primero:** Implementación de UI/UX completa antes de la lógica
-- 🏗️ **Arquitectura escalable:** Base de datos NoSQL optimizada con 6 colecciones top-level
+- 🏗️ **Arquitectura escalable:** Base de datos NoSQL optimizada con 7 colecciones top-level
 - 🔄 **Desarrollo iterativo:** Sprints enfocados en funcionalidades completas
 - 📱 **Material Design 3:** Experiencia de usuario moderna y accesible
-- 🔐 **Seguridad robusta:** Reglas de Firestore optimizadas para roles docente/alumno
+- 🔐 **Seguridad robusta:** Reglas de Firestore optimizadas para roles docente/alumno (Custom Claims)
 
 ---
 
@@ -317,7 +317,7 @@ lib/
 - ✅ Registro con firstName, lastName, email, password y rol
 - ✅ Validaciones en español:
   - Email válido
-  - Nombre y apellidos (mínimo 3 caracteres, solo letras y espacios)
+  - Nombre y apellidos (mínimo 2 caracteres, solo letras y espacios)
   - Contraseña (mínimo 6 caracteres)
   - Confirmación de contraseña
   - Aceptación de términos
@@ -339,7 +339,7 @@ lib/
 
 ## 📊 Base de Datos (Firestore) - Arquitectura Optimizada
 
-### 🏗️ Modelo de Colecciones Top-Level (6 Colecciones)
+### 🏗️ Modelo de Colecciones Top-Level (7 Colecciones)
 
 Adoptamos una **arquitectura de colecciones desanidadas de primer nivel** que modela relaciones N:M mediante documentos intermedios, optimizada para **rendimiento en lectura** y **escalabilidad anti-hotspot**.
 
@@ -504,52 +504,41 @@ sessions/{sessionId}
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    // Helpers
     function isAuth() { return request.auth != null; }
-    function isOwner(doc) { return isAuth() && doc.ownerTeacherId == request.auth.uid; }
-
-    // Perfiles de usuarios
-    match /teachers/{teacherId} {
-      allow read, write: if isAuth() && request.auth.uid == teacherId;
+    function isOwner(userId) { return isAuth() && request.auth.uid == userId; }
+    function isTeacher() { 
+      return isAuth() && (request.auth.token.role == 'teacher' || exists(/databases/$(database)/documents/teachers/$(request.auth.uid))); 
+    }
+    function isStudent() { 
+      return isAuth() && (request.auth.token.role == 'student' || exists(/databases/$(database)/documents/students/$(request.auth.uid))); 
     }
 
-    match /students/{studentId} {
-      allow read, write: if isAuth() && request.auth.uid == studentId;
-    }
-
-    // Clases
-    match /classes/{classId} {
-      allow write: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
+    // Colecciones
+    match /teachers/{id} { allow read, write: if isOwner(id); }
+    match /students/{id} { allow read, write: if isOwner(id) || isTeacher(); }
+    match /classes/{id} { 
       allow read: if isAuth();
+      allow create: if isTeacher();
+      allow update, delete: if isAuth() && resource.data.ownerTeacherId == request.auth.uid;
     }
-
-    // Membresías
-    match /memberships/{membershipId} {
-      allow write: if isAuth() && request.resource.data.teacherId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
+    match /memberships/{id} { 
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow create, update, delete: if isTeacher();
     }
-
-    // Tareas
-    match /tasks/{taskId} {
-      allow write: if isAuth() && resource.data.createdBy == request.auth.uid;
+    match /tasks/{id} { 
       allow read: if isAuth();
+      allow create: if isTeacher();
+      allow update, delete: if isAuth() && resource.data.createdBy == request.auth.uid;
     }
-
-    // Asignaciones
-    match /assignments/{assignmentId} {
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
-      allow write: if isAuth() && (resource.data.teacherId == request.auth.uid
-                                  || request.resource.data.studentId == request.auth.uid);
+    match /assignments/{id} { 
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow write: if isAuth() && (resource.data.teacherId == request.auth.uid || resource.data.studentId == request.auth.uid);
     }
-
-    // Sesiones
-    match /sessions/{sessionId} {
-      allow create: if isAuth() && request.resource.data.studentId == request.auth.uid;
-      allow read: if isAuth() && (resource.data.studentId == request.auth.uid
-                                  || resource.data.teacherId == request.auth.uid);
-      allow update, delete: if false; // Inmutabilidad de métricas
+    match /sessions/{id} { 
+      allow create: if isStudent();
+      allow read: if isAuth() && (resource.data.studentId == request.auth.uid || isTeacher());
+      allow update, delete: if false; // Inmutabilidad
     }
   }
 }
