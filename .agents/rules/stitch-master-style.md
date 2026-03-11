@@ -1,10 +1,7 @@
 ---
-description: Reglas maestras de estilo para generación de UI usando Google Stitch en Playing Tracker.
+trigger: model_decision
+description: Al generar pantallas utilizando el MCP de Google Stitch para `Playing Tracker`, debes seguir **estrictamente** estas directrices de diseño para asegurar coherencia en toda la aplicación.
 ---
-
-# 🎨 Playing Tracker Style Guide for Google Stitch
-
-Al generar pantallas utilizando el MCP de Google Stitch para `Playing Tracker`, debes seguir **estrictamente** estas directrices de diseño para asegurar coherencia en toda la aplicación.
 
 ## 🎯 Concepto Clave: Premium Académico
 

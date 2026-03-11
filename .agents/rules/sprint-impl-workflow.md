@@ -1,9 +1,9 @@
-# Flujo de Implementación de Sprints
+---
+trigger: model_decision
+description: Cuando se te pide implementar funcionalidades relacionadas con algún sprint del proyecto, SIEMPRE debes seguir este flujo de trabajo completo.
+---
 
-## Contexto
-Cuando se te pide implementar funcionalidades relacionadas con algún sprint del proyecto, SIEMPRE debes seguir este flujo de trabajo completo.
-
-## Flujo Obligatorio
+FLUJO OBLIGATORIO
 
 ### 1. **Desarrollo del Código** 📝
 - Implementa la funcionalidad solicitada
