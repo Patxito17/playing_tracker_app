@@ -104,4 +104,28 @@ extension BuildContextExtensions on BuildContext {
   ///
   /// Uso: `context.l10n.miString`
   AppLocalizations get l10n => AppLocalizations.of(this)!;
+
+  /// Traduce una clave de error de Firebase o retorna el mensaje original si no es una clave.
+  String translateError(String errorKeyOrMessage) {
+    switch (errorKeyOrMessage) {
+      case 'errorPermissionDenied':
+        return l10n.errorPermissionDenied;
+      case 'errorFailedPrecondition':
+        return l10n.errorFailedPrecondition;
+      case 'errorServiceUnavailable':
+        return l10n.errorServiceUnavailable;
+      case 'errorGeneric':
+        return l10n.errorGeneric;
+      case 'emailInvalidFormat':
+        return l10n.emailInvalidFormat;
+      case 'passwordMinLength':
+        return l10n.passwordMinLength;
+      case 'googleSignInCanceled':
+        return l10n.googleSignInCanceled;
+      case 'googleSignInError':
+        return l10n.googleSignInError;
+      default:
+        return errorKeyOrMessage;
+    }
+  }
 }

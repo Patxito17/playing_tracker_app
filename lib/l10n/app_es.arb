@@ -126,9 +126,9 @@
   "@errorEmptyFields": {
     "description": "Mensaje de error cuando hay campos vacíos"
   },
-  "nameMinLength": "{fieldName} debe tener al menos 3 caracteres",
+  "nameMinLength": "{fieldName} debe tener al menos 2 caracteres",
   "@nameMinLength": {
-    "description": "Nombre menor a longitud mínima",
+    "description": "Nombre más corto que la longitud mínima",
     "placeholders": {
       "fieldName": {
         "type": "String",
@@ -196,7 +196,23 @@
   },
   "emailLabel": "Email",
   "@emailLabel": {
-    "description": "Etiqueta del campo email"
+    "description": "Etiqueta del campo de email"
+  },
+  "errorPermissionDenied": "No tienes permisos para realizar esta acción.",
+  "@errorPermissionDenied": {
+    "description": "Error de permisos denegados de Firebase"
+  },
+  "errorFailedPrecondition": "Falta un índice requerido en la base de datos.",
+  "@errorFailedPrecondition": {
+    "description": "Error de precondición fallida de Firebase (usualmente falta de índice)"
+  },
+  "errorServiceUnavailable": "El servicio no está disponible temporalmente. Intenta más tarde.",
+  "@errorServiceUnavailable": {
+    "description": "Error de servicio no disponible de Firebase"
+  },
+  "errorGeneric": "Ocurrió un error inesperado. Intenta nuevamente.",
+  "@errorGeneric": {
+    "description": "Error genérico inesperado"
   },
   "passwordLabel": "Contraseña",
   "@passwordLabel": {

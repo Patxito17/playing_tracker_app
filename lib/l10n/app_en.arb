@@ -126,7 +126,7 @@
   "@errorEmptyFields": {
     "description": "Error message when there are empty fields"
   },
-  "nameMinLength": "{fieldName} must be at least 3 characters long",
+  "nameMinLength": "{fieldName} must be at least 2 characters long",
   "@nameMinLength": {
     "description": "Name shorter than minimum length",
     "placeholders": {
@@ -197,6 +197,22 @@
   "emailLabel": "Email",
   "@emailLabel": {
     "description": "Email field label"
+  },
+  "errorPermissionDenied": "You do not have permission to perform this action.",
+  "@errorPermissionDenied": {
+    "description": "Firebase permission denied error"
+  },
+  "errorFailedPrecondition": "A required database index is missing.",
+  "@errorFailedPrecondition": {
+    "description": "Firebase failed precondition error (usually missing index)"
+  },
+  "errorServiceUnavailable": "The service is temporarily unavailable. Please try again later.",
+  "@errorServiceUnavailable": {
+    "description": "Firebase service unavailable error"
+  },
+  "errorGeneric": "An unexpected error occurred. Please try again.",
+  "@errorGeneric": {
+    "description": "Generic unexpected error"
   },
   "passwordLabel": "Password",
   "@passwordLabel": {

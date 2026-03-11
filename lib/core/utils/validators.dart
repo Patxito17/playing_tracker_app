@@ -4,7 +4,7 @@
 /// formularios. Los mensajes deben ser pasados desde el UI para soporte l10n.
 ///
 /// **Límites de longitud** (espejo de Firestore Rules para integridad defensiva):
-/// - Nombres de persona: 3–60 caracteres
+/// - Nombres de persona: 2–60 caracteres
 /// - Títulos (clases, tareas): 3–100 caracteres
 /// - Email: hasta 100 caracteres
 /// - Contraseña: mínimo 6 caracteres
@@ -91,7 +91,7 @@ class Validators {
     if (normalized == null || normalized.isEmpty) {
       return requiredMsg;
     }
-    if (normalized.length < 3) {
+    if (normalized.length < 2) {
       return minLengthMsg;
     }
     if (normalized.length > _maxNameLength) {
@@ -110,7 +110,7 @@ class Validators {
   ///
   /// [value] Título a validar
   /// [requiredMsg] Mensaje si está vacío
-  /// [minLengthMsg] Mensaje si es muy corto (mínimo 3 caracteres)
+  /// [minLengthMsg] Mensaje si es muy corto (mínimo 2 caracteres)
   /// [maxLengthMsg] Mensaje si supera el límite máximo
   static String? title(
     String? value, {
@@ -124,7 +124,7 @@ class Validators {
     if (normalized == null || normalized.isEmpty) {
       return requiredMsg;
     }
-    if (normalized.length < 3) {
+    if (normalized.length < 2) {
       return minLengthMsg;
     }
     if (normalized.length > _maxTitleLength) {

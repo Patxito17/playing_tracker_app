@@ -278,10 +278,10 @@ abstract class AppLocalizations {
   /// **'Por favor, completa todos los campos'**
   String get errorEmptyFields;
 
-  /// Nombre menor a longitud mínima
+  /// Nombre más corto que la longitud mínima
   ///
   /// In es, this message translates to:
-  /// **'{fieldName} debe tener al menos 3 caracteres'**
+  /// **'{fieldName} debe tener al menos 2 caracteres'**
   String nameMinLength(String fieldName);
 
   /// Nombre contiene caracteres inválidos
@@ -362,11 +362,35 @@ abstract class AppLocalizations {
   /// **'Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.'**
   String get forgotPasswordInstructions;
 
-  /// Etiqueta del campo email
+  /// Etiqueta del campo de email
   ///
   /// In es, this message translates to:
   /// **'Email'**
   String get emailLabel;
+
+  /// Error de permisos denegados de Firebase
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permisos para realizar esta acción.'**
+  String get errorPermissionDenied;
+
+  /// Error de precondición fallida de Firebase (usualmente falta de índice)
+  ///
+  /// In es, this message translates to:
+  /// **'Falta un índice requerido en la base de datos.'**
+  String get errorFailedPrecondition;
+
+  /// Error de servicio no disponible de Firebase
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio no está disponible temporalmente. Intenta más tarde.'**
+  String get errorServiceUnavailable;
+
+  /// Error genérico inesperado
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error inesperado. Intenta nuevamente.'**
+  String get errorGeneric;
 
   /// Etiqueta del campo contraseña
   ///

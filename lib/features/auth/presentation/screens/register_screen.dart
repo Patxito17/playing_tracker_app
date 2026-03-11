@@ -274,14 +274,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             label: context.l10n.registerErrorSemanticLabel,
                             liveRegion: true,
                             child: SelectableText.rich(
-                              TextSpan(
-                                text: displayError,
-                                style: context.bodyMediumOnSurface?.copyWith(
-                                  color: context.colorScheme.error,
+                                TextSpan(
+                                  text: context.translateError(displayError),
+                                  style: context.bodyMediumOnSurface?.copyWith(
+                                    color: context.colorScheme.error,
+                                  ),
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
                           ),
                           const SizedBox(height: AppSpacing.l),
                         ],

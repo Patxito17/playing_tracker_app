@@ -38,6 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
   // Estado para mostrar/ocultar contraseña
   bool _obscurePassword = true;
 
+  // Estados de carga independientes para evitar spinners redundantes
+  bool _isGoogleLoading = false;
+  bool _isEmailLoading = false;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -79,6 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    setState(() => _isEmailLoading = true);
     context.read<AuthCubit>().loginWithEmail(
       _emailController.text.trim(),
       _passwordController.text.trim(),
@@ -97,6 +102,13 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(AppSpacing.l),
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
+                  if (state is! AuthLoading) {
+                    setState(() {
+                      _isGoogleLoading = false;
+                      _isEmailLoading = false;
+                    });
+                  }
+
                   if (state is AuthAuthenticated) {
                     final destination = state.role == UserRole.teacher
                         ? AppRoutes.teacherHome
@@ -146,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             liveRegion: true,
                             child: SelectableText.rich(
                               TextSpan(
-                                text: errorMessage,
+                                text: context.translateError(errorMessage),
                                 style: context.bodyMediumOnSurface?.copyWith(
                                   color: context.colorScheme.error,
                                 ),
@@ -236,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomButton(
                           label: context.l10n.loginButton,
                           variant: CustomButtonVariant.filled,
-                          isLoading: isLoading,
+                          isLoading: _isEmailLoading,
                           onPressed: isLoading ? null : _handleLogin,
                         ),
                         const SizedBox(height: AppSpacing.l),
@@ -263,7 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomButton(
                           label: context.l10n.continueWithGoogle,
                           variant: CustomButtonVariant.outlined,
-                          isLoading: isLoading,
+                          isLoading: _isGoogleLoading,
                           prefixWidget: Image.asset(
                             'assets/icons/google_logo.png',
                             width: 20,
@@ -273,9 +285,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           onPressed: isLoading
                               ? null
-                              : () => context
-                                    .read<AuthCubit>()
-                                    .signInWithGoogle(),
+                              : () {
+                                  setState(() => _isGoogleLoading = true);
+                                  context.read<AuthCubit>().signInWithGoogle();
+                                },
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Row(

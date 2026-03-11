@@ -46,6 +46,29 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   String? _formError;
 
   @override
+  void initState() {
+    super.initState();
+    // Recuperar datos de Google del estado actual si no vienen por GoRouter
+    final cubit = context.read<AuthCubit>();
+    final state = cubit.state;
+
+    String? displayName = widget.displayName;
+    if (displayName == null && state is AuthProfileIncomplete) {
+      displayName = state.displayName;
+    }
+
+    if (displayName != null) {
+      final names = displayName.split(' ');
+      if (names.isNotEmpty) {
+        _firstNameController.text = names.first;
+        if (names.length > 1) {
+          _lastNameController.text = names.sublist(1).join(' ');
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -158,6 +181,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       ? state.message
                       : _formError;
 
+                  final displayEmail = widget.email ??
+                      (state is AuthProfileIncomplete ? state.email : null);
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -168,9 +194,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.s),
-                      if (widget.email != null)
+                      if (displayEmail != null)
                         Text(
-                          widget.email!,
+                          displayEmail,
                           style: context.bodyLargeOnSurfaceVariant,
                           textAlign: TextAlign.center,
                         ),
@@ -182,7 +208,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           liveRegion: true,
                           child: SelectableText.rich(
                             TextSpan(
-                              text: errorMessage,
+                              text: context.translateError(errorMessage),
                               style: context.bodyMediumOnSurface?.copyWith(
                                 color: context.colorScheme.error,
                               ),
