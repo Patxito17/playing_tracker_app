@@ -147,6 +147,33 @@ class CustomTextField extends StatelessWidget {
           : suffix,
       prefixIcon: prefix,
       counterText: maxLength != null ? null : '',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        borderSide: BorderSide(
+          color: context.colorScheme.outline.withValues(alpha: 0.5),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        borderSide: BorderSide(
+          color: context.colorScheme.primary,
+          width: 2.0,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        borderSide: BorderSide(color: context.colorScheme.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        borderSide: BorderSide(
+          color: context.colorScheme.error,
+          width: 2.0,
+        ),
+      ),
     );
 
     return Semantics(
