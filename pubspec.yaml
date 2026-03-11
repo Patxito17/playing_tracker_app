@@ -1,157 +1,84 @@
 name: playing_tracker
 description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
   sdk: ^3.10.0
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
 dependencies:
+  # --- Core de Flutter e Internacionalización ---
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  # UI y Tema
-  google_fonts: ^8.0.0          # Fuentes personalizadas
+  # --- Firebase (Backend y Servicios) ---
+  firebase_core: ^4.2.1           # Núcleo de Firebase
+  cloud_firestore: ^6.1.0         # Base de datos NoSQL Cloud Firestore
+  firebase_auth: ^6.1.2           # Autenticación de usuarios
+  firebase_app_check: ^0.4.1+4    # Protección contra abusos y seguridad
+  google_sign_in: ^7.2.0          # Autenticación con Google
+  sign_in_with_apple: ^7.0.1      # Autenticación con Apple (iOS)
 
-  # Navegación
-  go_router: ^17.0.0            # Navegación declarativa
+  # --- Gestión de Estado (BLoC / Cubit) ---
+  flutter_bloc: ^9.1.1            # Framework de gestión de estado basado en eventos
+  equatable: ^2.0.7               # Simplifica la comparación de objetos
+  hydrated_bloc: ^10.1.1          # Persistencia automática del estado de los Blocs
 
-  # Gestión de Estado (estructura, sin lógica aún)
-  flutter_bloc: ^9.1.1          # Framework de gestión de estado
-  equatable: ^2.0.7             # Comparación de objetos
+  # --- Navegación ---
+  go_router: ^17.0.0              # Enrutador declarativo moderno para Flutter
 
-  # Firebase
-  cloud_firestore: ^6.1.0       # Base de datos Firestore
-  firebase_core: ^4.2.1         # Core de Firebase
+  # --- UI, Diseño y Gráficos ---
+  google_fonts: ^8.0.0            # Acceso a cientos de fuentes de Google Fonts
+  fl_chart: ^1.1.1                # Librería de gráficos para estadísticas y métricas
+  flutter_markdown_plus: ^1.0.7   # Renderizado de documentos Markdown (Términos legales)
 
-  # Serialización JSON
-  json_annotation: ^4.9.0       # Anotaciones JSON
+  # --- Persistencia y Utilidades del Sistema ---
+  shared_preferences: ^2.5.4      # Almacenamiento local de preferencias clave-valor
+  path_provider: ^2.1.5           # Acceso a directorios del sistema de archivos
+  wakelock_plus: ^1.4.0           # Evita que la pantalla se apague automáticamente
 
-  # Utilidades
-  intl: ^0.20.2                 # Internacionalización
-  uuid: ^4.5.1                  # Generación de IDs únicos y códigos de acceso
-  
-  # Autenticación
-  firebase_auth: ^6.1.2
-
-  # App Check - Protección contra abusos (solo apps legítimas pueden usar Firebase)
-  firebase_app_check: ^0.4.1+4
-  google_sign_in: ^7.2.0
-  sign_in_with_apple: ^7.0.1
-
-  # Persistencia de estado
-  hydrated_bloc: ^10.1.1
-
-  # Storage para hydrated_bloc
-  path_provider: ^2.1.5
-
-  # Gráficos y visualizaciones
-  fl_chart: ^1.1.1              # Librería de gráficos para estadísticas
-  shared_preferences: ^2.5.4
-
-  # Renderizado de documentos Markdown (T&C y Privacidad)
-  flutter_markdown_plus: ^1.0.7
-  wakelock_plus: ^1.4.0
+  # --- Datos e Internacionalización ---
+  intl: ^0.20.2                   # Utilidades de fecha, número e i18n
+  uuid: ^4.5.1                    # Generación de códigos de acceso e IDs únicos
+  json_annotation: ^4.9.0         # Anotaciones para serialización JSON
 
 dev_dependencies:
+  # --- Flutter SDK Testing ---
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^6.0.0
+  # --- Análisis y Calidad ---
+  flutter_lints: ^6.0.0            # Reglas de estilo recomendadas por Dart/Flutter
 
-  # Generadores de iconos y splash screen (se pueden eliminar tras generar los assets nativos)
-  flutter_launcher_icons: ^0.14.3
-  flutter_native_splash: ^2.4.3
-  build_runner: ^2.10.4          # Generación de código
-  json_serializable: ^6.11.2    # Serialización JSON
-  go_router_builder: ^4.1.3      # Generación de rutas tipadas
-  # Testing utilities
-  bloc_test: ^10.0.0            # Testing de Bloc/Cubit
-  mocktail: ^1.0.4
-  fake_cloud_firestore: ^4.0.0  # Firestore fake para pruebas unitarias
+  # --- Generación de Código ---
+  build_runner: ^2.10.4           # Herramienta base para generadores de código
+  json_serializable: ^6.11.2       # Generador automático de lógica JSON
+  go_router_builder: ^4.1.3       # Generador de rutas con tipado fuerte
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  # --- Assets e Iconos ---
+  flutter_launcher_icons: ^0.14.3  # Generador de iconos nativos (Android/iOS)
+  flutter_native_splash: ^2.4.3    # Generador de pantallas de carga nativas
 
-# The following section is specific to Flutter packages.
+  # --- Suite de Testing ---
+  bloc_test: ^10.0.0               # Testing especializado para BLoC/Cubit
+  mocktail: ^1.0.4                 # Librería para creación de Mocks
+  fake_cloud_firestore: ^4.0.0     # Firestore simulado para pruebas unitarias
+
 flutter:
-  generate: true  # Enable code generation for l10n
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+  generate: true
   uses-material-design: true
 
-  # Assets de la aplicación
   assets:
-    - assets/legal/  # Textos legales (T&C + Política de Privacidad) y versión
-    - assets/images/ # Logo e imágenes de la aplicación
-    - assets/icons/  # Iconos y logos (Google, etc.)
+    - assets/legal/
+    - assets/images/
+    - assets/icons/
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
-
-# ============================================================
-# Configuración de flutter_launcher_icons
-# (Se puede eliminar la sección una vez generados los assets)
-# ============================================================
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
@@ -165,10 +92,6 @@ flutter_launcher_icons:
   macos:
     generate: false
 
-# ============================================================
-# Configuración de flutter_native_splash
-# (Se puede eliminar la sección una vez generados los assets)
-# ============================================================
 flutter_native_splash:
   color: "#FFFFFF"
   image: assets/images/logo.png
