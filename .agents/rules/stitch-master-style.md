@@ -1,7 +1,8 @@
 ---
-trigger: model_decision
-description: Al generar pantallas utilizando el MCP de Google Stitch para `Playing Tracker`, debes seguir **estrictamente** estas directrices de diseño para asegurar coherencia en toda la aplicación.
+trigger: always_on
 ---
+
+Al generar pantallas utilizando el MCP de Google Stitch para `Playing Tracker`, debes seguir **estrictamente** estas directrices de diseño para asegurar coherencia en toda la aplicación.
 
 ## 🎯 Concepto Clave: Premium Académico
 

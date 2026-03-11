@@ -1,7 +1,8 @@
 ---
-trigger: model_decision
-description: Cuando se te pide implementar funcionalidades relacionadas con algún sprint del proyecto, SIEMPRE debes seguir este flujo de trabajo completo.
+trigger: always_on
 ---
+
+Cuando se te pide implementar funcionalidades relacionadas con algún sprint del proyecto, SIEMPRE debes seguir este flujo de trabajo completo.
 
 FLUJO OBLIGATORIO
 
