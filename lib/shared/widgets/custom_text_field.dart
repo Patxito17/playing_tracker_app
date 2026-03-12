@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/constants/app_constants.dart';
 
 import '../../core/extensions/context_extensions.dart';
 
@@ -148,31 +149,25 @@ class CustomTextField extends StatelessWidget {
       prefixIcon: prefix,
       counterText: maxLength != null ? null : '',
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
         borderSide: BorderSide(
           color: context.colorScheme.outline.withValues(alpha: 0.5),
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(
-          color: context.colorScheme.primary,
-          width: 2.0,
-        ),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderSide: BorderSide(color: context.colorScheme.primary, width: 2.0),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
         borderSide: BorderSide(color: context.colorScheme.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(
-          color: context.colorScheme.error,
-          width: 2.0,
-        ),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderSide: BorderSide(color: context.colorScheme.error, width: 2.0),
       ),
     );
 

@@ -338,10 +338,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     child: selectedTask.attachmentUrl != null
                         ? SelectableText(
                             selectedTask.attachmentUrl!,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: context.colorScheme.primary,
-                              decoration: TextDecoration.underline,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: context.colorScheme.primary,
+                                  decoration: TextDecoration.underline,
+                                ),
                           )
                         : Text(
                             context.l10n.noAttachments,

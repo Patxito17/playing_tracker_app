@@ -134,29 +134,8 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settingsState) {
-            final lightTheme = AppTheme.lightTheme;
-            final darkTheme = AppTheme.darkTheme;
-
-            // Aplicar color personalizado si existe
-            final effectiveLight = settingsState.seedColor != null
-                ? ThemeData(
-                    useMaterial3: true,
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: settingsState.seedColor!,
-                      brightness: Brightness.light,
-                    ),
-                  )
-                : lightTheme;
-
-            final effectiveDark = settingsState.seedColor != null
-                ? ThemeData(
-                    useMaterial3: true,
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: settingsState.seedColor!,
-                      brightness: Brightness.dark,
-                    ),
-                  )
-                : darkTheme;
+            final effectiveLight = AppTheme.lightTheme(settingsState.seedColor);
+            final effectiveDark = AppTheme.darkTheme(settingsState.seedColor);
 
             return MaterialApp.router(
               title: 'Playing Tracker',

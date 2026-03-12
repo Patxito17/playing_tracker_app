@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
+import '../../../../config/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/legal_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -15,6 +16,7 @@ import '../../domain/enums/user_role.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/legal_consent_dialog.dart';
+import '../widgets/role_selector.dart';
 
 /// Pantalla de registro
 ///
@@ -48,8 +50,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  // Rol seleccionado ('teacher' o 'student')
-  String _selectedRole = 'teacher';
+  // Rol seleccionado (enum UserRole)
+  UserRole _selectedRole = UserRole.teacher;
 
   // Checkbox de términos aceptados
   bool _termsAccepted = false;
@@ -208,7 +210,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Solo se persiste la versión si el usuario ha aceptado (validación previa garantiza esto)
     final acceptedVersion = _termsAccepted ? kCurrentTermsVersion : null;
 
-    if (_selectedRole == 'teacher') {
+    if (_selectedRole == UserRole.teacher) {
       cubit.registerTeacher(
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
@@ -230,398 +232,422 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: BlocConsumer<AuthCubit, AuthState>(
-                listener: (context, state) {
-                  if (state is! AuthLoading) {
-                    setState(() {
-                      _isEmailLoading = false;
-                    });
-                  }
-
-                  if (state is AuthAuthenticated) {
-                    final destination = state.role == UserRole.teacher
-                        ? AppRoutes.teacherHome
-                        : AppRoutes.studentHome;
-                    if (!mounted) {
-                      return;
+      extendBodyBehindAppBar: true,
+      appBar: const CustomAppBar(backgroundColor: Colors.transparent),
+      body: Container(
+        decoration: BoxDecoration(gradient: context.gradients.mainBackground),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: BlocConsumer<AuthCubit, AuthState>(
+                  listener: (context, state) {
+                    if (state is! AuthLoading) {
+                      setState(() {
+                        _isEmailLoading = false;
+                      });
                     }
-                    context.go(destination);
-                  }
-                },
-                builder: (context, state) {
-                  final isLoading = state is AuthLoading;
-                  final cubitError = state is AuthError ? state.message : null;
-                  final displayError = _formError ?? cubitError;
 
-                  return AutofillGroup(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Título principal
-                        Text(
-                          context.l10n.createAccountTitle,
-                          style: context.displaySmallBold,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.s),
-                        Text(
-                          context.l10n.createAccountSubtitle,
-                          style: context.bodyLargeOnSurfaceVariant,
-                          textAlign: TextAlign.center,
-                        ),
+                    if (state is AuthAuthenticated) {
+                      final destination = state.role == UserRole.teacher
+                          ? AppRoutes.teacherHome
+                          : AppRoutes.studentHome;
+                      if (!mounted) {
+                        return;
+                      }
+                      context.go(destination);
+                    }
+                  },
+                  builder: (context, state) {
+                    final isLoading = state is AuthLoading;
+                    final cubitError = state is AuthError
+                        ? state.message
+                        : null;
+                    final displayError = _formError ?? cubitError;
 
-                        const SizedBox(height: AppSpacing.xxl),
+                    return AutofillGroup(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Título principal
+                          Text(
+                            context.l10n.createAccountTitle,
+                            style: context.displaySmallBold,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.s),
+                          Text(
+                            context.l10n.createAccountSubtitle,
+                            style: context.bodyLargeOnSurfaceVariant,
+                            textAlign: TextAlign.center,
+                          ),
 
-                        if (displayError != null) ...[
-                          Semantics(
-                            label: context.l10n.registerErrorSemanticLabel,
-                            liveRegion: true,
-                            child: SelectableText.rich(
-                              TextSpan(
-                                text: context.translateError(displayError),
-                                style: context.bodyMediumOnSurface?.copyWith(
-                                  color: context.colorScheme.error,
+                          const SizedBox(height: AppSpacing.xxl),
+
+                          if (displayError != null) ...[
+                            Semantics(
+                              label: context.l10n.registerErrorSemanticLabel,
+                              liveRegion: true,
+                              child: SelectableText.rich(
+                                TextSpan(
+                                  text: context.translateError(displayError),
+                                  style: context.bodyMediumOnSurface?.copyWith(
+                                    color: context.colorScheme.error,
+                                  ),
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.l),
-                        ],
-
-                        // Selector de rol
-                        Text(
-                          context.l10n.accountTypeLabel,
-                          style: context.titleMediumBold,
-                        ),
-                        const SizedBox(height: AppSpacing.m),
-                        SegmentedButton<String>(
-                          segments: [
-                            ButtonSegment<String>(
-                              value: 'teacher',
-                              label: Text(context.l10n.teacherRole),
-                              icon: Icon(Icons.school_outlined),
-                            ),
-                            ButtonSegment<String>(
-                              value: 'student',
-                              label: Text(context.l10n.studentRole),
-                              icon: Icon(Icons.person_outline),
-                            ),
+                            const SizedBox(height: AppSpacing.l),
                           ],
-                          selected: {_selectedRole},
-                          onSelectionChanged: (Set<String> newSelection) {
-                            setState(() {
-                              _selectedRole = newSelection.first;
-                            });
-                          },
-                        ),
 
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Campo de nombre
-                        CustomTextField(
-                          controller: _firstNameController,
-                          label: context.l10n.firstNameLabel,
-                          hint: context.l10n.firstNameHint,
-                          keyboardType: TextInputType.name,
-                          textCapitalization: TextCapitalization.words,
-                          textInputAction: TextInputAction.next,
-                          autofillHints: const [AutofillHints.givenName],
-                          errorText: _firstNameError,
-                          prefix: Icon(
-                            Icons.person_outline,
-                            color: context.colorScheme.onSurfaceVariant,
+                          // Selector de rol visual
+                          Text(
+                            context.l10n.accountTypeLabel,
+                            style: context.titleMediumBold,
                           ),
-                          onChanged: (value) {
-                            // Limpiar error al escribir
-                            if (_firstNameError != null) {
-                              setState(() {
-                                _firstNameError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).nextFocus();
-                          },
-                        ),
-
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Campo de apellidos
-                        CustomTextField(
-                          controller: _lastNameController,
-                          label: context.l10n.lastNameLabel,
-                          hint: context.l10n.lastNameHint,
-                          keyboardType: TextInputType.name,
-                          textCapitalization: TextCapitalization.words,
-                          textInputAction: TextInputAction.next,
-                          autofillHints: const [AutofillHints.familyName],
-                          errorText: _lastNameError,
-                          prefix: Icon(
-                            Icons.person_outline,
-                            color: context.colorScheme.onSurfaceVariant,
+                          const SizedBox(height: AppSpacing.m),
+                          RoleSelector(
+                            selectedRole: _selectedRole,
+                            onRoleSelected: (role) =>
+                                setState(() => _selectedRole = role),
                           ),
-                          onChanged: (value) {
-                            // Limpiar error al escribir
-                            if (_lastNameError != null) {
-                              setState(() {
-                                _lastNameError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).nextFocus();
-                          },
-                        ),
 
-                        const SizedBox(height: AppSpacing.l),
+                          const SizedBox(height: AppSpacing.xl),
 
-                        // Campo de email
-                        CustomTextField(
-                          controller: _emailController,
-                          label: context.l10n.emailLabel,
-                          hint: context.l10n.emailHint,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.none,
-                          autofillHints: const [AutofillHints.email],
-                          errorText: _emailError,
-                          prefix: Icon(
-                            Icons.email_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          onChanged: (value) {
-                            // Limpiar error al escribir
-                            if (_emailError != null) {
-                              setState(() {
-                                _emailError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).nextFocus();
-                          },
-                        ),
-
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Campo de contraseña
-                        CustomTextField(
-                          controller: _passwordController,
-                          label: context.l10n.passwordLabel,
-                          hint: context.l10n.passwordMinLengthHint,
-                          obscureText: _obscurePassword,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.none,
-                          autofillHints: const [AutofillHints.newPassword],
-                          errorText: _passwordError,
-                          prefix: Icon(
-                            Icons.lock_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          suffix: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: context.colorScheme.onSurfaceVariant,
+                          // Contenedor del formulario
+                          Card(
+                            elevation: 0,
+                            color: context.colorScheme.surfaceContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppBorderRadius.large,
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            tooltip: _obscurePassword
-                                ? context.l10n.showPassword
-                                : context.l10n.hidePassword,
-                          ),
-                          onChanged: (value) {
-                            // Limpiar error al escribir
-                            if (_passwordError != null) {
-                              setState(() {
-                                _passwordError = null;
-                              });
-                            }
-                            // Validar confirmación si ya tiene valor
-                            if (_confirmPasswordController.text.isNotEmpty) {
-                              _validateConfirmPassword(
-                                _confirmPasswordController.text,
-                              );
-                            }
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).nextFocus();
-                          },
-                        ),
-
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Campo de confirmación de contraseña
-                        CustomTextField(
-                          controller: _confirmPasswordController,
-                          label: context.l10n.confirmPasswordLabel,
-                          hint: context.l10n.confirmPasswordHint,
-                          obscureText: _obscureConfirmPassword,
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.none,
-                          autofillHints: const [AutofillHints.newPassword],
-                          errorText: _confirmPasswordError,
-                          prefix: Icon(
-                            Icons.lock_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          suffix: IconButton(
-                            icon: Icon(
-                              _obscureConfirmPassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureConfirmPassword =
-                                    !_obscureConfirmPassword;
-                              });
-                            },
-                            tooltip: _obscureConfirmPassword
-                                ? context.l10n.showPassword
-                                : context.l10n.hidePassword,
-                          ),
-                          onChanged: (value) {
-                            // Limpiar error al escribir
-                            if (_confirmPasswordError != null) {
-                              setState(() {
-                                _confirmPasswordError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) => _handleRegister(),
-                        ),
-
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Checkbox de términos y condiciones
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Checkbox.adaptive(
-                              value: _termsAccepted,
-                              onChanged: (value) {
-                                setState(() {
-                                  _termsAccepted = value ?? false;
-                                  if (_termsAccepted) _formError = null;
-                                });
-                              },
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: AppSpacing.s,
-                                ),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: context.bodySmallOnSurfaceVariant,
-                                    children: [
-                                      TextSpan(
-                                        text: context.l10n.acceptTermsPrefix,
-                                      ),
-                                      WidgetSpan(
-                                        alignment:
-                                            PlaceholderAlignment.baseline,
-                                        baseline: TextBaseline.alphabetic,
-                                        child: GestureDetector(
-                                          onTap: _openLegalDialog,
-                                          child: Text(
-                                            context.l10n.termsAndConditions,
-                                            style: context.textPrimary
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: context
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.fontSize,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: context.l10n.acceptTermsMiddle,
-                                      ),
-                                      WidgetSpan(
-                                        alignment:
-                                            PlaceholderAlignment.baseline,
-                                        baseline: TextBaseline.alphabetic,
-                                        child: GestureDetector(
-                                          onTap: _openLegalDialog,
-                                          child: Text(
-                                            context.l10n.privacyPolicy,
-                                            style: context.textPrimary
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: context
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.fontSize,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.l),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Campo de nombre
+                                  CustomTextField(
+                                    controller: _firstNameController,
+                                    label: context.l10n.firstNameLabel,
+                                    hint: context.l10n.firstNameHint,
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    textInputAction: TextInputAction.next,
+                                    autofillHints: const [
+                                      AutofillHints.givenName,
                                     ],
+                                    errorText: _firstNameError,
+                                    prefix: Icon(
+                                      Icons.person_outline,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
+                                    onChanged: (value) {
+                                      if (_firstNameError != null) {
+                                        setState(() {
+                                          _firstNameError = null;
+                                        });
+                                      }
+                                    },
+                                    onSubmitted: (_) {
+                                      FocusScope.of(context).nextFocus();
+                                    },
+                                  ),
+
+                                  const SizedBox(height: AppSpacing.l),
+
+                                  // Campo de apellidos
+                                  CustomTextField(
+                                    controller: _lastNameController,
+                                    label: context.l10n.lastNameLabel,
+                                    hint: context.l10n.lastNameHint,
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    textInputAction: TextInputAction.next,
+                                    autofillHints: const [
+                                      AutofillHints.familyName,
+                                    ],
+                                    errorText: _lastNameError,
+                                    prefix: Icon(
+                                      Icons.person_outline,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
+                                    onChanged: (value) {
+                                      if (_lastNameError != null) {
+                                        setState(() {
+                                          _lastNameError = null;
+                                        });
+                                      }
+                                    },
+                                    onSubmitted: (_) {
+                                      FocusScope.of(context).nextFocus();
+                                    },
+                                  ),
+
+                                  const SizedBox(height: AppSpacing.l),
+
+                                  // Campo de email
+                                  CustomTextField(
+                                    controller: _emailController,
+                                    label: context.l10n.emailLabel,
+                                    hint: context.l10n.emailHint,
+                                    keyboardType: TextInputType.emailAddress,
+                                    textInputAction: TextInputAction.next,
+                                    textCapitalization: TextCapitalization.none,
+                                    autofillHints: const [AutofillHints.email],
+                                    errorText: _emailError,
+                                    prefix: Icon(
+                                      Icons.email_outlined,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
+                                    onChanged: (value) {
+                                      if (_emailError != null) {
+                                        setState(() {
+                                          _emailError = null;
+                                        });
+                                      }
+                                    },
+                                    onSubmitted: (_) {
+                                      FocusScope.of(context).nextFocus();
+                                    },
+                                  ),
+
+                                  const SizedBox(height: AppSpacing.l),
+
+                                  // Campo de contraseña
+                                  CustomTextField(
+                                    controller: _passwordController,
+                                    label: context.l10n.passwordLabel,
+                                    hint: context.l10n.passwordMinLengthHint,
+                                    obscureText: _obscurePassword,
+                                    textInputAction: TextInputAction.next,
+                                    textCapitalization: TextCapitalization.none,
+                                    autofillHints: const [
+                                      AutofillHints.newPassword,
+                                    ],
+                                    errorText: _passwordError,
+                                    prefix: Icon(
+                                      Icons.lock_outlined,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
+                                    suffix: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: context
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      tooltip: _obscurePassword
+                                          ? context.l10n.showPassword
+                                          : context.l10n.hidePassword,
+                                    ),
+                                    onChanged: (value) {
+                                      if (_passwordError != null) {
+                                        setState(() {
+                                          _passwordError = null;
+                                        });
+                                      }
+                                      if (_confirmPasswordController
+                                          .text
+                                          .isNotEmpty) {
+                                        _validateConfirmPassword(
+                                          _confirmPasswordController.text,
+                                        );
+                                      }
+                                    },
+                                    onSubmitted: (_) {
+                                      FocusScope.of(context).nextFocus();
+                                    },
+                                  ),
+
+                                  const SizedBox(height: AppSpacing.l),
+
+                                  // Campo de confirmación de contraseña
+                                  CustomTextField(
+                                    controller: _confirmPasswordController,
+                                    label: context.l10n.confirmPasswordLabel,
+                                    hint: context.l10n.confirmPasswordHint,
+                                    obscureText: _obscureConfirmPassword,
+                                    textInputAction: TextInputAction.done,
+                                    textCapitalization: TextCapitalization.none,
+                                    autofillHints: const [
+                                      AutofillHints.newPassword,
+                                    ],
+                                    errorText: _confirmPasswordError,
+                                    prefix: Icon(
+                                      Icons.lock_outlined,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
+                                    suffix: IconButton(
+                                      icon: Icon(
+                                        _obscureConfirmPassword
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: context
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureConfirmPassword =
+                                              !_obscureConfirmPassword;
+                                        });
+                                      },
+                                      tooltip: _obscureConfirmPassword
+                                          ? context.l10n.showPassword
+                                          : context.l10n.hidePassword,
+                                    ),
+                                    onChanged: (value) {
+                                      if (_confirmPasswordError != null) {
+                                        setState(() {
+                                          _confirmPasswordError = null;
+                                        });
+                                      }
+                                    },
+                                    onSubmitted: (_) => _handleRegister(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: AppSpacing.l),
+
+                          // Checkbox de términos y condiciones
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Checkbox.adaptive(
+                                value: _termsAccepted,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _termsAccepted = value ?? false;
+                                    if (_termsAccepted) _formError = null;
+                                  });
+                                },
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: AppSpacing.s,
+                                  ),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: context.bodySmallOnSurfaceVariant,
+                                      children: [
+                                        TextSpan(
+                                          text: context.l10n.acceptTermsPrefix,
+                                        ),
+                                        WidgetSpan(
+                                          alignment:
+                                              PlaceholderAlignment.baseline,
+                                          baseline: TextBaseline.alphabetic,
+                                          child: GestureDetector(
+                                            onTap: _openLegalDialog,
+                                            child: Text(
+                                              context.l10n.termsAndConditions,
+                                              style: context.textPrimary
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: context
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.fontSize,
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: context.l10n.acceptTermsMiddle,
+                                        ),
+                                        WidgetSpan(
+                                          alignment:
+                                              PlaceholderAlignment.baseline,
+                                          baseline: TextBaseline.alphabetic,
+                                          child: GestureDetector(
+                                            onTap: _openLegalDialog,
+                                            child: Text(
+                                              context.l10n.privacyPolicy,
+                                              style: context.textPrimary
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: context
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.fontSize,
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
-                        const SizedBox(height: AppSpacing.xl),
+                          const SizedBox(height: AppSpacing.xl),
 
-                        // Botón de registro
-                        CustomButton(
-                          label: context.l10n.registerButton,
-                          variant: CustomButtonVariant.filled,
-                          isLoading: _isEmailLoading,
-                          onPressed: isLoading ? null : _handleRegister,
-                        ),
+                          // Botón de registro
+                          CustomButton(
+                            label: context.l10n.registerButton,
+                            variant: CustomButtonVariant.filled,
+                            isLoading: _isEmailLoading,
+                            onPressed: isLoading ? null : _handleRegister,
+                          ),
 
-                        const SizedBox(height: AppSpacing.m),
+                          const SizedBox(height: AppSpacing.m),
 
-                        // Link a login
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              context.l10n.alreadyHaveAccountQuestion,
-                              style: context.bodyMediumOnSurfaceVariant,
-                            ),
-                            TextButton(
-                              onPressed: () => context.go(AppRoutes.login),
-                              child: Text(
-                                context.l10n.loginLink,
-                                style: context.textPrimary?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      context.textTheme.bodyMedium?.fontSize,
+                          // Link a login
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                context.l10n.alreadyHaveAccountQuestion,
+                                style: context.bodyMediumOnSurfaceVariant,
+                              ),
+                              TextButton(
+                                onPressed: () => context.go(AppRoutes.login),
+                                child: Text(
+                                  context.l10n.loginLink,
+                                  style: context.textPrimary?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        context.textTheme.bodyMedium?.fontSize,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
