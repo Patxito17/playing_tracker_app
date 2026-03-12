@@ -54,27 +54,33 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: context.l10n.homeTab,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.class_outlined),
-          selectedIcon: const Icon(Icons.class_),
+          icon: const Icon(Icons.library_music_outlined),
+          selectedIcon: const Icon(Icons.library_music),
           label: context.l10n.classesTab,
         ),
-        // Solo mostrar Historial para alumnos, para coincidir con el
-        // número de branches en StatefulShellRoute (4 para docente, 5 para alumno)
-        if (!isTeacher)
+        if (isTeacher)
+          NavigationDestination(
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: context.l10n.statisticsTab,
+          ),
+        // Solo mostrar Historial para alumnos
+        if (!isTeacher) ...[
           NavigationDestination(
             icon: const Icon(Icons.history_outlined),
             selectedIcon: const Icon(Icons.history),
             label: context.l10n.historyTab,
           ),
+          NavigationDestination(
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: context.l10n.statisticsTab,
+          ),
+        ],
         NavigationDestination(
-          icon: const Icon(Icons.bar_chart_outlined),
-          selectedIcon: const Icon(Icons.bar_chart),
-          label: context.l10n.statisticsTab,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.settings_outlined),
-          selectedIcon: const Icon(Icons.settings),
-          label: context.l10n.settingsTab,
+          icon: const Icon(Icons.person_outline_rounded),
+          selectedIcon: const Icon(Icons.person_rounded),
+          label: context.l10n.profileTab,
         ),
       ],
     );

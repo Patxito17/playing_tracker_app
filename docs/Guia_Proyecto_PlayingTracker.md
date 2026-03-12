@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 11 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización Completado ✅ | Sprint 8 - Rediseño UI Premium 🚧 (Fase 1 Auth ✅ | Fase 2 Home 🚧)
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización Completado ✅ | Sprint 8 - Rediseño UI Premium 🚧 (Fase 1 Auth ✅ | Fase 2 Home 🚧 - Docente ✅)
 
 ---
 
@@ -787,7 +787,11 @@ service cloud.firestore {
 - 🧪 **Verificación dual obligatoria**: Validar impacto visual desde Android (Estudiante) y profesionalidad desde iOS (Docente).
 
 **Entregables Fase 1 (Auth):**
-- 📱 LoginScreen, RegisterScreen, ForgotPasswordScreen, CompleteProfileScreen rediseñadas.
+- ✅ LoginScreen, RegisterScreen, ForgotPasswordScreen, CompleteProfileScreen rediseñadas.
+
+**Entregables Fase 2 (Home):**
+- ✅ **Teacher Dashboard**: Rediseño premium con widgets modulares (`HomeDashboardHeader`, `HomeStatCard`, `HomeClassCardCompact`).
+- 📅 **Student Dashboard**: En planificación.
 
 ---
 

@@ -59,7 +59,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text('Inicia sesión para continuar'), findsOneWidget);
+    expect(find.text('¿Listo para seguir tu progreso?'), findsOneWidget);
   });
 
   testWidgets('docente autenticado llega a su home', (tester) async {
@@ -70,7 +70,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text('Tus clases están listas'), findsOneWidget);
+    expect(find.text('Hola, Juan'), findsOneWidget);
   });
 
   testWidgets(
@@ -89,7 +89,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Tu práctica continúa'), findsOneWidget);
-      expect(find.text('Tus clases están listas'), findsNothing);
+      expect(find.text('Hola, Juan'), findsNothing);
     },
   );
 }

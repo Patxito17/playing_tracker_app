@@ -107,8 +107,20 @@ abstract class AppLocalizations {
   /// Texto pestaña Clases
   ///
   /// In es, this message translates to:
-  /// **'Clases'**
+  /// **'Mis Clases'**
   String get classesTab;
+
+  /// Texto pestaña Alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos'**
+  String get studentsTab;
+
+  /// Texto pestaña Perfil
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get profileTab;
 
   /// Texto pestaña Historial
   ///
@@ -725,7 +737,7 @@ abstract class AppLocalizations {
   /// Saludo de bienvenida con nombre
   ///
   /// In es, this message translates to:
-  /// **'Hola, {name}'**
+  /// **'¡Hola, {name}!'**
   String welcomeUser(String name);
 
   /// Título home alumno
@@ -733,6 +745,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicio alumno'**
   String get studentHomeTitle;
+
+  /// Saludo especial para docentes
+  ///
+  /// In es, this message translates to:
+  /// **'¡Buen día, Profe!'**
+  String get teacherWelcomeProfe;
+
+  /// Subtítulo del dashboard docente
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de control musical'**
+  String get musicalControlPanel;
+
+  /// Etiqueta para el conteo total de alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Total Alumnos'**
+  String get totalStudentsLabel;
+
+  /// Etiqueta para las horas registradas hoy
+  ///
+  /// In es, this message translates to:
+  /// **'Horas Hoy'**
+  String get hoursTodayLabel;
+
+  /// Título de la sección de clases en home
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar mis Clases'**
+  String get manageMyClasses;
+
+  /// Acción para ver todos los elementos de una lista
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get viewAll;
+
+  /// Etiqueta para el botón de mis clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis clases'**
+  String get myClassesLabel;
+
+  /// Título de la sección de tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas'**
+  String get tasksSectionTitle;
+
+  /// Etiqueta para ver tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Ver tareas'**
+  String get viewTasksLabel;
+
+  /// Etiqueta para crear nueva tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva tarea'**
+  String get newTaskLabel;
+
+  /// Título de la sección de estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get statsSectionTitle;
+
+  /// Etiqueta para ver progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso'**
+  String get progressLabel;
+
+  /// Etiqueta para ver historial
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get historyLabel;
+
+  /// Tooltip para el botón de notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsTooltip;
 
   /// Título acciones rápidas
   ///
@@ -1177,12 +1273,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tareas'**
   String get tasksTab;
-
-  /// Pestaña estudiantes
-  ///
-  /// In es, this message translates to:
-  /// **'Estudiantes'**
-  String get studentsTab;
 
   /// Pestaña información
   ///
