@@ -1226,4 +1226,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get timerResume => 'Reanudar';
+
+  @override
+  String get timerReset => 'Reiniciar';
+
+  @override
+  String get timerFinish => 'Finalizar';
+
+  @override
+  String get notificationsSection => 'Notificaciones';
 }

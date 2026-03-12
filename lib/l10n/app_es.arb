@@ -1593,5 +1593,17 @@
   "timerResume": "Reanudar",
   "@timerResume": {
     "description": "Botón reanudar cronómetro"
+  },
+  "timerReset": "Reiniciar",
+  "@timerReset": {
+    "description": "Botón reiniciar cronómetro"
+  },
+  "timerFinish": "Finalizar",
+  "@timerFinish": {
+    "description": "Botón finalizar cronómetro"
+  },
+  "notificationsSection": "Notificaciones",
+  "@notificationsSection": {
+    "description": "Sección notificaciones"
   }
 }

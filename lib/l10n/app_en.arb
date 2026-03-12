@@ -207,7 +207,6 @@
   "startStudySession": "Start study session",
   "taskTitleLabel": "Title",
   "taskTitleHint": "Task title",
-  "taskTitleHint": "Task title",
   "taskDescriptionLabel": "Description",
   "estimatedTimeLabel": "Estimated time",
   "noTasksInClass": "No tasks in this class",
