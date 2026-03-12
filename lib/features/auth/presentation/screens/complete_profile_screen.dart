@@ -8,7 +8,6 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/legal_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/validators.dart';
-import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../domain/enums/user_role.dart';
@@ -158,7 +157,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: context.l10n.completeProfileTitle),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -181,7 +179,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       ? state.message
                       : _formError;
 
-                  final displayEmail = widget.email ??
+                  final displayEmail =
+                      widget.email ??
                       (state is AuthProfileIncomplete ? state.email : null);
 
                   return Column(
