@@ -998,6 +998,36 @@ abstract class AppLocalizations {
   /// **'Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.'**
   String get studentHighlightsDescription;
 
+  /// Título de la sección de progreso semanal
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso Semanal'**
+  String get weeklyProgressTitle;
+
+  /// Insignia de virtuoso
+  ///
+  /// In es, this message translates to:
+  /// **'Virtuoso del Mes'**
+  String get virtuosoBadge;
+
+  /// Título de la medalla de constancia
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Medalla: Constancia'**
+  String get constancyMedal;
+
+  /// Descripción de la medalla de constancia
+  ///
+  /// In es, this message translates to:
+  /// **'Has practicado 7 días seguidos. ¡Sigue así!'**
+  String get constancyDescription;
+
+  /// Acción para inscribirse en clases
+  ///
+  /// In es, this message translates to:
+  /// **'Inscribirse'**
+  String get inscriptionsAction;
+
   /// Título mis clases
   ///
   /// In es, this message translates to:

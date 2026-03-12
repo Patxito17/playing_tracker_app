@@ -8,16 +8,19 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
-import '../widgets/home_sections.dart';
+import '../widgets/home_greeting_hero.dart';
+import '../widgets/home_menu_card.dart';
+import '../widgets/home_progress_card.dart';
+import '../widgets/home_accomplishment_card.dart';
 
-/// Pantalla de inicio para estudiantes con accesos directos y resumen.
+/// Pantalla de inicio para estudiantes con diseño premium "Student Dashboard".
 class StudentHomeScreen extends StatelessWidget {
   const StudentHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final colorScheme = context.colorScheme;
-    final quickActions = _buildStudentActions(context);
 
     final userName = context.select((AuthCubit cubit) {
       final state = cubit.state;
@@ -30,76 +33,95 @@ class StudentHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         showLogo: true,
-        title: userName.isNotEmpty
-            ? context.l10n.welcomeUser(userName)
-            : context.l10n.studentHomeTitle,
+        title: 'Playing Tracker',
         actions: [
-          IconButton(
-            tooltip: context.l10n.logout,
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () => context.read<AuthCubit>().logout(),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.l),
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                tooltip: l10n.logout,
+                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+                onPressed: () => context.read<AuthCubit>().logout(),
+              ),
+            ),
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.l),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              HomeHeroCard(
-                icon: Icons.emoji_events_outlined,
-                title: context.l10n.studentWelcomeTitle,
-                subtitle: context.l10n.studentWelcomeSubtitle,
-                buttonLabel: context.l10n.studentClassesAction,
-                onPressed: () => context.go(AppRoutes.studentClassesList),
-                backgroundColor: colorScheme.secondaryContainer,
-                foregroundColor: colorScheme.onSecondaryContainer,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              HomeQuickActionsSection(
-                title: context.l10n.quickActionsTitle,
-                subtitle: context.l10n.studentQuickActionsSubtitle,
-                actions: quickActions,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              HomeHighlightsCard(
-                icon: Icons.auto_graph_outlined,
-                description: context.l10n.studentHighlightsDescription,
-              ),
-            ],
-          ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: AppSpacing.m),
+
+            // Hero de Saludo
+            HomeGreetingHero(
+              title: l10n.welcomeUser(userName),
+              subtitle: l10n.musicalControlPanel,
+            ),
+
+            const SizedBox(height: AppSpacing.l),
+
+            // Progreso Semanal
+            const HomeProgressCard(
+              // TODO: rellenar con datos obtenidos de Firestore
+              progress: 0.85,
+              weeklyData: [0.3, 0.5, 0.8, 0.4, 0.2, 0.1, 0.0],
+            ),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // Medalla / Logro Reciente
+            HomeAccomplishmentCard(
+              title: l10n.constancyMedal,
+              subtitle: l10n.constancyDescription,
+              icon: Icons.emoji_events_rounded,
+            ),
+
+            const SizedBox(height: AppSpacing.m),
+
+            // Acciones Rápidas
+            Text(l10n.quickActionsTitle, style: context.titleLargeBold),
+            const SizedBox(height: AppSpacing.m),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: AppSpacing.m,
+              crossAxisSpacing: AppSpacing.m,
+              children: [
+                HomeMenuCard(
+                  icon: Icons.piano_rounded,
+                  label: l10n.myClassesLabel,
+                  onTap: () => context.go(AppRoutes.studentClassesList),
+                ),
+                HomeMenuCard(
+                  icon: Icons.menu_book_rounded,
+                  label: l10n.studentTasksAction,
+                  onTap: () => context.push(AppRoutes.assignmentList),
+                ),
+                HomeMenuCard(
+                  icon: Icons.history_rounded,
+                  label: l10n.historyTab,
+                  onTap: () => context.go(AppRoutes.studentHistory),
+                ),
+                HomeMenuCard(
+                  icon: Icons.library_music_rounded,
+                  label: l10n.inscriptionsAction,
+                  onTap: () => context.push(AppRoutes.joinClass),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.xxl),
+          ],
         ),
       ),
     );
-  }
-
-  List<HomeQuickActionConfig> _buildStudentActions(BuildContext context) {
-    return [
-      HomeQuickActionConfig(
-        icon: Icons.class_rounded,
-        title: context.l10n.studentClassesAction,
-        description: context.l10n.studentClassesDescription,
-        onTap: () => context.go(AppRoutes.studentClassesList),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.assignment_outlined,
-        title: context.l10n.myTasksTitle,
-        description: context.l10n.studentTasksDescription,
-        onTap: () => context.push(AppRoutes.assignmentList),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.history,
-        title: context.l10n.sessionHistoryTitle,
-        description: context.l10n.sessionHistoryDescription,
-        onTap: () => context.go(AppRoutes.studentHistory),
-      ),
-      HomeQuickActionConfig(
-        icon: Icons.group_add_outlined,
-        title: context.l10n.joinClassAction,
-        description: context.l10n.joinClassDescription,
-        onTap: () => context.push(AppRoutes.joinClass),
-      ),
-    ];
   }
 }

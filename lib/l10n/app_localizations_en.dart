@@ -498,6 +498,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Soon you\'ll be able to see your upcoming tasks and total time spent.';
 
   @override
+  String get weeklyProgressTitle => 'Weekly Progress';
+
+  @override
+  String get virtuosoBadge => 'Virtuoso of the Month';
+
+  @override
+  String get constancyMedal => 'New Medal: Constancy';
+
+  @override
+  String get constancyDescription =>
+      'You\'ve practiced 7 days in a row. Keep it up!';
+
+  @override
+  String get inscriptionsAction => 'Inscribe';
+
+  @override
   String get myClassesTitle => 'My Classes';
 
   @override
