@@ -174,7 +174,7 @@
   "@welcomeTitle": {
     "description": "Saludo de bienvenida"
   },
-  "loginSubtitle": "Inicia sesión para continuar",
+  "loginSubtitle": "¿Listo para seguir tu progreso?",
   "@loginSubtitle": {
     "description": "Subtítulo de login"
   },
@@ -390,7 +390,7 @@
   "@forgotPasswordErrorSemanticLabel": {
     "description": "Etiqueta semántica de error"
   },
-  "continueWithGoogle": "Continuar con Google",
+  "continueWithGoogle": "Google",
   "@continueWithGoogle": {
     "description": "Botón de inicio de sesión / registro con Google"
   },
@@ -402,7 +402,7 @@
   "@googleSignInError": {
     "description": "Error genérico de Google Sign-In"
   },
-  "continueWithApple": "Continuar con Apple",
+  "continueWithApple": "Apple",
   "@continueWithApple": {
     "description": "Botón de inicio de sesión / registro con Apple"
   },
@@ -426,7 +426,7 @@
   "@completeProfileButton": {
     "description": "Botón para finalizar el registro vía Google"
   },
-  "orDivider": "o",
+  "orDivider": "O continúa con",
   "@orDivider": {
     "description": "Separador 'o' entre opciones de login"
   },

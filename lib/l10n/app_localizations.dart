@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// Subtítulo de login
   ///
   /// In es, this message translates to:
-  /// **'Inicia sesión para continuar'**
+  /// **'¿Listo para seguir tu progreso?'**
   String get loginSubtitle;
 
   /// Título de creación de cuenta
@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// Botón de inicio de sesión / registro con Google
   ///
   /// In es, this message translates to:
-  /// **'Continuar con Google'**
+  /// **'Google'**
   String get continueWithGoogle;
 
   /// Mensaje cuando el usuario cancela el flujo de Google
@@ -677,7 +677,7 @@ abstract class AppLocalizations {
   /// Botón de inicio de sesión / registro con Apple
   ///
   /// In es, this message translates to:
-  /// **'Continuar con Apple'**
+  /// **'Apple'**
   String get continueWithApple;
 
   /// Mensaje cuando el usuario cancela el flujo de Apple
@@ -713,7 +713,7 @@ abstract class AppLocalizations {
   /// Separador 'o' entre opciones de login
   ///
   /// In es, this message translates to:
-  /// **'o'**
+  /// **'O continúa con'**
   String get orDivider;
 
   /// Título home docente
