@@ -18,7 +18,7 @@ class HomeDashboardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -58,7 +58,9 @@ class HomeDashboardHeader extends StatelessWidget {
                         Text(
                           subtitle,
                           style: context.bodyLargeOnSurfaceVariant?.copyWith(
-                            color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
+                            color: colorScheme.onPrimaryContainer.withValues(
+                              alpha: 0.8,
+                            ),
                           ),
                         ),
                       ],

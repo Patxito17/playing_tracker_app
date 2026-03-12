@@ -18,7 +18,7 @@ class HomeStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    
+
     return Container(
       width: 160,
       padding: const EdgeInsets.all(AppSpacing.l),
@@ -42,21 +42,11 @@ class HomeStatCard extends StatelessWidget {
               color: colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppBorderRadius.small),
             ),
-            child: Icon(
-              icon,
-              color: colorScheme.primary,
-              size: 20,
-            ),
+            child: Icon(icon, color: colorScheme.primary, size: 20),
           ),
           const SizedBox(height: AppSpacing.m),
-          Text(
-            value,
-            style: context.titleLargeBold,
-          ),
-          Text(
-            label,
-            style: context.bodySmallOnSurfaceVariant,
-          ),
+          Text(value, style: context.titleLargeBold),
+          Text(label, style: context.bodySmallOnSurfaceVariant),
         ],
       ),
     );

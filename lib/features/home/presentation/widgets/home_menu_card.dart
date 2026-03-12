@@ -25,7 +25,7 @@ class HomeMenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    
+
     return AspectRatio(
       aspectRatio: 1,
       child: InkWell(
@@ -54,15 +54,19 @@ class HomeMenuCard extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: iconBackgroundColor ?? colorScheme.primary.withValues(alpha: 0.1),
+                  color:
+                      iconBackgroundColor ??
+                      colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: customIcon ?? Icon(
-                    icon,
-                    size: 32,
-                    color: iconColor ?? colorScheme.primary,
-                  ),
+                  child:
+                      customIcon ??
+                      Icon(
+                        icon,
+                        size: 32,
+                        color: iconColor ?? colorScheme.primary,
+                      ),
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
