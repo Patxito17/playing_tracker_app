@@ -33,18 +33,15 @@ class TeacherHomeScreen extends StatelessWidget {
         showLogo: true,
         title: 'Playing Tracker',
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.l),
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.errorContainer.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                tooltip: l10n.logout,
-                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
-                onPressed: () => context.read<AuthCubit>().logout(),
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.errorContainer.withValues(alpha: 0.3),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              tooltip: l10n.logout,
+              icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+              onPressed: () => context.read<AuthCubit>().logout(),
             ),
           ),
         ],

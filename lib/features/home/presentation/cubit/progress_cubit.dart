@@ -120,12 +120,6 @@ class ProgressCubit extends Cubit<ProgressState> {
           a.isInProgress ||
           isCompletedThisWeek;
 
-      if (shouldInclude) {
-        print(
-          'ProgressCubit: [DEBUG] Incluyendo tarea: ${a.taskId} - Duración: ${a.durationSuggested}s - Status: ${a.status}',
-        );
-      }
-
       return shouldInclude;
     }).toList();
 
@@ -134,15 +128,8 @@ class ProgressCubit extends Cubit<ProgressState> {
       weeklyGoalSeconds += (task.durationSuggested ?? 0);
     }
 
-    print(
-      'ProgressCubit: [DEBUG] Suma de duraciones sugeridas: $weeklyGoalSeconds s (${weeklyGoalSeconds / 60} min)',
-    );
-
     // Solo aplicamos fallback si NO hay tareas asignadas para esta semana
     if (weeklyGoalSeconds == 0 && weeklyTasks.isEmpty) {
-      print(
-        'ProgressCubit: [DEBUG] Sin tareas semanales. Aplicando fallback de 30 min (1800s)',
-      );
       weeklyGoalSeconds = 1800;
     } else if (weeklyGoalSeconds < 60) {
       // Si la meta es ridículamente baja (menos de 1 min), ponemos 1 min para evitar problemas
@@ -153,22 +140,12 @@ class ProgressCubit extends Cubit<ProgressState> {
     final dailySeconds = List<int>.filled(7, 0);
     int totalWeeklySeconds = 0;
 
-    print(
-      'ProgressCubit: [DEBUG] Rango de sesiones: $startOfWeek a $endOfWeek',
-    );
     for (final session in sessions) {
       final date = session.dateLogged.toDate();
       final weekday = date.weekday;
       dailySeconds[weekday - 1] += session.totalDuration;
       totalWeeklySeconds += session.totalDuration;
-      print(
-        'ProgressCubit: [DEBUG] -> Sesión: ${session.id} - Fecha: $date - Duración: ${session.totalDuration}s',
-      );
     }
-
-    print(
-      'ProgressCubit: [DEBUG] Total practicado esta semana: $totalWeeklySeconds s (${totalWeeklySeconds / 60} min)',
-    );
 
     // 3. Normalizar para el gráfico (escala visual)
     // El dailyGoal es el objetivo diario sugerido (1/7 de la meta semanal)
@@ -180,10 +157,6 @@ class ProgressCubit extends Cubit<ProgressState> {
     // 4. Calcular Porcentaje Total
     final double weeklyPercentage =
         (totalWeeklySeconds / weeklyGoalSeconds * 100).clamp(0.0, 100.0);
-
-    print(
-      'ProgressCubit: [DEBUG] Meta: $weeklyGoalSeconds s | Practicado: $totalWeeklySeconds s | Porcentaje: $weeklyPercentage%',
-    );
 
     emit(
       ProgressLoaded(

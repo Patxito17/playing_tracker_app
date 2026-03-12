@@ -39,18 +39,15 @@ class StudentHomeScreen extends StatelessWidget {
         showLogo: true,
         title: 'Playing Tracker',
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.l),
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.errorContainer.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                tooltip: l10n.logout,
-                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
-                onPressed: () => context.read<AuthCubit>().logout(),
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.errorContainer.withValues(alpha: 0.3),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              tooltip: l10n.logout,
+              icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+              onPressed: () => context.read<AuthCubit>().logout(),
             ),
           ),
         ],
@@ -92,7 +89,7 @@ class StudentHomeScreen extends StatelessWidget {
                       weeklyData: state.dailyValues,
                     );
                   }
-                  
+
                   // Estado de carga o inicial: Shimmer o progreso estático
                   return HomeProgressCard(
                     progress: 0.0,
@@ -103,53 +100,53 @@ class StudentHomeScreen extends StatelessWidget {
 
               const SizedBox(height: AppSpacing.xl),
 
-            // Medalla / Logro Reciente
-            HomeAccomplishmentCard(
-              title: l10n.constancyMedal,
-              subtitle: l10n.constancyDescription,
-              icon: Icons.emoji_events_rounded,
-            ),
+              // Medalla / Logro Reciente
+              HomeAccomplishmentCard(
+                title: l10n.constancyMedal,
+                subtitle: l10n.constancyDescription,
+                icon: Icons.emoji_events_rounded,
+              ),
 
-            const SizedBox(height: AppSpacing.m),
+              const SizedBox(height: AppSpacing.m),
 
-            // Acciones Rápidas
-            Text(l10n.quickActionsTitle, style: context.titleLargeBold),
-            const SizedBox(height: AppSpacing.m),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: AppSpacing.m,
-              crossAxisSpacing: AppSpacing.m,
-              children: [
-                HomeMenuCard(
-                  icon: Icons.piano_rounded,
-                  label: l10n.myClassesLabel,
-                  onTap: () => context.go(AppRoutes.studentClassesList),
-                ),
-                HomeMenuCard(
-                  icon: Icons.menu_book_rounded,
-                  label: l10n.studentTasksAction,
-                  onTap: () => context.push(AppRoutes.assignmentList),
-                ),
-                HomeMenuCard(
-                  icon: Icons.history_rounded,
-                  label: l10n.historyTab,
-                  onTap: () => context.go(AppRoutes.studentHistory),
-                ),
-                HomeMenuCard(
-                  icon: Icons.library_music_rounded,
-                  label: l10n.inscriptionsAction,
-                  onTap: () => context.push(AppRoutes.joinClass),
-                ),
-              ],
-            ),
+              // Acciones Rápidas
+              Text(l10n.quickActionsTitle, style: context.titleLargeBold),
+              const SizedBox(height: AppSpacing.m),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: AppSpacing.m,
+                crossAxisSpacing: AppSpacing.m,
+                children: [
+                  HomeMenuCard(
+                    icon: Icons.piano_rounded,
+                    label: l10n.myClassesLabel,
+                    onTap: () => context.go(AppRoutes.studentClassesList),
+                  ),
+                  HomeMenuCard(
+                    icon: Icons.menu_book_rounded,
+                    label: l10n.studentTasksAction,
+                    onTap: () => context.push(AppRoutes.assignmentList),
+                  ),
+                  HomeMenuCard(
+                    icon: Icons.history_rounded,
+                    label: l10n.historyTab,
+                    onTap: () => context.go(AppRoutes.studentHistory),
+                  ),
+                  HomeMenuCard(
+                    icon: Icons.library_music_rounded,
+                    label: l10n.inscriptionsAction,
+                    onTap: () => context.push(AppRoutes.joinClass),
+                  ),
+                ],
+              ),
 
-            const SizedBox(height: AppSpacing.xxl),
-          ],
+              const SizedBox(height: AppSpacing.xxl),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
