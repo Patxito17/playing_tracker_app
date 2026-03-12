@@ -62,7 +62,6 @@ class TeacherHomeScreen extends StatelessWidget {
                   ? l10n.welcomeUser(userName)
                   : l10n.teacherWelcomeProfe,
               subtitle: l10n.musicalControlPanel,
-              backgroundIcon: Icons.piano_rounded,
             ),
 
             const SizedBox(height: AppSpacing.xl),

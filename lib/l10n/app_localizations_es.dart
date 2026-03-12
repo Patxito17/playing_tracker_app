@@ -507,6 +507,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.';
 
   @override
+  String get weeklyProgressTitle => 'Progreso Semanal';
+
+  @override
+  String get virtuosoBadge => 'Virtuoso del Mes';
+
+  @override
+  String get constancyMedal => 'Nueva Medalla: Constancia';
+
+  @override
+  String get constancyDescription =>
+      'Has practicado 7 días seguidos. ¡Sigue así!';
+
+  @override
+  String get inscriptionsAction => 'Inscribirse';
+
+  @override
   String get myClassesTitle => 'Mis clases';
 
   @override

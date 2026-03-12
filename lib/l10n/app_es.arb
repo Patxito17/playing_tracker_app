@@ -625,6 +625,26 @@
   "@studentHighlightsDescription": {
     "description": "Descripción resumen alumno"
   },
+  "weeklyProgressTitle": "Progreso Semanal",
+  "@weeklyProgressTitle": {
+    "description": "Título de la sección de progreso semanal"
+  },
+  "virtuosoBadge": "Virtuoso del Mes",
+  "@virtuosoBadge": {
+    "description": "Insignia de virtuoso"
+  },
+  "constancyMedal": "Nueva Medalla: Constancia",
+  "@constancyMedal": {
+    "description": "Título de la medalla de constancia"
+  },
+  "constancyDescription": "Has practicado 7 días seguidos. ¡Sigue así!",
+  "@constancyDescription": {
+    "description": "Descripción de la medalla de constancia"
+  },
+  "inscriptionsAction": "Inscribirse",
+  "@inscriptionsAction": {
+    "description": "Acción para inscribirse en clases"
+  },
   "myClassesTitle": "Mis clases",
   "@myClassesTitle": {
     "description": "Título mis clases"
