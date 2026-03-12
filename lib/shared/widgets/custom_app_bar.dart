@@ -53,21 +53,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final colorScheme = context.colorScheme;
     final canPop = context.canPop();
 
+    // Margen horizontal consistente de 16px (Material 3 standard)
+    const double horizontalMargin = AppSpacing.m;
+
     // Construcción del leading (izquierda)
-    Widget? leading;
+    Widget? leadingWidget;
     if (showLogo) {
-      leading = Padding(
-        padding: const EdgeInsets.all(AppSpacing.s),
-        child: Container(
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Image.asset('assets/images/logo.png', width: 24, height: 24),
+      leadingWidget = Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: colorScheme.primary.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xs),
+          child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
         ),
       );
     } else if (canPop) {
-      leading = IconButton(
+      leadingWidget = IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
         tooltip: context.l10n.back,
         onPressed: () => context.pop(),
@@ -86,9 +91,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return AppBar(
-      leading: leading,
+      // Aplicamos el margen a la izquierda del leading
+      leading: leadingWidget != null
+          ? Padding(
+              padding: const EdgeInsets.only(left: horizontalMargin),
+              child: leadingWidget,
+            )
+          : null,
+      // Ancho calculado: 48 (clic standard) + 16 (margen)
+      leadingWidth: 48 + horizontalMargin,
       title: titleWidget,
-      actions: actions,
+      // Espaciado del título respectivo al leading
+      titleSpacing: horizontalMargin,
+      // Añadimos el margen al final de todas las acciones
+      actions: actions != null
+          ? [...actions!, const SizedBox(width: horizontalMargin)]
+          : null,
       centerTitle: centerTitle,
       backgroundColor: backgroundColor,
       elevation: elevation,
