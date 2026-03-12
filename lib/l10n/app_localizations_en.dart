@@ -1214,4 +1214,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timerResume => 'Resume';
+
+  @override
+  String get timerReset => 'Reset';
+
+  @override
+  String get timerFinish => 'Finish session';
+
+  @override
+  String get notificationsSection => 'Notifications';
 }

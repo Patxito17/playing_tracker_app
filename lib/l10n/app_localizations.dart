@@ -2317,6 +2317,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reanudar'**
   String get timerResume;
+
+  /// Botón reiniciar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Reiniciar'**
+  String get timerReset;
+
+  /// Botón finalizar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar'**
+  String get timerFinish;
+
+  /// Sección notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsSection;
 }
 
 class _AppLocalizationsDelegate
