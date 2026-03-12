@@ -20,7 +20,7 @@ class HomeClassCardCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    
+
     return Card(
       elevation: 0,
       margin: EdgeInsets.zero,
@@ -45,10 +45,7 @@ class HomeClassCardCompact extends StatelessWidget {
                   color: colorScheme.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(AppBorderRadius.small),
                 ),
-                child: Icon(
-                  icon,
-                  color: colorScheme.primary,
-                ),
+                child: Icon(icon, color: colorScheme.primary),
               ),
               const SizedBox(width: AppSpacing.m),
               Expanded(
