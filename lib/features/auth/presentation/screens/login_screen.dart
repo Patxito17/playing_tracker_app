@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,8 +18,6 @@ import '../cubit/auth_state.dart';
 ///
 /// Implementa un formulario completo de login con validación visual básica,
 /// toggle para mostrar/ocultar contraseña y diseño Material Design 3.
-///
-/// Sprint 0 - Fase 5: UI completa implementada (sin lógica de autenticación real)
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -94,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: context.l10n.loginTitle),
       extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
@@ -103,7 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
             end: Alignment.bottomRight,
             colors: [
               context.colorScheme.surface,
-              context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              context.colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.5,
+              ),
             ],
           ),
         ),
@@ -169,199 +169,215 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(height: AppSpacing.l),
                               Text(
                                 context.l10n.welcomeTitle,
-                          style: context.displaySmallBold,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.s),
-                        Text(
-                          context.l10n.loginSubtitle,
-                          style: context.bodyLargeOnSurfaceVariant,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                        if (errorMessage != null) ...[
-                          Semantics(
-                            label: context.l10n.loginErrorSemanticLabel,
-                            liveRegion: true,
-                            child: SelectableText.rich(
-                              TextSpan(
-                                text: context.translateError(errorMessage),
-                                style: context.bodyMediumOnSurface?.copyWith(
-                                  color: context.colorScheme.error,
+                                style: context.displaySmallBold,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: AppSpacing.s),
+                              Text(
+                                context.l10n.loginSubtitle,
+                                style: context.bodyLargeOnSurfaceVariant,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: AppSpacing.xxl),
+                              if (errorMessage != null) ...[
+                                Semantics(
+                                  label: context.l10n.loginErrorSemanticLabel,
+                                  liveRegion: true,
+                                  child: SelectableText.rich(
+                                    TextSpan(
+                                      text: context.translateError(
+                                        errorMessage,
+                                      ),
+                                      style: context.bodyMediumOnSurface
+                                          ?.copyWith(
+                                            color: context.colorScheme.error,
+                                          ),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.l),
-                        ],
-                        CustomTextField(
-                          controller: _emailController,
-                          label: context.l10n.emailLabel,
-                          hint: context.l10n.emailHint,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.none,
-                          autofillHints: const [AutofillHints.email],
-                          errorText: _emailError,
-                          prefix: Icon(
-                            Icons.email_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          onChanged: (value) {
-                            if (_emailError != null) {
-                              setState(() {
-                                _emailError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) =>
-                              FocusScope.of(context).nextFocus(),
-                        ),
-                        const SizedBox(height: AppSpacing.l),
-                        CustomTextField(
-                          controller: _passwordController,
-                          label: context.l10n.passwordLabel,
-                          hint: context.l10n.passwordHint,
-                          obscureText: _obscurePassword,
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.none,
-                          autofillHints: const [AutofillHints.password],
-                          errorText: _passwordError,
-                          prefix: Icon(
-                            Icons.lock_outlined,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                          suffix: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            tooltip: _obscurePassword
-                                ? context.l10n.showPassword
-                                : context.l10n.hidePassword,
-                          ),
-                          onChanged: (value) {
-                            if (_passwordError != null) {
-                              setState(() {
-                                _passwordError = null;
-                              });
-                            }
-                          },
-                          onSubmitted: (_) => _handleLogin(),
-                        ),
-                        const SizedBox(height: AppSpacing.s),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () =>
-                                context.push(AppRoutes.forgotPassword),
-                            child: Text(
-                              context.l10n.forgotPasswordLink,
-                              style: context.textPrimary?.copyWith(
-                                fontSize: context.textTheme.bodySmall?.fontSize,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        CustomButton(
-                          label: context.l10n.loginButton,
-                          variant: CustomButtonVariant.filled,
-                          isLoading: _isEmailLoading,
-                          onPressed: isLoading ? null : _handleLogin,
-                        ),
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Separador OAuth
-                        Row(
-                          children: [
-                            const Expanded(child: Divider()),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.s,
-                              ),
-                              child: Text(
-                                context.l10n.orDivider,
-                                style: context.bodyMediumOnSurfaceVariant,
-                              ),
-                            ),
-                            const Expanded(child: Divider()),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.l),
-
-                        // Botón de Google Sign-In
-                        CustomButton(
-                          label: context.l10n.continueWithGoogle,
-                          variant: CustomButtonVariant.outlined,
-                          isLoading: _isGoogleLoading,
-                          prefixWidget: Image.asset(
-                            'assets/icons/google_logo.png',
-                            width: 20,
-                            height: 20,
-                            errorBuilder: (_, _, _) =>
-                                const Icon(Icons.login, size: 20),
-                          ),
-                          onPressed: isLoading
-                              ? null
-                              : () {
-                                  setState(() => _isGoogleLoading = true);
-                                  context.read<AuthCubit>().signInWithGoogle();
-                                },
-                        ),
-
-                        // Botón de Apple Sign-In (solo iOS)
-                        if (Theme.of(context).platform ==
-                            TargetPlatform.iOS) ...[
-                          const SizedBox(height: AppSpacing.l),
-                          CustomButton(
-                            label: context.l10n.continueWithApple,
-                            variant: CustomButtonVariant.outlined,
-                            isLoading: _isAppleLoading,
-                            prefixWidget: const Icon(Icons.apple, size: 24),
-                            onPressed: isLoading
-                                ? null
-                                : () {
-                                    setState(() => _isAppleLoading = true);
-                                    context.read<AuthCubit>().signInWithApple();
-                                  },
-                          ),
-                        ],
-                        const SizedBox(height: AppSpacing.xl),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              context.l10n.noAccountQuestion,
-                              style: context.bodyMediumOnSurfaceVariant,
-                            ),
-                            TextButton(
-                              onPressed: () => context.push(AppRoutes.register),
-                              child: Text(
-                                context.l10n.registerLink,
-                                style: context.textPrimary?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      context.textTheme.bodyMedium?.fontSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                                const SizedBox(height: AppSpacing.l),
                               ],
-                            ),
+                              CustomTextField(
+                                controller: _emailController,
+                                label: context.l10n.emailLabel,
+                                hint: context.l10n.emailHint,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                textCapitalization: TextCapitalization.none,
+                                autofillHints: const [AutofillHints.email],
+                                errorText: _emailError,
+                                prefix: Icon(
+                                  Icons.email_outlined,
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
+                                onChanged: (value) {
+                                  if (_emailError != null) {
+                                    setState(() {
+                                      _emailError = null;
+                                    });
+                                  }
+                                },
+                                onSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                              ),
+                              const SizedBox(height: AppSpacing.l),
+                              CustomTextField(
+                                controller: _passwordController,
+                                label: context.l10n.passwordLabel,
+                                hint: context.l10n.passwordHint,
+                                obscureText: _obscurePassword,
+                                textInputAction: TextInputAction.done,
+                                textCapitalization: TextCapitalization.none,
+                                autofillHints: const [AutofillHints.password],
+                                errorText: _passwordError,
+                                prefix: Icon(
+                                  Icons.lock_outlined,
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
+                                suffix: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: context.colorScheme.onSurfaceVariant,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  tooltip: _obscurePassword
+                                      ? context.l10n.showPassword
+                                      : context.l10n.hidePassword,
+                                ),
+                                onChanged: (value) {
+                                  if (_passwordError != null) {
+                                    setState(() {
+                                      _passwordError = null;
+                                    });
+                                  }
+                                },
+                                onSubmitted: (_) => _handleLogin(),
+                              ),
+                              const SizedBox(height: AppSpacing.s),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () =>
+                                      context.push(AppRoutes.forgotPassword),
+                                  child: Text(
+                                    context.l10n.forgotPasswordLink,
+                                    style: context.textPrimary?.copyWith(
+                                      fontSize:
+                                          context.textTheme.bodySmall?.fontSize,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xl),
+                              CustomButton(
+                                label: context.l10n.loginButton,
+                                variant: CustomButtonVariant.filled,
+                                isLoading: _isEmailLoading,
+                                onPressed: isLoading ? null : _handleLogin,
+                              ),
+                              const SizedBox(height: AppSpacing.l),
+
+                              // Separador OAuth
+                              Row(
+                                children: [
+                                  const Expanded(child: Divider()),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.s,
+                                    ),
+                                    child: Text(
+                                      context.l10n.orDivider,
+                                      style: context.bodyMediumOnSurfaceVariant,
+                                    ),
+                                  ),
+                                  const Expanded(child: Divider()),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.l),
+
+                              // Botón de Google Sign-In
+                              CustomButton(
+                                label: context.l10n.continueWithGoogle,
+                                variant: CustomButtonVariant.outlined,
+                                isLoading: _isGoogleLoading,
+                                prefixWidget: Image.asset(
+                                  'assets/icons/google_logo.png',
+                                  width: 20,
+                                  height: 20,
+                                  errorBuilder: (_, _, _) =>
+                                      const Icon(Icons.login, size: 20),
+                                ),
+                                onPressed: isLoading
+                                    ? null
+                                    : () {
+                                        setState(() => _isGoogleLoading = true);
+                                        context
+                                            .read<AuthCubit>()
+                                            .signInWithGoogle();
+                                      },
+                              ),
+
+                              // Botón de Apple Sign-In (solo iOS)
+                              if (Theme.of(context).platform ==
+                                  TargetPlatform.iOS) ...[
+                                const SizedBox(height: AppSpacing.l),
+                                CustomButton(
+                                  label: context.l10n.continueWithApple,
+                                  variant: CustomButtonVariant.outlined,
+                                  isLoading: _isAppleLoading,
+                                  prefixWidget: const Icon(
+                                    Icons.apple,
+                                    size: 24,
+                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          setState(
+                                            () => _isAppleLoading = true,
+                                          );
+                                          context
+                                              .read<AuthCubit>()
+                                              .signInWithApple();
+                                        },
+                                ),
+                              ],
+                              const SizedBox(height: AppSpacing.xl),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    context.l10n.noAccountQuestion,
+                                    style: context.bodyMediumOnSurfaceVariant,
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        context.push(AppRoutes.register),
+                                    child: Text(
+                                      context.l10n.registerLink,
+                                      style: context.textPrimary?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: context
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.fontSize,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
