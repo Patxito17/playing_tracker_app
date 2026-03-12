@@ -299,52 +299,61 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               const SizedBox(height: AppSpacing.l),
 
-                              // Botón de Google Sign-In
-                              CustomButton(
-                                label: context.l10n.continueWithGoogle,
-                                variant: CustomButtonVariant.outlined,
-                                isLoading: _isGoogleLoading,
-                                prefixWidget: Image.asset(
-                                  'assets/icons/google_logo.png',
-                                  width: 20,
-                                  height: 20,
-                                  errorBuilder: (_, _, _) =>
-                                      const Icon(Icons.login, size: 20),
-                                ),
-                                onPressed: isLoading
-                                    ? null
-                                    : () {
-                                        setState(() => _isGoogleLoading = true);
-                                        context
-                                            .read<AuthCubit>()
-                                            .signInWithGoogle();
-                                      },
-                              ),
-
-                              // Botón de Apple Sign-In (solo iOS)
-                              if (Theme.of(context).platform ==
-                                  TargetPlatform.iOS) ...[
-                                const SizedBox(height: AppSpacing.l),
-                                CustomButton(
-                                  label: context.l10n.continueWithApple,
-                                  variant: CustomButtonVariant.outlined,
-                                  isLoading: _isAppleLoading,
-                                  prefixWidget: const Icon(
-                                    Icons.apple,
-                                    size: 24,
+                              // Botones de inicio de sesión social (OAuth)
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomButton(
+                                      label: context.l10n.continueWithGoogle,
+                                      variant: CustomButtonVariant.outlined,
+                                      isLoading: _isGoogleLoading,
+                                      prefixWidget: Image.asset(
+                                        'assets/icons/google_logo.png',
+                                        width: 20,
+                                        height: 20,
+                                        errorBuilder: (_, _, _) =>
+                                            const Icon(Icons.login, size: 20),
+                                      ),
+                                      onPressed: isLoading
+                                          ? null
+                                          : () {
+                                              setState(
+                                                () => _isGoogleLoading = true,
+                                              );
+                                              context
+                                                  .read<AuthCubit>()
+                                                  .signInWithGoogle();
+                                            },
+                                    ),
                                   ),
-                                  onPressed: isLoading
-                                      ? null
-                                      : () {
-                                          setState(
-                                            () => _isAppleLoading = true,
-                                          );
-                                          context
-                                              .read<AuthCubit>()
-                                              .signInWithApple();
-                                        },
-                                ),
-                              ],
+                                  // Botón de Apple Sign-In (solo iOS)
+                                  if (Theme.of(context).platform ==
+                                      TargetPlatform.iOS) ...[
+                                    const SizedBox(width: AppSpacing.l),
+                                    Expanded(
+                                      child: CustomButton(
+                                        label: context.l10n.continueWithApple,
+                                        variant: CustomButtonVariant.outlined,
+                                        isLoading: _isAppleLoading,
+                                        prefixWidget: const Icon(
+                                          Icons.apple,
+                                          size: 24,
+                                        ),
+                                        onPressed: isLoading
+                                            ? null
+                                            : () {
+                                                setState(
+                                                  () => _isAppleLoading = true,
+                                                );
+                                                context
+                                                    .read<AuthCubit>()
+                                                    .signInWithApple();
+                                              },
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
                               const SizedBox(height: AppSpacing.xl),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -133,7 +133,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get welcomeTitle => 'Bienvenido';
 
   @override
-  String get loginSubtitle => 'Inicia sesión para continuar';
+  String get loginSubtitle => '¿Listo para seguir tu progreso?';
 
   @override
   String get createAccountTitle => 'Crea tu cuenta';
@@ -314,7 +314,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo enviar el enlace de recuperación.';
 
   @override
-  String get continueWithGoogle => 'Continuar con Google';
+  String get continueWithGoogle => 'Google';
 
   @override
   String get googleSignInCanceled =>
@@ -325,7 +325,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.';
 
   @override
-  String get continueWithApple => 'Continuar con Apple';
+  String get continueWithApple => 'Apple';
 
   @override
   String get appleSignInCanceled =>
@@ -346,7 +346,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get completeProfileButton => 'Completar registro';
 
   @override
-  String get orDivider => 'o';
+  String get orDivider => 'O continúa con';
 
   @override
   String get teacherHomeTitle => 'Inicio docente';
