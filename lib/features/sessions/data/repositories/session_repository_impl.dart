@@ -151,6 +151,42 @@ final class SessionRepositoryImpl implements SessionRepository {
     );
   }
 
+  @override
+  Stream<List<SessionModel>> watchWeeklySessions({
+    required String studentId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) {
+    final normalizedId = studentId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<SessionModel>>.error(
+        const InvalidSessionArgumentException(
+          'El identificador del estudiante es obligatorio',
+        ),
+      );
+    }
+
+    final stream = _sessionService.watchWeeklySessions(
+      studentId: normalizedId,
+      startDate: startDate,
+      endDate: endDate,
+    );
+
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (sessions, sink) => sink.add(sessions),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchWeeklySessions',
+            error: error,
+            fallbackMessage: 'No fue posible cargar el progreso semanal.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
   /// Lanza una excepción del repositorio mapeando el error original.
   Never _throwRepositoryException({
     required String method,

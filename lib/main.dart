@@ -21,6 +21,8 @@ import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/classes/data/repositories/class_repository_impl.dart';
 import 'features/classes/domain/repositories/class_repository.dart';
+import 'features/sessions/data/repositories/session_repository_impl.dart';
+import 'features/sessions/domain/repositories/session_repository.dart';
 import 'features/tasks/data/repositories/task_repository_impl.dart';
 import 'features/tasks/domain/repositories/task_repository.dart';
 import 'firebase_options.dart';
@@ -78,6 +80,7 @@ class PlayingTrackerApp extends StatefulWidget {
     this.authCubitBuilder,
     this.classRepository,
     this.taskRepository,
+    this.sessionRepository,
   });
 
   final SettingsService settingsService;
@@ -85,6 +88,7 @@ class PlayingTrackerApp extends StatefulWidget {
   final AuthCubit Function(AuthRepository repository)? authCubitBuilder;
   final ClassRepository? classRepository;
   final TaskRepository? taskRepository;
+  final SessionRepository? sessionRepository;
 
   @override
   State<PlayingTrackerApp> createState() => _PlayingTrackerAppState();
@@ -94,6 +98,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
   late final AuthRepository _authRepository;
   late final ClassRepository _classRepository;
   late final TaskRepository _taskRepository;
+  late final SessionRepository _sessionRepository;
   late final AuthCubit _authCubit;
   late final SettingsCubit _settingsCubit;
   late final AppRoutes _appRoutes;
@@ -104,6 +109,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
     _authRepository = widget.authRepository ?? AuthRepositoryImpl();
     _classRepository = widget.classRepository ?? ClassRepositoryImpl();
     _taskRepository = widget.taskRepository ?? TaskRepositoryImpl();
+    _sessionRepository = widget.sessionRepository ?? SessionRepositoryImpl();
 
     _authCubit =
         widget.authCubitBuilder?.call(_authRepository) ??
@@ -126,6 +132,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
         RepositoryProvider.value(value: _authRepository),
         RepositoryProvider.value(value: _classRepository),
         RepositoryProvider.value(value: _taskRepository),
+        RepositoryProvider.value(value: _sessionRepository),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -66,7 +66,7 @@ class HomeProgressCard extends StatelessWidget {
               final days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
               final day = days[index % days.length];
               final value = weeklyData[index];
-              final isToday = index == 2; // Simulación: hoy es miércoles
+              final isToday = (index + 1) == DateTime.now().weekday;
 
               return Column(
                 children: [
