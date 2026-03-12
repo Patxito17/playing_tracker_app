@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 11 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅ | Refactorización l10n Profesional ✅ | Simplificación Legal UX ✅ | OAuth Merged ✅ | Wakelock ✅) 🚧 | Sprint 8 - Rediseño UI Premium 📅
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización Completado ✅ | Sprint 8 - Rediseño UI Premium 🚧 (Fase 1 Auth ✅ | Fase 2 Home 🚧)
 
 ---
 

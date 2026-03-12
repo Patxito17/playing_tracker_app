@@ -34,6 +34,23 @@ En esta primera fase nos centraremos en el rediseño del flujo de logueo, regist
 
 ---
 
+## 🎨 Fase 2: Home Screens
+
+En esta fase rediseñaremos las pantallas principales de la aplicación para ambos roles, asegurando que el "Dashboard" sea motivador y funcional.
+
+### Cambios Esquemáticos y Prompts de Stitch
+
+*   **StudentHomeScreen**:
+    *   **Modificaciones**: Dashboard dinámico con tarjetas de progreso, accesos directos visuales a clases y tareas, y un resumen de actividad motivador.
+    *   **Prompt Stitch**: > "Diseña una pantalla de inicio (Dashboard) premium para un estudiante de música (8-18 años). Debe ser vibrante, moderna y académica. Incluye una tarjeta de bienvenida personalizada, una sección de 'Acciones Rápidas' con iconos hermosos para 'Mis Clases', 'Mis Tareas', 'Historial' y 'Unirse a Clase'. Añade una sección de 'Logros' o 'Progreso' visualmente atractiva utilizando tarjetas con elevación Material 3 (surface containers), bordes redondeados (16px) y fondos con sutiles degradados. Usa tokens dinámicos de Material 3 para soporte de modo claro/oscuro".
+
+*   **TeacherHomeScreen**:
+    *   **Modificaciones**: Interfaz limpia y profesional enfocada en la gestión eficiente. Acceso rápido a creación y administración de clases.
+    *   **Prompt Stitch**: > "Diseña una pantalla de inicio para un docente de música. Debe ser limpia, profesional y emanar confianza. Incluye una tarjeta de bienvenida, una sección para 'Gestionar Clases' y un botón destacado para 'Crear Nueva Clase'. La jerarquía tipográfica debe ser fuerte y la información debe estar organizada de forma clara utilizando tarjetas Material 3 con bordes redondeados (16px). Usa tokens dinámicos de Material 3 para que el diseño sea profesional tanto en modo claro como oscuro".
+
+
+---
+
 ## 🌍 Localización y Textos
 
 Cualquier nuevo string generado en los diseños de Stitch que se deba mostrar en pantalla, se debe incorporar en `app_es.arb` y `app_en.arb`. 
