@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:playing_tracker/features/settings/data/services/settings_service.dart';
 import 'package:playing_tracker/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:playing_tracker/features/settings/presentation/cubit/settings_state.dart';
+import 'package:playing_tracker/l10n/l10n.dart';
 
 import 'config/routes/app_routes.dart';
 import 'config/theme/app_theme.dart';
@@ -169,7 +170,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              supportedLocales: AppLocalizations.supportedLocales,
+              supportedLocales: L10n.all,
               routerConfig: _appRoutes.router,
               debugShowCheckedModeBanner: false,
             );

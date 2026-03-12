@@ -16,6 +16,7 @@ import 'package:playing_tracker/features/statistics/presentation/widgets/app_bar
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_pie_chart.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_progress_chart.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
+import 'package:playing_tracker/l10n/l10n.dart';
 
 class MockStudentStatsCubit extends MockCubit<StudentStatsState>
     implements StudentStatsCubit {}
@@ -66,7 +67,7 @@ void main() {
     return MaterialApp.router(
       routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: L10n.all,
       builder: (context, child) {
         return MediaQuery(
           data: const MediaQueryData(size: Size(1080, 2400)),
