@@ -128,6 +128,7 @@ final class SessionService implements SessionServiceContract {
           'sessionsCount': FieldValue.increment(1),
           'totalDurationLogged': FieldValue.increment(session.totalDuration),
           'lastSessionDate': session.endTime,
+          'status': 'in_progress', // Siempre asegurar que pasa a in_progress
         });
 
         // 5. Actualizar contadores en student

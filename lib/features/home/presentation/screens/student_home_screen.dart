@@ -9,6 +9,7 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../sessions/domain/repositories/session_repository.dart';
+import '../../../tasks/domain/repositories/task_repository.dart';
 import '../cubit/progress_cubit.dart';
 import '../cubit/progress_state.dart';
 import '../widgets/home_greeting_hero.dart';
@@ -57,7 +58,10 @@ class StudentHomeScreen extends StatelessWidget {
 
       body: BlocProvider(
         create: (context) {
-          final cubit = ProgressCubit(context.read<SessionRepository>());
+          final cubit = ProgressCubit(
+            sessionRepository: context.read<SessionRepository>(),
+            taskRepository: context.read<TaskRepository>(),
+          );
           final authState = context.read<AuthCubit>().state;
           if (authState is AuthAuthenticated) {
             cubit.watchProgress(authState.userId);
