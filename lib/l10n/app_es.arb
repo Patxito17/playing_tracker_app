@@ -4,9 +4,17 @@
   "@homeTab": {
     "description": "Texto pestaña Inicio"
   },
-  "classesTab": "Clases",
+  "classesTab": "Mis Clases",
   "@classesTab": {
     "description": "Texto pestaña Clases"
+  },
+  "studentsTab": "Alumnos",
+  "@studentsTab": {
+    "description": "Texto pestaña Alumnos"
+  },
+  "profileTab": "Perfil",
+  "@profileTab": {
+    "description": "Texto pestaña Perfil"
   },
   "historyTab": "Historial",
   "@historyTab": {
@@ -434,7 +442,7 @@
   "@teacherHomeTitle": {
     "description": "Título home docente"
   },
-  "welcomeUser": "Hola, {name}",
+  "welcomeUser": "¡Hola, {name}!",
   "@welcomeUser": {
     "description": "Saludo de bienvenida con nombre",
     "placeholders": {
@@ -444,9 +452,66 @@
       }
     }
   },
+
   "studentHomeTitle": "Inicio alumno",
   "@studentHomeTitle": {
     "description": "Título home alumno"
+  },
+  "teacherWelcomeProfe": "¡Buen día, Profe!",
+  "@teacherWelcomeProfe": {
+    "description": "Saludo especial para docentes"
+  },
+  "musicalControlPanel": "Panel de control musical",
+  "@musicalControlPanel": {
+    "description": "Subtítulo del dashboard docente"
+  },
+  "totalStudentsLabel": "Total Alumnos",
+  "@totalStudentsLabel": {
+    "description": "Etiqueta para el conteo total de alumnos"
+  },
+  "hoursTodayLabel": "Horas Hoy",
+  "@hoursTodayLabel": {
+    "description": "Etiqueta para las horas registradas hoy"
+  },
+  "manageMyClasses": "Gestionar mis Clases",
+  "@manageMyClasses": {
+    "description": "Título de la sección de clases en home"
+  },
+  "viewAll": "Ver todo",
+  "@viewAll": {
+    "description": "Acción para ver todos los elementos de una lista"
+  },
+  "myClassesLabel": "Mis clases",
+  "@myClassesLabel": {
+    "description": "Etiqueta para el botón de mis clases"
+  },
+  "tasksSectionTitle": "Tareas",
+  "@tasksSectionTitle": {
+    "description": "Título de la sección de tareas"
+  },
+  "viewTasksLabel": "Ver tareas",
+  "@viewTasksLabel": {
+    "description": "Etiqueta para ver tareas"
+  },
+  "newTaskLabel": "Nueva tarea",
+  "@newTaskLabel": {
+    "description": "Etiqueta para crear nueva tarea"
+  },
+  "statsSectionTitle": "Estadísticas",
+  "@statsSectionTitle": {
+    "description": "Título de la sección de estadísticas"
+  },
+  "progressLabel": "Progreso",
+  "@progressLabel": {
+    "description": "Etiqueta para ver progreso"
+  },
+  "historyLabel": "Historial",
+  "@historyLabel": {
+    "description": "Etiqueta para ver historial"
+  },
+  "notificationsTooltip": "Notificaciones",
+  "@notificationsTooltip": {
+    "description": "Tooltip para el botón de notificaciones"
   },
   "quickActionsTitle": "Acciones rápidas",
   "@quickActionsTitle": {
@@ -762,10 +827,7 @@
   "@tasksTab": {
     "description": "Pestaña tareas"
   },
-  "studentsTab": "Estudiantes",
-  "@studentsTab": {
-    "description": "Pestaña estudiantes"
-  },
+
   "infoTab": "Información",
   "@infoTab": {
     "description": "Pestaña información"

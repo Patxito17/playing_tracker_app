@@ -29,10 +29,10 @@ class StudentHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
+        showLogo: true,
         title: userName.isNotEmpty
             ? context.l10n.welcomeUser(userName)
             : context.l10n.studentHomeTitle,
-        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             tooltip: context.l10n.logout,

@@ -12,7 +12,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTab => 'Home';
 
   @override
-  String get classesTab => 'Classes';
+  String get classesTab => 'My Classes';
+
+  @override
+  String get studentsTab => 'Students';
+
+  @override
+  String get profileTab => 'Profile';
 
   @override
   String get historyTab => 'History';
@@ -346,11 +352,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String welcomeUser(String name) {
-    return 'Hello, $name';
+    return 'Hello, $name!';
   }
 
   @override
-  String get studentHomeTitle => 'Student Home';
+  String get studentHomeTitle => 'Student Dashboard';
+
+  @override
+  String get teacherWelcomeProfe => 'Good day, Prof!';
+
+  @override
+  String get musicalControlPanel => 'Musical Control Panel';
+
+  @override
+  String get totalStudentsLabel => 'Total Students';
+
+  @override
+  String get hoursTodayLabel => 'Hours Today';
+
+  @override
+  String get manageMyClasses => 'Manage My Classes';
+
+  @override
+  String get viewAll => 'View all';
+
+  @override
+  String get myClassesLabel => 'My classes';
+
+  @override
+  String get tasksSectionTitle => 'Tasks';
+
+  @override
+  String get viewTasksLabel => 'View tasks';
+
+  @override
+  String get newTaskLabel => 'New task';
+
+  @override
+  String get statsSectionTitle => 'Statistics';
+
+  @override
+  String get progressLabel => 'Progress';
+
+  @override
+  String get historyLabel => 'History';
+
+  @override
+  String get notificationsTooltip => 'Notifications';
 
   @override
   String get quickActionsTitle => 'Quick Actions';
@@ -600,9 +648,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tasksTab => 'Tasks';
-
-  @override
-  String get studentsTab => 'Students';
 
   @override
   String get infoTab => 'Information';

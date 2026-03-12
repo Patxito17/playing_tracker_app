@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
-import 'custom_app_bar.dart';
 import 'custom_button.dart';
 
 /// Pantalla de error para rutas no encontradas (404)
@@ -15,7 +14,7 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Error'),
+      appBar: AppBar(title: Text("Error")),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.m),
         child: Column(
