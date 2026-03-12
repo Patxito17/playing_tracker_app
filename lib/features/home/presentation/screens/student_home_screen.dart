@@ -8,6 +8,9 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../sessions/domain/repositories/session_repository.dart';
+import '../cubit/progress_cubit.dart';
+import '../cubit/progress_state.dart';
 import '../widgets/home_greeting_hero.dart';
 import '../widgets/home_menu_card.dart';
 import '../widgets/home_progress_card.dart';
@@ -52,29 +55,49 @@ class StudentHomeScreen extends StatelessWidget {
         ],
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: AppSpacing.m),
+      body: BlocProvider(
+        create: (context) {
+          final cubit = ProgressCubit(context.read<SessionRepository>());
+          final authState = context.read<AuthCubit>().state;
+          if (authState is AuthAuthenticated) {
+            cubit.watchProgress(authState.userId);
+          }
+          return cubit;
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: AppSpacing.m),
 
-            // Hero de Saludo
-            HomeGreetingHero(
-              title: l10n.welcomeUser(userName),
-              subtitle: l10n.musicalControlPanel,
-            ),
+              // Hero de Saludo
+              HomeGreetingHero(
+                title: l10n.welcomeUser(userName),
+                subtitle: l10n.musicalControlPanel,
+              ),
 
-            const SizedBox(height: AppSpacing.l),
+              const SizedBox(height: AppSpacing.l),
 
-            // Progreso Semanal
-            const HomeProgressCard(
-              // TODO: rellenar con datos obtenidos de Firestore
-              progress: 0.85,
-              weeklyData: [0.3, 0.5, 0.8, 0.4, 0.2, 0.1, 0.0],
-            ),
+              // Progreso Semanal
+              BlocBuilder<ProgressCubit, ProgressState>(
+                builder: (context, state) {
+                  if (state is ProgressLoaded) {
+                    return HomeProgressCard(
+                      progress: state.weeklyPercentage / 100,
+                      weeklyData: state.dailyValues,
+                    );
+                  }
+                  
+                  // Estado de carga o inicial: Shimmer o progreso estático
+                  return HomeProgressCard(
+                    progress: 0.0,
+                    weeklyData: List.filled(7, 0.0),
+                  );
+                },
+              ),
 
-            const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
 
             // Medalla / Logro Reciente
             HomeAccomplishmentCard(
@@ -122,6 +145,7 @@ class StudentHomeScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

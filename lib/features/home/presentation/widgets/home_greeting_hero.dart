@@ -90,7 +90,7 @@ class HomeGreetingHero extends StatelessWidget {
                       spacing: AppSpacing.s,
                       runSpacing: AppSpacing.xs,
                       children: [
-                        if (badge != null) badge!,
+                        ?badge,
                         Text(
                           subtitle,
                           style: context.bodyLargeOnSurfaceVariant?.copyWith(
