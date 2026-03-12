@@ -63,7 +63,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: context.l10n.forgotPasswordTitle),
+      appBar: CustomAppBar(),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
