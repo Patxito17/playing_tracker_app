@@ -212,18 +212,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // Rellenar formulario
-    await tester.enterText(
-      find.byType(TextFormField).at(0),
-      'Escalas mayores',
-    );
+    await tester.enterText(find.byType(TextFormField).at(0), 'Escalas mayores');
     await tester.enterText(
       find.byType(TextFormField).at(1),
       'Practicar escalas',
     );
-    await tester.enterText(
-      find.byType(TextFormField).at(2),
-      '30',
-    );
+    await tester.enterText(find.byType(TextFormField).at(2), '30');
 
     // Seleccionar la clase - buscar el FilterChip con el nombre de la clase
     final classChip = find.widgetWithText(FilterChip, 'Piano Intermedio');
