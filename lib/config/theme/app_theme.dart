@@ -7,8 +7,6 @@ import '../../core/constants/app_constants.dart';
 ///
 /// Implementa Material Design 3 completo con tema claro y oscuro.
 /// Utiliza ColorScheme.fromSeed para generar una paleta coherente.
-///
-/// Sprint 0 - Fase 2: Implementación completa de Material Design 3
 class AppTheme {
   /// Tema claro de la aplicación
   ///
@@ -20,7 +18,7 @@ class AppTheme {
       brightness: Brightness.light,
     );
 
-    final baseTextTheme = GoogleFonts.robotoTextTheme();
+    final baseTextTheme = GoogleFonts.lexendTextTheme();
 
     return ThemeData(
       useMaterial3: true,
@@ -128,7 +126,7 @@ class AppTheme {
       brightness: Brightness.dark,
     );
 
-    final baseTextTheme = GoogleFonts.robotoTextTheme(
+    final baseTextTheme = GoogleFonts.lexendTextTheme(
       ThemeData.dark().textTheme,
     );
 
