@@ -12,10 +12,10 @@ import '../../../sessions/domain/repositories/session_repository.dart';
 import '../../../tasks/domain/repositories/task_repository.dart';
 import '../cubit/progress_cubit.dart';
 import '../cubit/progress_state.dart';
+import '../widgets/home_accomplishment_card.dart';
 import '../widgets/home_greeting_hero.dart';
 import '../widgets/home_menu_card.dart';
 import '../widgets/home_progress_card.dart';
-import '../widgets/home_accomplishment_card.dart';
 
 /// Pantalla de inicio para estudiantes con diseño premium "Student Dashboard".
 class StudentHomeScreen extends StatelessWidget {
@@ -100,11 +100,20 @@ class StudentHomeScreen extends StatelessWidget {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // Medalla / Logro Reciente
-              HomeAccomplishmentCard(
-                title: l10n.constancyMedal,
-                subtitle: l10n.constancyDescription,
-                icon: Icons.emoji_events_rounded,
+              // Racha de Días Consecutivos
+              BlocBuilder<ProgressCubit, ProgressState>(
+                builder: (context, state) {
+                  final streak = state is ProgressLoaded
+                      ? state.currentStreak
+                      : 0;
+                  return HomeAccomplishmentCard(
+                    title: l10n.currentStreak,
+                    subtitle: streak > 0
+                        ? l10n.streakSubtitleActive(streak)
+                        : l10n.streakSubtitleInactive,
+                    icon: Icons.local_fire_department_rounded,
+                  );
+                },
               ),
 
               const SizedBox(height: AppSpacing.m),

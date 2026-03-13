@@ -22,9 +22,11 @@ class ProgressCubit extends Cubit<ProgressState> {
 
   StreamSubscription<List<SessionModel>>? _sessionsSubscription;
   StreamSubscription<List<AssignmentModel>>? _tasksSubscription;
+  StreamSubscription<List<SessionModel>>? _recentSessionsSubscription;
 
   List<SessionModel>? _currentSessions;
   List<AssignmentModel>? _currentAssignments;
+  List<SessionModel>? _recentSessions;
   bool _hasError = false;
 
   /// Inicia la observación del progreso semanal de un estudiante.
@@ -75,6 +77,19 @@ class ProgressCubit extends Cubit<ProgressState> {
           onError: (error) {
             _hasError = true;
             emit(ProgressError(error.toString()));
+          },
+        );
+
+    _recentSessionsSubscription?.cancel();
+    _recentSessionsSubscription = _sessionRepository
+        .watchStudentSessions(studentId: studentId, limit: 90)
+        .listen(
+          (sessions) {
+            _recentSessions = sessions;
+            _calculateAndEmitProgress(startOfDay, endOfWeek);
+          },
+          onError: (_) {
+            // Streak failure is non-critical; do not emit global error.
           },
         );
   }
@@ -158,19 +173,57 @@ class ProgressCubit extends Cubit<ProgressState> {
     final double weeklyPercentage =
         (totalWeeklySeconds / weeklyGoalSeconds * 100).clamp(0.0, 100.0);
 
+    // 5. Calcular Racha de Días Consecutivos
+    final currentStreak = _calculateStreak(_recentSessions ?? []);
+
     emit(
       ProgressLoaded(
         dailyValues: dailyValues,
         weeklyPercentage: weeklyPercentage,
         totalDurationSeconds: totalWeeklySeconds,
+        currentStreak: currentStreak,
       ),
     );
+  }
+
+  /// Calcula la racha de días consecutivos con al menos una sesión registrada.
+  ///
+  /// Comienza desde hoy y cuenta hacia atrás días consecutivos con actividad.
+  /// Si hoy no tiene sesión aún, también revisa ayer como punto de partida.
+  int _calculateStreak(List<SessionModel> sessions) {
+    if (sessions.isEmpty) return 0;
+
+    // Extraer fechas únicas de sesiones (como "YYYY-MM-DD")
+    final sessionDates = sessions
+        .map((s) {
+          final date = s.dateLogged.toDate();
+          return DateTime(date.year, date.month, date.day);
+        })
+        .toSet();
+
+    final today = DateTime.now();
+    final todayNormalized = DateTime(today.year, today.month, today.day);
+
+    // Punto de inicio: hoy si tiene sesión, sino ayer
+    DateTime candidate = sessionDates.contains(todayNormalized)
+        ? todayNormalized
+        : todayNormalized.subtract(const Duration(days: 1));
+
+    if (!sessionDates.contains(candidate)) return 0;
+
+    int streak = 0;
+    while (sessionDates.contains(candidate)) {
+      streak++;
+      candidate = candidate.subtract(const Duration(days: 1));
+    }
+    return streak;
   }
 
   @override
   Future<void> close() {
     _sessionsSubscription?.cancel();
     _tasksSubscription?.cancel();
+    _recentSessionsSubscription?.cancel();
     return super.close();
   }
 }

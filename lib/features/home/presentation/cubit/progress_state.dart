@@ -24,6 +24,7 @@ final class ProgressLoaded extends ProgressState {
     required this.dailyValues,
     required this.weeklyPercentage,
     required this.totalDurationSeconds,
+    this.currentStreak = 0,
   });
 
   /// Valores normalizados (0.0 a 1.0) para cada día de la semana (7 elementos).
@@ -35,8 +36,11 @@ final class ProgressLoaded extends ProgressState {
   /// Duración total en segundos de la semana actual.
   final int totalDurationSeconds;
 
+  /// Número de días consecutivos con al menos una sesión registrada.
+  final int currentStreak;
+
   @override
-  List<Object?> get props => [dailyValues, weeklyPercentage, totalDurationSeconds];
+  List<Object?> get props => [dailyValues, weeklyPercentage, totalDurationSeconds, currentStreak];
 }
 
 /// Error al cargar el progreso.
