@@ -473,7 +473,7 @@
   "@hoursTodayLabel": {
     "description": "Etiqueta para las horas registradas hoy"
   },
-  "manageMyClasses": "Gestionar mis Clases",
+  "manageMyClasses": "Gestionar mis clases",
   "@manageMyClasses": {
     "description": "Título de la sección de clases en home"
   },

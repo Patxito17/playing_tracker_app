@@ -57,26 +57,10 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final navigationShell = StatefulNavigationShell.maybeOf(context);
-    final VoidCallback? goHome = navigationShell == null
-        ? null
-        : () => navigationShell.goBranch(0);
-
     return Scaffold(
       appBar: CustomAppBar(
         title: context.l10n.myClassesTitle,
         actions: [
-          Container(
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.home_rounded),
-              onPressed: goHome,
-              tooltip: context.l10n.studentHomeTitle,
-            ),
-          ),
           Container(
             decoration: BoxDecoration(
               color: colorScheme.primaryContainer.withValues(alpha: 0.4),
@@ -158,13 +142,18 @@ class _ClassesList extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.l, AppSpacing.l, AppSpacing.l, 0),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.l,
+              AppSpacing.l,
+              AppSpacing.l,
+              0,
+            ),
             sliver: SliverToBoxAdapter(
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      context.l10n.myClassesTitle,
+                      context.l10n.manageMyClasses,
                       style: context.headlineMediumBold,
                     ),
                   ),
@@ -175,7 +164,9 @@ class _ClassesList extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+                      borderRadius: BorderRadius.circular(
+                        AppBorderRadius.xlarge,
+                      ),
                     ),
                     child: Text(
                       '${memberships.length}',
@@ -190,12 +181,19 @@ class _ClassesList extends StatelessWidget {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.l, AppSpacing.l, AppSpacing.l, AppSpacing.xxl),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.l,
+              AppSpacing.l,
+              AppSpacing.l,
+              AppSpacing.xxl,
+            ),
             sliver: SliverList.builder(
               itemCount: memberships.length,
               itemBuilder: (context, index) {
                 final membership = memberships[index];
-                final joinedAt = dateFormat.format(membership.joinedAt.toDate());
+                final joinedAt = dateFormat.format(
+                  membership.joinedAt.toDate(),
+                );
                 final teacherName = membership.teacherName?.trim();
                 final teacherSubtitle =
                     '${context.l10n.teacherLabel}'
@@ -207,11 +205,15 @@ class _ClassesList extends StatelessWidget {
                     elevation: 1,
                     margin: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                      borderRadius: BorderRadius.circular(
+                        AppBorderRadius.large,
+                      ),
                     ),
                     child: InkWell(
                       onTap: () => onClassSelected(membership),
-                      borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                      borderRadius: BorderRadius.circular(
+                        AppBorderRadius.large,
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.m),
                         child: Row(
@@ -221,8 +223,12 @@ class _ClassesList extends StatelessWidget {
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color: colorScheme.primaryContainer.withValues(alpha: 0.6),
-                                borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                                color: colorScheme.primaryContainer.withValues(
+                                  alpha: 0.6,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppBorderRadius.medium,
+                                ),
                               ),
                               child: Icon(
                                 Icons.library_music_rounded,
@@ -237,24 +243,27 @@ class _ClassesList extends StatelessWidget {
                                 children: [
                                   Text(
                                     membership.className,
-                                    style: context.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: colorScheme.onSurface,
-                                    ),
+                                    style: context.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: colorScheme.onSurface,
+                                        ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: AppSpacing.xs),
                                   Text(
                                     teacherSubtitle,
-                                    style: context.textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
                                   ),
                                   const SizedBox(height: AppSpacing.xs),
                                   ClassInfoChip(
                                     icon: Icons.calendar_month_rounded,
-                                    label: '${context.l10n.joinedAtLabel} $joinedAt',
+                                    label:
+                                        '${context.l10n.joinedAtLabel} $joinedAt',
                                   ),
                                 ],
                               ),

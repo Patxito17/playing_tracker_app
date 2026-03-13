@@ -50,28 +50,11 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
       buildWhen: (previous, current) => current is! ClassActionSuccess,
       builder: (context, state) {
         final isLoading = state is ClassLoading;
-        final navigationShell = StatefulNavigationShell.maybeOf(context);
-        final VoidCallback? goHome = navigationShell == null
-            ? null
-            : () => navigationShell.goBranch(0);
 
         return Scaffold(
           appBar: CustomAppBar(
             title: context.l10n.myClassesTitle,
             actions: [
-              if (goHome != null)
-                Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.home_rounded),
-                    tooltip: context.l10n.teacherHomeTitle,
-                    onPressed: goHome,
-                  ),
-                ),
               Container(
                 decoration: BoxDecoration(
                   color: colorScheme.primaryContainer.withValues(alpha: 0.4),
@@ -237,8 +220,9 @@ class _ClassCard extends StatelessWidget {
         : context.l10n.classStatusArchived;
     final statusColor = isActive ? colorScheme.primary : colorScheme.outline;
     final iconColor = isActive ? colorScheme.primary : colorScheme.outline;
-    final creationDate =
-        DateFormat('dd/MM/yyyy').format(classModel.createdAt.toDate());
+    final creationDate = DateFormat(
+      'dd/MM/yyyy',
+    ).format(classModel.createdAt.toDate());
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
@@ -267,8 +251,9 @@ class _ClassCard extends StatelessWidget {
                         height: 48,
                         decoration: BoxDecoration(
                           color: iconColor.withValues(alpha: 0.1),
-                          borderRadius:
-                              BorderRadius.circular(AppBorderRadius.medium),
+                          borderRadius: BorderRadius.circular(
+                            AppBorderRadius.medium,
+                          ),
                         ),
                         child: Icon(
                           Icons.library_music_rounded,
