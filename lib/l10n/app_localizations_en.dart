@@ -511,6 +511,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'You\'ve practiced 7 days in a row. Keep it up!';
 
   @override
+  String streakSubtitleActive(int days) {
+    return '$days days in a row';
+  }
+
+  @override
+  String get streakSubtitleInactive => 'Practice today to start your streak!';
+
+  @override
   String get inscriptionsAction => 'Inscribe';
 
   @override

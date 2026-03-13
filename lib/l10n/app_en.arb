@@ -154,6 +154,20 @@
   "virtuosoBadge": "Virtuoso of the Month",
   "constancyMedal": "New Medal: Constancy",
   "constancyDescription": "You've practiced 7 days in a row. Keep it up!",
+  "streakSubtitleActive": "{days} days in a row",
+  "@streakSubtitleActive": {
+    "description": "Subtitle for the streak card when there is an active streak",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "streakSubtitleInactive": "Practice today to start your streak!",
+  "@streakSubtitleInactive": {
+    "description": "Subtitle for the streak card when there is no streak"
+  },
   "inscriptionsAction": "Inscribe",
   "myClassesTitle": "My Classes",
   "classesCreatedTitle": "Created classes",

@@ -641,6 +641,20 @@
   "@constancyDescription": {
     "description": "Descripción de la medalla de constancia"
   },
+  "streakSubtitleActive": "{days} días seguidos practicando",
+  "@streakSubtitleActive": {
+    "description": "Subtítulo de la tarjeta de racha cuando hay racha activa",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "streakSubtitleInactive": "¡Practica hoy para comenzar tu racha!",
+  "@streakSubtitleInactive": {
+    "description": "Subtítulo de la tarjeta de racha cuando no hay racha"
+  },
   "inscriptionsAction": "Inscribirse",
   "@inscriptionsAction": {
     "description": "Acción para inscribirse en clases"

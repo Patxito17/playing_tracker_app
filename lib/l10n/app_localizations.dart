@@ -1022,6 +1022,18 @@ abstract class AppLocalizations {
   /// **'Has practicado 7 días seguidos. ¡Sigue así!'**
   String get constancyDescription;
 
+  /// Subtítulo de la tarjeta de racha cuando hay racha activa
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días seguidos practicando'**
+  String streakSubtitleActive(int days);
+
+  /// Subtítulo de la tarjeta de racha cuando no hay racha
+  ///
+  /// In es, this message translates to:
+  /// **'¡Practica hoy para comenzar tu racha!'**
+  String get streakSubtitleInactive;
+
   /// Acción para inscribirse en clases
   ///
   /// In es, this message translates to:

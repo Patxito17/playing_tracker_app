@@ -520,6 +520,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Has practicado 7 días seguidos. ¡Sigue así!';
 
   @override
+  String streakSubtitleActive(int days) {
+    return '$days días seguidos practicando';
+  }
+
+  @override
+  String get streakSubtitleInactive => '¡Practica hoy para comenzar tu racha!';
+
+  @override
   String get inscriptionsAction => 'Inscribirse';
 
   @override
