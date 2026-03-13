@@ -60,6 +60,7 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: context.l10n.myClassesTitle,
+        showLogo: true,
         actions: [
           Container(
             decoration: BoxDecoration(
