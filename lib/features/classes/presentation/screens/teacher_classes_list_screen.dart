@@ -7,7 +7,6 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../domain/models/class_model.dart';
 import '../cubit/class_cubit.dart';
 import '../cubit/class_state.dart';
@@ -43,6 +42,7 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     return BlocBuilder<ClassCubit, ClassState>(
       buildWhen: (previous, current) => current is! ClassActionSuccess,
       builder: (context, state) {
@@ -56,17 +56,30 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
           appBar: CustomAppBar(
             title: context.l10n.myClassesTitle,
             actions: [
-              IconButton(
-                icon: const Icon(Icons.home_rounded),
-                tooltip: context.l10n.teacherHomeTitle,
-                onPressed: goHome,
-              ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: isLoading ? null : () => _openCreateClass(context),
-                tooltip: context
-                    .l10n
-                    .createTask, // Reutilizando o deberia ser "Crear nueva clase"
+              if (goHome != null)
+                Container(
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.5,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.home_rounded),
+                    tooltip: context.l10n.teacherHomeTitle,
+                    onPressed: goHome,
+                  ),
+                ),
+              Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.add_rounded, color: colorScheme.primary),
+                  tooltip: context.l10n.createClassAction,
+                  onPressed: isLoading ? null : () => _openCreateClass(context),
+                ),
               ),
             ],
           ),
@@ -82,7 +95,7 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: isLoading ? null : () => _openCreateClass(context),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_rounded),
             label: Text(context.l10n.createClassAction),
           ),
         );
@@ -119,7 +132,6 @@ class _StateAwareContent extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
                   child: _EmptyState(
-                    icon: Icons.class_outlined,
                     title: message?.isNotEmpty == true
                         ? message!
                         : context.l10n.noClassesCreated,
@@ -146,7 +158,7 @@ class _StateAwareContent extends StatelessWidget {
   }
 }
 
-/// Lista de clases utilizando `CustomCard` y navegación declarativa.
+/// Lista de clases con encabezado y contador de clases activas.
 class _ClassesList extends StatelessWidget {
   const _ClassesList({required this.classes, required this.onClassSelected});
 
@@ -155,13 +167,44 @@ class _ClassesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final activeCount = classes.where((c) => c.canJoin).length;
+
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.l),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.l,
+        AppSpacing.l,
+        AppSpacing.l,
+        AppSpacing.xxl,
+      ),
       children: [
-        Text(
-          context.l10n.classesCreatedTitle,
-          style: context.headlineMediumBold,
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                context.l10n.classesCreatedTitle,
+                style: context.headlineMediumBold,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.m,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+              ),
+              child: Text(
+                '$activeCount',
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.l),
         ...classes.map(
@@ -170,13 +213,12 @@ class _ClassesList extends StatelessWidget {
             onTap: () => onClassSelected(classModel),
           ),
         ),
-        const SizedBox(height: AppSpacing.xxl),
       ],
     );
   }
 }
 
-/// Card individual que resume la clase y permite abrir el detalle.
+/// Card premium individual con ícono musical, jerarquía tipográfica y chips informativos.
 class _ClassCard extends StatelessWidget {
   const _ClassCard({required this.classModel, required this.onTap});
 
@@ -185,13 +227,13 @@ class _ClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     final isActive = classModel.canJoin;
     final statusLabel = isActive
         ? context.l10n.classStatusActive
         : context.l10n.classStatusArchived;
-    final statusColor = isActive
-        ? context.colorScheme.primary
-        : context.colorScheme.outline;
+    final statusColor = isActive ? colorScheme.primary : colorScheme.outline;
+    final iconColor = isActive ? colorScheme.primary : colorScheme.outline;
     final creationDate = DateFormat(
       'dd/MM/yyyy',
     ).format(classModel.createdAt.toDate());
@@ -199,45 +241,99 @@ class _ClassCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
       child: Opacity(
-        opacity: isActive ? 1 : 0.65,
-        child: CustomCard(
+        opacity: isActive ? 1.0 : 0.65,
+        child: Card(
+          elevation: 1,
           margin: EdgeInsets.zero,
-          title: classModel.name,
-          subtitle: classModel.description ?? '',
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.m),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.class_,
-                    color: isActive
-                        ? context.colorScheme.primary
-                        : context.colorScheme.outline,
+                  // Encabezado: ícono + nombre + chevron
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: iconColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(
+                            AppBorderRadius.medium,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.library_music_rounded,
+                          color: iconColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.m),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              classModel.name,
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onSurface,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (classModel.description != null &&
+                                classModel.description!.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                classModel.description!,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.s),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  Icon(
-                    Icons.chevron_right,
-                    color: context.colorScheme.onSurfaceVariant,
+
+                  const SizedBox(height: AppSpacing.m),
+
+                  // Chips informativos
+                  Wrap(
+                    spacing: AppSpacing.s,
+                    runSpacing: AppSpacing.s,
+                    children: [
+                      _StatusChip(label: statusLabel, color: statusColor),
+                      _InfoChip(
+                        icon: Icons.password_rounded,
+                        label:
+                            '${context.l10n.accessCodeLabel}: ${classModel.accessCode}',
+                      ),
+                      _InfoChip(
+                        icon: Icons.calendar_month_rounded,
+                        label: creationDate,
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.m),
-              Wrap(
-                spacing: AppSpacing.s,
-                runSpacing: AppSpacing.s,
-                children: [
-                  _StatusChip(label: statusLabel, color: statusColor),
-                  _InfoChip(
-                    icon: Icons.password_rounded,
-                    label:
-                        '${context.l10n.accessCodeLabel}: ${classModel.accessCode}',
-                  ),
-                  _InfoChip(icon: Icons.calendar_month, label: creationDate),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -245,6 +341,7 @@ class _ClassCard extends StatelessWidget {
   }
 }
 
+/// Chip de estado con punto indicador de color.
 class _StatusChip extends StatelessWidget {
   const _StatusChip({required this.label, required this.color});
 
@@ -253,14 +350,38 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text(label),
-      backgroundColor: color.withValues(alpha: 0.12),
-      labelStyle: context.textTheme.bodySmall?.copyWith(color: color),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.m,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: context.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+/// Chip informativo con ícono y texto sobre fondo neutro.
 class _InfoChip extends StatelessWidget {
   const _InfoChip({required this.icon, required this.label});
 
@@ -269,7 +390,30 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(avatar: Icon(icon, size: 16), label: Text(label));
+    final colorScheme = context.colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: colorScheme.onSurfaceVariant),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: context.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -288,16 +432,14 @@ class _LoadingState extends StatelessWidget {
   }
 }
 
-/// Widget para mostrar estado vacío reutilizable.
+/// Estado vacío premium con ícono en círculo y llamada a la acción.
 class _EmptyState extends StatelessWidget {
-  final IconData icon;
   final String title;
   final String subtitle;
   final String? actionLabel;
   final VoidCallback? onAction;
 
   const _EmptyState({
-    required this.icon,
     required this.title,
     required this.subtitle,
     this.actionLabel,
@@ -306,13 +448,26 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: context.colorScheme.outline),
-          const SizedBox(height: AppSpacing.l),
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.library_music_rounded,
+              size: 56,
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             title,
             style: context.titleLargeBold,
@@ -328,7 +483,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
             FilledButton.icon(
               onPressed: onAction,
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_rounded),
               label: Text(actionLabel!),
             ),
           ],
@@ -351,7 +506,11 @@ class _ErrorState extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.l),
       children: [
-        Icon(Icons.error_outline, size: 48, color: context.colorScheme.error),
+        Icon(
+          Icons.error_outline_rounded,
+          size: 48,
+          color: context.colorScheme.error,
+        ),
         const SizedBox(height: AppSpacing.m),
         SelectableText.rich(
           TextSpan(
