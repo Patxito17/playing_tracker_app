@@ -7,6 +7,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../../config/routes/app_routes.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -176,26 +177,29 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(context.l10n.classDetailTitle),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.pop(),
-              tooltip: context.l10n.back,
+            title: Text(
+              context.l10n.classDetailTitle,
+              style: context.titleLargeBold?.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
             ),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.m),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () => context.pop(),
+                tooltip: context.l10n.back,
+              ),
+            ),
+            leadingWidth: 48 + AppSpacing.m,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
             bottom: CustomTabBar(
               tabs: [
-                Tab(
-                  icon: const Icon(Icons.info_outline),
-                  text: context.l10n.infoTab,
-                ),
-                Tab(
-                  icon: const Icon(Icons.assignment),
-                  text: context.l10n.tasksTab,
-                ),
-                Tab(
-                  icon: const Icon(Icons.bar_chart),
-                  text: context.l10n.statisticsTab,
-                ),
+                Tab(icon: const Icon(Icons.info_rounded), text: context.l10n.infoTab),
+                Tab(icon: const Icon(Icons.assignment_rounded), text: context.l10n.tasksTab),
+                Tab(icon: const Icon(Icons.bar_chart_rounded), text: context.l10n.statisticsTab),
               ],
             ),
           ),
