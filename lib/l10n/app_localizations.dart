@@ -2467,6 +2467,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Notificaciones'**
   String get notificationsSection;
+
+  /// Respuesta afirmativa
+  ///
+  /// In es, this message translates to:
+  /// **'Sí'**
+  String get yesAnswer;
+
+  /// Respuesta negativa
+  ///
+  /// In es, this message translates to:
+  /// **'No'**
+  String get noAnswer;
 }
 
 class _AppLocalizationsDelegate

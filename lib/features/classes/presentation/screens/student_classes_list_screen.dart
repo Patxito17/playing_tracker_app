@@ -186,7 +186,7 @@ class _ClassesList extends StatelessWidget {
               AppSpacing.l,
               AppSpacing.l,
               AppSpacing.l,
-              AppSpacing.xxl,
+              AppSpacing.l,
             ),
             sliver: SliverList.builder(
               itemCount: memberships.length,

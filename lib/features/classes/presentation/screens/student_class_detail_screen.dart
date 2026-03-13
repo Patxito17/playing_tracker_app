@@ -3,23 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/extensions/context_extensions.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../statistics/data/repositories/statistics_repository_impl.dart';
+import '../../../statistics/presentation/cubit/student_stats_cubit.dart';
 import '../../domain/models/class_model.dart';
 import '../../domain/models/membership_model.dart';
 import '../../domain/repositories/class_repository.dart';
 import '../widgets/class_info_tab.dart';
 import '../widgets/class_statistics_tab.dart';
 import '../widgets/student_class_tasks_tab.dart';
-import '../../../statistics/presentation/cubit/student_stats_cubit.dart';
-import '../../../statistics/data/repositories/statistics_repository_impl.dart';
 
 /// Pantalla de detalle de clase para estudiante
 ///
@@ -197,9 +197,18 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
             scrolledUnderElevation: 0,
             bottom: CustomTabBar(
               tabs: [
-                Tab(icon: const Icon(Icons.info_rounded), text: context.l10n.infoTab),
-                Tab(icon: const Icon(Icons.assignment_rounded), text: context.l10n.tasksTab),
-                Tab(icon: const Icon(Icons.bar_chart_rounded), text: context.l10n.statisticsTab),
+                Tab(
+                  icon: const Icon(Icons.info_rounded),
+                  text: context.l10n.infoTab,
+                ),
+                Tab(
+                  icon: const Icon(Icons.assignment_rounded),
+                  text: context.l10n.tasksTab,
+                ),
+                Tab(
+                  icon: const Icon(Icons.bar_chart_rounded),
+                  text: context.l10n.statisticsTab,
+                ),
               ],
             ),
           ),

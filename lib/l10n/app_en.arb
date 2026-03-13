@@ -395,5 +395,7 @@
   "roleLabel": "Role",
   "roleTeacher": "Teacher",
   "roleStudent": "Student",
-  "termsLinkText": "Terms and Conditions"
+  "termsLinkText": "Terms and Conditions",
+  "yesAnswer": "Yes",
+  "noAnswer": "No"
 }

@@ -1292,4 +1292,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationsSection => 'Notifications';
+
+  @override
+  String get yesAnswer => 'Yes';
+
+  @override
+  String get noAnswer => 'No';
 }
