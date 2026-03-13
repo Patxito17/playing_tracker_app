@@ -378,7 +378,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hoursTodayLabel => 'Horas Hoy';
 
   @override
-  String get manageMyClasses => 'Gestionar mis Clases';
+  String get manageMyClasses => 'Gestionar mis clases';
 
   @override
   String get viewAll => 'Ver todo';

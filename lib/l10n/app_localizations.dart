@@ -773,7 +773,7 @@ abstract class AppLocalizations {
   /// Título de la sección de clases en home
   ///
   /// In es, this message translates to:
-  /// **'Gestionar mis Clases'**
+  /// **'Gestionar mis clases'**
   String get manageMyClasses;
 
   /// Acción para ver todos los elementos de una lista

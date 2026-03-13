@@ -371,7 +371,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hoursTodayLabel => 'Hours Today';
 
   @override
-  String get manageMyClasses => 'Manage My Classes';
+  String get manageMyClasses => 'Manage my classes';
 
   @override
   String get viewAll => 'View all';
@@ -522,7 +522,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inscriptionsAction => 'Inscribe';
 
   @override
-  String get myClassesTitle => 'My Classes';
+  String get myClassesTitle => 'My classes';
 
   @override
   String get classesCreatedTitle => 'Created classes';
