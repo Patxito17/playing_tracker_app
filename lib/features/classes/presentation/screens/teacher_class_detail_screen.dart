@@ -470,8 +470,8 @@ class _ClassInformationSection extends StatelessWidget {
       'dd/MM/yyyy – HH:mm',
     ).format(classModel.createdAt.toDate());
     final statusLabel = classModel.canJoin
-        ? context.l10n.classStatusActive
-        : context.l10n.classStatusArchived;
+        ? context.l10n.yesAnswer
+        : context.l10n.noAnswer;
 
     return CustomCard(
       leadingAction: Container(
@@ -588,10 +588,6 @@ class _TeacherInformationSection extends StatelessWidget {
                       style: context.bodySmallOnSurfaceVariant,
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'ID: $teacherId',
-                      style: context.bodySmallOnSurfaceVariant,
-                    ),
                   ],
                 ),
               ),

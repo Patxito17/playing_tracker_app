@@ -1701,5 +1701,13 @@
   "notificationsSection": "Notificaciones",
   "@notificationsSection": {
     "description": "Sección notificaciones"
+  },
+  "yesAnswer": "Sí",
+  "@yesAnswer": {
+    "description": "Respuesta afirmativa"
+  },
+  "noAnswer": "No",
+  "@noAnswer": {
+    "description": "Respuesta negativa"
   }
 }
