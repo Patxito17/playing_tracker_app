@@ -10,6 +10,9 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../domain/models/class_model.dart';
 import '../cubit/class_cubit.dart';
 import '../cubit/class_state.dart';
+import '../widgets/class_chips.dart';
+import '../widgets/class_empty_state.dart';
+import '../widgets/class_error_state.dart';
 
 /// Pantalla de lista de clases creadas por el docente conectada al [ClassCubit].
 class TeacherClassesListScreen extends StatefulWidget {
@@ -59,9 +62,8 @@ class _TeacherClassesListScreenState extends State<TeacherClassesListScreen> {
               if (goHome != null)
                 Container(
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.5,
-                    ),
+                    color: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -115,7 +117,7 @@ class _StateAwareContent extends StatelessWidget {
 
   final ClassState state;
   final VoidCallback onCreateClass;
-  final VoidCallback onRetry;
+  final Future<void> Function() onRetry;
   final ValueChanged<ClassModel> onClassSelected;
 
   @override
@@ -129,23 +131,24 @@ class _StateAwareContent extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
-                  child: _EmptyState(
-                    title: message?.isNotEmpty == true
-                        ? message!
-                        : context.l10n.noClassesCreated,
-                    subtitle: context.l10n.createFirstClass,
-                    actionLabel: context.l10n.createClassAction,
-                    onAction: onCreateClass,
-                  ),
+                child: ClassEmptyState(
+                  icon: Icons.library_music_rounded,
+                  iconSize: 56,
+                  iconBackgroundColor: context.colorScheme.primaryContainer
+                      .withValues(alpha: 0.5),
+                  title: message?.isNotEmpty == true
+                      ? message!
+                      : context.l10n.noClassesCreated,
+                  subtitle: context.l10n.createFirstClass,
+                  actionLabel: context.l10n.createClassAction,
+                  onAction: onCreateClass,
                 ),
               ),
             ),
           );
         },
       ),
-      ClassError(:final message, :final errorType) => _ErrorState(
+      ClassError(:final message, :final errorType) => ClassErrorState(
         message: _getErrorMessage(context, message, errorType),
         onRetry: onRetry,
       ),
@@ -234,9 +237,8 @@ class _ClassCard extends StatelessWidget {
         : context.l10n.classStatusArchived;
     final statusColor = isActive ? colorScheme.primary : colorScheme.outline;
     final iconColor = isActive ? colorScheme.primary : colorScheme.outline;
-    final creationDate = DateFormat(
-      'dd/MM/yyyy',
-    ).format(classModel.createdAt.toDate());
+    final creationDate =
+        DateFormat('dd/MM/yyyy').format(classModel.createdAt.toDate());
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
@@ -265,9 +267,8 @@ class _ClassCard extends StatelessWidget {
                         height: 48,
                         decoration: BoxDecoration(
                           color: iconColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(
-                            AppBorderRadius.medium,
-                          ),
+                          borderRadius:
+                              BorderRadius.circular(AppBorderRadius.medium),
                         ),
                         child: Icon(
                           Icons.library_music_rounded,
@@ -319,13 +320,13 @@ class _ClassCard extends StatelessWidget {
                     spacing: AppSpacing.s,
                     runSpacing: AppSpacing.s,
                     children: [
-                      _StatusChip(label: statusLabel, color: statusColor),
-                      _InfoChip(
+                      ClassStatusChip(label: statusLabel, color: statusColor),
+                      ClassInfoChip(
                         icon: Icons.password_rounded,
                         label:
                             '${context.l10n.accessCodeLabel}: ${classModel.accessCode}',
                       ),
-                      _InfoChip(
+                      ClassInfoChip(
                         icon: Icons.calendar_month_rounded,
                         label: creationDate,
                       ),
@@ -341,82 +342,6 @@ class _ClassCard extends StatelessWidget {
   }
 }
 
-/// Chip de estado con punto indicador de color.
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.m,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: context.textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Chip informativo con ícono y texto sobre fondo neutro.
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: colorScheme.onSurfaceVariant),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: context.textTheme.labelSmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// Estado de carga con indicador central y soporte para pull-to-refresh.
 class _LoadingState extends StatelessWidget {
   @override
@@ -427,102 +352,6 @@ class _LoadingState extends StatelessWidget {
         SizedBox(height: AppSpacing.xxl),
         Center(child: CircularProgressIndicator()),
         SizedBox(height: AppSpacing.xxl),
-      ],
-    );
-  }
-}
-
-/// Estado vacío premium con ícono en círculo y llamada a la acción.
-class _EmptyState extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  const _EmptyState({
-    required this.title,
-    required this.subtitle,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.library_music_rounded,
-              size: 56,
-              color: colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            title,
-            style: context.titleLargeBold,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.s),
-          Text(
-            subtitle,
-            style: context.bodyMediumOnSurfaceVariant,
-            textAlign: TextAlign.center,
-          ),
-          if (actionLabel != null && onAction != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            FilledButton.icon(
-              onPressed: onAction,
-              icon: const Icon(Icons.add_rounded),
-              label: Text(actionLabel!),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Widget de error que muestra mensajes con `SelectableText.rich`.
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.l),
-      children: [
-        Icon(
-          Icons.error_outline_rounded,
-          size: 48,
-          color: context.colorScheme.error,
-        ),
-        const SizedBox(height: AppSpacing.m),
-        SelectableText.rich(
-          TextSpan(
-            text: message,
-            style: context.textTheme.bodyLarge?.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: AppSpacing.l),
-        FilledButton.tonal(onPressed: onRetry, child: Text(context.l10n.retry)),
       ],
     );
   }

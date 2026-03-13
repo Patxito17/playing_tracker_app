@@ -9,8 +9,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/success_banner.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/value_objects/create_class_input.dart';
@@ -197,7 +197,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
               children: [
                 Text(
                   context.l10n.createClassAction,
-                  style: context.textTheme.headlineMedium,
+                  style: context.headlineMediumBold,
                 ),
                 const SizedBox(height: AppSpacing.l),
                 CustomTextField(
@@ -231,13 +231,50 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                   },
                 ),
                 const SizedBox(height: AppSpacing.l),
-                CustomCard(
-                  title: context.l10n.accessCodeLabel,
-                  subtitle: context.l10n.accessCodeGenerated,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
+                Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.m),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(AppBorderRadius.small),
+                          ),
+                          child: Icon(
+                            Icons.lock_rounded,
+                            size: 20,
+                            color: context.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.m),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                context.l10n.accessCodeLabel,
+                                style: context.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                context.l10n.accessCodeGenerated,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
                           '••••••',
                           style: context.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -245,13 +282,8 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                             color: context.colorScheme.primary,
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.info_outline),
-                        tooltip: context.l10n.accessCodeGenerated,
-                        onPressed: null,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 if (showError) ...[
@@ -268,13 +300,13 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                 ],
                 if (hasSuccess) ...[
                   const SizedBox(height: AppSpacing.l),
-                  _SuccessBanner(message: _successMessage!),
+                  SuccessBanner(message: _successMessage!),
                 ],
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
                   label: context.l10n.createClassAction,
                   variant: CustomButtonVariant.filled,
-                  icon: Icons.add,
+                  icon: Icons.add_rounded,
                   onPressed: (isLoading || !isFormValid) ? null : _handleCreate,
                   isLoading: isLoading,
                 ),
@@ -282,40 +314,6 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SuccessBanner extends StatelessWidget {
-  const _SuccessBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: context.colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(width: AppSpacing.s),
-          Expanded(
-            child: Text(
-              message,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

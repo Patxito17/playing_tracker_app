@@ -7,12 +7,14 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/models/membership_model.dart';
 import '../cubit/student_classes_cubit.dart';
 import '../cubit/student_classes_state.dart';
+import '../widgets/class_chips.dart';
+import '../widgets/class_empty_state.dart';
+import '../widgets/class_error_state.dart';
 
 /// Pantalla de lista de clases a las que pertenece el estudiante
 ///
@@ -54,6 +56,7 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     final navigationShell = StatefulNavigationShell.maybeOf(context);
     final VoidCallback? goHome = navigationShell == null
         ? null
@@ -63,15 +66,27 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
       appBar: CustomAppBar(
         title: context.l10n.myClassesTitle,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.home_rounded),
-            onPressed: goHome,
-            tooltip: context.l10n.studentHomeTitle,
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.home_rounded),
+              onPressed: goHome,
+              tooltip: context.l10n.studentHomeTitle,
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.group_add_rounded),
-            onPressed: () => _openJoinClass(context),
-            tooltip: context.l10n.joinClassAction,
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(Icons.group_add_rounded, color: colorScheme.primary),
+              onPressed: () => _openJoinClass(context),
+              tooltip: context.l10n.joinClassAction,
+            ),
           ),
         ],
       ),
@@ -79,14 +94,28 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
         builder: (context, state) {
           return switch (state) {
             StudentClassesLoading() => _LoadingState(onRefresh: _handleRefresh),
-            StudentClassesEmpty(:final message) => _EmptyClassesState(
-              message: message ?? context.l10n.noClassesJoined,
+            StudentClassesEmpty(:final message) => RefreshIndicator(
               onRefresh: _handleRefresh,
-              onAction: () => _openJoinClass(context),
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(AppSpacing.l),
+                children: [
+                  ClassEmptyState(
+                    icon: Icons.class_outlined,
+                    title: message ?? context.l10n.noClassesJoined,
+                    subtitle: context.l10n.joinClassWithCode,
+                    actionLabel: context.l10n.joinClassAction,
+                    onAction: () => _openJoinClass(context),
+                  ),
+                ],
+              ),
             ),
-            StudentClassesError(:final message) => _ErrorState(
-              message: message ?? context.l10n.classGenericError,
-              onRetry: _handleRefresh,
+            StudentClassesError(:final message) => RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: ClassErrorState(
+                message: message ?? context.l10n.classGenericError,
+                onRetry: _handleRefresh,
+              ),
             ),
             StudentClassesSuccess(:final memberships) => _ClassesList(
               memberships: memberships,
@@ -100,55 +129,8 @@ class _StudentClassesListScreenState extends State<StudentClassesListScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openJoinClass(context),
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_rounded),
         label: Text(context.l10n.joinClassAction),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String actionLabel;
-  final VoidCallback onAction;
-
-  const _EmptyState({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.actionLabel,
-    required this.onAction,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 80, color: context.colorScheme.outline),
-          const SizedBox(height: AppSpacing.l),
-          Text(
-            title,
-            style: context.titleLargeBold,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.s),
-          Text(
-            subtitle,
-            style: context.bodyMediumOnSurfaceVariant,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          FilledButton.icon(
-            onPressed: onAction,
-            icon: const Icon(Icons.add),
-            label: Text(actionLabel),
-          ),
-        ],
       ),
     );
   }
@@ -167,39 +149,130 @@ class _ClassesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     final dateFormat = DateFormat('dd/MM/yyyy');
+
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: ListView.builder(
+      child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(AppSpacing.l),
-        itemCount: memberships.length,
-        itemBuilder: (context, index) {
-          final membership = memberships[index];
-          final joinedAt = dateFormat.format(membership.joinedAt.toDate());
-          final teacherName = membership.teacherName?.trim();
-          final teacherSubtitle =
-              '${context.l10n.teacherLabel}'
-              '${teacherName?.isNotEmpty == true ? teacherName : membership.teacherId}';
-          return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.m),
-            child: CustomCard(
-              title: membership.className,
-              subtitle: teacherSubtitle,
-              onTap: () => onClassSelected(membership),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.l, AppSpacing.l, AppSpacing.l, 0),
+            sliver: SliverToBoxAdapter(
+              child: Row(
                 children: [
-                  const SizedBox(height: AppSpacing.s),
-                  Text(
-                    '${context.l10n.joinedAtLabel} $joinedAt',
-                    style: context.bodySmallOnSurfaceVariant,
+                  Expanded(
+                    child: Text(
+                      context.l10n.myClassesTitle,
+                      style: context.headlineMediumBold,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.m,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+                    ),
+                    child: Text(
+                      '${memberships.length}',
+                      style: context.textTheme.labelMedium?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          );
-        },
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.l, AppSpacing.l, AppSpacing.l, AppSpacing.xxl),
+            sliver: SliverList.builder(
+              itemCount: memberships.length,
+              itemBuilder: (context, index) {
+                final membership = memberships[index];
+                final joinedAt = dateFormat.format(membership.joinedAt.toDate());
+                final teacherName = membership.teacherName?.trim();
+                final teacherSubtitle =
+                    '${context.l10n.teacherLabel}'
+                    '${teacherName?.isNotEmpty == true ? teacherName : membership.teacherId}';
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                  child: Card(
+                    elevation: 1,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                    ),
+                    child: InkWell(
+                      onTap: () => onClassSelected(membership),
+                      borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.m),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                              ),
+                              child: Icon(
+                                Icons.library_music_rounded,
+                                color: colorScheme.primary,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.m),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    membership.className,
+                                    style: context.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.onSurface,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs),
+                                  Text(
+                                    teacherSubtitle,
+                                    style: context.textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs),
+                                  ClassInfoChip(
+                                    icon: Icons.calendar_month_rounded,
+                                    label: '${context.l10n.joinedAtLabel} $joinedAt',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -220,74 +293,6 @@ class _LoadingState extends StatelessWidget {
           SizedBox(height: AppSpacing.xxl),
           Center(child: CircularProgressIndicator()),
           SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyClassesState extends StatelessWidget {
-  const _EmptyClassesState({
-    required this.message,
-    required this.onRefresh,
-    required this.onAction,
-  });
-
-  final String message;
-  final Future<void> Function() onRefresh;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(AppSpacing.l),
-        children: [
-          _EmptyState(
-            icon: Icons.class_outlined,
-            title: message,
-            subtitle: context.l10n.joinClassWithCode,
-            actionLabel: context.l10n.joinClassAction,
-            onAction: onAction,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.onRetry});
-
-  final String message;
-  final Future<void> Function() onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRetry,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(AppSpacing.l),
-        children: [
-          Icon(Icons.error_outline, size: 48, color: context.colorScheme.error),
-          const SizedBox(height: AppSpacing.m),
-          SelectableText.rich(
-            TextSpan(
-              text: message,
-              style: context.textTheme.bodyLarge?.copyWith(
-                color: context.colorScheme.error,
-              ),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.l),
-          FilledButton.tonal(
-            onPressed: () => onRetry(),
-            child: Text(context.l10n.retry),
-          ),
         ],
       ),
     );
