@@ -161,6 +161,14 @@ final class TaskCubit extends Cubit<TaskState> {
     }
   }
 
+  /// Observa en tiempo real todas las asignaciones de una tarea concreta.
+  Stream<List<AssignmentModel>> watchTaskAssignments(
+    String taskId, {
+    String? teacherId,
+  }) {
+    return _repository.watchTaskAssignments(taskId, teacherId: teacherId);
+  }
+
   /// Obtiene las asignaciones actuales de una tarea para una clase.
   Future<List<AssignmentModel>> getAssignmentsByTaskAndClass({
     required String taskId,

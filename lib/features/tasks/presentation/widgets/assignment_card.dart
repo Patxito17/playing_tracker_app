@@ -4,14 +4,13 @@ import 'package:playing_tracker/core/constants/app_constants.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
-import 'package:playing_tracker/shared/widgets/custom_button.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
+import 'package:playing_tracker/features/tasks/presentation/widgets/task_status_badge.dart';
 
-/// Tarjeta de tarea del alumno con información motivadora y badge interactivo
+/// Tarjeta de asignación del alumno con diseño gamificado y motivador.
 ///
-/// Muestra el título de la tarea, estado actual, y permite iniciar sesiones de estudio.
-/// Al pulsar el badge de estado, muestra un diálogo con información motivadora sobre
-/// días restantes hasta la fecha límite y progreso de tiempo de estudio.
+/// El fondo y el acento de color varían según el estado de la tarea,
+/// guiando visualmente al alumno hacia las tareas pendientes e in-progress.
+/// Muestra un icono musical decorativo según el estado.
 class AssignmentCard extends StatelessWidget {
   final AssignmentModel assignment;
   final VoidCallback? onTap;
@@ -23,51 +22,133 @@ class AssignmentCard extends StatelessWidget {
     final status = assignment.status;
     final statusText = _getStatusText(context, status);
     final statusColor = _getStatusColor(context, status);
-    final title = assignment.taskTitle ?? 'Sin título';
+    final statusIcon = _getStatusIcon(status);
+    final musicIcon = _getMusicIcon(status);
+    final title = assignment.taskTitle ?? context.l10n.noTasksFound;
 
-    return CustomCard(
-      onTap: onTap,
-      title: title,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Badge de estado tocable
-          SizedBox(
-            width: double.infinity,
-            child: InkWell(
-              onTap: () => _showProgressDialog(context),
-              borderRadius: BorderRadius.circular(16),
-              child: Chip(
-                label: Text(statusText),
-                backgroundColor: statusColor.withValues(alpha: 0.2),
-                labelStyle: TextStyle(
-                  color: statusColor,
-                  fontWeight: FontWeight.w600,
-                ),
-                avatar: Icon(
-                  _getStatusIcon(status),
-                  size: 16,
-                  color: statusColor,
+    return Card(
+      elevation: 1,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        side: BorderSide(color: statusColor.withValues(alpha: 0.3)),
+      ),
+      color: _getCardColor(context, status),
+      child: InkWell(
+        onTap: onTap ?? () => _showProgressDialog(context),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.m),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TaskStatusBadge(
+                      label: statusText,
+                      icon: statusIcon,
+                      color: statusColor,
+                    ),
+                    const SizedBox(height: AppSpacing.s),
+                    Text(
+                      title,
+                      style: context.titleMediumBold,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    _buildActionButton(context, status),
+                  ],
                 ),
               ),
-            ),
+              const SizedBox(width: AppSpacing.m),
+              // Acento musical decorativo
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                  border: Border.all(
+                    color: statusColor.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Icon(
+                  musicIcon,
+                  size: 36,
+                  color: statusColor.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.m),
-          // Botón de iniciar sesión siempre visible
-          CustomButton(
-            label: context.l10n.startStudySession,
-            variant: CustomButtonVariant.filled,
-            icon: Icons.play_arrow,
-            onPressed: () => _navigateToTimer(context),
-          ),
-        ],
+        ),
       ),
     );
   }
 
+  Widget _buildActionButton(BuildContext context, TaskStatus status) {
+    if (status == TaskStatus.completed) {
+      return Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 16,
+            color: _getStatusColor(context, status),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            context.l10n.completed,
+            style: TextStyle(
+              color: _getStatusColor(context, status),
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final isInProgress = status == TaskStatus.inProgress;
+    return FilledButton.icon(
+      onPressed: () => _navigateToTimer(context),
+      icon: Icon(
+        isInProgress ? Icons.play_circle_outline : Icons.play_arrow,
+        size: 18,
+      ),
+      label: Text(
+        isInProgress
+            ? context.l10n.continueStudySession
+            : context.l10n.startStudySession,
+      ),
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.m,
+          vertical: AppSpacing.s,
+        ),
+        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+
+  Color _getCardColor(BuildContext context, TaskStatus status) {
+    final colorScheme = Theme.of(context).colorScheme;
+    switch (status) {
+      case TaskStatus.pending:
+        return colorScheme.surfaceContainerLow;
+      case TaskStatus.inProgress:
+        return colorScheme.primaryContainer.withValues(alpha: 0.35);
+      case TaskStatus.completed:
+        return colorScheme.tertiaryContainer.withValues(alpha: 0.35);
+    }
+  }
+
   /// Muestra bottom sheet con información motivadora del progreso
   void _showProgressDialog(BuildContext context) {
-    // Calcular mensaje de fecha límite
     final daysRemainingValue = assignment.daysRemaining;
     String dueDateMessage;
     Color dueDateColor;
@@ -78,10 +159,10 @@ class AssignmentCard extends StatelessWidget {
         dueDateColor = Theme.of(context).colorScheme.error;
       } else if (daysRemainingValue == 0) {
         dueDateMessage = context.l10n.dueToday;
-        dueDateColor = Colors.orange;
+        dueDateColor = Theme.of(context).colorScheme.secondary;
       } else if (daysRemainingValue == 1) {
         dueDateMessage = context.l10n.dueTomorrow;
-        dueDateColor = Colors.orange;
+        dueDateColor = Theme.of(context).colorScheme.secondary;
       } else {
         dueDateMessage = context.l10n.daysRemaining(daysRemainingValue);
         dueDateColor = Theme.of(context).colorScheme.primary;
@@ -91,7 +172,6 @@ class AssignmentCard extends StatelessWidget {
       dueDateColor = Theme.of(context).colorScheme.outline;
     }
 
-    // Calcular mensaje de tiempo de estudio
     final remainingSeconds = assignment.studyTimeRemaining;
     String studyMessage;
 
@@ -147,7 +227,6 @@ class AssignmentCard extends StatelessWidget {
     );
   }
 
-  /// Navega al TimerScreen con todos los parámetros necesarios
   void _navigateToTimer(BuildContext context) {
     context.pushNamed(
       'timer',
@@ -195,9 +274,20 @@ class AssignmentCard extends StatelessWidget {
         return Icons.check_circle_outline;
     }
   }
+
+  IconData _getMusicIcon(TaskStatus status) {
+    switch (status) {
+      case TaskStatus.pending:
+        return Icons.music_note_outlined;
+      case TaskStatus.inProgress:
+        return Icons.piano_outlined;
+      case TaskStatus.completed:
+        return Icons.library_music_outlined;
+    }
+  }
 }
 
-/// Widget para mostrar info de progreso en el bottom sheet
+/// Tarjeta de progreso en el bottom sheet motivacional
 class _ProgressInfoCard extends StatelessWidget {
   final IconData icon;
   final String message;
@@ -215,7 +305,7 @@ class _ProgressInfoCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.m),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(

@@ -233,6 +233,7 @@
   "taskDescriptionLabel": "Description",
   "estimatedTimeLabel": "Estimated time",
   "noTasksInClass": "No tasks in this class",
+  "noTasksInClassSubtitle": "Create and assign tasks to the students in this class",
   "confirmDeleteTaskMessage": "This action will delete the task for all students.",
   "daysRemaining": "{days} days remaining",
   "overdueDays": "Overdue by {days} days",
@@ -397,5 +398,17 @@
   "roleStudent": "Student",
   "termsLinkText": "Terms and Conditions",
   "yesAnswer": "Yes",
-  "noAnswer": "No"
+  "noAnswer": "No",
+  "taskStatusActive": "Active",
+  "@taskStatusActive": {
+    "description": "Task status badge: active"
+  },
+  "taskStatusArchived": "Archived",
+  "@taskStatusArchived": {
+    "description": "Task status badge: archived"
+  },
+  "continueStudySession": "Continue",
+  "@continueStudySession": {
+    "description": "Continue in-progress study session button"
+  }
 }
