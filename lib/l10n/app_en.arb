@@ -412,5 +412,17 @@
   "continueStudySession": "Continue",
   "@continueStudySession": {
     "description": "Continue in-progress study session button"
-  }
+  },
+  "myStatisticsTitle": "My Statistics",
+  "statisticsByClass": "Statistics by Class",
+  "viewStatsAction": "View statistics",
+  "noClassesForStats": "You have no classes to view statistics yet.",
+  "generalSummaryTitle": "General Summary",
+  "sessionsLabel": "Sessions",
+  "streakLabel": "Streak",
+  "weeklyActivityTitle": "Weekly Activity",
+  "taskDistributionTitle": "Task Distribution",
+  "errorLoadingStats": "Error loading statistics",
+  "noTaskData": "No task data",
+  "ofTotalStudents": "Out of {count} students total"
 }

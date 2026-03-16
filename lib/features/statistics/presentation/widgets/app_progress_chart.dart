@@ -74,12 +74,6 @@ class AppProgressChart extends StatelessWidget {
                       color: colorScheme.onSurface,
                     ),
                   ),
-                  Text(
-                    'Completado',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
                 ],
               ),
         ],
