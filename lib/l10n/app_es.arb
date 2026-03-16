@@ -1733,5 +1733,17 @@
   "continueStudySession": "Continuar",
   "@continueStudySession": {
     "description": "Botón continuar sesión de estudio en progreso"
-  }
+  },
+  "myStatisticsTitle": "Mis Estadísticas",
+  "statisticsByClass": "Estadísticas por Clase",
+  "viewStatsAction": "Ver estadísticas",
+  "noClassesForStats": "No tienes clases para ver estadísticas todavía.",
+  "generalSummaryTitle": "Resumen General",
+  "sessionsLabel": "Sesiones",
+  "streakLabel": "Racha",
+  "weeklyActivityTitle": "Actividad Semanal",
+  "taskDistributionTitle": "Distribución por Tarea",
+  "errorLoadingStats": "Error al cargar estadísticas",
+  "noTaskData": "Sin datos de tareas",
+  "ofTotalStudents": "De un total de {count} estudiantes"
 }

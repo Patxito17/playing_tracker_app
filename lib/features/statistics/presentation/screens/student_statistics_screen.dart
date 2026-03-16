@@ -9,9 +9,10 @@ import 'package:playing_tracker/features/statistics/presentation/cubit/student_s
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_bar_chart.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_pie_chart.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/app_progress_chart.dart';
+import 'package:playing_tracker/features/statistics/presentation/widgets/stat_metric_tile.dart';
+import 'package:playing_tracker/features/statistics/presentation/widgets/stats_section_card.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/time_filter_selector.dart';
 import 'package:playing_tracker/shared/widgets/custom_app_bar.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
 
 /// Pantalla de estadísticas del alumno.
 ///
@@ -27,7 +28,7 @@ class StudentStatisticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Mis Estadísticas'),
+      appBar: CustomAppBar(title: context.l10n.myStatisticsTitle),
       body: BlocBuilder<StudentStatsCubit, StudentStatsState>(
         builder: (context, state) {
           final isLoading = state is StudentStatsLoading;
@@ -38,12 +39,10 @@ class StudentStatisticsScreen extends StatelessWidget {
 
           return Column(
             children: [
-              // Barra de carga superior
               if (isLoading && hasData)
                 const LinearProgressIndicator(minHeight: 2),
               if (!isLoading || !hasData) const SizedBox(height: 2),
 
-              // Selector de Filtro
               TimeFilterSelector(
                 currentFilter: state.timeFilter,
                 onFilterChanged: (newFilter) {
@@ -60,33 +59,11 @@ class StudentStatisticsScreen extends StatelessWidget {
                       when !hasData =>
                     const Center(child: CircularProgressIndicator()),
                   StudentStatsError(:final message) when !hasData => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: context.colorScheme.error,
-                        ),
-                        const SizedBox(height: AppSpacing.m),
-                        Text(
-                          'Error al cargar estadísticas',
-                          style: context.textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: AppSpacing.s),
-                        Text(
-                          message,
-                          style: context.bodySmallOnSurfaceVariant,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.m),
-                        FilledButton.tonal(
-                          onPressed: () => context
-                              .read<StudentStatsCubit>()
-                              .refreshStats(studentId: studentId),
-                          child: const Text('Reintentar'),
-                        ),
-                      ],
+                    child: _ErrorState(
+                      message: message,
+                      onRetry: () => context
+                          .read<StudentStatsCubit>()
+                          .refreshStats(studentId: studentId),
                     ),
                   ),
                   _ => RefreshIndicator(
@@ -95,16 +72,20 @@ class StudentStatisticsScreen extends StatelessWidget {
                         .refreshStats(studentId: studentId),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(AppSpacing.m),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.m,
+                        AppSpacing.m,
+                        AppSpacing.m,
+                        AppSpacing.xxl,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          if (_getStats(state) != null) ...[
+                          if (_getStats(state) != null)
                             _StudentStatsContent(
                               progress: _getStats(state)!.progress,
                               weeklyStats: _getStats(state)!.weeklyStats,
                             ),
-                          ],
                         ],
                       ),
                     ),
@@ -136,11 +117,11 @@ class StudentStatisticsScreen extends StatelessWidget {
     }
     return null;
   }
+}
 
-  static String _getDayLabel(DateTime date) {
-    const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    return days[date.weekday - 1];
-  }
+String _getDayLabel(DateTime date) {
+  const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  return days[date.weekday - 1];
 }
 
 class _StudentStatsContent extends StatelessWidget {
@@ -155,32 +136,33 @@ class _StudentStatsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Resumen general
-        CustomCard(
-          title: 'Resumen General',
-          subtitle: 'Progreso total: ${progress.completionPercentageFormatted}',
+        // --- Resumen general ---
+        StatsSectionCard(
+          icon: Icons.insights_rounded,
+          title: context.l10n.generalSummaryTitle,
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _StatItem(
-                    label: 'Tiempo Total',
+                  StatMetricTile(
+                    icon: Icons.access_time_rounded,
                     value: progress.durationFormatted,
-                    icon: Icons.access_time,
+                    label: context.l10n.totalTime,
                     color: context.colorScheme.primary,
                   ),
-                  _StatItem(
-                    label: 'Sesiones',
+                  StatMetricTile(
+                    icon: Icons.event_note_rounded,
                     value: '${progress.totalSessions}',
-                    icon: Icons.event_note,
+                    label: context.l10n.sessionsLabel,
                     color: context.colorScheme.secondary,
                   ),
-                  _StatItem(
-                    label: 'Racha',
-                    value: '${progress.currentStreak} días',
-                    icon: Icons.local_fire_department,
+                  StatMetricTile(
+                    icon: Icons.local_fire_department_rounded,
+                    value: context.l10n.daysStreak(progress.currentStreak),
+                    label: context.l10n.streakLabel,
                     color: context.colorScheme.tertiary,
                   ),
                 ],
@@ -198,18 +180,16 @@ class _StudentStatsContent extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.m),
 
-        // Gráfico de barras: Tiempo por día
-        CustomCard(
-          title: 'Actividad Semanal',
-          subtitle: 'Tiempo total: ${weeklyStats.durationFormatted}',
+        // --- Actividad semanal ---
+        StatsSectionCard(
+          icon: Icons.bar_chart_rounded,
+          title: context.l10n.weeklyActivityTitle,
           child: AppBarChart(
             height: 200,
             data: weeklyStats.dailyBreakdown
                 .map(
                   (day) => (
-                    label: StudentStatisticsScreen._getDayLabel(
-                      day.date.toDate(),
-                    ),
+                    label: _getDayLabel(day.date.toDate()),
                     value: (day.totalDuration / 60).toDouble(),
                   ),
                 )
@@ -218,11 +198,11 @@ class _StudentStatsContent extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.m),
 
-        // Gráfico circular: Distribución por tarea
+        // --- Distribución por tarea ---
         if (weeklyStats.taskBreakdown.isNotEmpty)
-          CustomCard(
-            title: 'Distribución por Tarea',
-            subtitle: '${weeklyStats.taskBreakdown.length} tareas trabajadas',
+          StatsSectionCard(
+            icon: Icons.pie_chart_rounded,
+            title: context.l10n.taskDistributionTitle,
             child: AppPieChart(
               radius: 80,
               data: weeklyStats.taskBreakdown
@@ -241,35 +221,53 @@ class _StudentStatsContent extends StatelessWidget {
   }
 }
 
-/// Widget para mostrar un ítem de estadística
-class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message, required this.onRetry});
 
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
+  final String message;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: color, size: 32),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          value,
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: color,
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.colorScheme.errorContainer.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: context.colorScheme.error,
+            ),
           ),
-        ),
-        Text(label, style: context.bodySmallOnSurfaceVariant),
-      ],
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            context.l10n.errorLoadingStats,
+            style: context.titleLargeBold?.copyWith(
+              color: context.colorScheme.error,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            message,
+            style: context.bodyMediumOnSurfaceVariant,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          FilledButton.tonal(
+            onPressed: onRetry,
+            child: Text(context.l10n.retry),
+          ),
+        ],
+      ),
     );
   }
 }

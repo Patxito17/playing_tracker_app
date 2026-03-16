@@ -1329,4 +1329,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get continueStudySession => 'Continuar';
+
+  @override
+  String get myStatisticsTitle => 'Mis Estadísticas';
+
+  @override
+  String get statisticsByClass => 'Estadísticas por Clase';
+
+  @override
+  String get viewStatsAction => 'Ver estadísticas';
+
+  @override
+  String get noClassesForStats =>
+      'No tienes clases para ver estadísticas todavía.';
+
+  @override
+  String get generalSummaryTitle => 'Resumen General';
+
+  @override
+  String get sessionsLabel => 'Sesiones';
+
+  @override
+  String get streakLabel => 'Racha';
+
+  @override
+  String get weeklyActivityTitle => 'Actividad Semanal';
+
+  @override
+  String get taskDistributionTitle => 'Distribución por Tarea';
+
+  @override
+  String get errorLoadingStats => 'Error al cargar estadísticas';
+
+  @override
+  String get noTaskData => 'Sin datos de tareas';
+
+  @override
+  String ofTotalStudents(Object count) {
+    return 'De un total de $count estudiantes';
+  }
 }

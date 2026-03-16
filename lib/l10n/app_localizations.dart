@@ -2515,6 +2515,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Continuar'**
   String get continueStudySession;
+
+  /// No description provided for @myStatisticsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Estadísticas'**
+  String get myStatisticsTitle;
+
+  /// No description provided for @statisticsByClass.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas por Clase'**
+  String get statisticsByClass;
+
+  /// No description provided for @viewStatsAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver estadísticas'**
+  String get viewStatsAction;
+
+  /// No description provided for @noClassesForStats.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes clases para ver estadísticas todavía.'**
+  String get noClassesForStats;
+
+  /// No description provided for @generalSummaryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen General'**
+  String get generalSummaryTitle;
+
+  /// No description provided for @sessionsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesiones'**
+  String get sessionsLabel;
+
+  /// No description provided for @streakLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Racha'**
+  String get streakLabel;
+
+  /// No description provided for @weeklyActivityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad Semanal'**
+  String get weeklyActivityTitle;
+
+  /// No description provided for @taskDistributionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Distribución por Tarea'**
+  String get taskDistributionTitle;
+
+  /// No description provided for @errorLoadingStats.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar estadísticas'**
+  String get errorLoadingStats;
+
+  /// No description provided for @noTaskData.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos de tareas'**
+  String get noTaskData;
+
+  /// No description provided for @ofTotalStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'De un total de {count} estudiantes'**
+  String ofTotalStudents(Object count);
 }
 
 class _AppLocalizationsDelegate
