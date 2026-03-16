@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -9,7 +10,10 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../sessions/domain/repositories/session_repository.dart';
+import '../../../settings/presentation/cubit/settings_cubit.dart';
 import '../../../tasks/domain/repositories/task_repository.dart';
+import '../../../tutorial/domain/tutorial_keys.dart';
+import '../../../tutorial/presentation/tutorial_target_builder.dart';
 import '../cubit/progress_cubit.dart';
 import '../cubit/progress_state.dart';
 import '../widgets/home_accomplishment_card.dart';
@@ -18,8 +22,60 @@ import '../widgets/home_menu_card.dart';
 import '../widgets/home_progress_card.dart';
 
 /// Pantalla de inicio para estudiantes con diseño premium "Student Dashboard".
-class StudentHomeScreen extends StatelessWidget {
+class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
+
+  @override
+  State<StudentHomeScreen> createState() => _StudentHomeScreenState();
+}
+
+class _StudentHomeScreenState extends State<StudentHomeScreen> {
+  final _keys = StudentTutorialKeys();
+  bool _tutorialTriggered = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Detecta si el flag fue reseteado desde Ajustes (p.ej. "Repetir tutorial").
+    // Se ejecuta cada vez que el widget vuelve a ser visible en el IndexedStack.
+    final done = context.read<SettingsCubit>().isStudentTutorialDone();
+    if (!done) _tutorialTriggered = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_tutorialTriggered) _scheduleTutorial();
+    });
+  }
+
+  Future<void> _scheduleTutorial() async {
+    if (!mounted) return;
+    final cubit = context.read<SettingsCubit>();
+    if (cubit.isStudentTutorialDone()) return;
+    _tutorialTriggered = true;
+    await cubit.markStudentTutorialDone();
+    if (!mounted) return;
+    _showTutorial();
+  }
+
+  void _showTutorial() {
+    final colorScheme = context.colorScheme;
+    TutorialCoachMark(
+      targets: TutorialTargetBuilder.buildStudentTargets(context, _keys),
+      colorShadow: colorScheme.primary,
+      opacityShadow: 0.75,
+      useSafeArea: true,
+      skipWidget: Padding(
+        padding: const EdgeInsets.all(AppSpacing.m),
+        child: Text(
+          context.l10n.tutorialSkip,
+          style: TextStyle(
+            color: colorScheme.onPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      onFinish: () {},
+      onSkip: () => true,
+    ).show(context: context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +108,6 @@ class StudentHomeScreen extends StatelessWidget {
           ),
         ],
       ),
-
       body: BlocProvider(
         create: (context) {
           final cubit = ProgressCubit(
@@ -74,6 +129,7 @@ class StudentHomeScreen extends StatelessWidget {
 
               // Hero de Saludo
               HomeGreetingHero(
+                key: _keys.greetingHero,
                 title: l10n.welcomeUser(userName),
                 subtitle: l10n.musicalControlPanel,
               ),
@@ -85,13 +141,13 @@ class StudentHomeScreen extends StatelessWidget {
                 builder: (context, state) {
                   if (state is ProgressLoaded) {
                     return HomeProgressCard(
+                      key: _keys.progressCard,
                       progress: state.weeklyPercentage / 100,
                       weeklyData: state.dailyValues,
                     );
                   }
-
-                  // Estado de carga o inicial: Shimmer o progreso estático
                   return HomeProgressCard(
+                    key: _keys.progressCard,
                     progress: 0.0,
                     weeklyData: List.filled(7, 0.0),
                   );
@@ -103,10 +159,10 @@ class StudentHomeScreen extends StatelessWidget {
               // Racha de Días Consecutivos
               BlocBuilder<ProgressCubit, ProgressState>(
                 builder: (context, state) {
-                  final streak = state is ProgressLoaded
-                      ? state.currentStreak
-                      : 0;
+                  final streak =
+                      state is ProgressLoaded ? state.currentStreak : 0;
                   return HomeAccomplishmentCard(
+                    key: _keys.accomplishmentCard,
                     title: l10n.currentStreak,
                     subtitle: streak > 0
                         ? l10n.streakSubtitleActive(streak)
@@ -129,11 +185,13 @@ class StudentHomeScreen extends StatelessWidget {
                 crossAxisSpacing: AppSpacing.m,
                 children: [
                   HomeMenuCard(
+                    key: _keys.classesCard,
                     icon: Icons.piano_rounded,
                     label: l10n.myClassesLabel,
                     onTap: () => context.go(AppRoutes.studentClassesList),
                   ),
                   HomeMenuCard(
+                    key: _keys.tasksCard,
                     icon: Icons.menu_book_rounded,
                     label: l10n.studentTasksAction,
                     onTap: () => context.push(AppRoutes.assignmentList),
@@ -144,6 +202,7 @@ class StudentHomeScreen extends StatelessWidget {
                     onTap: () => context.go(AppRoutes.studentHistory),
                   ),
                   HomeMenuCard(
+                    key: _keys.enrollCard,
                     icon: Icons.library_music_rounded,
                     label: l10n.inscriptionsAction,
                     onTap: () => context.push(AppRoutes.joinClass),
