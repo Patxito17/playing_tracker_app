@@ -9,6 +9,8 @@ import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
 import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
+import 'package:playing_tracker/features/settings/data/services/settings_service.dart';
+import 'package:playing_tracker/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
@@ -19,6 +21,7 @@ import '../../../helpers/user_test_helpers.dart';
 class _MockAuthRepository extends Mock implements AuthRepository {}
 class _MockSessionRepository extends Mock implements SessionRepository {}
 class _MockTaskRepository extends Mock implements TaskRepository {}
+class _MockSettingsService extends Mock implements SettingsService {}
 
 class _TestAuthCubit extends AuthCubit {
   _TestAuthCubit(super.repository) : super(shouldCheckAuthState: false);
@@ -30,6 +33,7 @@ void main() {
   late _MockAuthRepository mockAuthRepository;
   late _MockSessionRepository mockSessionRepository;
   late _MockTaskRepository mockTaskRepository;
+  late _MockSettingsService mockSettingsService;
   late _TestAuthCubit testAuthCubit;
   late AppRoutes appRoutes;
 
@@ -39,6 +43,12 @@ void main() {
     mockAuthRepository = _MockAuthRepository();
     mockSessionRepository = _MockSessionRepository();
     mockTaskRepository = _MockTaskRepository();
+    mockSettingsService = _MockSettingsService();
+    when(() => mockSettingsService.getThemeMode()).thenReturn(ThemeMode.system);
+    when(() => mockSettingsService.getLocale()).thenReturn(null);
+    when(() => mockSettingsService.getSeedColor()).thenReturn(null);
+    when(() => mockSettingsService.isStudentTutorialDone()).thenReturn(true);
+    when(() => mockSettingsService.isTeacherTutorialDone()).thenReturn(true);
     when(() => mockAuthRepository.currentUser).thenReturn(null);
     when(() => mockSessionRepository.watchWeeklySessions(
           studentId: any(named: 'studentId'),
@@ -62,8 +72,13 @@ void main() {
         RepositoryProvider<SessionRepository>.value(value: mockSessionRepository),
         RepositoryProvider<TaskRepository>.value(value: mockTaskRepository),
       ],
-      child: BlocProvider<AuthCubit>.value(
-        value: testAuthCubit,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthCubit>.value(value: testAuthCubit),
+          BlocProvider<SettingsCubit>(
+            create: (_) => SettingsCubit(mockSettingsService),
+          ),
+        ],
         child: MaterialApp.router(
           routerConfig: appRoutes.router,
           localizationsDelegates: const [

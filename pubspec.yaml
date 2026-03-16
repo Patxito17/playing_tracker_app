@@ -36,6 +36,9 @@ dependencies:
   fl_chart: ^1.1.1                # Librería de gráficos para estadísticas y métricas
   flutter_markdown_plus: ^1.0.7   # Renderizado de documentos Markdown (Términos legales)
 
+  # --- Tutorial y Onboarding ---
+  tutorial_coach_mark: ^1.3.3     # Tutorial interactivo con highlights sobre elementos UI
+
   # --- Persistencia y Utilidades del Sistema ---
   shared_preferences: ^2.5.4      # Almacenamiento local de preferencias clave-valor
   path_provider: ^2.1.5           # Acceso a directorios del sistema de archivos

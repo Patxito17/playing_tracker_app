@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -91,6 +92,24 @@ class SettingsScreen extends StatelessWidget {
               _SettingsSection(
                 title: context.l10n.generalSection,
                 children: [
+                  _SettingsTile(
+                    icon: Icons.help_outline_rounded,
+                    iconColor: context.colorScheme.secondary,
+                    title: context.l10n.tutorialRepeatTitle,
+                    subtitle: context.l10n.tutorialRepeatSubtitle,
+                    onTap: () async {
+                      final authState = context.read<AuthCubit>().state;
+                      if (authState is! AuthAuthenticated) return;
+                      final cubit = context.read<SettingsCubit>();
+                      if (authState.role == UserRole.teacher) {
+                        await cubit.resetTeacherTutorial();
+                        if (context.mounted) context.go(AppRoutes.teacherHome);
+                      } else {
+                        await cubit.resetStudentTutorial();
+                        if (context.mounted) context.go(AppRoutes.studentHome);
+                      }
+                    },
+                  ),
                   _SettingsTile(
                     icon: Icons.description_outlined,
                     iconColor: context.colorScheme.onSurfaceVariant,

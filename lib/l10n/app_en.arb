@@ -203,7 +203,6 @@
   "joinButtonLabel": "Join",
   "createClassButtonLabel": "Create class",
   "tasksTab": "Tasks",
-
   "infoTab": "Information",
   "classDetailTitle": "Class detail",
   "manageStudentsTitle": "Manage students",
@@ -402,17 +401,8 @@
   "yesAnswer": "Yes",
   "noAnswer": "No",
   "taskStatusActive": "Active",
-  "@taskStatusActive": {
-    "description": "Task status badge: active"
-  },
   "taskStatusArchived": "Archived",
-  "@taskStatusArchived": {
-    "description": "Task status badge: archived"
-  },
   "continueStudySession": "Continue",
-  "@continueStudySession": {
-    "description": "Continue in-progress study session button"
-  },
   "myStatisticsTitle": "My Statistics",
   "statisticsByClass": "Statistics by Class",
   "viewStatsAction": "View statistics",
@@ -424,5 +414,30 @@
   "taskDistributionTitle": "Task Distribution",
   "errorLoadingStats": "Error loading statistics",
   "noTaskData": "No task data",
-  "ofTotalStudents": "Out of {count} students total"
+  "ofTotalStudents": "Out of {count} students total",
+  "tutorialSkip": "Skip",
+  "tutorialRepeatTitle": "Repeat tutorial",
+  "tutorialRepeatSubtitle": "View the welcome guide again",
+  "tutorialStudentGreetingTitle": "Welcome to Playing Tracker!",
+  "tutorialStudentGreetingDesc": "This is your musical control panel. Here you'll see your progress and access everything you need.",
+  "tutorialStudentProgressTitle": "Your weekly progress",
+  "tutorialStudentProgressDesc": "See how much you've practiced this week. The bar and chart update with every session.",
+  "tutorialStudentStreakTitle": "Your active streak",
+  "tutorialStudentStreakDesc": "Practice every day to keep your streak alive! The more consistent you are, the faster you'll improve.",
+  "tutorialStudentClassesTitle": "My classes",
+  "tutorialStudentClassesDesc": "Access all your music classes, review the content, and log your practice sessions.",
+  "tutorialStudentTasksTitle": "My tasks",
+  "tutorialStudentTasksDesc": "Find all assignments from your teacher here. Complete each one and track your practice time.",
+  "tutorialStudentEnrollTitle": "Join a class",
+  "tutorialStudentEnrollDesc": "Did your teacher give you a class code? Use it here to join and start receiving assignments.",
+  "tutorialTeacherGreetingTitle": "Welcome, teacher!",
+  "tutorialTeacherGreetingDesc": "This is your musical management panel. From here you control your classes, tasks and student progress.",
+  "tutorialTeacherClassesTitle": "View my classes",
+  "tutorialTeacherClassesDesc": "Check all your active classes, view the student list, and manage each class content.",
+  "tutorialTeacherCreateClassTitle": "Create a new class",
+  "tutorialTeacherCreateClassDesc": "Create a new class, give it a name and share the code with students so they can join.",
+  "tutorialTeacherTasksTitle": "Task management",
+  "tutorialTeacherTasksDesc": "Create and assign tasks to your students. From here you can see the status of all active tasks.",
+  "tutorialTeacherStatsTitle": "Statistics and progress",
+  "tutorialTeacherStatsDesc": "Review your students' progress, practice times, and the overall performance of each class."
 }

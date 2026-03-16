@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+
+/// Contenedor de [GlobalKey]s para los targets del tutorial del alumno.
+///
+/// Se instancia una vez en el [State] de [StudentHomeScreen] para garantizar
+/// unicidad por widget tree y evitar colisiones entre reconstrucciones.
+class StudentTutorialKeys {
+  final greetingHero = GlobalKey(debugLabel: 'tut_s_greeting');
+  final progressCard = GlobalKey(debugLabel: 'tut_s_progress');
+  final accomplishmentCard = GlobalKey(debugLabel: 'tut_s_streak');
+  final classesCard = GlobalKey(debugLabel: 'tut_s_classes');
+  final tasksCard = GlobalKey(debugLabel: 'tut_s_tasks');
+  final enrollCard = GlobalKey(debugLabel: 'tut_s_enroll');
+}
+
+/// Contenedor de [GlobalKey]s para los targets del tutorial del docente.
+///
+/// Se instancia una vez en el [State] de [TeacherHomeScreen].
+class TeacherTutorialKeys {
+  final greetingHero = GlobalKey(debugLabel: 'tut_t_greeting');
+  final classesCard = GlobalKey(debugLabel: 'tut_t_classes');
+  final createClass = GlobalKey(debugLabel: 'tut_t_create');
+  final tasksGrid = GlobalKey(debugLabel: 'tut_t_tasks');
+  final statsGrid = GlobalKey(debugLabel: 'tut_t_stats');
+}

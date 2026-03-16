@@ -42,4 +42,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     await _settingsService.setSeedColor(color);
     emit(state.copyWith(seedColor: color));
   }
+
+  // ---------------------------------------------------------------------------
+  // Tutorial de primera ejecución
+  // ---------------------------------------------------------------------------
+
+  bool isStudentTutorialDone() => _settingsService.isStudentTutorialDone();
+  Future<void> markStudentTutorialDone() =>
+      _settingsService.markStudentTutorialDone();
+  Future<void> resetStudentTutorial() => _settingsService.resetStudentTutorial();
+
+  bool isTeacherTutorialDone() => _settingsService.isTeacherTutorialDone();
+  Future<void> markTeacherTutorialDone() =>
+      _settingsService.markTeacherTutorialDone();
+  Future<void> resetTeacherTutorial() => _settingsService.resetTeacherTutorial();
 }

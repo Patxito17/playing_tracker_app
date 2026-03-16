@@ -1352,7 +1352,93 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noTaskData => 'No task data';
 
   @override
-  String ofTotalStudents(Object count) {
+  String ofTotalStudents(int count) {
     return 'Out of $count students total';
   }
+
+  @override
+  String get tutorialSkip => 'Skip';
+
+  @override
+  String get tutorialRepeatTitle => 'Repeat tutorial';
+
+  @override
+  String get tutorialRepeatSubtitle => 'View the welcome guide again';
+
+  @override
+  String get tutorialStudentGreetingTitle => 'Welcome to Playing Tracker!';
+
+  @override
+  String get tutorialStudentGreetingDesc =>
+      'This is your musical control panel. Here you\'ll see your progress and access everything you need.';
+
+  @override
+  String get tutorialStudentProgressTitle => 'Your weekly progress';
+
+  @override
+  String get tutorialStudentProgressDesc =>
+      'See how much you\'ve practiced this week. The bar and chart update with every session.';
+
+  @override
+  String get tutorialStudentStreakTitle => 'Your active streak';
+
+  @override
+  String get tutorialStudentStreakDesc =>
+      'Practice every day to keep your streak alive! The more consistent you are, the faster you\'ll improve.';
+
+  @override
+  String get tutorialStudentClassesTitle => 'My classes';
+
+  @override
+  String get tutorialStudentClassesDesc =>
+      'Access all your music classes, review the content, and log your practice sessions.';
+
+  @override
+  String get tutorialStudentTasksTitle => 'My tasks';
+
+  @override
+  String get tutorialStudentTasksDesc =>
+      'Find all assignments from your teacher here. Complete each one and track your practice time.';
+
+  @override
+  String get tutorialStudentEnrollTitle => 'Join a class';
+
+  @override
+  String get tutorialStudentEnrollDesc =>
+      'Did your teacher give you a class code? Use it here to join and start receiving assignments.';
+
+  @override
+  String get tutorialTeacherGreetingTitle => 'Welcome, teacher!';
+
+  @override
+  String get tutorialTeacherGreetingDesc =>
+      'This is your musical management panel. From here you control your classes, tasks and student progress.';
+
+  @override
+  String get tutorialTeacherClassesTitle => 'View my classes';
+
+  @override
+  String get tutorialTeacherClassesDesc =>
+      'Check all your active classes, view the student list, and manage each class content.';
+
+  @override
+  String get tutorialTeacherCreateClassTitle => 'Create a new class';
+
+  @override
+  String get tutorialTeacherCreateClassDesc =>
+      'Create a new class, give it a name and share the code with students so they can join.';
+
+  @override
+  String get tutorialTeacherTasksTitle => 'Task management';
+
+  @override
+  String get tutorialTeacherTasksDesc =>
+      'Create and assign tasks to your students. From here you can see the status of all active tasks.';
+
+  @override
+  String get tutorialTeacherStatsTitle => 'Statistics and progress';
+
+  @override
+  String get tutorialTeacherStatsDesc =>
+      'Review your students\' progress, practice times, and the overall performance of each class.';
 }

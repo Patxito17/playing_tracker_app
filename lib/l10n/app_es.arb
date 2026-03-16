@@ -452,7 +452,6 @@
       }
     }
   },
-
   "studentHomeTitle": "Inicio alumno",
   "@studentHomeTitle": {
     "description": "Título home alumno"
@@ -861,7 +860,6 @@
   "@tasksTab": {
     "description": "Pestaña tareas"
   },
-
   "infoTab": "Información",
   "@infoTab": {
     "description": "Pestaña información"
@@ -1734,16 +1732,158 @@
   "@continueStudySession": {
     "description": "Botón continuar sesión de estudio en progreso"
   },
-  "myStatisticsTitle": "Mis Estadísticas",
-  "statisticsByClass": "Estadísticas por Clase",
+  "myStatisticsTitle": "Mis estadísticas",
+  "@myStatisticsTitle": {
+    "description": "Título principal de la pantalla de estadísticas"
+  },
+  "statisticsByClass": "Estadísticas por clase",
+  "@statisticsByClass": {
+    "description": "Título de la sección para las estadísticas divididas por clase"
+  },
   "viewStatsAction": "Ver estadísticas",
+  "@viewStatsAction": {
+    "description": "Botón o enlace para acceder a la vista de estadísticas"
+  },
   "noClassesForStats": "No tienes clases para ver estadísticas todavía.",
-  "generalSummaryTitle": "Resumen General",
+  "@noClassesForStats": {
+    "description": "Mensaje de estado vacío cuando el usuario no tiene clases para generar estadísticas"
+  },
+  "generalSummaryTitle": "Resumen general",
+  "@generalSummaryTitle": {
+    "description": "Título de la sección del resumen general de progreso"
+  },
   "sessionsLabel": "Sesiones",
+  "@sessionsLabel": {
+    "description": "Etiqueta para el contador o métrica de sesiones de estudio"
+  },
   "streakLabel": "Racha",
-  "weeklyActivityTitle": "Actividad Semanal",
-  "taskDistributionTitle": "Distribución por Tarea",
+  "@streakLabel": {
+    "description": "Etiqueta para el contador de días seguidos de actividad (racha)"
+  },
+  "weeklyActivityTitle": "Actividad semanal",
+  "@weeklyActivityTitle": {
+    "description": "Título de la sección o gráfico de la actividad durante la semana"
+  },
+  "taskDistributionTitle": "Distribución por tarea",
+  "@taskDistributionTitle": {
+    "description": "Título de la sección o gráfico que muestra cómo se distribuyen las tareas"
+  },
   "errorLoadingStats": "Error al cargar estadísticas",
+  "@errorLoadingStats": {
+    "description": "Mensaje de error mostrado cuando falla la petición de estadísticas"
+  },
   "noTaskData": "Sin datos de tareas",
-  "ofTotalStudents": "De un total de {count} estudiantes"
+  "@noTaskData": {
+    "description": "Mensaje mostrado en los gráficos de tareas cuando no hay datos disponibles"
+  },
+  "ofTotalStudents": "De un total de {count} estudiantes",
+  "@ofTotalStudents": {
+    "description": "Texto que indica el total de estudiantes (estadísticas de clase).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "20"
+      }
+    }
+  },
+  "tutorialSkip": "Omitir",
+  "@tutorialSkip": {
+    "description": "Botón para saltar el tutorial"
+  },
+  "tutorialRepeatTitle": "Repetir tutorial",
+  "@tutorialRepeatTitle": {
+    "description": "Título del tile en Ajustes para repetir el tutorial"
+  },
+  "tutorialRepeatSubtitle": "Vuelve a ver la guía de bienvenida",
+  "@tutorialRepeatSubtitle": {
+    "description": "Subtítulo del tile en Ajustes para repetir el tutorial"
+  },
+  "tutorialStudentGreetingTitle": "¡Bienvenido a Playing Tracker!",
+  "@tutorialStudentGreetingTitle": {
+    "description": "Título del paso 1 del tutorial de alumno: saludo"
+  },
+  "tutorialStudentGreetingDesc": "Este es tu panel de control musical. Aquí verás tu progreso y accederás a todo lo que necesitas.",
+  "@tutorialStudentGreetingDesc": {
+    "description": "Descripción del paso 1 del tutorial de alumno"
+  },
+  "tutorialStudentProgressTitle": "Tu progreso semanal",
+  "@tutorialStudentProgressTitle": {
+    "description": "Título del paso 2 del tutorial de alumno: progreso"
+  },
+  "tutorialStudentProgressDesc": "Aquí puedes ver cuánto has practicado esta semana. La barra y el gráfico se actualizan con cada sesión.",
+  "@tutorialStudentProgressDesc": {
+    "description": "Descripción del paso 2 del tutorial de alumno"
+  },
+  "tutorialStudentStreakTitle": "Tu racha activa",
+  "@tutorialStudentStreakTitle": {
+    "description": "Título del paso 3 del tutorial de alumno: racha"
+  },
+  "tutorialStudentStreakDesc": "¡Practica cada día para mantener tu racha! Cuanto más constante seas, más rápido avanzarás.",
+  "@tutorialStudentStreakDesc": {
+    "description": "Descripción del paso 3 del tutorial de alumno"
+  },
+  "tutorialStudentClassesTitle": "Mis clases",
+  "@tutorialStudentClassesTitle": {
+    "description": "Título del paso 4 del tutorial de alumno: clases"
+  },
+  "tutorialStudentClassesDesc": "Accede a todas tus clases musicales, revisa el contenido y registra tus sesiones de práctica.",
+  "@tutorialStudentClassesDesc": {
+    "description": "Descripción del paso 4 del tutorial de alumno"
+  },
+  "tutorialStudentTasksTitle": "Mis tareas",
+  "@tutorialStudentTasksTitle": {
+    "description": "Título del paso 5 del tutorial de alumno: tareas"
+  },
+  "tutorialStudentTasksDesc": "Aquí encontrarás todas las tareas asignadas por tu profesor. Completa cada una y registra tu tiempo de práctica.",
+  "@tutorialStudentTasksDesc": {
+    "description": "Descripción del paso 5 del tutorial de alumno"
+  },
+  "tutorialStudentEnrollTitle": "Inscribirte en una clase",
+  "@tutorialStudentEnrollTitle": {
+    "description": "Título del paso 6 del tutorial de alumno: inscripción"
+  },
+  "tutorialStudentEnrollDesc": "¿Tu profesor te dio un código de clase? Úsalo aquí para unirte y empezar a recibir tareas.",
+  "@tutorialStudentEnrollDesc": {
+    "description": "Descripción del paso 6 del tutorial de alumno"
+  },
+  "tutorialTeacherGreetingTitle": "¡Bienvenido, docente!",
+  "@tutorialTeacherGreetingTitle": {
+    "description": "Título del paso 1 del tutorial de docente: saludo"
+  },
+  "tutorialTeacherGreetingDesc": "Este es tu panel de gestión musical. Desde aquí controlas tus clases, tareas y el progreso de tus alumnos.",
+  "@tutorialTeacherGreetingDesc": {
+    "description": "Descripción del paso 1 del tutorial de docente"
+  },
+  "tutorialTeacherClassesTitle": "Ver mis clases",
+  "@tutorialTeacherClassesTitle": {
+    "description": "Título del paso 2 del tutorial de docente: ver clases"
+  },
+  "tutorialTeacherClassesDesc": "Consulta todas tus clases activas, ve el listado de alumnos y gestiona el contenido de cada clase.",
+  "@tutorialTeacherClassesDesc": {
+    "description": "Descripción del paso 2 del tutorial de docente"
+  },
+  "tutorialTeacherCreateClassTitle": "Crear una clase nueva",
+  "@tutorialTeacherCreateClassTitle": {
+    "description": "Título del paso 3 del tutorial de docente: crear clase"
+  },
+  "tutorialTeacherCreateClassDesc": "Crea una nueva clase, asígnale un nombre y comparte el código con tus alumnos para que puedan unirse.",
+  "@tutorialTeacherCreateClassDesc": {
+    "description": "Descripción del paso 3 del tutorial de docente"
+  },
+  "tutorialTeacherTasksTitle": "Gestión de tareas",
+  "@tutorialTeacherTasksTitle": {
+    "description": "Título del paso 4 del tutorial de docente: tareas"
+  },
+  "tutorialTeacherTasksDesc": "Crea y asigna tareas a tus alumnos. Desde aquí puedes ver el estado de todas las tareas activas.",
+  "@tutorialTeacherTasksDesc": {
+    "description": "Descripción del paso 4 del tutorial de docente"
+  },
+  "tutorialTeacherStatsTitle": "Estadísticas y progreso",
+  "@tutorialTeacherStatsTitle": {
+    "description": "Título del paso 5 del tutorial de docente: estadísticas"
+  },
+  "tutorialTeacherStatsDesc": "Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.",
+  "@tutorialTeacherStatsDesc": {
+    "description": "Descripción del paso 5 del tutorial de docente"
+  }
 }
