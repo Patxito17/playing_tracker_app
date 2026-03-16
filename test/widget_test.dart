@@ -11,6 +11,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
+import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/main.dart';
 
@@ -24,12 +25,15 @@ class _MockClassRepository extends Mock implements ClassRepository {}
 
 class _MockTaskRepository extends Mock implements TaskRepository {}
 
+class _MockSessionRepository extends Mock implements SessionRepository {}
+
 class _MockSettingsService extends Mock implements SettingsService {}
 
 void main() {
   late _MockAuthRepository mockAuthRepository;
   late _MockClassRepository mockClassRepository;
   late _MockTaskRepository mockTaskRepository;
+  late _MockSessionRepository mockSessionRepository;
   late _MockSettingsService mockSettingsService;
 
   setUp(() {
@@ -38,6 +42,7 @@ void main() {
     mockAuthRepository = _MockAuthRepository();
     mockClassRepository = _MockClassRepository();
     mockTaskRepository = _MockTaskRepository();
+    mockSessionRepository = _MockSessionRepository();
     mockSettingsService = _MockSettingsService();
 
     when(() => mockAuthRepository.currentUser).thenReturn(null);
@@ -54,6 +59,7 @@ void main() {
         authCubitBuilder: AuthCubit.new,
         classRepository: mockClassRepository,
         taskRepository: mockTaskRepository,
+        sessionRepository: mockSessionRepository,
       ),
     );
 
