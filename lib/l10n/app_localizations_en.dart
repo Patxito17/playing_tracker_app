@@ -1047,6 +1047,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionDate => 'Session date';
 
   @override
+  String get practiceSession => 'Practice session';
+
+  @override
+  String get sessionNotesLabel => 'Notes';
+
+  @override
   String get noFilteredSessions => 'No sessions for this filter';
 
   @override

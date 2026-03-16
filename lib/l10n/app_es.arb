@@ -1371,6 +1371,14 @@
   "@sessionDate": {
     "description": "Etiqueta fecha sesión"
   },
+  "practiceSession": "Sesión de práctica",
+  "@practiceSession": {
+    "description": "Título genérico para sesión de práctica"
+  },
+  "sessionNotesLabel": "Notas",
+  "@sessionNotesLabel": {
+    "description": "Etiqueta notas en historial de sesión"
+  },
   "noFilteredSessions": "No hay sesiones para este filtro",
   "@noFilteredSessions": {
     "description": "Estado vacío filtrado"

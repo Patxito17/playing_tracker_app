@@ -1994,6 +1994,18 @@ abstract class AppLocalizations {
   /// **'Fecha de la sesión'**
   String get sessionDate;
 
+  /// Título genérico para sesión de práctica
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión de práctica'**
+  String get practiceSession;
+
+  /// Etiqueta notas en historial de sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get sessionNotesLabel;
+
   /// Estado vacío filtrado
   ///
   /// In es, this message translates to:
