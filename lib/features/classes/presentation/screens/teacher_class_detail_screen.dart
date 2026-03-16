@@ -161,10 +161,6 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
             bottom: CustomTabBar(
               tabs: [
                 Tab(
-                  icon: const Icon(Icons.info_rounded),
-                  text: context.l10n.infoTab,
-                ),
-                Tab(
                   icon: const Icon(Icons.assignment_rounded),
                   text: context.l10n.tasksTab,
                 ),
@@ -176,20 +172,24 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
                   icon: const Icon(Icons.bar_chart_rounded),
                   text: context.l10n.statisticsTab,
                 ),
+                Tab(
+                  icon: const Icon(Icons.info_rounded),
+                  text: context.l10n.infoTab,
+                ),
               ],
             ),
           ),
           body: TabBarView(
             children: [
+              ClassTasksTab(classId: widget.classId),
+              ManageStudentsTab(classId: widget.classId),
+              ClassStatisticsTab(classId: widget.classId, isTeacher: true),
               TeacherClassInfoTab(
                 classId: widget.classId,
                 classFuture: _classFuture,
                 onRefreshRequested: _refreshClassDetails,
                 activeTasksCount: _mockActiveTasksCount,
               ),
-              ClassTasksTab(classId: widget.classId),
-              ManageStudentsTab(classId: widget.classId),
-              ClassStatisticsTab(classId: widget.classId, isTeacher: true),
             ],
           ),
         ),
