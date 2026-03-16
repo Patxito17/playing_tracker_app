@@ -333,6 +333,8 @@
   "inDevelopment": "This section is under development.",
   "sessionDuration": "Session duration",
   "sessionDate": "Session date",
+  "practiceSession": "Practice session",
+  "sessionNotesLabel": "Notes",
   "noFilteredSessions": "No sessions for this filter",
   "adjustDateFilter": "Try changing the date filter",
   "errorLoadingHistory": "Error loading history",

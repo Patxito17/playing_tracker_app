@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../domain/models/session_model.dart';
 import '../cubit/history_cubit.dart';
 import '../cubit/history_state.dart';
 
-/// Pantalla de historial de sesiones de estudio con datos reales.
+/// Pantalla de historial de sesiones de estudio con diseño premium Material 3.
 ///
-/// Sprint 5 - Fase 5: Lista de sesiones desde Firestore con filtros por fecha.
+/// Muestra las sesiones con filtros por fecha, cards con jerarquía visual
+/// clara y estados vacíos/error con el patrón de icono circular premium.
 class SessionHistoryScreen extends StatefulWidget {
   const SessionHistoryScreen({required this.studentId, this.taskId, super.key});
 
@@ -35,44 +35,41 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
     );
   }
 
-  /// Filtra las sesiones según el filtro seleccionado
   List<SessionModel> _filterSessions(List<SessionModel> sessions) {
     final now = DateTime.now();
-
     switch (_selectedFilter) {
       case 'today':
-        return sessions.where((session) {
-          final sessionDate = session.endTime.toDate();
-          return sessionDate.year == now.year &&
-              sessionDate.month == now.month &&
-              sessionDate.day == now.day;
+        return sessions.where((s) {
+          final d = s.endTime.toDate();
+          return d.year == now.year && d.month == now.month && d.day == now.day;
         }).toList();
-
       case 'week':
-        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-        return sessions.where((session) {
-          final sessionDate = session.endTime.toDate();
-          return sessionDate.isAfter(startOfWeek);
-        }).toList();
-
+        // Normalizar a medianoche del lunes para no excluir sesiones
+        // anteriores a la hora actual en el mismo día.
+        final todayMidnight = DateTime(now.year, now.month, now.day);
+        final startOfWeek = todayMidnight.subtract(
+          Duration(days: now.weekday - 1),
+        );
+        return sessions
+            .where((s) => !s.endTime.toDate().isBefore(startOfWeek))
+            .toList();
       case 'month':
-        return sessions.where((session) {
-          final sessionDate = session.endTime.toDate();
-          return sessionDate.year == now.year && sessionDate.month == now.month;
-        }).toList();
-
-      case 'all':
+        return sessions
+            .where(
+              (s) =>
+                  s.endTime.toDate().year == now.year &&
+                  s.endTime.toDate().month == now.month,
+            )
+            .toList();
       default:
         return sessions;
     }
   }
 
-  /// Formatea la duración en formato HH:MM:SS o MM:SS
   String _formatDuration(int seconds) {
     final hours = seconds ~/ 3600;
     final minutes = (seconds % 3600) ~/ 60;
     final secs = seconds % 60;
-
     if (hours > 0) {
       return '${hours.toString().padLeft(2, '0')}:'
           '${minutes.toString().padLeft(2, '0')}:'
@@ -82,29 +79,21 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
         '${secs.toString().padLeft(2, '0')}';
   }
 
-  /// Formatea la duración en texto legible (ej: "30 min")
   String _formatDurationReadable(int seconds) {
     final minutes = seconds ~/ 60;
-    if (minutes < 60) {
-      return '$minutes min';
-    }
+    if (minutes < 60) return '$minutes min';
     final hours = minutes ~/ 60;
-    final remainingMinutes = minutes % 60;
-    if (remainingMinutes == 0) {
-      return '$hours h';
-    }
-    return '$hours h $remainingMinutes min';
+    final remaining = minutes % 60;
+    return remaining == 0 ? '$hours h' : '$hours h $remaining min';
   }
 
-  /// Formatea la fecha y hora de la sesión
   String _formatDateTime(Timestamp timestamp) {
-    final date = timestamp.toDate();
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final year = date.year;
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-    return '$day/$month/$year • $hour:$minute';
+    final d = timestamp.toDate();
+    final day = d.day.toString().padLeft(2, '0');
+    final month = d.month.toString().padLeft(2, '0');
+    final hour = d.hour.toString().padLeft(2, '0');
+    final minute = d.minute.toString().padLeft(2, '0');
+    return '$day/$month/${d.year} · $hour:$minute';
   }
 
   @override
@@ -117,116 +106,159 @@ class _SessionHistoryScreenState extends State<SessionHistoryScreen> {
       ),
       body: BlocBuilder<HistoryCubit, HistoryState>(
         builder: (context, state) {
-          if (state is HistoryLoading) {
+          if (state is HistoryLoading || state is HistoryInitial) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (state is HistoryError) {
-            return _ErrorState(message: state.message);
+            return Center(child: _ErrorState(message: state.message));
           }
 
           if (state is HistoryEmpty) {
-            return _EmptyState(
-              title: context.l10n.noSessions,
-              subtitle: context.l10n.startFirstSession,
-              icon: Icons.history_outlined,
+            return Center(
+              child: _EmptyState(
+                title: context.l10n.noSessions,
+                subtitle: context.l10n.startFirstSession,
+                icon: Icons.history_edu_outlined,
+              ),
             );
           }
 
-          if (state is HistorySuccess) {
-            final filteredSessions = _filterSessions(state.sessions);
+          if (state is! HistorySuccess) return const SizedBox.shrink();
 
-            if (filteredSessions.isEmpty) {
-              return _EmptyState(
-                title: context.l10n.noFilteredSessions,
-                subtitle: context.l10n.adjustDateFilter,
-                icon: Icons.filter_list_off,
+          final filtered = _filterSessions(state.sessions);
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<HistoryCubit>().watchSessions(
+                studentId: widget.studentId,
+                taskId: widget.taskId,
               );
-            }
+            },
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.m,
+                AppSpacing.m,
+                AppSpacing.m,
+                AppSpacing.xxl,
+              ),
+              children: [
+                // --- Filtros de fecha ---
+                _DateFilterRow(
+                  selectedFilter: _selectedFilter,
+                  onFilterChanged: (filter) =>
+                      setState(() => _selectedFilter = filter),
+                ),
+                const SizedBox(height: AppSpacing.m),
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<HistoryCubit>().watchSessions(
-                  studentId: widget.studentId,
-                  taskId: widget.taskId,
-                );
-              },
-              child: ListView(
-                padding: const EdgeInsets.all(AppSpacing.m),
-                children: [
-                  // Filtros por fecha
-                  CustomCard(
-                    title: context.l10n.filterByDate,
-                    child: Wrap(
-                      spacing: AppSpacing.s,
-                      runSpacing: AppSpacing.s,
-                      children: [
-                        _FilterChip(
-                          label: context.l10n.today,
-                          selected: _selectedFilter == 'today',
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = selected ? 'today' : 'all';
-                            });
-                          },
-                        ),
-                        _FilterChip(
-                          label: context.l10n.thisWeek,
-                          selected: _selectedFilter == 'week',
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = selected ? 'week' : 'all';
-                            });
-                          },
-                        ),
-                        _FilterChip(
-                          label: context.l10n.thisMonth,
-                          selected: _selectedFilter == 'month',
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = selected ? 'month' : 'all';
-                            });
-                          },
-                        ),
-                        _FilterChip(
-                          label: context.l10n.all,
-                          selected: _selectedFilter == 'all',
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = 'all';
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.m),
-
-                  // Lista de sesiones
-                  ...filteredSessions.map((session) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                // --- Estado vacío tras filtrar ---
+                if (filtered.isEmpty)
+                  _EmptyState(
+                    title: context.l10n.noFilteredSessions,
+                    subtitle: context.l10n.adjustDateFilter,
+                    icon: Icons.filter_list_off_outlined,
+                  )
+                else
+                  ...filtered.map(
+                    (session) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.s),
                       child: _SessionCard(
                         session: session,
                         formatDuration: _formatDuration,
                         formatDurationReadable: _formatDurationReadable,
                         formatDateTime: _formatDateTime,
                       ),
-                    );
-                  }),
-                ],
-              ),
-            );
-          }
-
-          return const SizedBox.shrink();
+                    ),
+                  ),
+              ],
+            ),
+          );
         },
       ),
     );
   }
 }
 
-/// Widget de tarjeta de sesión individual
+/// Fila de chips de filtro por fecha.
+class _DateFilterRow extends StatelessWidget {
+  final String selectedFilter;
+  final ValueChanged<String> onFilterChanged;
+
+  const _DateFilterRow({
+    required this.selectedFilter,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.m,
+          AppSpacing.m,
+          AppSpacing.m,
+          AppSpacing.s,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.calendar_month_outlined,
+                  size: 16,
+                  color: context.colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  context.l10n.filterByDate,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.s),
+            Wrap(
+              spacing: AppSpacing.s,
+              runSpacing: AppSpacing.xs,
+              children: [
+                _buildChip(context, 'today', context.l10n.today),
+                _buildChip(context, 'week', context.l10n.thisWeek),
+                _buildChip(context, 'month', context.l10n.thisMonth),
+                _buildChip(context, 'all', context.l10n.all),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChip(BuildContext context, String value, String label) {
+    final selected = selectedFilter == value;
+    return FilterChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (s) => onFilterChanged(s ? value : 'all'),
+      selectedColor: context.colorScheme.primaryContainer,
+      checkmarkColor: context.colorScheme.onPrimaryContainer,
+      labelStyle: selected
+          ? context.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colorScheme.onPrimaryContainer,
+            )
+          : context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+    );
+  }
+}
+
+/// Card individual de sesión con diseño premium Material 3.
 class _SessionCard extends StatelessWidget {
   const _SessionCard({
     required this.session,
@@ -242,82 +274,127 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Construir título y subtítulo basado en los datos disponibles
-    final title = session.className ?? 'Sesión de práctica';
-    final subtitle = session.taskTitle != null
-        ? '${session.taskTitle} • ${formatDateTime(session.endTime)}'
-        : formatDateTime(session.endTime);
+    final colorScheme = context.colorScheme;
+    final taskTitle = session.taskTitle ?? context.l10n.practiceSession;
+    final hasNotes = session.notes != null && session.notes!.isNotEmpty;
 
-    return CustomCard(
-      title: title,
-      subtitle: subtitle,
-      trailingAction: Chip(
-        label: Text(
-          formatDurationReadable(session.totalDuration),
-          style: context.textPrimary?.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: context.textTheme.bodySmall?.fontSize,
-          ),
-        ),
-        backgroundColor: context.colorScheme.primaryContainer.withValues(
-          alpha: 0.5,
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: AppSpacing.s),
-          _InfoRow(
-            icon: Icons.access_time,
-            label: context.l10n.sessionDuration,
-            value: formatDuration(session.totalDuration),
-          ),
-          const SizedBox(height: AppSpacing.s),
-          _InfoRow(
-            icon: Icons.calendar_today,
-            label: context.l10n.sessionDate,
-            value: formatDateTime(session.endTime),
-          ),
-          if (session.notes != null && session.notes!.isNotEmpty) ...[
+      color: colorScheme.surfaceContainerLow,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.m),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Cabecera: título + badge de duración
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        taskTitle,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (session.className != null) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.class_outlined,
+                              size: 13,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              session.className!,
+                              style: context.bodySmallOnSurfaceVariant,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s),
+                // Badge de duración
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.m,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 14,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        formatDurationReadable(session.totalDuration),
+                        style: context.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const Divider(height: AppSpacing.l),
+
+            // Fila de duración exacta
+            _InfoRow(
+              icon: Icons.access_time_outlined,
+              label: context.l10n.sessionDuration,
+              value: formatDuration(session.totalDuration),
+            ),
             const SizedBox(height: AppSpacing.s),
-            _InfoRow(icon: Icons.notes, label: 'Notas', value: session.notes!),
+            // Fila de fecha
+            _InfoRow(
+              icon: Icons.calendar_today_outlined,
+              label: context.l10n.sessionDate,
+              value: formatDateTime(session.endTime),
+            ),
+
+            // Notas (si existen)
+            if (hasNotes) ...[
+              const SizedBox(height: AppSpacing.s),
+              _InfoRow(
+                icon: Icons.notes_outlined,
+                label: context.l10n.sessionNotesLabel,
+                value: session.notes!,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
 }
 
-/// Widget para mostrar un chip de filtro
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected,
-      selectedColor: context.colorScheme.primaryContainer,
-      checkmarkColor: context.colorScheme.onPrimaryContainer,
-      labelStyle: selected
-          ? context.bodySmallBold?.copyWith(
-              color: context.colorScheme.onPrimaryContainer,
-            )
-          : context.bodySmallOnSurface,
-    );
-  }
-}
-
-/// Widget para mostrar una fila de información
+/// Fila de información con icono, etiqueta y valor.
 class _InfoRow extends StatelessWidget {
   const _InfoRow({
     required this.icon,
@@ -342,7 +419,13 @@ class _InfoRow extends StatelessWidget {
               style: context.bodySmallOnSurfaceVariant,
               children: [
                 TextSpan(text: '$label: '),
-                TextSpan(text: value, style: context.bodySmallBold),
+                TextSpan(
+                  text: value,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
               ],
             ),
           ),
@@ -352,7 +435,7 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-/// Widget para mostrar estado vacío
+/// Estado vacío premium con icono circular.
 class _EmptyState extends StatelessWidget {
   const _EmptyState({
     required this.title,
@@ -366,41 +449,41 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 64,
-              color: context.colorScheme.onSurfaceVariant.withValues(
-                alpha: 0.5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.colorScheme.primaryContainer.withValues(
+                alpha: 0.4,
               ),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: AppSpacing.l),
-            Text(
-              title,
-              style: context.titleLargeBold?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.s),
-            Text(
-              subtitle,
-              style: context.bodyMediumOnSurfaceVariant,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+            child: Icon(icon, size: 48, color: context.colorScheme.primary),
+          ),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            title,
+            style: context.titleLargeBold,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            subtitle,
+            style: context.bodyMediumOnSurfaceVariant,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Widget para mostrar estado de error
+/// Estado de error.
 class _ErrorState extends StatelessWidget {
   const _ErrorState({required this.message});
 
@@ -408,33 +491,39 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.colorScheme.errorContainer.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.error_outline_rounded,
+              size: 48,
               color: context.colorScheme.error,
             ),
-            const SizedBox(height: AppSpacing.l),
-            Text(
-              context.l10n.errorLoadingHistory,
-              style: context.titleLargeBold?.copyWith(
-                color: context.colorScheme.error,
-              ),
-              textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            context.l10n.errorLoadingHistory,
+            style: context.titleLargeBold?.copyWith(
+              color: context.colorScheme.error,
             ),
-            const SizedBox(height: AppSpacing.s),
-            Text(
-              message,
-              style: context.bodyMediumOnSurfaceVariant,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            message,
+            style: context.bodyMediumOnSurfaceVariant,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

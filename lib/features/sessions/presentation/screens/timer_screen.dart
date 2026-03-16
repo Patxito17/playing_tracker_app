@@ -8,7 +8,6 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_button.dart';
 import '../cubit/session_cubit.dart';
 import '../cubit/session_state.dart';
 
@@ -16,11 +15,11 @@ import '../cubit/session_state.dart';
 ///
 /// Características:
 /// - Integración completa con [SessionCubit]
-/// - Diseño circular con progress indicator animado
-/// - Botones de control grandes e intuitivos
+/// - Diseño circular con progress indicator animado y pulse
+/// - Botones de control grandes con gradiente Material 3
 /// - Formato de tiempo adaptativo (MM:SS o HH:MM:SS)
 /// - Input para notas al finalizar
-/// - Animaciones suaves y feedback visual
+/// - Wakelock para mantener la pantalla encendida
 class TimerScreen extends StatefulWidget {
   final String taskId;
   final String studentId;
@@ -56,21 +55,17 @@ class _TimerScreenState extends State<TimerScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     )..repeat(reverse: true);
-
-    // Habilitar el bloqueo de pantalla mientras el alumno está en el cronómetro
     WakelockPlus.enable();
   }
 
   @override
   void dispose() {
-    // Asegurar que el bloqueo de pantalla se deshabilite al salir
     WakelockPlus.disable();
     _pulseController.dispose();
     _notesController.dispose();
     super.dispose();
   }
 
-  /// Formatea segundos en MM:SS o HH:MM:SS según la duración
   String _formatTime(int seconds) {
     final hours = seconds ~/ 3600;
     final minutes = (seconds % 3600) ~/ 60;
@@ -106,19 +101,13 @@ class _TimerScreenState extends State<TimerScreen>
     final confirmed = await _showStopConfirmation(context);
     if (confirmed == true && context.mounted) {
       await context.read<SessionCubit>().stopSession();
-      if (context.mounted) {
-        context.pop();
-      }
+      if (context.mounted) context.pop();
     }
   }
 
   Future<void> _handleSave(BuildContext context) async {
-    // Pausar el cronómetro mientras el usuario escribe notas
     context.read<SessionCubit>().pauseSession();
-
-    setState(() {
-      _showNotesInput = true;
-    });
+    setState(() => _showNotesInput = true);
   }
 
   Future<void> _confirmSave(BuildContext context) async {
@@ -146,6 +135,7 @@ class _TimerScreenState extends State<TimerScreen>
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: context.colorScheme.error,
+              foregroundColor: context.colorScheme.onError,
             ),
             child: Text(context.l10n.discardAction),
           ),
@@ -159,10 +149,8 @@ class _TimerScreenState extends State<TimerScreen>
     return BlocConsumer<SessionCubit, SessionState>(
       listener: (context, state) {
         if (state is SessionSuccess) {
-          // Mostrar diálogo de éxito premium
           _showSuccessDialog(context, state.duration, state.message);
         } else if (state is SessionError) {
-          // Error al guardar
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -188,56 +176,66 @@ class _TimerScreenState extends State<TimerScreen>
           },
           child: Scaffold(
             appBar: CustomAppBar(title: context.l10n.timerTitle),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Título de la tarea
-                  Text(
-                    widget.taskTitle,
-                    style: context.headlineMediumBold,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Progress circular con tiempo
-                  _CircularTimer(
-                    duration: duration,
-                    isRunning: isRunning,
-                    pulseAnimation: _pulseController,
-                    formatTime: _formatTime,
-                  ),
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Input de notas (si está visible)
-                  if (_showNotesInput && !isSaving) ...[
-                    TextField(
-                      controller: _notesController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.notesLabel,
-                        hintText: context.l10n.notesHint,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppBorderRadius.medium,
-                          ),
-                        ),
-                        filled: true,
-                      ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.l,
+                  AppSpacing.m,
+                  AppSpacing.l,
+                  AppSpacing.xl,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Nombre de la tarea
+                    Text(
+                      widget.taskTitle,
+                      style: context.headlineMediumBold,
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: AppSpacing.l),
-                  ],
+                    if (widget.className != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        widget.className!,
+                        style: context.bodyMediumOnSurfaceVariant,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
 
-                  // Botones de control
-                  if (isSaving)
-                    const Center(child: CircularProgressIndicator())
-                  else if (_showNotesInput)
-                    _buildSaveButtons(context)
-                  else
-                    _buildControlButtons(context, state),
-                ],
+                    // Cronómetro circular
+                    _CircularTimer(
+                      duration: duration,
+                      isRunning: isRunning,
+                      pulseAnimation: _pulseController,
+                      formatTime: _formatTime,
+                    ),
+
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Input de notas
+                    if (_showNotesInput && !isSaving) ...[
+                      TextField(
+                        controller: _notesController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.notesLabel,
+                          hintText: context.l10n.notesHint,
+                          prefixIcon: const Icon(Icons.notes_outlined),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.l),
+                    ],
+
+                    // Botones de control
+                    if (isSaving)
+                      const Center(child: CircularProgressIndicator())
+                    else if (_showNotesInput)
+                      _buildSaveButtons(context)
+                    else
+                      _buildControlButtons(context, state),
+                  ],
+                ),
               ),
             ),
           ),
@@ -261,12 +259,13 @@ class _TimerScreenState extends State<TimerScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Botón principal (Start/Pause/Resume)
+        // Botón principal
         if (isIdle)
           _BigButton(
             label: context.l10n.timerStart,
             icon: Icons.play_arrow_rounded,
             color: context.colorScheme.primary,
+            onColor: context.colorScheme.onPrimary,
             onPressed: () => _handleStart(context),
           )
         else if (isRunning)
@@ -274,6 +273,7 @@ class _TimerScreenState extends State<TimerScreen>
             label: context.l10n.timerPause,
             icon: Icons.pause_rounded,
             color: context.colorScheme.tertiary,
+            onColor: context.colorScheme.onTertiary,
             onPressed: () => _handlePause(context),
           )
         else if (isPaused)
@@ -281,34 +281,35 @@ class _TimerScreenState extends State<TimerScreen>
             label: context.l10n.timerResume,
             icon: Icons.play_arrow_rounded,
             color: context.colorScheme.primary,
+            onColor: context.colorScheme.onPrimary,
             onPressed: () => _handleResume(context),
           ),
 
         if (!isIdle) ...[
           const SizedBox(height: AppSpacing.m),
-
-          // Botones secundarios
           Row(
             children: [
-              // Botón Stop
               Expanded(
                 flex: 3,
-                child: CustomButton(
-                  label: context.l10n.discardAction,
-                  icon: Icons.close_rounded,
-                  variant: CustomButtonVariant.outlined,
+                child: OutlinedButton.icon(
                   onPressed: () => _handleStop(context),
+                  icon: const Icon(Icons.close_rounded),
+                  label: Text(context.l10n.discardAction),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: context.colorScheme.error,
+                    side: BorderSide(
+                      color: context.colorScheme.error.withValues(alpha: 0.5),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.m),
-              // Botón Save
               Expanded(
                 flex: 5,
-                child: CustomButton(
-                  label: context.l10n.save,
-                  icon: Icons.check_rounded,
-                  variant: CustomButtonVariant.filled,
+                child: FilledButton.icon(
                   onPressed: () => _handleSave(context),
+                  icon: const Icon(Icons.check_rounded),
+                  label: Text(context.l10n.save),
                 ),
               ),
             ],
@@ -322,34 +323,35 @@ class _TimerScreenState extends State<TimerScreen>
     return Row(
       children: [
         Expanded(
-          child: CustomButton(
-            label: context.l10n.cancel,
-            variant: CustomButtonVariant.outlined,
+          child: OutlinedButton(
             onPressed: () {
               setState(() {
                 _showNotesInput = false;
                 _notesController.clear();
               });
             },
+            child: Text(context.l10n.cancel),
           ),
         ),
         const SizedBox(width: AppSpacing.m),
         Expanded(
           flex: 2,
-          child: CustomButton(
-            label: context.l10n.confirmAndSaveAction,
-            icon: Icons.save_rounded,
-            variant: CustomButtonVariant.filled,
+          child: FilledButton.icon(
             onPressed: () => _confirmSave(context),
+            icon: const Icon(Icons.save_rounded),
+            label: Text(context.l10n.confirmAndSaveAction),
           ),
         ),
       ],
     );
   }
 
-  /// Muestra un diálogo de éxito premium con el resumen de la sesión
-  void _showSuccessDialog(BuildContext context, int duration, String message) {
-    showDialog(
+  void _showSuccessDialog(
+    BuildContext context,
+    int duration,
+    String message,
+  ) {
+    showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -361,12 +363,12 @@ class _TimerScreenState extends State<TimerScreen>
             Container(
               padding: const EdgeInsets.all(AppSpacing.m),
               decoration: BoxDecoration(
-                color: context.colorScheme.primary.withValues(alpha: 0.1),
+                color: context.colorScheme.primaryContainer,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.check_circle_rounded,
-                color: context.colorScheme.primary,
+                color: context.colorScheme.onPrimaryContainer,
                 size: 64,
               ),
             ),
@@ -384,9 +386,14 @@ class _TimerScreenState extends State<TimerScreen>
             ),
             const SizedBox(height: AppSpacing.l),
             Container(
-              padding: const EdgeInsets.all(AppSpacing.m),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.l,
+                vertical: AppSpacing.m,
+              ),
               decoration: BoxDecoration(
-                color: context.colorScheme.surfaceContainerHighest,
+                color: context.colorScheme.primaryContainer.withValues(
+                  alpha: 0.5,
+                ),
                 borderRadius: BorderRadius.circular(AppBorderRadius.medium),
               ),
               child: Row(
@@ -414,15 +421,9 @@ class _TimerScreenState extends State<TimerScreen>
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cerrar diálogo
-                context.pop(); // Volver a la pantalla anterior
+                Navigator.of(context).pop();
+                context.pop();
               },
-              style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
-              ),
               child: Text(context.l10n.continueAction),
             ),
           ),
@@ -432,17 +433,19 @@ class _TimerScreenState extends State<TimerScreen>
   }
 }
 
-/// Botón grande para acciones principales
+/// Botón grande con gradiente para acciones principales del cronómetro.
 class _BigButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final Color color;
+  final Color onColor;
   final VoidCallback onPressed;
 
   const _BigButton({
     required this.label,
     required this.icon,
     required this.color,
+    required this.onColor,
     required this.onPressed,
   });
 
@@ -462,7 +465,7 @@ class _BigButton extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.3),
-            blurRadius: 12,
+            blurRadius: 16,
             offset: const Offset(0, 6),
           ),
         ],
@@ -480,11 +483,11 @@ class _BigButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 32, color: Colors.white),
+                Icon(icon, size: 32, color: onColor),
                 const SizedBox(width: AppSpacing.m),
                 Text(
                   label,
-                  style: context.titleLargeBold?.copyWith(color: Colors.white),
+                  style: context.titleLargeBold?.copyWith(color: onColor),
                 ),
               ],
             ),
@@ -495,7 +498,7 @@ class _BigButton extends StatelessWidget {
   }
 }
 
-/// Widget circular con progress indicator y tiempo
+/// Cronómetro circular animado con estado visual.
 class _CircularTimer extends StatelessWidget {
   final int duration;
   final bool isRunning;
@@ -535,7 +538,7 @@ class _CircularTimer extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: context.colorScheme.primary.withValues(alpha: 0.2),
-                    blurRadius: 24,
+                    blurRadius: 32,
                     offset: const Offset(0, 8),
                   ),
                 ],
@@ -543,7 +546,6 @@ class _CircularTimer extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Progress indicator circular
                   SizedBox(
                     width: 260,
                     height: 260,
@@ -558,8 +560,6 @@ class _CircularTimer extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  // Tiempo en el centro
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -573,16 +573,15 @@ class _CircularTimer extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.s),
                       AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: ScaleTransition(
-                              scale: animation,
-                              child: child,
+                        duration: AppDurations.medium,
+                        transitionBuilder: (child, animation) =>
+                            FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(
+                                scale: animation,
+                                child: child,
+                              ),
                             ),
-                          );
-                        },
                         child: Text(
                           isRunning
                               ? context.l10n.runningStatus

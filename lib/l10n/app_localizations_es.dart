@@ -1059,6 +1059,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionDate => 'Fecha de la sesión';
 
   @override
+  String get practiceSession => 'Sesión de práctica';
+
+  @override
+  String get sessionNotesLabel => 'Notas';
+
+  @override
   String get noFilteredSessions => 'No hay sesiones para este filtro';
 
   @override
