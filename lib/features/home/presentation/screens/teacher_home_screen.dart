@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../widgets/home_greeting_hero.dart';
 import '../widgets/home_menu_card.dart';
-import '../../../../shared/widgets/custom_app_bar.dart';
 
 /// Pantalla de inicio para docentes con diseño premium de "Dashboard Musical".
 class TeacherHomeScreen extends StatelessWidget {
@@ -84,22 +84,22 @@ class TeacherHomeScreen extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       const Icon(Icons.add_rounded, size: 32),
-                      const Positioned(
+                      Positioned(
                         right: 0,
                         bottom: 0,
                         child: Icon(
                           Icons.music_note_rounded,
                           size: 14,
-                          color: Color(0xFF059669),
+                          color: colorScheme.tertiary,
                         ),
                       ),
                     ],
                   ),
                   label: l10n.createClassAction,
-                  iconColor: const Color(0xFF059669),
-                  iconBackgroundColor: const Color(
-                    0xFF059669,
-                  ).withValues(alpha: 0.1),
+                  iconColor: colorScheme.tertiary,
+                  iconBackgroundColor: colorScheme.tertiary.withValues(
+                    alpha: 0.12,
+                  ),
                   onTap: () => context.push(AppRoutes.createClass),
                 ),
               ],
@@ -120,8 +120,10 @@ class TeacherHomeScreen extends StatelessWidget {
                 HomeMenuCard(
                   icon: Icons.assignment_rounded,
                   label: l10n.viewTasksLabel,
-                  iconColor: Colors.amber[700],
-                  iconBackgroundColor: Colors.amber.withValues(alpha: 0.1),
+                  iconColor: colorScheme.secondary,
+                  iconBackgroundColor: colorScheme.secondary.withValues(
+                    alpha: 0.12,
+                  ),
                   onTap: () => context.push(AppRoutes.taskList),
                 ),
                 HomeMenuCard(
@@ -147,15 +149,17 @@ class TeacherHomeScreen extends StatelessWidget {
                 HomeMenuCard(
                   icon: Icons.analytics_rounded,
                   label: l10n.progressLabel,
-                  iconColor: Colors.purple[700],
-                  iconBackgroundColor: Colors.purple.withValues(alpha: 0.1),
+                  iconColor: colorScheme.tertiary,
+                  iconBackgroundColor: colorScheme.tertiary.withValues(
+                    alpha: 0.12,
+                  ),
                   onTap: () => context.go(AppRoutes.teacherStatistics),
                 ),
                 HomeMenuCard(
                   icon: Icons.history_rounded,
                   label: l10n.historyLabel,
-                  iconColor: Colors.blueGrey[700],
-                  iconBackgroundColor: Colors.blueGrey.withValues(alpha: 0.1),
+                  iconColor: colorScheme.onSurfaceVariant,
+                  iconBackgroundColor: colorScheme.surfaceContainerHighest,
                   onTap: () {
                     // Historial funcional próximamente para docentes
                   },
