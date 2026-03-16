@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
-import '../../../auth/domain/enums/user_role.dart';
 import '../../../classes/domain/repositories/class_repository.dart';
 import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
@@ -25,16 +25,19 @@ class SettingsScreen extends StatelessWidget {
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
           return ListView(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.s,
+              bottom: AppSpacing.xxl,
+            ),
             children: [
               // Sección de Perfil
               _SettingsSection(
                 title: context.l10n.profileSection,
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.person_outline),
-                    title: Text(context.l10n.editProfile),
-                    trailing: const Icon(Icons.chevron_right),
+                  _SettingsTile(
+                    icon: Icons.person_outline_rounded,
+                    iconColor: context.colorScheme.primary,
+                    title: context.l10n.editProfile,
                     onTap: () => _showEditProfileDialog(context),
                   ),
                 ],
@@ -44,20 +47,25 @@ class SettingsScreen extends StatelessWidget {
               _SettingsSection(
                 title: context.l10n.appearanceSection,
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.brightness_6_outlined),
-                    title: Text(context.l10n.themeSettings),
-                    subtitle: Text(
-                      _getThemeModeLabel(context, settingsState.themeMode),
+                  _SettingsTile(
+                    icon: Icons.brightness_6_outlined,
+                    iconColor: context.colorScheme.secondary,
+                    title: context.l10n.themeSettings,
+                    subtitle: _getThemeModeLabel(
+                      context,
+                      settingsState.themeMode,
                     ),
-                    trailing: const Icon(Icons.chevron_right),
                     onTap: () =>
                         _showThemeSelector(context, settingsState.themeMode),
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.palette_outlined),
-                    title: Text(context.l10n.colorSettings),
-                    trailing: const Icon(Icons.chevron_right),
+                  _SettingsTile(
+                    icon: Icons.palette_outlined,
+                    iconColor: context.colorScheme.tertiary,
+                    title: context.l10n.colorSettings,
+                    subtitle: _getColorLabel(context, settingsState.seedColor),
+                    trailing: settingsState.seedColor != null
+                        ? _ColorDot(color: settingsState.seedColor!)
+                        : null,
                     onTap: () =>
                         _showColorPicker(context, settingsState.seedColor),
                   ),
@@ -68,27 +76,25 @@ class SettingsScreen extends StatelessWidget {
               _SettingsSection(
                 title: context.l10n.languageSection,
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.language),
-                    title: Text(context.l10n.languageSettings),
-                    subtitle: Text(
-                      _getLocaleLabel(context, settingsState.locale),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
+                  _SettingsTile(
+                    icon: Icons.language_rounded,
+                    iconColor: context.colorScheme.primary,
+                    title: context.l10n.languageSettings,
+                    subtitle: _getLocaleLabel(context, settingsState.locale),
                     onTap: () =>
                         _showLanguageSelector(context, settingsState.locale),
                   ),
                 ],
               ),
 
-              // Sección de General
+              // Sección General
               _SettingsSection(
                 title: context.l10n.generalSection,
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.description_outlined),
-                    title: Text(context.l10n.termsAndConditionsLink),
-                    trailing: const Icon(Icons.chevron_right),
+                  _SettingsTile(
+                    icon: Icons.description_outlined,
+                    iconColor: context.colorScheme.onSurfaceVariant,
+                    title: context.l10n.termsAndConditionsLink,
                     onTap: () {
                       final locale =
                           settingsState.locale?.languageCode ??
@@ -103,10 +109,10 @@ class SettingsScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.privacy_tip_outlined),
-                    title: Text(context.l10n.privacyPolicyLink),
-                    trailing: const Icon(Icons.chevron_right),
+                  _SettingsTile(
+                    icon: Icons.privacy_tip_outlined,
+                    iconColor: context.colorScheme.onSurfaceVariant,
+                    title: context.l10n.privacyPolicyLink,
                     onTap: () {
                       final locale =
                           settingsState.locale?.languageCode ??
@@ -128,29 +134,25 @@ class SettingsScreen extends StatelessWidget {
               _SettingsSection(
                 title: context.l10n.accountSection,
                 children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.logout,
-                      color: context.colorScheme.error,
-                    ),
-                    title: Text(
-                      context.l10n.logout,
-                      style: TextStyle(color: context.colorScheme.error),
-                    ),
+                  _SettingsTile(
+                    icon: Icons.logout_rounded,
+                    iconColor: context.colorScheme.error,
+                    title: context.l10n.logout,
+                    titleColor: context.colorScheme.error,
+                    showTrailing: false,
                     onTap: () => context.read<AuthCubit>().logout(),
                   ),
                 ],
               ),
 
               // Footer con versión
-              const SizedBox(height: AppSpacing.m),
+              const SizedBox(height: AppSpacing.l),
               Center(
                 child: Text(
                   context.l10n.versionLabel('1.0.0'),
                   style: context.bodySmallOnSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: AppSpacing.l),
             ],
           );
         },
@@ -175,6 +177,18 @@ class SettingsScreen extends StatelessWidget {
     };
   }
 
+  String _getColorLabel(BuildContext context, Color? color) {
+    if (color == null) return context.l10n.themeSystem;
+    return switch (color.toARGB32()) {
+      0xFF1E88E5 => context.l10n.colorBlue,
+      0xFF9C27B0 => context.l10n.colorPurple,
+      0xFF43A047 => context.l10n.colorGreen,
+      0xFFFF9800 => context.l10n.colorOrange,
+      0xFFF44336 => context.l10n.colorRed,
+      _ => context.l10n.colorBlue,
+    };
+  }
+
   void _showThemeSelector(BuildContext context, ThemeMode currentMode) {
     showDialog(
       context: context,
@@ -188,6 +202,7 @@ class SettingsScreen extends StatelessWidget {
               dialogContext,
               ThemeMode.light,
               context.l10n.themeLight,
+              Icons.light_mode_outlined,
               currentMode,
             ),
             _buildThemeOption(
@@ -195,6 +210,7 @@ class SettingsScreen extends StatelessWidget {
               dialogContext,
               ThemeMode.dark,
               context.l10n.themeDark,
+              Icons.dark_mode_outlined,
               currentMode,
             ),
             _buildThemeOption(
@@ -202,6 +218,7 @@ class SettingsScreen extends StatelessWidget {
               dialogContext,
               ThemeMode.system,
               context.l10n.themeSystem,
+              Icons.brightness_auto_outlined,
               currentMode,
             ),
           ],
@@ -215,11 +232,17 @@ class SettingsScreen extends StatelessWidget {
     BuildContext dialogContext,
     ThemeMode mode,
     String label,
+    IconData icon,
     ThemeMode currentMode,
   ) {
+    final isSelected = currentMode == mode;
     return ListTile(
+      leading: Icon(icon),
       title: Text(label),
-      trailing: currentMode == mode ? const Icon(Icons.check) : null,
+      trailing: isSelected
+          ? Icon(Icons.check_rounded, color: context.colorScheme.primary)
+          : null,
+      selected: isSelected,
       onTap: () {
         context.read<SettingsCubit>().updateThemeMode(mode);
         Navigator.of(dialogContext).pop();
@@ -235,12 +258,12 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Opción: Automático (Sistema)
             _buildLocaleOption(
               context,
               dialogContext,
               null,
               context.l10n.languageSystem,
+              Icons.brightness_auto_outlined,
               currentLocale,
             ),
             _buildLocaleOption(
@@ -248,6 +271,7 @@ class SettingsScreen extends StatelessWidget {
               dialogContext,
               const Locale('es'),
               context.l10n.languageSpanish,
+              Icons.language_rounded,
               currentLocale,
             ),
             _buildLocaleOption(
@@ -255,6 +279,7 @@ class SettingsScreen extends StatelessWidget {
               dialogContext,
               const Locale('en'),
               context.l10n.languageEnglish,
+              Icons.language_rounded,
               currentLocale,
             ),
           ],
@@ -268,12 +293,17 @@ class SettingsScreen extends StatelessWidget {
     BuildContext dialogContext,
     Locale? locale,
     String label,
+    IconData icon,
     Locale? currentLocale,
   ) {
     final isSelected = locale == currentLocale;
     return ListTile(
+      leading: Icon(icon),
       title: Text(label),
-      trailing: isSelected ? const Icon(Icons.check) : null,
+      trailing: isSelected
+          ? Icon(Icons.check_rounded, color: context.colorScheme.primary)
+          : null,
+      selected: isSelected,
       onTap: () {
         context.read<SettingsCubit>().updateLocale(locale);
         Navigator.of(dialogContext).pop();
@@ -297,12 +327,23 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: colors.entries.map((entry) {
+            final isSelected = currentColor == entry.value;
             return ListTile(
-              leading: CircleAvatar(backgroundColor: entry.value, radius: 16),
+              leading: CircleAvatar(
+                backgroundColor: entry.value,
+                radius: 16,
+                child: isSelected
+                    ? const Icon(Icons.check, color: Colors.white, size: 16)
+                    : null,
+              ),
               title: Text(entry.key),
-              trailing: currentColor == entry.value
-                  ? const Icon(Icons.check)
+              trailing: isSelected
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: context.colorScheme.primary,
+                    )
                   : null,
+              selected: isSelected,
               onTap: () {
                 context.read<SettingsCubit>().updateSeedColor(entry.value);
                 Navigator.of(dialogContext).pop();
@@ -369,25 +410,21 @@ class SettingsScreen extends StatelessWidget {
 
               Navigator.of(dialogContext).pop();
 
-              // Actualizar el perfil
               await context.read<AuthCubit>().updateProfile(
                 firstName: firstName,
                 lastName: lastName,
               );
 
               if (context.mounted) {
-                final authState = context.read<AuthCubit>().state;
-                if (authState is AuthAuthenticated) {
-                  // Propagamos el cambio de nombre a las membresías existentes
-                  // Lo hacemos de forma "silenciosa" para la UI principal, pero asegurando consistencia
+                final updatedState = context.read<AuthCubit>().state;
+                if (updatedState is AuthAuthenticated) {
                   try {
                     await context.read<ClassRepository>().updateUserReferences(
-                      userId: authState.userId,
+                      userId: updatedState.userId,
                       newName: '$firstName $lastName',
-                      isTeacher: authState.role == UserRole.teacher,
+                      isTeacher: updatedState.role == UserRole.teacher,
                     );
                   } catch (e) {
-                    // Logueamos pero no interrumpimos el flow del usuario
                     debugPrint('Error propagando nombre: $e');
                   }
                 }
@@ -401,7 +438,7 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-/// Widget para agrupar opciones de configuración en secciones
+/// Sección de ajustes con título y lista de tiles en una Card M3.
 class _SettingsSection extends StatelessWidget {
   final String title;
   final List<Widget> children;
@@ -422,16 +459,131 @@ class _SettingsSection extends StatelessWidget {
           ),
           child: Text(
             title,
-            style: context.titleSmallBold?.copyWith(
+            style: context.textTheme.labelLarge?.copyWith(
               color: context.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
         ),
         Card(
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+            side: BorderSide(
+              color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          color: context.colorScheme.surfaceContainerLow,
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
-          child: Column(children: children),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: children
+                .expand(
+                  (tile) => [
+                    tile,
+                    if (tile != children.last)
+                      Divider(
+                        height: 1,
+                        indent: AppSpacing.m + 36 + AppSpacing.m,
+                        endIndent: AppSpacing.m,
+                        color:
+                            context.colorScheme.outlineVariant.withValues(
+                          alpha: 0.4,
+                        ),
+                      ),
+                  ],
+                )
+                .toList(),
+          ),
         ),
       ],
+    );
+  }
+}
+
+/// ListTile estilizado para ajustes con icono en contenedor redondeado.
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.onTap,
+    this.subtitle,
+    this.titleColor,
+    this.trailing,
+    this.showTrailing = true,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String? subtitle;
+  final Color? titleColor;
+  final Widget? trailing;
+  final bool showTrailing;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.m,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: iconColor.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(AppBorderRadius.small),
+        ),
+        child: Icon(icon, size: 20, color: iconColor),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.bodyLarge?.copyWith(color: titleColor),
+      ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            )
+          : null,
+      trailing: trailing ??
+          (showTrailing
+              ? Icon(
+                  Icons.chevron_right_rounded,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: 20,
+                )
+              : null),
+      onTap: onTap,
+    );
+  }
+}
+
+/// Punto de color para mostrar el color seleccionado en el tile de paleta.
+class _ColorDot extends StatelessWidget {
+  const _ColorDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: context.colorScheme.outlineVariant,
+          width: 1.5,
+        ),
+      ),
     );
   }
 }
