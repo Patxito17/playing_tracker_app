@@ -7,12 +7,18 @@ import 'package:playing_tracker/config/routes/app_routes.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
+import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../helpers/mock_hydrated_storage.dart';
 import '../../../helpers/user_test_helpers.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
+class _MockSessionRepository extends Mock implements SessionRepository {}
+class _MockTaskRepository extends Mock implements TaskRepository {}
 
 class _TestAuthCubit extends AuthCubit {
   _TestAuthCubit(super.repository) : super(shouldCheckAuthState: false);
@@ -22,6 +28,8 @@ class _TestAuthCubit extends AuthCubit {
 
 void main() {
   late _MockAuthRepository mockAuthRepository;
+  late _MockSessionRepository mockSessionRepository;
+  late _MockTaskRepository mockTaskRepository;
   late _TestAuthCubit testAuthCubit;
   late AppRoutes appRoutes;
 
@@ -29,14 +37,31 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initHydratedStorage();
     mockAuthRepository = _MockAuthRepository();
+    mockSessionRepository = _MockSessionRepository();
+    mockTaskRepository = _MockTaskRepository();
     when(() => mockAuthRepository.currentUser).thenReturn(null);
+    when(() => mockSessionRepository.watchWeeklySessions(
+          studentId: any(named: 'studentId'),
+          startDate: any(named: 'startDate'),
+          endDate: any(named: 'endDate'),
+        )).thenAnswer((_) => Stream.value(<SessionModel>[]));
+    when(() => mockSessionRepository.watchStudentSessions(
+          studentId: any(named: 'studentId'),
+          limit: any(named: 'limit'),
+        )).thenAnswer((_) => const Stream.empty());
+    when(() => mockTaskRepository.watchStudentAssignments(any()))
+        .thenAnswer((_) => Stream.value(<AssignmentModel>[]));
     testAuthCubit = _TestAuthCubit(mockAuthRepository);
     appRoutes = AppRoutes(testAuthCubit);
   });
 
   Widget buildRouter() {
-    return RepositoryProvider<AuthRepository>.value(
-      value: mockAuthRepository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>.value(value: mockAuthRepository),
+        RepositoryProvider<SessionRepository>.value(value: mockSessionRepository),
+        RepositoryProvider<TaskRepository>.value(value: mockTaskRepository),
+      ],
       child: BlocProvider<AuthCubit>.value(
         value: testAuthCubit,
         child: MaterialApp.router(
@@ -70,7 +95,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text('Hola, Juan'), findsOneWidget);
+    expect(find.text('¡Hola, Juan!'), findsOneWidget);
   });
 
   testWidgets(
@@ -83,13 +108,13 @@ void main() {
       await tester.pumpWidget(buildRouter());
       await tester.pumpAndSettle();
 
-      expect(find.text('Tu práctica continúa'), findsOneWidget);
+      expect(find.text('¡Hola, Ana!'), findsOneWidget);
 
       appRoutes.router.go(AppRoutes.teacherClassesList);
       await tester.pumpAndSettle();
 
-      expect(find.text('Tu práctica continúa'), findsOneWidget);
-      expect(find.text('Hola, Juan'), findsNothing);
+      expect(find.text('¡Hola, Ana!'), findsOneWidget);
+      expect(find.text('¡Hola, Juan!'), findsNothing);
     },
   );
 }

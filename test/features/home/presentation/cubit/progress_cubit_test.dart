@@ -82,6 +82,11 @@ void main() {
               ),
             ]));
 
+        when(() => sessionRepository.watchStudentSessions(
+              studentId: any(named: 'studentId'),
+              limit: any(named: 'limit'),
+            )).thenAnswer((_) => const Stream.empty());
+
         return progressCubit;
       },
       act: (cubit) => cubit.watchProgress(studentId),
@@ -132,6 +137,11 @@ void main() {
               ),
             ]));
 
+        when(() => sessionRepository.watchStudentSessions(
+              studentId: any(named: 'studentId'),
+              limit: any(named: 'limit'),
+            )).thenAnswer((_) => const Stream.empty());
+
         return progressCubit;
       },
       act: (cubit) => cubit.watchProgress(studentId),
@@ -154,6 +164,11 @@ void main() {
 
         when(() => taskRepository.watchStudentAssignments(any()))
             .thenAnswer((_) => Stream.value([]));
+
+        when(() => sessionRepository.watchStudentSessions(
+              studentId: any(named: 'studentId'),
+              limit: any(named: 'limit'),
+            )).thenAnswer((_) => const Stream.empty());
 
         return progressCubit;
       },

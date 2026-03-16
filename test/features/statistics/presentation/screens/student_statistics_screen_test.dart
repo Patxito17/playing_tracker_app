@@ -68,6 +68,7 @@ void main() {
       routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: L10n.all,
+      locale: const Locale('es'),
       builder: (context, child) {
         return MediaQuery(
           data: const MediaQueryData(size: Size(1080, 2400)),
