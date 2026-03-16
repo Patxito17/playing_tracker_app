@@ -10,6 +10,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_card.dart';
+import '../../../../shared/widgets/success_banner.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../classes/domain/models/class_model.dart';
@@ -591,7 +592,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     ],
                     if (hasSuccess) ...[
                       const SizedBox(height: AppSpacing.l),
-                      _SuccessBanner(message: _successMessage!),
+                      SuccessBanner(message: _successMessage!),
                     ],
                     const SizedBox(height: AppSpacing.xl),
                     CustomButton(
@@ -614,36 +615,3 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   }
 }
 
-class _SuccessBanner extends StatelessWidget {
-  const _SuccessBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: context.colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(width: AppSpacing.s),
-          Expanded(
-            child: Text(
-              message,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

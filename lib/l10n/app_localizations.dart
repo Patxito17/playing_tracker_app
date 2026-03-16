@@ -1490,6 +1490,12 @@ abstract class AppLocalizations {
   /// **'No hay tareas en esta clase'**
   String get noTasksInClass;
 
+  /// Subtítulo estado vacío tareas clase
+  ///
+  /// In es, this message translates to:
+  /// **'Crea y asigna tareas a los alumnos de esta clase'**
+  String get noTasksInClassSubtitle;
+
   /// Confirmación eliminar tarea
   ///
   /// In es, this message translates to:
@@ -2479,6 +2485,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No'**
   String get noAnswer;
+
+  /// Badge de estado: tarea activa
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get taskStatusActive;
+
+  /// Badge de estado: tarea archivada
+  ///
+  /// In es, this message translates to:
+  /// **'Archivada'**
+  String get taskStatusArchived;
+
+  /// Botón continuar sesión de estudio en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueStudySession;
 }
 
 class _AppLocalizationsDelegate

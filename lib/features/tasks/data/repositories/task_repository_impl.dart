@@ -264,6 +264,38 @@ final class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
+  Stream<List<AssignmentModel>> watchTaskAssignments(
+    String taskId, {
+    String? teacherId,
+  }) {
+    final normalizedId = taskId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        const InvalidTaskArgumentException(
+          'El identificador de la tarea es obligatorio',
+        ),
+      );
+    }
+    final stream = _assignmentService.watchTaskAssignments(
+      normalizedId,
+      teacherId: teacherId,
+    );
+    return stream.transform(
+      StreamTransformer.fromHandlers(
+        handleData: (assignments, sink) => sink.add(assignments),
+        handleError: (error, stackTrace, sink) {
+          final mapped = _mapToRepositoryException(
+            method: 'watchTaskAssignments',
+            error: error,
+            fallbackMessage: 'No fue posible cargar los destinatarios.',
+          );
+          sink.addError(mapped, stackTrace);
+        },
+      ),
+    );
+  }
+
+  @override
   Future<void> assignTaskToClass(AssignTaskInput input) async {
     validateAssignTaskInput(input);
     try {

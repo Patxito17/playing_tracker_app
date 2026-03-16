@@ -781,6 +781,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noTasksInClass => 'No hay tareas en esta clase';
 
   @override
+  String get noTasksInClassSubtitle =>
+      'Crea y asigna tareas a los alumnos de esta clase';
+
+  @override
   String get confirmDeleteTaskMessage =>
       'Esta acción eliminará la tarea para todos los alumnos.';
 
@@ -1310,4 +1314,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noAnswer => 'No';
+
+  @override
+  String get taskStatusActive => 'Activa';
+
+  @override
+  String get taskStatusArchived => 'Archivada';
+
+  @override
+  String get continueStudySession => 'Continuar';
 }

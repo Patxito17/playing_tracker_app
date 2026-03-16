@@ -990,6 +990,10 @@
   "@noTasksInClass": {
     "description": "Estado vacío tareas clase"
   },
+  "noTasksInClassSubtitle": "Crea y asigna tareas a los alumnos de esta clase",
+  "@noTasksInClassSubtitle": {
+    "description": "Subtítulo estado vacío tareas clase"
+  },
   "confirmDeleteTaskMessage": "Esta acción eliminará la tarea para todos los alumnos.",
   "@confirmDeleteTaskMessage": {
     "description": "Confirmación eliminar tarea"
@@ -1709,5 +1713,17 @@
   "noAnswer": "No",
   "@noAnswer": {
     "description": "Respuesta negativa"
+  },
+  "taskStatusActive": "Activa",
+  "@taskStatusActive": {
+    "description": "Badge de estado: tarea activa"
+  },
+  "taskStatusArchived": "Archivada",
+  "@taskStatusArchived": {
+    "description": "Badge de estado: tarea archivada"
+  },
+  "continueStudySession": "Continuar",
+  "@continueStudySession": {
+    "description": "Botón continuar sesión de estudio en progreso"
   }
 }

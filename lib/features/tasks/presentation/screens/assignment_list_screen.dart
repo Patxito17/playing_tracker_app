@@ -12,10 +12,10 @@ import '../cubit/assignment_state.dart';
 import '../widgets/assignment_card.dart';
 import '../widgets/assignment_filters_bottom_sheet.dart';
 
-/// Pantalla de lista de asignaciones conectada a [AssignmentCubit].
+/// Pantalla de lista de asignaciones del alumno.
 ///
-/// Muestra las asignaciones reales del alumno y permite filtrarlas por estado
-/// y rango de fechas de asignación mediante un bottom sheet.
+/// Diseño gamificado con fondo degradado sutil y cards de estado coloreadas.
+/// Cada asignación visual y motivadoramente diferenciada por su estado.
 class AssignmentListScreen extends StatefulWidget {
   const AssignmentListScreen({super.key});
 
@@ -38,8 +38,6 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicializamos la suscripción al stream de asignaciones en initState para
-    // garantizar que se establezca correctamente antes del primer build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = context.read<AuthCubit>().state;
       if (authState is AuthAuthenticated) {
@@ -67,9 +65,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                 ),
               );
               if (result != null && context.mounted) {
-                setState(() {
-                  _activeFilters = result;
-                });
+                setState(() => _activeFilters = result);
                 context.read<AssignmentCubit>().applyFilters(result);
               }
             },
@@ -77,120 +73,146 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<AssignmentCubit, AssignmentState>(
-        builder: (context, state) {
-          if (state is AssignmentLoading || state is AssignmentInitial) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      // Degradado sutil de fondo que refuerza el ambiente motivador
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              context.colorScheme.primary.withValues(alpha: 0.06),
+              context.colorScheme.surface,
+            ],
+            stops: const [0.0, 0.4],
+          ),
+        ),
+        child: BlocBuilder<AssignmentCubit, AssignmentState>(
+          builder: (context, state) {
+            if (state is AssignmentLoading || state is AssignmentInitial) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is AssignmentError) {
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Center(
-                child: SelectableText.rich(
-                  TextSpan(
-                    text: state.message,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colorScheme.error,
+            if (state is AssignmentError) {
+              return Padding(
+                padding: const EdgeInsets.all(AppSpacing.l),
+                child: Center(
+                  child: SelectableText.rich(
+                    TextSpan(
+                      text: state.message,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.error,
+                      ),
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
-            );
-          }
+              );
+            }
 
-          if (state is AssignmentEmpty) {
+            if (state is AssignmentEmpty) {
+              return RefreshIndicator(
+                onRefresh: () =>
+                    context.read<AssignmentCubit>().refreshAssignments(),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(AppSpacing.l),
+                  children: [
+                    _AssignmentEmptyState(
+                      icon: Icons.task_alt_outlined,
+                      title: state.message.isNotEmpty
+                          ? state.message
+                          : context.l10n.noAssignmentsReceived,
+                      subtitle: context.l10n.adjustFilters,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is! AssignmentSuccess) return const SizedBox.shrink();
+
+            final assignments = state.assignments;
+
             return RefreshIndicator(
               onRefresh: () =>
                   context.read<AssignmentCubit>().refreshAssignments(),
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(AppSpacing.l),
-                children: [
-                  _EmptyState(
-                    icon: Icons.assignment_outlined,
-                    title: state.message.isNotEmpty
-                        ? state.message
-                        : context.l10n.noAssignmentsReceived,
-                    subtitle: context.l10n.adjustFilters,
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is! AssignmentSuccess) {
-            return const SizedBox.shrink();
-          }
-
-          final assignments = state.assignments;
-
-          return RefreshIndicator(
-            onRefresh: () =>
-                context.read<AssignmentCubit>().refreshAssignments(),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (assignments.isEmpty)
-                    _EmptyState(
-                      icon: Icons.assignment_outlined,
-                      title: context.l10n.noAssignmentsReceived,
-                      subtitle: context.l10n.adjustFilters,
+              child: assignments.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(AppSpacing.l),
+                      children: [
+                        _AssignmentEmptyState(
+                          icon: Icons.task_alt_outlined,
+                          title: context.l10n.noAssignmentsReceived,
+                          subtitle: context.l10n.adjustFilters,
+                        ),
+                      ],
                     )
-                  else
-                    ...assignments.map((assignment) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                        child: AssignmentCard(assignment: assignment),
-                      );
-                    }),
-                ],
-              ),
-            ),
-          );
-        },
+                  : ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(AppSpacing.m),
+                      itemCount: assignments.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: AppSpacing.s),
+                      itemBuilder: (context, index) {
+                        return AssignmentCard(
+                          assignment: assignments[index],
+                        );
+                      },
+                    ),
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({
+/// Estado vacío motivador para la lista de asignaciones del alumno.
+class _AssignmentEmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _AssignmentEmptyState({
     required this.icon,
     required this.title,
     required this.subtitle,
   });
 
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.l),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 64, color: context.colorScheme.onSurfaceVariant),
-          const SizedBox(height: AppSpacing.m),
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color:
+                  context.colorScheme.primaryContainer.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 48,
+              color: context.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.l),
           Text(
             title,
             style: context.textTheme.titleLarge?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s),
           Text(
             subtitle,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
+            style: context.bodyMediumOnSurfaceVariant,
             textAlign: TextAlign.center,
           ),
         ],
