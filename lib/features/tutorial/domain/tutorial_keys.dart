@@ -23,3 +23,20 @@ class TeacherTutorialKeys {
   final tasksGrid = GlobalKey(debugLabel: 'tut_t_tasks');
   final statsGrid = GlobalKey(debugLabel: 'tut_t_stats');
 }
+
+/// Claves para los items del NavigationBar del alumno (estáticas, únicas por app).
+class StudentNavBarKeys {
+  static final home = GlobalKey(debugLabel: 'nav_s_home');
+  static final classes = GlobalKey(debugLabel: 'nav_s_classes');
+  static final history = GlobalKey(debugLabel: 'nav_s_history');
+  static final statistics = GlobalKey(debugLabel: 'nav_s_statistics');
+  static final settings = GlobalKey(debugLabel: 'nav_s_settings');
+}
+
+/// Claves para los items del NavigationBar del docente (estáticas, únicas por app).
+class TeacherNavBarKeys {
+  static final home = GlobalKey(debugLabel: 'nav_t_home');
+  static final classes = GlobalKey(debugLabel: 'nav_t_classes');
+  static final statistics = GlobalKey(debugLabel: 'nav_t_statistics');
+  static final settings = GlobalKey(debugLabel: 'nav_t_settings');
+}

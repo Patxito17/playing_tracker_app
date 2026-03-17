@@ -122,6 +122,92 @@ class TutorialTargetBuilder {
     ];
   }
 
+  /// Construye los 5 pasos del tutorial de la barra de navegación para alumno.
+  static List<TargetFocus> buildStudentNavBarTargets(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      _buildTarget(
+        identify: 'nav_student_home',
+        key: StudentNavBarKeys.home,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavHomeTitle,
+        description: l10n.tutorialNavHomeDesc,
+        icon: Icons.home_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_student_classes',
+        key: StudentNavBarKeys.classes,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavStudentClassesTitle,
+        description: l10n.tutorialNavStudentClassesDesc,
+        icon: Icons.library_music_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_student_history',
+        key: StudentNavBarKeys.history,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavHistoryTitle,
+        description: l10n.tutorialNavHistoryDesc,
+        icon: Icons.history_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_student_statistics',
+        key: StudentNavBarKeys.statistics,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavStudentStatisticsTitle,
+        description: l10n.tutorialNavStudentStatisticsDesc,
+        icon: Icons.bar_chart_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_student_settings',
+        key: StudentNavBarKeys.settings,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavSettingsTitle,
+        description: l10n.tutorialNavSettingsDesc,
+        icon: Icons.settings_rounded,
+      ),
+    ];
+  }
+
+  /// Construye los 4 pasos del tutorial de la barra de navegación para docente.
+  static List<TargetFocus> buildTeacherNavBarTargets(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      _buildTarget(
+        identify: 'nav_teacher_home',
+        key: TeacherNavBarKeys.home,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavHomeTitle,
+        description: l10n.tutorialNavHomeDesc,
+        icon: Icons.home_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_teacher_classes',
+        key: TeacherNavBarKeys.classes,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavTeacherClassesTitle,
+        description: l10n.tutorialNavTeacherClassesDesc,
+        icon: Icons.library_music_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_teacher_statistics',
+        key: TeacherNavBarKeys.statistics,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavTeacherStatisticsTitle,
+        description: l10n.tutorialNavTeacherStatisticsDesc,
+        icon: Icons.bar_chart_rounded,
+      ),
+      _buildTarget(
+        identify: 'nav_teacher_settings',
+        key: TeacherNavBarKeys.settings,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavSettingsTitle,
+        description: l10n.tutorialNavSettingsDesc,
+        icon: Icons.settings_rounded,
+      ),
+    ];
+  }
+
   static TargetFocus _buildTarget({
     required String identify,
     required GlobalKey key,

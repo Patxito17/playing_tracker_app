@@ -1443,6 +1443,55 @@ class AppLocalizationsEn extends AppLocalizations {
       'Review your students\' progress, practice times, and the overall performance of each class.';
 
   @override
+  String get tutorialNavHomeTitle => 'Home';
+
+  @override
+  String get tutorialNavHomeDesc =>
+      'This is your main hub. Come here to quickly access all sections of the app.';
+
+  @override
+  String get tutorialNavStudentClassesTitle => 'My Classes';
+
+  @override
+  String get tutorialNavStudentClassesDesc =>
+      'Here you\'ll find all your enrolled classes. Access content and log your practice sessions.';
+
+  @override
+  String get tutorialNavHistoryTitle => 'Practice History';
+
+  @override
+  String get tutorialNavHistoryDesc =>
+      'Review all your past practice sessions and track your musical progress over time.';
+
+  @override
+  String get tutorialNavStudentStatisticsTitle => 'Statistics';
+
+  @override
+  String get tutorialNavStudentStatisticsDesc =>
+      'See detailed charts of your practice time, streaks, and performance trends.';
+
+  @override
+  String get tutorialNavTeacherClassesTitle => 'My Classes';
+
+  @override
+  String get tutorialNavTeacherClassesDesc =>
+      'Manage all your active classes, view student lists, and access class details.';
+
+  @override
+  String get tutorialNavTeacherStatisticsTitle => 'Statistics';
+
+  @override
+  String get tutorialNavTeacherStatisticsDesc =>
+      'Review your students\' progress, practice times, and overall class performance.';
+
+  @override
+  String get tutorialNavSettingsTitle => 'Settings';
+
+  @override
+  String get tutorialNavSettingsDesc =>
+      'Customize the app\'s appearance, language, and your personal preferences here.';
+
+  @override
   String get studentRankingTitle => 'Student Rankings';
 
   @override

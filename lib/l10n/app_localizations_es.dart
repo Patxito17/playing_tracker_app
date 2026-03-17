@@ -1456,6 +1456,55 @@ class AppLocalizationsEs extends AppLocalizations {
       'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.';
 
   @override
+  String get tutorialNavHomeTitle => 'Inicio';
+
+  @override
+  String get tutorialNavHomeDesc =>
+      'Este es tu punto de partida. Accede rápidamente a todas las secciones de la app desde aquí.';
+
+  @override
+  String get tutorialNavStudentClassesTitle => 'Mis Clases';
+
+  @override
+  String get tutorialNavStudentClassesDesc =>
+      'Aquí encontrarás todas las clases en las que estás inscrito. Accede al contenido y registra tus sesiones.';
+
+  @override
+  String get tutorialNavHistoryTitle => 'Historial de Práctica';
+
+  @override
+  String get tutorialNavHistoryDesc =>
+      'Revisa todas tus sesiones de práctica anteriores y sigue tu progreso musical a lo largo del tiempo.';
+
+  @override
+  String get tutorialNavStudentStatisticsTitle => 'Estadísticas';
+
+  @override
+  String get tutorialNavStudentStatisticsDesc =>
+      'Consulta gráficos detallados de tu tiempo de práctica, rachas y tendencias de rendimiento.';
+
+  @override
+  String get tutorialNavTeacherClassesTitle => 'Mis Clases';
+
+  @override
+  String get tutorialNavTeacherClassesDesc =>
+      'Gestiona todas tus clases activas, consulta los listados de alumnos y accede a los detalles de cada clase.';
+
+  @override
+  String get tutorialNavTeacherStatisticsTitle => 'Estadísticas';
+
+  @override
+  String get tutorialNavTeacherStatisticsDesc =>
+      'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.';
+
+  @override
+  String get tutorialNavSettingsTitle => 'Ajustes';
+
+  @override
+  String get tutorialNavSettingsDesc =>
+      'Personaliza el aspecto de la app, el idioma y tus preferencias personales desde aquí.';
+
+  @override
   String get studentRankingTitle => 'Ranking de Alumnos';
 
   @override
