@@ -101,7 +101,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
       ),
       onFinish: () {},
       onSkip: () => true,
-    ).show(context: context);
+    ).show(context: context, rootOverlay: true);
   }
 
   @override
