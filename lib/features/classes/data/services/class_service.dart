@@ -206,9 +206,10 @@ final class ClassService implements ClassServiceContract {
     }
   }
 
-  /// Hook que prepara el fan-out de tareas hacia `assignments`.
+  /// Punto de integración con el fan-out de tareas hacia `assignments`.
   ///
-  /// Implementación parcial: únicamente registra logs para Sprint 3.
+  /// La distribución real se delega al [FanOutHelper]; este método actúa
+  /// como coordinador dentro del servicio de clases.
 
   Future<String> _generateUniqueAccessCode({
     String? ignoreClassId,

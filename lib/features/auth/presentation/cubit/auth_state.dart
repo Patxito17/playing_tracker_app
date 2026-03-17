@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
 import 'package:playing_tracker/features/auth/domain/models/student_model.dart';
 import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
+import 'package:playing_tracker/features/auth/domain/models/user_profile.dart';
 
 /// Estados posibles para el flujo de autenticación de Playing Tracker.
 ///
@@ -29,9 +30,8 @@ final class AuthAuthenticated extends AuthState {
   const AuthAuthenticated({required this.user});
 
   /// Modelo completo del usuario (TeacherModel o StudentModel).
-  /// Se usa dynamic para evitar complicaciones de tipos, pero en runtime
-  /// siempre será TeacherModel o StudentModel.
-  final dynamic user;
+  /// Tipado como [UserProfile] para acceso seguro a campos comunes.
+  final UserProfile user;
 
   /// Rol del usuario derivado del tipo del modelo.
   UserRole get role {
@@ -41,16 +41,16 @@ final class AuthAuthenticated extends AuthState {
   }
 
   /// ID del usuario (acceso directo al campo id del modelo).
-  String get userId => user.id as String;
+  String get userId => user.id;
 
   /// Nombre del usuario (acceso directo).
-  String get firstName => user.firstName as String;
+  String get firstName => user.firstName;
 
   /// Apellidos del usuario (acceso directo).
-  String get lastName => user.lastName as String;
+  String get lastName => user.lastName;
 
   /// Nombre completo del usuario.
-  String get fullName => '$firstName $lastName';
+  String get fullName => user.fullName;
 
   @override
   List<Object?> get props => [user];
