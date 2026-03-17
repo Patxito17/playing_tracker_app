@@ -22,8 +22,8 @@ abstract interface class FanOutHelperContract {
 /// Helper encargado de preparar y propagar el fan-out de tareas hacia
 /// la colección `assignments`.
 ///
-/// Durante el Sprint 3 únicamente registra logs y valida contratos para
-/// dejar la infraestructura lista para el Sprint 4.
+/// Dado un [taskId] y un [classId], obtiene los alumnos activos de la clase
+/// y crea (o actualiza) un documento de asignación por alumno en Firestore.
 final class FanOutHelper implements FanOutHelperContract {
   /// Crea una instancia permitiendo inyectar dependencias para pruebas.
   FanOutHelper({

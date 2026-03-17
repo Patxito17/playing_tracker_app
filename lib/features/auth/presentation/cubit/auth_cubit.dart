@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
+import 'package:playing_tracker/features/auth/domain/models/user_profile.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 
@@ -42,7 +43,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final role = await _authRepository.getUserRole(currentUser.uid);
 
       // Cargar el modelo completo del usuario
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(currentUser.uid);
       } else {
@@ -74,7 +75,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final role = await _authRepository.getUserRole(userId);
 
       // Cargar el modelo completo del usuario
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -209,7 +210,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       final role = await _authRepository.getUserRole(userId);
 
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -257,7 +258,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       final role = await _authRepository.getUserRole(userId);
 
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -413,7 +414,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       // Recargar el modelo actualizado
       final role = currentState.role;
-      dynamic updatedModel;
+      UserProfile? updatedModel;
       if (role == UserRole.teacher) {
         updatedModel = await _authRepository.getTeacherProfile(
           currentState.userId,

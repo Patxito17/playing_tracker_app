@@ -214,31 +214,31 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // Fallback a Firestore si el claim aún no está disponible
       // (ventana de tiempo entre creación del perfil y la ejecución de la Function).
+      const maxRetries = 3;
+      const retryDelay = Duration(seconds: 2);
+
       final teacherDoc = await _teachersRef.doc(userId).get();
       if (teacherDoc.exists) {
-        // Aumentamos los reintentos y el tiempo de espera ya que las Functions
-        // pueden tardar varios segundos en ejecutarse en entornos de producción.
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < maxRetries; i++) {
           final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
             true, // Forzar refresco
           );
           final role = tokenResult?.claims?['role'] as String?;
           if (role == 'teacher') return UserRole.teacher;
-          // Esperar un poco antes del siguiente reintento (1s, 2s, 3s, 4s, 5s)
-          await Future.delayed(Duration(seconds: i + 1));
+          await Future.delayed(retryDelay);
         }
         return UserRole.teacher;
       }
 
       final studentDoc = await _studentsRef.doc(userId).get();
       if (studentDoc.exists) {
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < maxRetries; i++) {
           final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
             true,
           );
           final role = tokenResult?.claims?['role'] as String?;
           if (role == 'student') return UserRole.student;
-          await Future.delayed(Duration(seconds: i + 1));
+          await Future.delayed(retryDelay);
         }
         return UserRole.student;
       }

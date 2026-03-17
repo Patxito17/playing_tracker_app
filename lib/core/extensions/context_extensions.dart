@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../constants/app_constants.dart';
 
-/// Extension methods para BuildContext
+/// Extension methods para [BuildContext]
 ///
-/// Proporciona acceso rápido y conveniente a Theme, MediaQuery y otras
-/// propiedades frecuentemente usadas del BuildContext.
-///
-/// Sprint 0 - Fase 2: Extension methods implementadas
-/// Sprint 0 - Mejora: Extension methods para estilos de texto centralizados
+/// Proporciona acceso rápido y conveniente a [ThemeData], [MediaQuery],
+/// localizaciones y estilos de texto centralizados directamente desde
+/// cualquier widget, reduciendo la verbosidad del código de presentación.
 extension BuildContextExtensions on BuildContext {
   /// Acceso rápido al ThemeData
   ///
