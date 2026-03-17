@@ -27,6 +27,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     final themeMode = _settingsService.getThemeMode();
     final locale = _settingsService.getLocale(); // Puede ser null (automático)
     final seedColor = _settingsService.getSeedColor();
+    final studentTutorialDone = _settingsService.isStudentTutorialDone();
+    final teacherTutorialDone = _settingsService.isTeacherTutorialDone();
 
     emit(
       state.copyWith(
@@ -34,6 +36,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         locale:
             locale, // null = automático, se pasa correctamente con el sentinel
         seedColor: seedColor,
+        studentTutorialDone: studentTutorialDone,
+        teacherTutorialDone: teacherTutorialDone,
       ),
     );
   }
@@ -61,19 +65,35 @@ class SettingsCubit extends Cubit<SettingsState> {
   // Tutorial de primera ejecución
   // ---------------------------------------------------------------------------
 
-  bool isStudentTutorialDone() => _settingsService.isStudentTutorialDone();
-  Future<void> markStudentTutorialDone() =>
-      _settingsService.markStudentTutorialDone();
-  Future<void> resetStudentTutorial() async {
-    await _settingsService.resetStudentTutorial();
-    emit(state.copyWith(tutorialResetVersion: state.tutorialResetVersion + 1));
+  bool isStudentTutorialDone() => state.studentTutorialDone;
+  Future<void> markStudentTutorialDone() async {
+    await _settingsService.markStudentTutorialDone();
+    emit(state.copyWith(studentTutorialDone: true));
   }
 
-  bool isTeacherTutorialDone() => _settingsService.isTeacherTutorialDone();
-  Future<void> markTeacherTutorialDone() =>
-      _settingsService.markTeacherTutorialDone();
+  Future<void> resetStudentTutorial() async {
+    await _settingsService.resetStudentTutorial();
+    emit(
+      state.copyWith(
+        studentTutorialDone: false,
+        tutorialResetVersion: state.tutorialResetVersion + 1,
+      ),
+    );
+  }
+
+  bool isTeacherTutorialDone() => state.teacherTutorialDone;
+  Future<void> markTeacherTutorialDone() async {
+    await _settingsService.markTeacherTutorialDone();
+    emit(state.copyWith(teacherTutorialDone: true));
+  }
+
   Future<void> resetTeacherTutorial() async {
     await _settingsService.resetTeacherTutorial();
-    emit(state.copyWith(tutorialResetVersion: state.tutorialResetVersion + 1));
+    emit(
+      state.copyWith(
+        teacherTutorialDone: false,
+        tutorialResetVersion: state.tutorialResetVersion + 1,
+      ),
+    );
   }
 }

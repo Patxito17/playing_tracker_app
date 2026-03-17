@@ -11,6 +11,8 @@ class SettingsState extends Equatable {
     this.locale,
     this.seedColor,
     this.tutorialResetVersion = 0,
+    this.studentTutorialDone = false,
+    this.teacherTutorialDone = false,
   });
 
   final ThemeMode themeMode;
@@ -25,12 +27,20 @@ class SettingsState extends Equatable {
   /// Las pantallas de inicio escuchan este campo para re-disparar el tutorial.
   final int tutorialResetVersion;
 
+  /// Indica si el tutorial del alumno ya fue completado.
+  final bool studentTutorialDone;
+
+  /// Indica si el tutorial del docente ya fue completado.
+  final bool teacherTutorialDone;
+
   factory SettingsState.initial() {
     return const SettingsState(
       themeMode: ThemeMode.system,
       locale: null, // null = detección automática del sistema
       seedColor: null,
       tutorialResetVersion: 0,
+      studentTutorialDone: false,
+      teacherTutorialDone: false,
     );
   }
 
@@ -42,6 +52,8 @@ class SettingsState extends Equatable {
     Object? locale = _kNoLocale,
     Color? seedColor,
     int? tutorialResetVersion,
+    bool? studentTutorialDone,
+    bool? teacherTutorialDone,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
@@ -49,9 +61,18 @@ class SettingsState extends Equatable {
       seedColor: seedColor ?? this.seedColor,
       tutorialResetVersion:
           tutorialResetVersion ?? this.tutorialResetVersion,
+      studentTutorialDone: studentTutorialDone ?? this.studentTutorialDone,
+      teacherTutorialDone: teacherTutorialDone ?? this.teacherTutorialDone,
     );
   }
 
   @override
-  List<Object?> get props => [themeMode, locale, seedColor, tutorialResetVersion];
+  List<Object?> get props => [
+    themeMode,
+    locale,
+    seedColor,
+    tutorialResetVersion,
+    studentTutorialDone,
+    teacherTutorialDone,
+  ];
 }

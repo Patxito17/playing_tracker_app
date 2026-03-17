@@ -357,6 +357,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String userId,
     required String firstName,
     required String lastName,
+    required UserRole role,
   }) async {
     try {
       final now = Timestamp.now();
@@ -366,21 +367,11 @@ class AuthRepositoryImpl implements AuthRepository {
         'updatedAt': now,
       };
 
-      // Intentar actualizar en teachers
-      final teacherDoc = await _teachersRef.doc(userId).get();
-      if (teacherDoc.exists) {
-        await _teachersRef.doc(userId).update(updateData);
-        return;
-      }
-
-      // Si no es teacher, actualizar en students
-      final studentDoc = await _studentsRef.doc(userId).get();
-      if (studentDoc.exists) {
-        await _studentsRef.doc(userId).update(updateData);
-        return;
-      }
-
-      throw AuthRepositoryException('Usuario no encontrado.');
+      // Ir directamente a la colección correcta según el rol recibido.
+      // Evita las 2 lecturas Firestore previas para determinar el tipo de usuario.
+      final ref =
+          role == UserRole.teacher ? _teachersRef : _studentsRef;
+      await ref.doc(userId).update(updateData);
     } catch (error) {
       if (error is AuthRepositoryException) {
         rethrow;

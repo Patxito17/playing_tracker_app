@@ -410,6 +410,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         userId: currentState.userId,
         firstName: firstName,
         lastName: lastName,
+        role: currentState.role,
       );
 
       // Recargar el modelo actualizado
