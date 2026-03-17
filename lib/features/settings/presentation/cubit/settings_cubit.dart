@@ -50,10 +50,16 @@ class SettingsCubit extends Cubit<SettingsState> {
   bool isStudentTutorialDone() => _settingsService.isStudentTutorialDone();
   Future<void> markStudentTutorialDone() =>
       _settingsService.markStudentTutorialDone();
-  Future<void> resetStudentTutorial() => _settingsService.resetStudentTutorial();
+  Future<void> resetStudentTutorial() async {
+    await _settingsService.resetStudentTutorial();
+    emit(state.copyWith(tutorialResetVersion: state.tutorialResetVersion + 1));
+  }
 
   bool isTeacherTutorialDone() => _settingsService.isTeacherTutorialDone();
   Future<void> markTeacherTutorialDone() =>
       _settingsService.markTeacherTutorialDone();
-  Future<void> resetTeacherTutorial() => _settingsService.resetTeacherTutorial();
+  Future<void> resetTeacherTutorial() async {
+    await _settingsService.resetTeacherTutorial();
+    emit(state.copyWith(tutorialResetVersion: state.tutorialResetVersion + 1));
+  }
 }

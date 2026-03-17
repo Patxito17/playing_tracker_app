@@ -10,6 +10,7 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../settings/presentation/cubit/settings_cubit.dart';
+import '../../../settings/presentation/cubit/settings_state.dart';
 import '../../../tutorial/domain/tutorial_keys.dart';
 import '../../../tutorial/presentation/tutorial_target_builder.dart';
 import '../widgets/home_greeting_hero.dart';
@@ -52,10 +53,42 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   void _showTutorial() {
     final colorScheme = context.colorScheme;
     TutorialCoachMark(
-      targets: TutorialTargetBuilder.buildTeacherTargets(context, _keys),
+      targets: [
+        ...TutorialTargetBuilder.buildTeacherTargets(context, _keys),
+        ...TutorialTargetBuilder.buildTeacherNavBarTargets(context),
+      ],
       colorShadow: colorScheme.primary,
       opacityShadow: 0.75,
       useSafeArea: true,
+      beforeFocus: (target) async {
+        // Se captura el router antes de cualquier await para satisfacer
+        // use_build_context_synchronously.
+        final router = GoRouter.of(context);
+        // Desplaza el contenido para que el widget sea visible
+        final key = target.keyTarget;
+        if (key?.currentContext != null) {
+          await Scrollable.ensureVisible(
+            key!.currentContext!,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            alignment: 0.3,
+          );
+        }
+        // Navega a la pestaña correspondiente para los pasos de la nav bar.
+        String? route;
+        switch (target.identify) {
+          case 'nav_teacher_classes':
+            route = AppRoutes.teacherClassesList;
+          case 'nav_teacher_statistics':
+            route = AppRoutes.teacherStatistics;
+          case 'nav_teacher_settings':
+            route = AppRoutes.teacherSettings;
+        }
+        if (route != null) {
+          router.go(route);
+          await Future.delayed(const Duration(milliseconds: 350));
+        }
+      },
       skipWidget: Padding(
         padding: const EdgeInsets.all(AppSpacing.m),
         child: Text(
@@ -84,133 +117,145 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
       return '';
     });
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        showLogo: true,
-        title: 'Playing Tracker',
-        actions: [
-          Container(
-            decoration: BoxDecoration(
-              color: colorScheme.errorContainer.withValues(alpha: 0.3),
-              shape: BoxShape.circle,
+    return BlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) =>
+          current.tutorialResetVersion != previous.tutorialResetVersion,
+      listener: (context, state) {
+        _tutorialTriggered = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_tutorialTriggered) _scheduleTutorial();
+        });
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(
+          showLogo: true,
+          title: 'Playing Tracker',
+          actions: [
+            Container(
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                tooltip: l10n.logout,
+                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+                onPressed: () => context.read<AuthCubit>().logout(),
+              ),
             ),
-            child: IconButton(
-              tooltip: l10n.logout,
-              icon: Icon(Icons.logout_rounded, color: colorScheme.error),
-              onPressed: () => context.read<AuthCubit>().logout(),
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: AppSpacing.m),
-
-            // Sección Hero de Saludo
-            HomeGreetingHero(
-              key: _keys.greetingHero,
-              title: userName.isNotEmpty
-                  ? l10n.welcomeUser(userName)
-                  : l10n.teacherWelcomeProfe,
-              subtitle: l10n.musicalControlPanel,
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Sección Clases
-            _buildSectionHeader(context, l10n.manageMyClasses),
-            const SizedBox(height: AppSpacing.m),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: AppSpacing.m,
-              crossAxisSpacing: AppSpacing.m,
-              children: [
-                HomeMenuCard(
-                  key: _keys.classesCard,
-                  icon: Icons.library_music_rounded,
-                  label: l10n.myClassesLabel,
-                  onTap: () => context.go(AppRoutes.teacherClassesList),
-                ),
-                HomeMenuCard(
-                  key: _keys.createClass,
-                  icon: Icons.add_rounded,
-                  customIcon: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      const Icon(Icons.add_rounded, size: 32),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Icon(
-                          Icons.music_note_rounded,
-                          size: 14,
-                          color: colorScheme.tertiary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  label: l10n.createClassAction,
-                  iconColor: colorScheme.tertiary,
-                  iconBackgroundColor: colorScheme.tertiary.withValues(
-                    alpha: 0.12,
-                  ),
-                  onTap: () => context.push(AppRoutes.createClass),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Sección Tareas
-            _buildSectionHeader(context, l10n.tasksSectionTitle),
-            const SizedBox(height: AppSpacing.m),
-            GridView.count(
-              key: _keys.tasksGrid,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: AppSpacing.m,
-              crossAxisSpacing: AppSpacing.m,
-              children: [
-                HomeMenuCard(
-                  icon: Icons.assignment_rounded,
-                  label: l10n.viewTasksLabel,
-                  iconColor: colorScheme.secondary,
-                  iconBackgroundColor: colorScheme.secondary.withValues(
-                    alpha: 0.12,
-                  ),
-                  onTap: () => context.push(AppRoutes.taskList),
-                ),
-                HomeMenuCard(
-                  icon: Icons.add_task_rounded,
-                  label: l10n.newTaskLabel,
-                  onTap: () => context.push(AppRoutes.createTask),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Sección Estadísticas
-            _buildSectionHeader(context, l10n.statsSectionTitle),
-            const SizedBox(height: AppSpacing.m),
-            HomeMenuCard(
-              key: _keys.statsGrid,
-              icon: Icons.analytics_rounded,
-              label: l10n.progressLabel,
-              iconColor: colorScheme.tertiary,
-              iconBackgroundColor: colorScheme.tertiary.withValues(alpha: 0.12),
-              fullWidth: true,
-              onTap: () => context.go(AppRoutes.teacherStatistics),
-            ),
-
-            const SizedBox(height: AppSpacing.xxl),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: AppSpacing.m),
+
+              // Sección Hero de Saludo
+              HomeGreetingHero(
+                key: _keys.greetingHero,
+                title: userName.isNotEmpty
+                    ? l10n.welcomeUser(userName)
+                    : l10n.teacherWelcomeProfe,
+                subtitle: l10n.musicalControlPanel,
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // Sección Clases
+              _buildSectionHeader(context, l10n.manageMyClasses),
+              const SizedBox(height: AppSpacing.m),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: AppSpacing.m,
+                crossAxisSpacing: AppSpacing.m,
+                children: [
+                  HomeMenuCard(
+                    key: _keys.classesCard,
+                    icon: Icons.library_music_rounded,
+                    label: l10n.myClassesLabel,
+                    onTap: () => context.go(AppRoutes.teacherClassesList),
+                  ),
+                  HomeMenuCard(
+                    key: _keys.createClass,
+                    icon: Icons.add_rounded,
+                    customIcon: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        const Icon(Icons.add_rounded, size: 32),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: Icon(
+                            Icons.music_note_rounded,
+                            size: 14,
+                            color: colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    label: l10n.createClassAction,
+                    iconColor: colorScheme.tertiary,
+                    iconBackgroundColor: colorScheme.tertiary.withValues(
+                      alpha: 0.12,
+                    ),
+                    onTap: () => context.push(AppRoutes.createClass),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // Sección Tareas
+              _buildSectionHeader(context, l10n.tasksSectionTitle),
+              const SizedBox(height: AppSpacing.m),
+              GridView.count(
+                key: _keys.tasksGrid,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: AppSpacing.m,
+                crossAxisSpacing: AppSpacing.m,
+                children: [
+                  HomeMenuCard(
+                    icon: Icons.assignment_rounded,
+                    label: l10n.viewTasksLabel,
+                    iconColor: colorScheme.secondary,
+                    iconBackgroundColor: colorScheme.secondary.withValues(
+                      alpha: 0.12,
+                    ),
+                    onTap: () => context.push(AppRoutes.taskList),
+                  ),
+                  HomeMenuCard(
+                    icon: Icons.add_task_rounded,
+                    label: l10n.newTaskLabel,
+                    onTap: () => context.push(AppRoutes.createTask),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // Sección Estadísticas
+              _buildSectionHeader(context, l10n.statsSectionTitle),
+              const SizedBox(height: AppSpacing.m),
+              HomeMenuCard(
+                key: _keys.statsGrid,
+                icon: Icons.analytics_rounded,
+                label: l10n.progressLabel,
+                iconColor: colorScheme.tertiary,
+                iconBackgroundColor: colorScheme.tertiary.withValues(
+                  alpha: 0.12,
+                ),
+                fullWidth: true,
+                onTap: () => context.go(AppRoutes.teacherStatistics),
+              ),
+
+              const SizedBox(height: AppSpacing.xxl),
+            ],
+          ),
         ),
       ),
     );

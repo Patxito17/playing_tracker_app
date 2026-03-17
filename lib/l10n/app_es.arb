@@ -1886,6 +1886,62 @@
   "@tutorialTeacherStatsDesc": {
     "description": "Descripción del paso 5 del tutorial de docente"
   },
+  "tutorialNavHomeTitle": "Inicio",
+  "@tutorialNavHomeTitle": {
+    "description": "Título del paso de nav bar: inicio"
+  },
+  "tutorialNavHomeDesc": "Este es tu punto de partida. Accede rápidamente a todas las secciones de la app desde aquí.",
+  "@tutorialNavHomeDesc": {
+    "description": "Descripción del paso de nav bar: inicio"
+  },
+  "tutorialNavStudentClassesTitle": "Mis Clases",
+  "@tutorialNavStudentClassesTitle": {
+    "description": "Título del paso de nav bar alumno: clases"
+  },
+  "tutorialNavStudentClassesDesc": "Aquí encontrarás todas las clases en las que estás inscrito. Accede al contenido y registra tus sesiones.",
+  "@tutorialNavStudentClassesDesc": {
+    "description": "Descripción del paso de nav bar alumno: clases"
+  },
+  "tutorialNavHistoryTitle": "Historial de Práctica",
+  "@tutorialNavHistoryTitle": {
+    "description": "Título del paso de nav bar alumno: historial"
+  },
+  "tutorialNavHistoryDesc": "Revisa todas tus sesiones de práctica anteriores y sigue tu progreso musical a lo largo del tiempo.",
+  "@tutorialNavHistoryDesc": {
+    "description": "Descripción del paso de nav bar alumno: historial"
+  },
+  "tutorialNavStudentStatisticsTitle": "Estadísticas",
+  "@tutorialNavStudentStatisticsTitle": {
+    "description": "Título del paso de nav bar alumno: estadísticas"
+  },
+  "tutorialNavStudentStatisticsDesc": "Consulta gráficos detallados de tu tiempo de práctica, rachas y tendencias de rendimiento.",
+  "@tutorialNavStudentStatisticsDesc": {
+    "description": "Descripción del paso de nav bar alumno: estadísticas"
+  },
+  "tutorialNavTeacherClassesTitle": "Mis Clases",
+  "@tutorialNavTeacherClassesTitle": {
+    "description": "Título del paso de nav bar docente: clases"
+  },
+  "tutorialNavTeacherClassesDesc": "Gestiona todas tus clases activas, consulta los listados de alumnos y accede a los detalles de cada clase.",
+  "@tutorialNavTeacherClassesDesc": {
+    "description": "Descripción del paso de nav bar docente: clases"
+  },
+  "tutorialNavTeacherStatisticsTitle": "Estadísticas",
+  "@tutorialNavTeacherStatisticsTitle": {
+    "description": "Título del paso de nav bar docente: estadísticas"
+  },
+  "tutorialNavTeacherStatisticsDesc": "Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.",
+  "@tutorialNavTeacherStatisticsDesc": {
+    "description": "Descripción del paso de nav bar docente: estadísticas"
+  },
+  "tutorialNavSettingsTitle": "Ajustes",
+  "@tutorialNavSettingsTitle": {
+    "description": "Título del paso de nav bar: ajustes"
+  },
+  "tutorialNavSettingsDesc": "Personaliza el aspecto de la app, el idioma y tus preferencias personales desde aquí.",
+  "@tutorialNavSettingsDesc": {
+    "description": "Descripción del paso de nav bar: ajustes"
+  },
   "studentRankingTitle": "Ranking de Alumnos",
   "@studentRankingTitle": {
     "description": "Título de la sección de ranking por alumno en estadísticas del docente"

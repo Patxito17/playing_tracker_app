@@ -2738,6 +2738,90 @@ abstract class AppLocalizations {
   /// **'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.'**
   String get tutorialTeacherStatsDesc;
 
+  /// Título del paso de nav bar: inicio
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get tutorialNavHomeTitle;
+
+  /// Descripción del paso de nav bar: inicio
+  ///
+  /// In es, this message translates to:
+  /// **'Este es tu punto de partida. Accede rápidamente a todas las secciones de la app desde aquí.'**
+  String get tutorialNavHomeDesc;
+
+  /// Título del paso de nav bar alumno: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Clases'**
+  String get tutorialNavStudentClassesTitle;
+
+  /// Descripción del paso de nav bar alumno: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí encontrarás todas las clases en las que estás inscrito. Accede al contenido y registra tus sesiones.'**
+  String get tutorialNavStudentClassesDesc;
+
+  /// Título del paso de nav bar alumno: historial
+  ///
+  /// In es, this message translates to:
+  /// **'Historial de Práctica'**
+  String get tutorialNavHistoryTitle;
+
+  /// Descripción del paso de nav bar alumno: historial
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa todas tus sesiones de práctica anteriores y sigue tu progreso musical a lo largo del tiempo.'**
+  String get tutorialNavHistoryDesc;
+
+  /// Título del paso de nav bar alumno: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get tutorialNavStudentStatisticsTitle;
+
+  /// Descripción del paso de nav bar alumno: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta gráficos detallados de tu tiempo de práctica, rachas y tendencias de rendimiento.'**
+  String get tutorialNavStudentStatisticsDesc;
+
+  /// Título del paso de nav bar docente: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Clases'**
+  String get tutorialNavTeacherClassesTitle;
+
+  /// Descripción del paso de nav bar docente: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Gestiona todas tus clases activas, consulta los listados de alumnos y accede a los detalles de cada clase.'**
+  String get tutorialNavTeacherClassesDesc;
+
+  /// Título del paso de nav bar docente: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get tutorialNavTeacherStatisticsTitle;
+
+  /// Descripción del paso de nav bar docente: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.'**
+  String get tutorialNavTeacherStatisticsDesc;
+
+  /// Título del paso de nav bar: ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get tutorialNavSettingsTitle;
+
+  /// Descripción del paso de nav bar: ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Personaliza el aspecto de la app, el idioma y tus preferencias personales desde aquí.'**
+  String get tutorialNavSettingsDesc;
+
   /// Título de la sección de ranking por alumno en estadísticas del docente
   ///
   /// In es, this message translates to:
