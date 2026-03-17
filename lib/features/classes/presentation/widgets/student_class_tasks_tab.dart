@@ -10,10 +10,10 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../tasks/presentation/widgets/assignment_card.dart';
 
-/// Tab de tareas de la clase (para estudiante)
+/// Tab de tareas de la clase (para estudiante).
 ///
-/// Muestra todas las tareas asignadas al estudiante con opción para iniciar sesión de estudio.
-/// Sprint 0 - Fase 7: UI completa con Material Design 3 y estados visuales
+/// Muestra las tareas asignadas al alumno autenticado en la clase indicada.
+/// Cada tarea incluye acceso directo para iniciar una sesión de estudio.
 class StudentClassTasksTab extends StatelessWidget {
   final String classId;
 

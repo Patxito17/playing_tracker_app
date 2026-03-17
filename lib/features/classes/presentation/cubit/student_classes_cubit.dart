@@ -7,15 +7,31 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 
 import 'student_classes_state.dart';
 
+/// Cubit responsable de observar y gestionar las clases activas de un alumno.
+///
+/// Suscribe un stream de [MembershipModel] desde [ClassRepository] y filtra
+/// automáticamente las membresías de clases eliminadas o desactivadas.
+/// Adicionalmente mantiene watchers individuales por clase para detectar
+/// cambios en tiempo real (p.ej. si la clase es archivada o borrada).
+///
+/// Ciclo de vida:
+/// 1. [watchStudentClasses] inicia la suscripción al stream de membresías.
+/// 2. Al recibir un nuevo lote, [_processMemberships] filtra y sincroniza.
+/// 3. [close] cancela todas las suscripciones activas para evitar memory leaks.
 final class StudentClassesCubit extends Cubit<StudentClassesState> {
   StudentClassesCubit(this._repository) : super(const StudentClassesInitial());
 
   final ClassRepository _repository;
   StreamSubscription<List<MembershipModel>>? _subscription;
+
+  /// Watchers individuales por clase para detectar eliminaciones en tiempo real.
   final Map<String, StreamSubscription<ClassModel?>> _classWatchers = {};
   List<MembershipModel> _visibleMemberships = [];
   String? _currentStudentId;
 
+  /// Inicia o reinicia la observación de membresías para el alumno dado.
+  ///
+  /// Cancela cualquier suscripción previa antes de crear una nueva.
   Future<void> watchStudentClasses({required String studentId}) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -35,6 +51,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
         .listen(_handleMemberships, onError: _handleError);
   }
 
+  /// Fuerza una recarga de las clases del alumno actual.
   Future<void> refresh() async {
     final studentId = _currentStudentId;
     if (studentId == null) {

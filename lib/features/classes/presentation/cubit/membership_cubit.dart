@@ -6,6 +6,15 @@ import 'package:playing_tracker/features/classes/domain/value_objects/join_class
 import 'package:playing_tracker/features/classes/presentation/cubit/membership_state.dart';
 
 /// Cubit encargado de las operaciones de membresías (alumnos en clases).
+///
+/// Gestiona dos conjuntos de acciones diferenciados:
+/// - **Mutaciones**: invitar alumno, unirse por código, activar/desactivar,
+///   eliminar membresía y regenerar código de acceso.
+/// - **Consulta paginada**: cargar y refrescar la lista de alumnos de una clase
+///   con soporte de paginación mediante cursor ([_lastMemberDocumentId]).
+///
+/// Mantiene una caché interna ([_membersCache]) para evitar re-consultas
+/// innecesarias. El parámetro `refresh: true` fuerza la recarga desde cero.
 class MembershipCubit extends Cubit<MembershipState> {
   MembershipCubit(this._repository) : super(const MembershipInitial());
 

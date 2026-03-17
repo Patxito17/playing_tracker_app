@@ -455,5 +455,34 @@
   "tutorialNavSettingsTitle": "Settings",
   "tutorialNavSettingsDesc": "Customize the app's appearance, language, and your personal preferences here.",
   "studentRankingTitle": "Student Rankings",
-  "noStudentsActivity": "No students have activity in this period"
+  "noStudentsActivity": "No students have activity in this period",
+  "selectStudentsTitle": "Select students",
+  "noActiveStudentsInClass": "There are no active students in this class.",
+  "errorLoadingStudents": "Error loading students",
+  "confirmSelectionButton": "Confirm selection",
+  "estimatedTimeInvalidError": "Estimated time must be a positive integer greater than 0",
+  "loadingOrNoClasses": "Loading or no classes...",
+  "atLeastOneClassSubtitle": "You must select at least one class",
+  "classesSelectedCount": "{count} selected",
+  "@classesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignToLabel": "Assign to:",
+  "noActiveClassesFound": "No active classes found.",
+  "recipientStudentsTitle": "Recipient students",
+  "allStudentsInClass": "All students in the class",
+  "studentsSelectedCount": "{count} students selected",
+  "@studentsSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignToAllLabel": "Assign to all",
+  "customAssignmentLabel": "Custom assignment"
 }
