@@ -94,7 +94,12 @@ service cloud.firestore {
     // - IDs: UID de Firebase Authentication
 
     match /teachers/{teacherId} {
-      allow read: if isOwner(teacherId) || isTeacher();
+      // Lectura: el propio docente, otro docente, o un alumno autenticado.
+      // Los alumnos necesitan leer el perfil del profesor al unirse a una clase
+      // para denormalizar nombre y email en el documento de membresía.
+      // El nombre del docente no es más sensible que lo que ya está denormalizado
+      // en el documento de membresía que el alumno puede leer.
+      allow read: if isOwner(teacherId) || isTeacher() || isStudent();
       // Validación de longitud máxima en campos de texto al crear perfil
       allow create: if isOwner(teacherId) &&
                       isValidName(request.resource.data.firstName) &&

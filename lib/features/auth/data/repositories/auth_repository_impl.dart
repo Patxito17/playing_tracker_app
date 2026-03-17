@@ -147,7 +147,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthRepositoryException {
       rethrow;
     } catch (error) {
-      if (error.toString().contains('SignInWithAppleAuthorizationError.canceled') ||
+      if (error.toString().contains(
+            'SignInWithAppleAuthorizationError.canceled',
+          ) ||
           error.toString().contains('canceled')) {
         throw AuthRepositoryException('appleSignInCanceled');
       }

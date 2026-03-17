@@ -39,6 +39,13 @@ abstract interface class SessionServiceContract {
     required String studentId,
     int limit,
   });
+
+  /// Observa en tiempo real las sesiones de un estudiante en un rango de fechas.
+  Stream<List<SessionModel>> watchWeeklySessions({
+    required String studentId,
+    required DateTime startDate,
+    required DateTime endDate,
+  });
 }
 
 /// Servicio para operaciones sobre la colección `sessions` de Firestore.
@@ -121,6 +128,7 @@ final class SessionService implements SessionServiceContract {
           'sessionsCount': FieldValue.increment(1),
           'totalDurationLogged': FieldValue.increment(session.totalDuration),
           'lastSessionDate': session.endTime,
+          'status': 'in_progress', // Siempre asegurar que pasa a in_progress
         });
 
         // 5. Actualizar contadores en student
@@ -220,6 +228,30 @@ final class SessionService implements SessionServiceContract {
     if (limit > 0) {
       query = query.limit(limit);
     }
+
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),
+    );
+  }
+
+  @override
+  Stream<List<SessionModel>> watchWeeklySessions({
+    required String studentId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) {
+    final normalizedId = studentId.trim();
+    if (normalizedId.isEmpty) {
+      return Stream<List<SessionModel>>.error(
+        ArgumentError('El identificador del estudiante es obligatorio'),
+      );
+    }
+
+    Query<Map<String, dynamic>> query = _sessionsCollection
+        .where('studentId', isEqualTo: normalizedId)
+        .where('dateLogged', isGreaterThanOrEqualTo: startDate)
+        .where('dateLogged', isLessThanOrEqualTo: endDate)
+        .orderBy('dateLogged', descending: true);
 
     return query.snapshots().map(
       (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),

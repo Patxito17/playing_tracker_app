@@ -125,8 +125,6 @@ class _ClassSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Wrap(
-            spacing: AppSpacing.s,
-            runSpacing: AppSpacing.s,
             children: [
               Chip(
                 label: Text(statusLabel),
@@ -144,7 +142,7 @@ class _ClassSummaryCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: AppSpacing.m),
+          const SizedBox(height: AppSpacing.s),
           Text(
             context.l10n.infoTab, // O classDescription
             style: context.textTheme.titleMedium,
@@ -176,7 +174,8 @@ class _TeacherInformationCard extends StatelessWidget {
     final teacherName = membership?.teacherName?.trim();
     final teacherDisplayName = teacherName?.isNotEmpty == true
         ? teacherName
-        : '${context.l10n.infoTab}$teacherId'; // O similar
+        : '${context.l10n.teacherLabel}$teacherId'; // O similar
+    final teacherEmail = membership?.teacherEmail?.trim();
     final studentName = membership?.studentName?.trim();
     final studentDisplayName = studentName?.isNotEmpty == true
         ? studentName
@@ -184,13 +183,20 @@ class _TeacherInformationCard extends StatelessWidget {
 
     return CustomCard(
       title: context.l10n.infoTab, // O teacherInfo
-      subtitle: teacherDisplayName,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            context.l10n.teacherLabel + teacherDisplayName!,
+            style: context.bodyMediumOnSurface,
+          ),
+          Text(
+            '${context.l10n.emailLabel}: $teacherEmail',
+            style: context.bodyMediumOnSurface,
+          ),
+          Text(
             '${context.l10n.manageStudentsTitle}: $studentDisplayName', // O studentNameLabel
-            style: context.bodySmallOnSurfaceVariant,
+            style: context.bodyMediumOnSurface,
           ),
         ],
       ),

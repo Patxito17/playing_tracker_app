@@ -46,6 +46,12 @@ abstract interface class AssignmentServiceContract {
 
   Future<void> deleteAssignmentsByTaskId(String taskId, {String? teacherId});
 
+  /// Observa en tiempo real todas las asignaciones de una tarea concreta.
+  Stream<List<AssignmentModel>> watchTaskAssignments(
+    String taskId, {
+    String? teacherId,
+  });
+
   /// Actualiza la información básica de todas las asignaciones de una tarea
   Future<void> updateAssignmentsInfoByTaskId(
     String taskId, {
@@ -229,6 +235,31 @@ final class AssignmentService implements AssignmentServiceContract {
 
     if (limit > 0) {
       query = query.limit(limit);
+    }
+
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs.map(_mapSnapshot).toList(),
+    );
+  }
+
+  @override
+  Stream<List<AssignmentModel>> watchTaskAssignments(
+    String taskId, {
+    String? teacherId,
+  }) {
+    final sanitizedId = taskId.trim();
+    if (sanitizedId.isEmpty) {
+      return Stream<List<AssignmentModel>>.error(
+        ArgumentError('El identificador de la tarea es obligatorio'),
+      );
+    }
+    Query<Map<String, dynamic>> query = _assignmentsCollection.where(
+      'taskId',
+      isEqualTo: sanitizedId,
+    );
+
+    if (teacherId != null && teacherId.isNotEmpty) {
+      query = query.where('teacherId', isEqualTo: teacherId);
     }
 
     return query.snapshots().map(

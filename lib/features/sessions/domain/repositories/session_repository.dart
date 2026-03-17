@@ -46,6 +46,13 @@ abstract interface class SessionRepository {
     required String studentId,
     int limit,
   });
+
+  /// Observa en tiempo real las sesiones de un estudiante en un rango de fechas.
+  Stream<List<SessionModel>> watchWeeklySessions({
+    required String studentId,
+    required DateTime startDate,
+    required DateTime endDate,
+  });
 }
 
 /// Excepción base del repositorio de sesiones.

@@ -32,6 +32,7 @@ import '../../features/sessions/presentation/cubit/history_cubit.dart';
 import '../../features/sessions/presentation/cubit/session_cubit.dart';
 import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
+import '../../features/settings/presentation/screens/legal_document_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/statistics/data/repositories/statistics_repository_impl.dart';
 import '../../features/statistics/presentation/cubit/student_stats_cubit.dart';
@@ -46,7 +47,6 @@ import '../../features/tasks/presentation/screens/assignment_list_screen.dart';
 import '../../features/tasks/presentation/screens/create_task_screen.dart';
 import '../../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../../features/tasks/presentation/screens/task_list_screen.dart';
-import '../../features/settings/presentation/screens/legal_document_screen.dart';
 import '../../shared/widgets/custom_bottom_navigation_bar.dart';
 import '../../shared/widgets/error_screen.dart';
 
@@ -55,7 +55,6 @@ import '../../shared/widgets/error_screen.dart';
 /// Utiliza go_router para navegación declarativa con rutas nombradas.
 /// Incluye navegación condicional según el rol del usuario.
 ///
-/// Sprint 2 - Fase 4: Implementación GoRouter reactiva con guards reales.
 class AppRoutes {
   AppRoutes(this.authCubit);
 

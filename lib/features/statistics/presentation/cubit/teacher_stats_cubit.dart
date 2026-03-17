@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
@@ -8,7 +10,8 @@ import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_s
 /// Cubit para gestionar el estado de las estadísticas del docente.
 ///
 /// Carga las estadísticas de una clase específica (y en un periodo concreto)
-/// para que el docente pueda ver el progreso agregado de sus alumnos.
+/// para que el docente pueda ver el progreso agregado de sus alumnos,
+/// incluyendo el ranking individual por alumno.
 class TeacherStatsCubit extends Cubit<TeacherStatsState> {
   TeacherStatsCubit(this._repository) : super(const TeacherStatsInitial());
 
@@ -16,11 +19,9 @@ class TeacherStatsCubit extends Cubit<TeacherStatsState> {
 
   /// Carga las estadísticas de una clase con filtros opcionales.
   ///
-  /// Parámetros:
-  /// - [classId]: ID de la clase
-  /// - [teacherId]: ID del docente
-  /// - [timeFilter]: Filtro de tiempo opcional. Si no se provee, usa el actual.
-  /// - [forceRefresh]: Si es true, ignora la caché local.
+  /// Realiza en paralelo:
+  /// - Estadísticas agregadas de la clase ([getClassStats])
+  /// - Ranking individual de alumnos ([getStudentsClassStats])
   Future<void> loadClassStats({
     required String classId,
     required String teacherId,
@@ -28,32 +29,53 @@ class TeacherStatsCubit extends Cubit<TeacherStatsState> {
     bool forceRefresh = false,
   }) async {
     final activeFilter = timeFilter ?? state.timeFilter;
-    final previousStats = state is TeacherStatsLoaded
+
+    final previousClassStats = state is TeacherStatsLoaded
         ? (state as TeacherStatsLoaded).classStats
         : (state is TeacherStatsLoading
               ? (state as TeacherStatsLoading).classStats
               : null);
+    final previousStudentsStats = state is TeacherStatsLoaded
+        ? (state as TeacherStatsLoaded).studentsStats
+        : (state is TeacherStatsLoading
+              ? (state as TeacherStatsLoading).studentsStats
+              : null);
 
     emit(
-      TeacherStatsLoading(timeFilter: activeFilter, classStats: previousStats),
+      TeacherStatsLoading(
+        timeFilter: activeFilter,
+        classStats: previousClassStats,
+        studentsStats: previousStudentsStats,
+      ),
     );
 
     try {
       log(
-        'TeacherStatsCubit: Cargando estadísticas de clase $classId para docente $teacherId con filtro $activeFilter (forceRefresh: $forceRefresh)',
+        'TeacherStatsCubit: Cargando estadísticas clase $classId con filtro $activeFilter',
         name: 'TeacherStatsCubit',
       );
 
-      final classStats = await _repository.getClassStats(
-        classId: classId,
-        teacherId: teacherId,
-        timeFilter:
-            activeFilter, // Requiere actualización en la firma del repositorio
-        forceRefresh: forceRefresh,
-      );
+      final results = await Future.wait([
+        _repository.getClassStats(
+          classId: classId,
+          teacherId: teacherId,
+          timeFilter: activeFilter,
+          forceRefresh: forceRefresh,
+        ),
+        _repository.getStudentsClassStats(
+          classId: classId,
+          teacherId: teacherId,
+          timeFilter: activeFilter,
+          forceRefresh: forceRefresh,
+        ),
+      ]);
 
       emit(
-        TeacherStatsLoaded(classStats: classStats, timeFilter: activeFilter),
+        TeacherStatsLoaded(
+          classStats: results[0] as ClassStatsModel,
+          studentsStats: results[1] as List<StudentClassStatsModel>,
+          timeFilter: activeFilter,
+        ),
       );
 
       log(

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
+import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
+import 'package:playing_tracker/features/statistics/presentation/widgets/stat_metric_tile.dart';
+import 'package:playing_tracker/features/statistics/presentation/widgets/stats_section_card.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/time_filter_selector.dart';
 import 'package:playing_tracker/shared/widgets/custom_app_bar.dart';
-import 'package:playing_tracker/shared/widgets/custom_card.dart';
 
 /// Pantalla de estadísticas del docente para una clase específica.
 ///
@@ -38,14 +41,18 @@ class TeacherStatisticsScreen extends StatelessWidget {
                   context.read<TeacherStatsCubit>().state
                       is TeacherStatsLoaded);
 
+          final classStats = state is TeacherStatsLoaded
+              ? state.classStats
+              : (state is TeacherStatsLoading
+                    ? state.classStats
+                    : (state is TeacherStatsError ? state.classStats : null));
+
           return Column(
             children: [
-              // Barra de carga superior sutil (evita flicker)
               if (isLoading && hasData)
                 const LinearProgressIndicator(minHeight: 2),
               if (!isLoading || !hasData) const SizedBox(height: 2),
 
-              // Filtro Temporal
               TimeFilterSelector(
                 currentFilter: state.timeFilter,
                 onFilterChanged: (newFilter) {
@@ -63,46 +70,25 @@ class TeacherStatisticsScreen extends StatelessWidget {
                       when !hasData =>
                     const Center(child: CircularProgressIndicator()),
                   TeacherStatsError(:final message) when !hasData => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: context.colorScheme.error,
-                        ),
-                        const SizedBox(height: AppSpacing.m),
-                        Text(
-                          context.l10n.loadingError,
-                          style: context.textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: AppSpacing.s),
-                        Text(
-                          message,
-                          style: context.bodySmallOnSurfaceVariant,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.m),
-                        FilledButton.tonal(
-                          onPressed: () => context
-                              .read<TeacherStatsCubit>()
-                              .refreshClassStats(
-                                classId: classId,
-                                teacherId: teacherId,
-                              ),
-                          child: Text(context.l10n.retry),
-                        ),
-                      ],
+                    child: _ErrorState(
+                      message: message,
+                      onRetry: () =>
+                          context.read<TeacherStatsCubit>().refreshClassStats(
+                            classId: classId,
+                            teacherId: teacherId,
+                          ),
                     ),
                   ),
                   _ => _StatsContent(
-                    classStats: state is TeacherStatsLoaded
-                        ? state.classStats
-                        : (state as dynamic)
-                              .classStats, // Manejo seguro si hay data previa
+                    classStats: classStats,
                     classId: classId,
                     teacherId: teacherId,
                     isLoading: isLoading,
+                    studentsStats: state is TeacherStatsLoaded
+                        ? state.studentsStats
+                        : (state is TeacherStatsLoading
+                              ? state.studentsStats
+                              : null),
                   ),
                 },
               ),
@@ -120,18 +106,21 @@ class _StatsContent extends StatelessWidget {
     required this.classId,
     required this.teacherId,
     required this.isLoading,
+    required this.studentsStats,
   });
 
-  final dynamic
-  classStats; // Usamos dynamic para simplificar el paso de data previa si existe
+  final ClassStatsModel? classStats;
   final String classId;
   final String teacherId;
   final bool isLoading;
+  final List<StudentClassStatsModel>? studentsStats;
 
   @override
   Widget build(BuildContext context) {
+    if (classStats == null) return const SizedBox.shrink();
+
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium,
       opacity: isLoading ? 0.6 : 1.0,
       child: RefreshIndicator(
         onRefresh: () => context.read<TeacherStatsCubit>().refreshClassStats(
@@ -140,85 +129,44 @@ class _StatsContent extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(AppSpacing.m),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.m,
+            AppSpacing.m,
+            AppSpacing.m,
+            AppSpacing.xxl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Resumen general de la clase
-              CustomCard(
-                title: classStats.className,
-                subtitle: context.l10n.activitySummary,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _StatItem(
-                          label: context.l10n.studentsLabel,
-                          value: '${classStats.totalStudents}',
-                          icon: Icons.people,
-                          color: context.colorScheme.primary,
-                        ),
-                        _StatItem(
-                          label: context.l10n.classStatusActive,
-                          value: '${classStats.activeStudents}',
-                          subtitle:
-                              classStats.activeStudentsPercentageFormatted,
-                          icon: Icons.trending_up,
-                          color: context.colorScheme.tertiary,
-                        ),
-                        _StatItem(
-                          label: context.l10n
-                              .sessionsLabelCount(0)
-                              .split(' ')
-                              .last,
-                          value: '${classStats.totalSessions}',
-                          icon: Icons.event_note,
-                          color: context.colorScheme.secondary,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.m),
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.m),
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(
-                          AppBorderRadius.medium,
-                        ),
+              // --- Ranking de alumnos ---
+              if (studentsStats != null && studentsStats!.isNotEmpty)
+                _StudentRankingSection(studentsStats: studentsStats!),
+              if (studentsStats != null && studentsStats!.isEmpty)
+                StatsSectionCard(
+                  icon: Icons.people_rounded,
+                  title: context.l10n.studentRankingTitle,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.m,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.timer_outlined,
-                            color: context.colorScheme.onPrimaryContainer,
-                            size: 24,
-                          ),
-                          const SizedBox(width: AppSpacing.s),
-                          Text(
-                            '${context.l10n.totalTime}: ${classStats.durationFormatted}',
-                            style: context.titleMediumBold?.copyWith(
-                              color: context.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        context.l10n.noStudentsActivity,
+                        style: context.bodyMediumOnSurfaceVariant,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
               const SizedBox(height: AppSpacing.m),
 
-              // Desglose por tareas
-              if (classStats.taskBreakdown.isNotEmpty)
-                CustomCard(
+              // --- Desglose por tareas ---
+              if (classStats!.taskBreakdown.isNotEmpty)
+                StatsSectionCard(
+                  icon: Icons.assignment_rounded,
                   title: context.l10n.workedTasks,
-                  subtitle: context.l10n.tasksCount(
-                    classStats.taskBreakdown.length,
-                  ),
                   child: Column(
-                    children: classStats.taskBreakdown.map<Widget>((task) {
+                    children: classStats!.taskBreakdown.map<Widget>((task) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.s),
                         child: Row(
@@ -242,10 +190,24 @@ class _StatsContent extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Text(
-                              task.durationFormatted,
-                              style: context.titleSmallBold?.copyWith(
-                                color: context.colorScheme.primary,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.s,
+                                vertical: AppSpacing.xs,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.colorScheme.secondaryContainer,
+                                borderRadius: BorderRadius.circular(
+                                  AppBorderRadius.small,
+                                ),
+                              ),
+                              child: Text(
+                                task.durationFormatted,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color:
+                                      context.colorScheme.onSecondaryContainer,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ],
@@ -254,6 +216,70 @@ class _StatsContent extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
+
+              const SizedBox(height: AppSpacing.m),
+
+              // --- Resumen de la clase ---
+              StatsSectionCard(
+                icon: Icons.school_rounded,
+                title: classStats!.className,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        StatMetricTile(
+                          icon: Icons.people_rounded,
+                          value: '${classStats!.totalStudents}',
+                          label: context.l10n.studentsLabel,
+                          color: context.colorScheme.primary,
+                        ),
+                        StatMetricTile(
+                          icon: Icons.trending_up_rounded,
+                          value: '${classStats!.activeStudents}',
+                          label: context.l10n.classStatusActive,
+                          subtitle:
+                              classStats!.activeStudentsPercentageFormatted,
+                          color: context.colorScheme.tertiary,
+                        ),
+                        StatMetricTile(
+                          icon: Icons.event_note_rounded,
+                          value: '${classStats!.totalSessions}',
+                          label: context.l10n.sessionsLabel,
+                          color: context.colorScheme.secondary,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.m),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(
+                          AppBorderRadius.medium,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.timer_outlined,
+                            color: context.colorScheme.onPrimaryContainer,
+                            size: 20,
+                          ),
+                          const SizedBox(width: AppSpacing.s),
+                          Text(
+                            '${context.l10n.totalTime}: ${classStats!.durationFormatted}',
+                            style: context.titleMediumBold?.copyWith(
+                              color: context.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -262,44 +288,166 @@ class _StatsContent extends StatelessWidget {
   }
 }
 
-/// Widget para mostrar un ítem de estadística
-class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    this.subtitle,
-  });
+class _StudentRankingSection extends StatelessWidget {
+  const _StudentRankingSection({required this.studentsStats});
 
-  final String label;
-  final String value;
-  final String? subtitle;
-  final IconData icon;
-  final Color color;
+  final List<StudentClassStatsModel> studentsStats;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: color, size: 32),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          value,
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        if (subtitle != null)
-          Text(
-            subtitle!,
-            style: context.bodySmallOnSurfaceVariant?.copyWith(
-              color: color.withValues(alpha: 0.8),
+    return StatsSectionCard(
+      icon: Icons.leaderboard_rounded,
+      title: context.l10n.studentRankingTitle,
+      child: Column(
+        children: List.generate(studentsStats.length, (index) {
+          final student = studentsStats[index];
+          final rank = index + 1;
+          return _StudentRankRow(student: student, rank: rank);
+        }),
+      ),
+    );
+  }
+}
+
+class _StudentRankRow extends StatelessWidget {
+  const _StudentRankRow({required this.student, required this.rank});
+
+  final StudentClassStatsModel student;
+  final int rank;
+
+  String _rankLabel() {
+    if (rank == 1) return '🥇';
+    if (rank == 2) return '🥈';
+    if (rank == 3) return '🥉';
+    return '$rank.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final isActive = student.totalSessions > 0;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.s),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 32,
+            child: Text(
+              _rankLabel(),
+              style: context.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
           ),
-        Text(label, style: context.bodySmallOnSurfaceVariant),
-      ],
+          const SizedBox(width: AppSpacing.s),
+          Expanded(
+            child: Text(
+              student.studentName,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: isActive
+                    ? colorScheme.onSurface
+                    : colorScheme.onSurfaceVariant,
+                fontWeight: isActive ? FontWeight.w500 : FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s),
+          if (isActive) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(AppBorderRadius.small),
+              ),
+              child: Text(
+                student.durationFormatted,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(AppBorderRadius.small),
+              ),
+              child: Text(
+                context.l10n.sessionsLabelCount(student.totalSessions),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSecondaryContainer,
+                ),
+              ),
+            ),
+          ] else
+            Text(
+              student.durationFormatted,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.colorScheme.errorContainer.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: context.colorScheme.error,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.l),
+          Text(
+            context.l10n.loadingError,
+            style: context.titleLargeBold?.copyWith(
+              color: context.colorScheme.error,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.s),
+          Text(
+            message,
+            style: context.bodyMediumOnSurfaceVariant,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.m),
+          FilledButton.tonal(
+            onPressed: onRetry,
+            child: Text(context.l10n.retry),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -76,7 +76,8 @@ help:
 	@echo "                   ⚠️  Requiere certificado y provisioning profile en Xcode"
 	@echo ""
 	@echo "$(BOLD)── Todo en uno ──────────────────────────────────────────$(RESET)"
-	@echo "  $(GREEN)make build-all$(RESET)   Genera IPA, APK y AAB en modo producción (solo en Mac)"
+	@echo "  $(GREEN)make build-all$(RESET)   Incrementa build number y genera IPA, APK y AAB (solo en Mac)"
+	@echo "  $(GREEN)make bump-build$(RESET)  Solo incrementa el build number en pubspec.yaml"
 	@echo ""
 
 
@@ -222,10 +223,23 @@ ipa-prod:
 # Build completo (IPA + APK + AAB) — Solo en Mac
 # ==============================================================================
 
+## Incrementa el build number en pubspec.yaml (la parte N de version: X.Y.Z+N).
+## Se ejecuta automáticamente antes de build-all para garantizar un CFBundleVersion único.
+.PHONY: bump-build
+bump-build:
+	@CURRENT=$$(grep '^version:' pubspec.yaml | sed 's/version: //'); \
+	VNAME=$$(echo $$CURRENT | cut -d'+' -f1); \
+	VBUILD=$$(echo $$CURRENT | cut -d'+' -f2); \
+	NEW_BUILD=$$((VBUILD + 1)); \
+	NEW_VERSION="$$VNAME+$$NEW_BUILD"; \
+	sed -i '' "s/^version: .*/version: $$NEW_VERSION/" pubspec.yaml; \
+	echo "$(GREEN)✅ Build number: $$CURRENT → $$NEW_VERSION$(RESET)"
+
 ## Genera IPA, APK y AAB en modo producción. Equivale a ejecutar el pipeline CI/CD localmente.
 ## Solo funciona en macOS (el build de iOS requiere Xcode).
+## Incrementa automáticamente el build number antes de compilar.
 .PHONY: build-all
-build-all: ipa-prod apk-prod aab-prod
+build-all: bump-build ipa-prod apk-prod aab-prod
 	@echo ""
 	@echo "$(BLUE)📦 Copiando todos los artefactos generados a la carpeta 'releases/'...$(RESET)"
 	@mkdir -p releases/apk releases/aab releases/ipa

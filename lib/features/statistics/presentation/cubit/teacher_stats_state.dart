@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 
 /// Estados del Cubit de estadísticas del docente.
@@ -22,12 +23,17 @@ final class TeacherStatsInitial extends TeacherStatsState {
 
 /// Estado de carga mientras se obtienen las estadísticas.
 final class TeacherStatsLoading extends TeacherStatsState {
-  const TeacherStatsLoading({required super.timeFilter, this.classStats});
+  const TeacherStatsLoading({
+    required super.timeFilter,
+    this.classStats,
+    this.studentsStats,
+  });
 
   final ClassStatsModel? classStats;
+  final List<StudentClassStatsModel>? studentsStats;
 
   @override
-  List<Object?> get props => [timeFilter, classStats];
+  List<Object?> get props => [timeFilter, classStats, studentsStats];
 }
 
 /// Estado exitoso con las estadísticas de la clase cargadas.
@@ -35,12 +41,14 @@ class TeacherStatsLoaded extends TeacherStatsState {
   const TeacherStatsLoaded({
     required super.timeFilter,
     required this.classStats,
+    required this.studentsStats,
   });
 
   final ClassStatsModel classStats;
+  final List<StudentClassStatsModel> studentsStats;
 
   @override
-  List<Object?> get props => [timeFilter, classStats];
+  List<Object?> get props => [timeFilter, classStats, studentsStats];
 }
 
 /// Estado de error al cargar estadísticas.
@@ -49,11 +57,13 @@ class TeacherStatsError extends TeacherStatsState {
     required super.timeFilter,
     required this.message,
     this.classStats,
+    this.studentsStats,
   });
 
   final String message;
   final ClassStatsModel? classStats;
+  final List<StudentClassStatsModel>? studentsStats;
 
   @override
-  List<Object?> get props => [timeFilter, message, classStats];
+  List<Object?> get props => [timeFilter, message, classStats, studentsStats];
 }

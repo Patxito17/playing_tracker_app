@@ -1,7 +1,7 @@
 # 🧭 Guía de Desarrollo del Proyecto "Playing Tracker"
 
 **Última actualización:** 11 de Marzo 2026
-**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización (Fase 1 l10n ✅ | Fase 2 Firebase ✅ | Fase 2b Testing ✅ | Fase 3 Stats ✅ | CI/CD Configurado ✅ | Hotfixes Autenticación ✅ | Refactorización l10n Profesional ✅ | Simplificación Legal UX ✅ | OAuth Merged ✅ | Wakelock ✅) 🚧
+**Estado del proyecto:** Sprint 6 Completado ✅ | Sprint 7 - Testing y Optimización Completado ✅ | Sprint 8 - Rediseño UI Premium 🚧 (Fase 1 Auth ✅ | Fase 2 Home 🚧 - Docente ✅)
 
 ---
 
@@ -775,6 +775,26 @@ service cloud.firestore {
 
 ---
 
+### 🚀 Sprint 8: Rediseño Premium y General de UI
+**Duración:** Marzo 2026
+**Estado:** 📅 Planificado (Fase 1: Feature Auth)
+
+**Objetivos:**
+- 🎨 **Rediseño completo de UI** utilizando Google Stitch para una experiencia "Premium Académico".
+- 💎 **Interfaces dinámicas e iconos atractivos** adaptados a perfiles Estudiante y Docente.
+- 🖌️ **Soporte Material 3 dinámico**: Uso estricto de `colorScheme` y bordes de 16px. Transparencias con `.withValues(alpha: X)`.
+- 🌍 **Cumplimiento l10n estricto**: Todo texto generado en UI localizado en ficheros `.arb` y compilado con `make clean-l10n`.
+- 🧪 **Verificación dual obligatoria**: Validar impacto visual desde Android (Estudiante) y profesionalidad desde iOS (Docente).
+
+**Entregables Fase 1 (Auth):**
+- ✅ LoginScreen, RegisterScreen, ForgotPasswordScreen, CompleteProfileScreen rediseñadas.
+
+**Entregables Fase 2 (Home):**
+- ✅ **Teacher Dashboard**: Rediseño premium con widgets modulares (`HomeDashboardHeader`, `HomeStatCard`, `HomeClassCardCompact`).
+- 📅 **Student Dashboard**: En planificación.
+
+---
+
 ### 📊 Progreso General del Proyecto
 
 ```
@@ -786,6 +806,7 @@ Sprint 4: ████████████████████ 100% ✅ 
 Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
 Sprint 6: ████████████████████ 100% ✅ Estadísticas y Dashboards
 Sprint 7: ███████████████░░░░░ ~75% 🛠️ Testing y Optimización (l10n ✅ | Firebase ✅ | Testing Cobertura ✅ | E2E ✅ | Golden ✅ | Fase 3 Stats ✅ | Fases 4-5 📅)
+Sprint 8: ░░░░░░░░░░░░░░░░░░░░ 0% 🎨 Rediseño UI Premium
 
 Progreso Total: ████████████████████ ~95% (Sprints 0-6 completados + Fases 1, 2, 2b, 2c, 2d, 3 Sprint 7)
 ```
@@ -989,7 +1010,7 @@ Este documento sirve como **guía integral para el entorno Cursor**, proporciona
 - 📚 Referencias a documentación detallada
 - ✅ Progreso verificable con enfoque iterativo
 
-**Última actualización:** 26 de Enero 2026
-**Versión del documento:** 6.1
-**Estado del proyecto:** Sprint 6 Completado ✅ (Sprints 0-6 completados)
-**Siguiente sprint:** Sprint 7 - Testing, l10n y Refactorización de Navegación
+**Última actualización:** 12 de Marzo 2026
+**Versión del documento:** 7.0
+**Estado del proyecto:** Sprint 7 en progreso (Implementado seguimiento de progreso en tiempo real)
+**Siguiente paso:** Pruebas integrales y refinamiento de UI

@@ -6,18 +6,18 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/models/task_model.dart';
 import '../cubit/task_cubit.dart';
 import '../cubit/task_state.dart';
 import '../widgets/task_filters_bottom_sheet.dart';
+import '../widgets/task_status_badge.dart';
 
-/// Pantalla de lista de tareas conectada a [TaskCubit].
+/// Pantalla de lista de tareas del docente.
 ///
-/// Muestra las tareas reales del docente y se preparará para soportar filtros
-/// compatibles con Firestore mediante un bottom sheet en esta fase del sprint.
+/// Muestra las tareas reales del docente con diseño premium Material 3.
+/// Las tareas activas tienen mayor prominencia visual que las archivadas.
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
 
@@ -29,8 +29,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicializamos la suscripción al stream de tareas en initState para
-    // garantizar que se establezca correctamente antes del primer build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = context.read<AuthCubit>().state;
       if (authState is AuthAuthenticated) {
@@ -39,13 +37,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     });
   }
 
-  List<TaskModel> _applyFilters(List<TaskModel> tasks) {
-    // Por ahora la pantalla no aplica filtros adicionales en memoria; el
-    // filtrado real se realiza a nivel de repositorio usando [TaskFilters]
-    // desde el [TaskCubit]. Este método queda como punto de extensión para
-    // futuras transformaciones locales si fueran necesarias.
-    return tasks;
-  }
+  List<TaskModel> _applyFilters(List<TaskModel> tasks) => tasks;
 
   Future<void> _openFilters() async {
     await showModalBottomSheet<void>(
@@ -53,17 +45,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
       isScrollControlled: true,
       builder: (context) => const TaskFiltersBottomSheet(),
     );
-  }
-
-  String _getStatusText(bool isActive) {
-    return isActive
-        ? context.l10n.classStatusActive
-        : context.l10n.classStatusArchived;
-  }
-
-  Color _getStatusColor(bool isActive) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return isActive ? colorScheme.primary : colorScheme.outline;
   }
 
   @override
@@ -89,18 +70,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       body: BlocConsumer<TaskCubit, TaskState>(
         buildWhen: (previous, current) {
-          // Ignoramos TaskActionSuccess en el builder porque es un estado
-          // "de evento" para el listener. Si no lo ignoramos, el builder
-          // se ejecutaría y mostraría un estado vacío o el loader.
           if (current is TaskActionSuccess) return false;
-
-          // Si ya tenemos datos (Success), no reconstruimos ante Carga o Error.
-          // El usuario recibirá feedback mediante el Listener (SnackBar).
           if (previous is TaskSuccess &&
               (current is TaskLoading || current is TaskError)) {
             return false;
           }
-
           return true;
         },
         listener: (context, state) {
@@ -150,14 +124,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(AppSpacing.l),
                 children: [
-                  _EmptyState(
-                    icon: Icons.assignment_outlined,
-                    title: state.message?.isNotEmpty == true
+                  _TaskEmptyState(
+                    message: state.message?.isNotEmpty == true
                         ? state.message!
                         : context.l10n.noTasksFound,
-                    subtitle: context.l10n.adjustFilters,
-                    actionLabel: context.l10n.createTaskAction,
-                    onAction: () => context.push(
+                    onCreateTap: () => context.push(
                       AppRoutes.createTask,
                       extra: context.read<TaskCubit>(),
                     ),
@@ -167,86 +138,48 @@ class _TaskListScreenState extends State<TaskListScreen> {
             );
           }
 
-          if (state is! TaskSuccess) {
-            return const SizedBox.shrink();
-          }
+          if (state is! TaskSuccess) return const SizedBox.shrink();
 
           final tasks = _applyFilters(state.tasks);
 
           return RefreshIndicator(
             onRefresh: () => context.read<TaskCubit>().refreshTasks(),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSpacing.l),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (tasks.isEmpty)
-                    _EmptyState(
-                      icon: Icons.assignment_outlined,
-                      title: context.l10n.noTasksFound,
-                      subtitle: context.l10n.adjustFilters,
-                      actionLabel: context.l10n.createTaskAction,
-                      onAction: () => context.push(
-                        AppRoutes.createTask,
-                        extra: context.read<TaskCubit>(),
+            child: tasks.isEmpty
+                ? ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(AppSpacing.l),
+                    children: [
+                      _TaskEmptyState(
+                        message: context.l10n.noTasksFound,
+                        onCreateTap: () => context.push(
+                          AppRoutes.createTask,
+                          extra: context.read<TaskCubit>(),
+                        ),
                       ),
-                    )
-                  else
-                    ...tasks.map((task) {
-                      final statusText = _getStatusText(task.isActive);
-                      final statusColor = _getStatusColor(task.isActive);
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                        child: CustomCard(
-                          title: task.title,
-                          subtitle: task.description ?? '',
-                          trailingAction: Chip(
-                            label: Text(statusText),
-                            backgroundColor: statusColor.withValues(alpha: 0.2),
-                            labelStyle: TextStyle(
-                              color: statusColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            avatar: Icon(
-                              task.isActive
-                                  ? Icons.check_circle_outline
-                                  : Icons.archive_outlined,
-                              size: 16,
-                              color: statusColor,
-                            ),
-                          ),
-                          onTap: () => context.push(
-                            AppRoutes.taskDetail.replaceAll(':taskId', task.id),
-                            extra: context.read<TaskCubit>(),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: AppSpacing.s),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time,
-                                    size: 16,
-                                    color: context.colorScheme.onSurfaceVariant,
-                                  ),
-                                  const SizedBox(width: AppSpacing.xs),
-                                  Text(
-                                    task.durationFormatted,
-                                    style: context.bodySmallOnSurfaceVariant,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                    ],
+                  )
+                : ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.m,
+                      AppSpacing.m,
+                      AppSpacing.m,
+                      AppSpacing.xxl * 2,
+                    ),
+                    itemCount: tasks.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.s),
+                    itemBuilder: (context, index) {
+                      final task = tasks[index];
+                      return _TaskCard(
+                        task: task,
+                        onTap: () => context.push(
+                          AppRoutes.taskDetail.replaceAll(':taskId', task.id),
+                          extra: context.read<TaskCubit>(),
                         ),
                       );
-                    }),
-                ],
-              ),
-            ),
+                    },
+                  ),
           );
         },
       ),
@@ -262,21 +195,112 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 }
 
-/// Widget para mostrar estado vacío
-class _EmptyState extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String actionLabel;
-  final VoidCallback onAction;
+/// Card de tarea con diseño premium Material 3.
+///
+/// Las tareas activas tienen fondo surfaceContainer normal.
+/// Las archivadas tienen menor opacidad y fondo tintado.
+class _TaskCard extends StatelessWidget {
+  final TaskModel task;
+  final VoidCallback onTap;
 
-  const _EmptyState({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.actionLabel,
-    required this.onAction,
-  });
+  const _TaskCard({required this.task, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final isActive = task.isActive;
+
+    return Opacity(
+      opacity: isActive ? 1.0 : 0.72,
+      child: Card(
+        elevation: isActive ? 1 : 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppBorderRadius.large),
+          side: BorderSide(
+            color: isActive
+                ? colorScheme.outlineVariant.withValues(alpha: 0.5)
+                : colorScheme.outlineVariant.withValues(alpha: 0.3),
+          ),
+        ),
+        color: isActive
+            ? colorScheme.surfaceContainerLow
+            : colorScheme.surfaceContainerLowest,
+        margin: EdgeInsets.zero,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppBorderRadius.large),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.m),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        task.title,
+                        style: context.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: isActive
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (task.description?.isNotEmpty == true) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          task.description!,
+                          style: context.bodySmallOnSurfaceVariant,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.s),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.schedule_outlined,
+                            size: 14,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            task.durationFormatted,
+                            style: context.bodySmallOnSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s),
+                TaskStatusBadge(
+                  label: isActive
+                      ? context.l10n.taskStatusActive
+                      : context.l10n.taskStatusArchived,
+                  icon: isActive
+                      ? Icons.check_circle_outline
+                      : Icons.archive_outlined,
+                  color: isActive ? colorScheme.primary : colorScheme.outline,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Estado vacío de la lista de tareas del docente.
+class _TaskEmptyState extends StatelessWidget {
+  final String message;
+  final VoidCallback onCreateTap;
+
+  const _TaskEmptyState({required this.message, required this.onCreateTap});
 
   @override
   Widget build(BuildContext context) {
@@ -285,24 +309,36 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: context.colorScheme.outline),
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.colorScheme.primaryContainer.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.assignment_outlined,
+              size: 48,
+              color: context.colorScheme.primary,
+            ),
+          ),
           const SizedBox(height: AppSpacing.l),
           Text(
-            title,
+            message,
             style: context.titleLargeBold,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s),
           Text(
-            subtitle,
+            context.l10n.adjustFilters,
             style: context.bodyMediumOnSurfaceVariant,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
           FilledButton.icon(
-            onPressed: onAction,
+            onPressed: onCreateTap,
             icon: const Icon(Icons.add),
-            label: Text(actionLabel),
+            label: Text(context.l10n.createTaskAction),
           ),
         ],
       ),

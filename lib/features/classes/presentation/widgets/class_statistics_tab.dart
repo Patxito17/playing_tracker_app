@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../statistics/domain/models/class_stats_model.dart';
@@ -15,6 +14,8 @@ import '../../../statistics/presentation/cubit/teacher_stats_state.dart';
 import '../../../statistics/presentation/widgets/app_bar_chart.dart';
 import '../../../statistics/presentation/widgets/app_pie_chart.dart';
 import '../../../statistics/presentation/widgets/app_progress_chart.dart';
+import '../../../statistics/presentation/widgets/stat_metric_tile.dart';
+import '../../../statistics/presentation/widgets/stats_section_card.dart';
 import '../../../statistics/presentation/widgets/time_filter_selector.dart';
 
 /// Tab de estadísticas de la clase (común para docente y estudiante)
@@ -44,20 +45,23 @@ class ClassStatisticsTab extends StatelessWidget {
                   context.read<TeacherStatsCubit>().state
                       is TeacherStatsLoaded);
 
-          // Obtener teacherId para las acciones
           final authState = context.read<AuthCubit>().state;
           final teacherId = authState is AuthAuthenticated
               ? authState.userId
               : '';
 
+          final classStats = state is TeacherStatsLoaded
+              ? state.classStats
+              : (state is TeacherStatsLoading
+                    ? state.classStats
+                    : (state is TeacherStatsError ? state.classStats : null));
+
           return Column(
             children: [
-              // Barra de carga superior sutil
               if (isLoading && hasData)
                 const LinearProgressIndicator(minHeight: 2),
               if (!isLoading || !hasData) const SizedBox(height: 2),
 
-              // Selector de Filtro Temporal
               TimeFilterSelector(
                 currentFilter: state.timeFilter,
                 onFilterChanged: (newFilter) {
@@ -88,16 +92,13 @@ class ClassStatisticsTab extends StatelessWidget {
                         ),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(AppSpacing.m),
-                      child: _TeacherStatsBody(
-                        classStats: state is TeacherStatsLoaded
-                            ? state.classStats
-                            : (state is TeacherStatsLoading
-                                  ? state.classStats
-                                  : (state is TeacherStatsError
-                                        ? state.classStats
-                                        : null)),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.m,
+                        AppSpacing.m,
+                        AppSpacing.m,
+                        AppSpacing.xxl,
                       ),
+                      child: _TeacherStatsBody(classStats: classStats),
                     ),
                   ),
                 },
@@ -116,7 +117,6 @@ class ClassStatisticsTab extends StatelessWidget {
             (state is StudentStatsError && state.weeklyStats != null) ||
             (state is StudentStatsLoading && state.weeklyStats != null);
 
-        // Obtener studentId para las acciones
         final authState = context.read<AuthCubit>().state;
         final studentId = authState is AuthAuthenticated
             ? authState.userId
@@ -124,12 +124,10 @@ class ClassStatisticsTab extends StatelessWidget {
 
         return Column(
           children: [
-            // Barra de carga superior sutil
             if (isLoading && hasData)
               const LinearProgressIndicator(minHeight: 2),
             if (!isLoading || !hasData) const SizedBox(height: 2),
 
-            // Selector de Filtro Temporal para Estudiantes
             TimeFilterSelector(
               currentFilter: state.timeFilter,
               onFilterChanged: (newFilter) {
@@ -157,21 +155,14 @@ class ClassStatisticsTab extends StatelessWidget {
                       .refreshStats(studentId: studentId, classId: classId),
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(AppSpacing.m),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          context.l10n.classStatisticsTitle,
-                          style: context.textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: AppSpacing.l),
-                        if (_getWeeklyStatsFromState(state) != null) ...[
-                          _StudentStatsBody(
-                            weeklyStats: _getWeeklyStatsFromState(state)!,
-                          ),
-                        ],
-                      ],
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.m,
+                      AppSpacing.m,
+                      AppSpacing.m,
+                      AppSpacing.xxl,
+                    ),
+                    child: _StudentStatsBody(
+                      weeklyStats: _getWeeklyStatsFromState(state),
                     ),
                   ),
                 ),
@@ -189,46 +180,47 @@ class ClassStatisticsTab extends StatelessWidget {
     if (state is StudentStatsError) return state.weeklyStats;
     return null;
   }
-
-  static String _getDayLabel(DateTime date) {
-    const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    return days[date.weekday - 1];
-  }
 }
 
-/// Cuerpo de estadísticas del alumno extraído para reutilización.
+String _getDayLabel(DateTime date) {
+  const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  return days[date.weekday - 1];
+}
+
+/// Cuerpo de estadísticas del alumno en la pestaña de clase.
 class _StudentStatsBody extends StatelessWidget {
   const _StudentStatsBody({required this.weeklyStats});
 
-  final WeeklyStatsModel weeklyStats;
+  final WeeklyStatsModel? weeklyStats;
 
   @override
   Widget build(BuildContext context) {
+    if (weeklyStats == null) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CustomCard(
-          title: context.l10n.totalTime,
-          subtitle: context.l10n.totalTime,
+        // --- Actividad semanal ---
+        StatsSectionCard(
+          icon: Icons.bar_chart_rounded,
+          title: context.l10n.weeklyActivityTitle,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                weeklyStats.durationFormatted,
-                style: context.textTheme.headlineLarge?.copyWith(
+                weeklyStats!.durationFormatted,
+                style: context.textTheme.headlineMedium?.copyWith(
                   color: context.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
               AppBarChart(
                 height: 150,
-                data: weeklyStats.dailyBreakdown
+                data: weeklyStats!.dailyBreakdown
                     .map(
                       (day) => (
-                        label: ClassStatisticsTab._getDayLabel(
-                          day.date.toDate(),
-                        ),
+                        label: _getDayLabel(day.date.toDate()),
                         value: (day.totalDuration / 60).toDouble(),
                       ),
                     )
@@ -238,24 +230,26 @@ class _StudentStatsBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.m),
-        CustomCard(
-          title: context.l10n.totalSessions,
-          subtitle: context.l10n.totalSessions,
+
+        // --- Distribución por tarea ---
+        StatsSectionCard(
+          icon: Icons.pie_chart_rounded,
+          title: context.l10n.taskDistributionTitle,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.l10n.sessionsCount(weeklyStats.totalSessions),
-                style: context.textTheme.headlineLarge?.copyWith(
+                context.l10n.sessionsCount(weeklyStats!.totalSessions),
+                style: context.textTheme.headlineMedium?.copyWith(
                   color: context.colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
-              if (weeklyStats.taskBreakdown.isNotEmpty)
+              if (weeklyStats!.taskBreakdown.isNotEmpty)
                 AppPieChart(
                   radius: 70,
-                  data: weeklyStats.taskBreakdown
+                  data: weeklyStats!.taskBreakdown
                       .map(
                         (task) => (
                           label: task.taskTitle,
@@ -266,7 +260,17 @@ class _StudentStatsBody extends StatelessWidget {
                       .toList(),
                 )
               else
-                const Center(child: Text('Sin datos de tareas')),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.m,
+                    ),
+                    child: Text(
+                      context.l10n.noTaskData,
+                      style: context.bodyMediumOnSurfaceVariant,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -275,7 +279,7 @@ class _StudentStatsBody extends StatelessWidget {
   }
 }
 
-/// Cuerpo de estadísticas del docente extraído para reutilización.
+/// Cuerpo de estadísticas del docente en la pestaña de clase.
 class _TeacherStatsBody extends StatelessWidget {
   const _TeacherStatsBody({required this.classStats});
 
@@ -288,22 +292,18 @@ class _TeacherStatsBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          context.l10n.classStatisticsTitle,
-          style: context.textTheme.titleLarge,
-        ),
-        const SizedBox(height: AppSpacing.l),
-        CustomCard(
+        // --- Tiempo total ---
+        StatsSectionCard(
+          icon: Icons.timer_outlined,
           title: context.l10n.totalTime,
-          subtitle: context.l10n.totalTimeDescription,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 classStats!.durationFormatted,
-                style: context.textTheme.headlineLarge?.copyWith(
+                style: context.textTheme.headlineMedium?.copyWith(
                   color: context.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
@@ -316,15 +316,15 @@ class _TeacherStatsBody extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.timer_outlined,
+                      Icons.person_outline_rounded,
                       color: context.colorScheme.onPrimaryContainer,
                     ),
                     const SizedBox(width: AppSpacing.s),
                     Text(
                       '${context.l10n.averageDurationLabel}: ${classStats!.averageDurationPerStudentFormatted}',
-                      style: context.bodyMediumOnSurfaceVariant?.copyWith(
+                      style: context.textTheme.bodyMedium?.copyWith(
                         color: context.colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -334,17 +334,19 @@ class _TeacherStatsBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.m),
-        CustomCard(
+
+        // --- Sesiones y distribución ---
+        StatsSectionCard(
+          icon: Icons.event_note_rounded,
           title: context.l10n.totalSessions,
-          subtitle: context.l10n.totalSessions,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 context.l10n.sessionsCount(classStats!.totalSessions),
-                style: context.textTheme.headlineLarge?.copyWith(
+                style: context.textTheme.headlineMedium?.copyWith(
                   color: context.colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
@@ -362,27 +364,50 @@ class _TeacherStatsBody extends StatelessWidget {
                       .toList(),
                 )
               else
-                const Center(child: Text('Sin datos de tareas')),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.m,
+                    ),
+                    child: Text(
+                      context.l10n.noTaskData,
+                      style: context.bodyMediumOnSurfaceVariant,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.m),
-        CustomCard(
+
+        // --- Alumnos activos ---
+        StatsSectionCard(
+          icon: Icons.people_rounded,
           title: context.l10n.activeStudents,
-          subtitle: context.l10n.activeStudents,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                context.l10n.activeStudentsCount(classStats!.activeStudents),
-                style: context.textTheme.headlineLarge?.copyWith(
-                  color: context.colorScheme.tertiary,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  StatMetricTile(
+                    icon: Icons.people_rounded,
+                    value: '${classStats!.totalStudents}',
+                    label: context.l10n.studentsLabel,
+                    color: context.colorScheme.primary,
+                  ),
+                  StatMetricTile(
+                    icon: Icons.trending_up_rounded,
+                    value: '${classStats!.activeStudents}',
+                    label: context.l10n.classStatusActive,
+                    subtitle: classStats!.activeStudentsPercentageFormatted,
+                    color: context.colorScheme.tertiary,
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.s),
+              const SizedBox(height: AppSpacing.m),
               Text(
-                'De un total de ${context.l10n.studentsCount(classStats!.totalStudents)}',
+                context.l10n.ofTotalStudents(classStats!.totalStudents),
                 style: context.bodySmallOnSurfaceVariant,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -397,58 +422,60 @@ class _TeacherStatsBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.m),
+
+        // --- Desglose por tareas ---
         if (classStats!.taskBreakdown.isNotEmpty)
-          CustomCard(
-            title: context.l10n.generalOverview,
-            subtitle: context.l10n.generalOverview,
+          StatsSectionCard(
+            icon: Icons.assignment_rounded,
+            title: context.l10n.workedTasks,
             child: Column(
-              children: [
-                ...classStats!.taskBreakdown.map((task) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                task.taskTitle,
-                                style: context.titleMediumBold,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+              children: classStats!.taskBreakdown.map<Widget>((task) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.m),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              task.taskTitle,
+                              style: context.titleMediumBold,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              context.l10n.sessionsLabelCount(
+                                task.totalSessions,
                               ),
-                              Text(
-                                '${task.totalSessions} sesiones registradas',
-                                style: context.bodySmallOnSurfaceVariant,
-                              ),
-                            ],
+                              style: context.bodySmallOnSurfaceVariant,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.s,
+                          vertical: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.secondaryContainer,
+                          borderRadius: BorderRadius.circular(
+                            AppBorderRadius.small,
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.s,
-                            vertical: AppSpacing.xs,
-                          ),
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(
-                              AppBorderRadius.small,
-                            ),
-                          ),
-                          child: Text(
-                            task.durationFormatted,
-                            style: context.bodyMediumOnSurfaceVariant?.copyWith(
-                              color: context.colorScheme.onSecondaryContainer,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        child: Text(
+                          task.durationFormatted,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.colorScheme.onSecondaryContainer,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
       ],

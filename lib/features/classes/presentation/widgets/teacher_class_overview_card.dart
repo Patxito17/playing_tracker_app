@@ -54,7 +54,6 @@ class TeacherClassOverviewCard extends StatelessWidget {
         children: [
           Wrap(
             spacing: AppSpacing.s,
-            runSpacing: AppSpacing.s,
             children: [
               Chip(
                 label: Text(statusLabel),
@@ -64,20 +63,22 @@ class TeacherClassOverviewCard extends StatelessWidget {
               Chip(
                 avatar: const Icon(Icons.event, size: 16),
                 label: Text('${context.l10n.createdDateLabel}: $createdAt'),
+                labelStyle: textTheme.bodySmall,
               ),
               if (studentsLabel != null)
                 Chip(
                   avatar: const Icon(Icons.people_alt_rounded, size: 16),
                   label: Text(studentsLabel),
+                  labelStyle: textTheme.bodySmall,
                 ),
               if (tasksLabel != null)
                 Chip(
                   avatar: const Icon(Icons.assignment_turned_in, size: 16),
                   label: Text(tasksLabel),
+                  labelStyle: textTheme.bodySmall,
                 ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s),
           Row(
             children: [
               Expanded(

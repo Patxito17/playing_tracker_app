@@ -69,6 +69,12 @@ abstract interface class TaskRepository {
     int limit,
   });
 
+  /// Observa en tiempo real todas las asignaciones de una tarea concreta.
+  Stream<List<AssignmentModel>> watchTaskAssignments(
+    String taskId, {
+    String? teacherId,
+  });
+
   /// Asigna una tarea a una clase concreta utilizando fan-out.
   ///
   /// La implementación real debe:

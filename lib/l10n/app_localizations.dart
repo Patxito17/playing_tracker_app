@@ -107,8 +107,20 @@ abstract class AppLocalizations {
   /// Texto pestaña Clases
   ///
   /// In es, this message translates to:
-  /// **'Clases'**
+  /// **'Mis Clases'**
   String get classesTab;
+
+  /// Texto pestaña Alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos'**
+  String get studentsTab;
+
+  /// Texto pestaña Perfil
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get profileTab;
 
   /// Texto pestaña Historial
   ///
@@ -335,7 +347,7 @@ abstract class AppLocalizations {
   /// Subtítulo de login
   ///
   /// In es, this message translates to:
-  /// **'Inicia sesión para continuar'**
+  /// **'¿Listo para seguir tu progreso?'**
   String get loginSubtitle;
 
   /// Título de creación de cuenta
@@ -659,7 +671,7 @@ abstract class AppLocalizations {
   /// Botón de inicio de sesión / registro con Google
   ///
   /// In es, this message translates to:
-  /// **'Continuar con Google'**
+  /// **'Google'**
   String get continueWithGoogle;
 
   /// Mensaje cuando el usuario cancela el flujo de Google
@@ -677,7 +689,7 @@ abstract class AppLocalizations {
   /// Botón de inicio de sesión / registro con Apple
   ///
   /// In es, this message translates to:
-  /// **'Continuar con Apple'**
+  /// **'Apple'**
   String get continueWithApple;
 
   /// Mensaje cuando el usuario cancela el flujo de Apple
@@ -713,7 +725,7 @@ abstract class AppLocalizations {
   /// Separador 'o' entre opciones de login
   ///
   /// In es, this message translates to:
-  /// **'o'**
+  /// **'O continúa con'**
   String get orDivider;
 
   /// Título home docente
@@ -725,7 +737,7 @@ abstract class AppLocalizations {
   /// Saludo de bienvenida con nombre
   ///
   /// In es, this message translates to:
-  /// **'Hola, {name}'**
+  /// **'¡Hola, {name}!'**
   String welcomeUser(String name);
 
   /// Título home alumno
@@ -733,6 +745,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicio alumno'**
   String get studentHomeTitle;
+
+  /// Saludo especial para docentes
+  ///
+  /// In es, this message translates to:
+  /// **'¡Buen día, Profe!'**
+  String get teacherWelcomeProfe;
+
+  /// Subtítulo del dashboard docente
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de control musical'**
+  String get musicalControlPanel;
+
+  /// Etiqueta para el conteo total de alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Total Alumnos'**
+  String get totalStudentsLabel;
+
+  /// Etiqueta para las horas registradas hoy
+  ///
+  /// In es, this message translates to:
+  /// **'Horas Hoy'**
+  String get hoursTodayLabel;
+
+  /// Título de la sección de clases en home
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar mis clases'**
+  String get manageMyClasses;
+
+  /// Acción para ver todos los elementos de una lista
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get viewAll;
+
+  /// Etiqueta para el botón de mis clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis clases'**
+  String get myClassesLabel;
+
+  /// Título de la sección de tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas'**
+  String get tasksSectionTitle;
+
+  /// Etiqueta para ver tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Ver tareas'**
+  String get viewTasksLabel;
+
+  /// Etiqueta para crear nueva tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva tarea'**
+  String get newTaskLabel;
+
+  /// Título de la sección de estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get statsSectionTitle;
+
+  /// Etiqueta para ver progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso'**
+  String get progressLabel;
+
+  /// Etiqueta para ver historial
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get historyLabel;
+
+  /// Tooltip para el botón de notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsTooltip;
 
   /// Título acciones rápidas
   ///
@@ -901,6 +997,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.'**
   String get studentHighlightsDescription;
+
+  /// Título de la sección de progreso semanal
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso Semanal'**
+  String get weeklyProgressTitle;
+
+  /// Insignia de virtuoso
+  ///
+  /// In es, this message translates to:
+  /// **'Virtuoso del Mes'**
+  String get virtuosoBadge;
+
+  /// Título de la medalla de constancia
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Medalla: Constancia'**
+  String get constancyMedal;
+
+  /// Descripción de la medalla de constancia
+  ///
+  /// In es, this message translates to:
+  /// **'Has practicado 7 días seguidos. ¡Sigue así!'**
+  String get constancyDescription;
+
+  /// Subtítulo de la tarjeta de racha cuando hay racha activa
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días seguidos practicando'**
+  String streakSubtitleActive(int days);
+
+  /// Subtítulo de la tarjeta de racha cuando no hay racha
+  ///
+  /// In es, this message translates to:
+  /// **'¡Practica hoy para comenzar tu racha!'**
+  String get streakSubtitleInactive;
+
+  /// Acción para inscribirse en clases
+  ///
+  /// In es, this message translates to:
+  /// **'Inscribirse'**
+  String get inscriptionsAction;
 
   /// Título mis clases
   ///
@@ -1178,12 +1316,6 @@ abstract class AppLocalizations {
   /// **'Tareas'**
   String get tasksTab;
 
-  /// Pestaña estudiantes
-  ///
-  /// In es, this message translates to:
-  /// **'Estudiantes'**
-  String get studentsTab;
-
   /// Pestaña información
   ///
   /// In es, this message translates to:
@@ -1357,6 +1489,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay tareas en esta clase'**
   String get noTasksInClass;
+
+  /// Subtítulo estado vacío tareas clase
+  ///
+  /// In es, this message translates to:
+  /// **'Crea y asigna tareas a los alumnos de esta clase'**
+  String get noTasksInClassSubtitle;
 
   /// Confirmación eliminar tarea
   ///
@@ -1856,6 +1994,18 @@ abstract class AppLocalizations {
   /// **'Fecha de la sesión'**
   String get sessionDate;
 
+  /// Título genérico para sesión de práctica
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión de práctica'**
+  String get practiceSession;
+
+  /// Etiqueta notas en historial de sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get sessionNotesLabel;
+
   /// Estado vacío filtrado
   ///
   /// In es, this message translates to:
@@ -2317,6 +2467,372 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reanudar'**
   String get timerResume;
+
+  /// Botón reiniciar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Reiniciar'**
+  String get timerReset;
+
+  /// Botón finalizar cronómetro
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar'**
+  String get timerFinish;
+
+  /// Sección notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsSection;
+
+  /// Respuesta afirmativa
+  ///
+  /// In es, this message translates to:
+  /// **'Sí'**
+  String get yesAnswer;
+
+  /// Respuesta negativa
+  ///
+  /// In es, this message translates to:
+  /// **'No'**
+  String get noAnswer;
+
+  /// Badge de estado: tarea activa
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get taskStatusActive;
+
+  /// Badge de estado: tarea archivada
+  ///
+  /// In es, this message translates to:
+  /// **'Archivada'**
+  String get taskStatusArchived;
+
+  /// Botón continuar sesión de estudio en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueStudySession;
+
+  /// Título principal de la pantalla de estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Mis estadísticas'**
+  String get myStatisticsTitle;
+
+  /// Título de la sección para las estadísticas divididas por clase
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas por clase'**
+  String get statisticsByClass;
+
+  /// Botón o enlace para acceder a la vista de estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Ver estadísticas'**
+  String get viewStatsAction;
+
+  /// Mensaje de estado vacío cuando el usuario no tiene clases para generar estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes clases para ver estadísticas todavía.'**
+  String get noClassesForStats;
+
+  /// Título de la sección del resumen general de progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen general'**
+  String get generalSummaryTitle;
+
+  /// Etiqueta para el contador o métrica de sesiones de estudio
+  ///
+  /// In es, this message translates to:
+  /// **'Sesiones'**
+  String get sessionsLabel;
+
+  /// Etiqueta para el contador de días seguidos de actividad (racha)
+  ///
+  /// In es, this message translates to:
+  /// **'Racha'**
+  String get streakLabel;
+
+  /// Título de la sección o gráfico de la actividad durante la semana
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad semanal'**
+  String get weeklyActivityTitle;
+
+  /// Título de la sección o gráfico que muestra cómo se distribuyen las tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Distribución por tarea'**
+  String get taskDistributionTitle;
+
+  /// Mensaje de error mostrado cuando falla la petición de estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar estadísticas'**
+  String get errorLoadingStats;
+
+  /// Mensaje mostrado en los gráficos de tareas cuando no hay datos disponibles
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos de tareas'**
+  String get noTaskData;
+
+  /// Texto que indica el total de estudiantes (estadísticas de clase).
+  ///
+  /// In es, this message translates to:
+  /// **'De un total de {count} estudiantes'**
+  String ofTotalStudents(int count);
+
+  /// Botón para saltar el tutorial
+  ///
+  /// In es, this message translates to:
+  /// **'Omitir'**
+  String get tutorialSkip;
+
+  /// Título del tile en Ajustes para repetir el tutorial
+  ///
+  /// In es, this message translates to:
+  /// **'Repetir tutorial'**
+  String get tutorialRepeatTitle;
+
+  /// Subtítulo del tile en Ajustes para repetir el tutorial
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a ver la guía de bienvenida'**
+  String get tutorialRepeatSubtitle;
+
+  /// Título del paso 1 del tutorial de alumno: saludo
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido a Playing Tracker!'**
+  String get tutorialStudentGreetingTitle;
+
+  /// Descripción del paso 1 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'Este es tu panel de control musical. Aquí verás tu progreso y accederás a todo lo que necesitas.'**
+  String get tutorialStudentGreetingDesc;
+
+  /// Título del paso 2 del tutorial de alumno: progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Tu progreso semanal'**
+  String get tutorialStudentProgressTitle;
+
+  /// Descripción del paso 2 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí puedes ver cuánto has practicado esta semana. La barra y el gráfico se actualizan con cada sesión.'**
+  String get tutorialStudentProgressDesc;
+
+  /// Título del paso 3 del tutorial de alumno: racha
+  ///
+  /// In es, this message translates to:
+  /// **'Tu racha activa'**
+  String get tutorialStudentStreakTitle;
+
+  /// Descripción del paso 3 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'¡Practica cada día para mantener tu racha! Cuanto más constante seas, más rápido avanzarás.'**
+  String get tutorialStudentStreakDesc;
+
+  /// Título del paso 4 del tutorial de alumno: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis clases'**
+  String get tutorialStudentClassesTitle;
+
+  /// Descripción del paso 4 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'Accede a todas tus clases musicales, revisa el contenido y registra tus sesiones de práctica.'**
+  String get tutorialStudentClassesDesc;
+
+  /// Título del paso 5 del tutorial de alumno: tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Mis tareas'**
+  String get tutorialStudentTasksTitle;
+
+  /// Descripción del paso 5 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí encontrarás todas las tareas asignadas por tu profesor. Completa cada una y registra tu tiempo de práctica.'**
+  String get tutorialStudentTasksDesc;
+
+  /// Título del paso 6 del tutorial de alumno: inscripción
+  ///
+  /// In es, this message translates to:
+  /// **'Inscribirte en una clase'**
+  String get tutorialStudentEnrollTitle;
+
+  /// Descripción del paso 6 del tutorial de alumno
+  ///
+  /// In es, this message translates to:
+  /// **'¿Tu profesor te dio un código de clase? Úsalo aquí para unirte y empezar a recibir tareas.'**
+  String get tutorialStudentEnrollDesc;
+
+  /// Título del paso 1 del tutorial de docente: saludo
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido, docente!'**
+  String get tutorialTeacherGreetingTitle;
+
+  /// Descripción del paso 1 del tutorial de docente
+  ///
+  /// In es, this message translates to:
+  /// **'Este es tu panel de gestión musical. Desde aquí controlas tus clases, tareas y el progreso de tus alumnos.'**
+  String get tutorialTeacherGreetingDesc;
+
+  /// Título del paso 2 del tutorial de docente: ver clases
+  ///
+  /// In es, this message translates to:
+  /// **'Ver mis clases'**
+  String get tutorialTeacherClassesTitle;
+
+  /// Descripción del paso 2 del tutorial de docente
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta todas tus clases activas, ve el listado de alumnos y gestiona el contenido de cada clase.'**
+  String get tutorialTeacherClassesDesc;
+
+  /// Título del paso 3 del tutorial de docente: crear clase
+  ///
+  /// In es, this message translates to:
+  /// **'Crear una clase nueva'**
+  String get tutorialTeacherCreateClassTitle;
+
+  /// Descripción del paso 3 del tutorial de docente
+  ///
+  /// In es, this message translates to:
+  /// **'Crea una nueva clase, asígnale un nombre y comparte el código con tus alumnos para que puedan unirse.'**
+  String get tutorialTeacherCreateClassDesc;
+
+  /// Título del paso 4 del tutorial de docente: tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Gestión de tareas'**
+  String get tutorialTeacherTasksTitle;
+
+  /// Descripción del paso 4 del tutorial de docente
+  ///
+  /// In es, this message translates to:
+  /// **'Crea y asigna tareas a tus alumnos. Desde aquí puedes ver el estado de todas las tareas activas.'**
+  String get tutorialTeacherTasksDesc;
+
+  /// Título del paso 5 del tutorial de docente: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas y progreso'**
+  String get tutorialTeacherStatsTitle;
+
+  /// Descripción del paso 5 del tutorial de docente
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.'**
+  String get tutorialTeacherStatsDesc;
+
+  /// Título del paso de nav bar: inicio
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get tutorialNavHomeTitle;
+
+  /// Descripción del paso de nav bar: inicio
+  ///
+  /// In es, this message translates to:
+  /// **'Este es tu punto de partida. Accede rápidamente a todas las secciones de la app desde aquí.'**
+  String get tutorialNavHomeDesc;
+
+  /// Título del paso de nav bar alumno: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Clases'**
+  String get tutorialNavStudentClassesTitle;
+
+  /// Descripción del paso de nav bar alumno: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí encontrarás todas las clases en las que estás inscrito. Accede al contenido y registra tus sesiones.'**
+  String get tutorialNavStudentClassesDesc;
+
+  /// Título del paso de nav bar alumno: historial
+  ///
+  /// In es, this message translates to:
+  /// **'Historial de Práctica'**
+  String get tutorialNavHistoryTitle;
+
+  /// Descripción del paso de nav bar alumno: historial
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa todas tus sesiones de práctica anteriores y sigue tu progreso musical a lo largo del tiempo.'**
+  String get tutorialNavHistoryDesc;
+
+  /// Título del paso de nav bar alumno: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get tutorialNavStudentStatisticsTitle;
+
+  /// Descripción del paso de nav bar alumno: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta gráficos detallados de tu tiempo de práctica, rachas y tendencias de rendimiento.'**
+  String get tutorialNavStudentStatisticsDesc;
+
+  /// Título del paso de nav bar docente: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Clases'**
+  String get tutorialNavTeacherClassesTitle;
+
+  /// Descripción del paso de nav bar docente: clases
+  ///
+  /// In es, this message translates to:
+  /// **'Gestiona todas tus clases activas, consulta los listados de alumnos y accede a los detalles de cada clase.'**
+  String get tutorialNavTeacherClassesDesc;
+
+  /// Título del paso de nav bar docente: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get tutorialNavTeacherStatisticsTitle;
+
+  /// Descripción del paso de nav bar docente: estadísticas
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.'**
+  String get tutorialNavTeacherStatisticsDesc;
+
+  /// Título del paso de nav bar: ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get tutorialNavSettingsTitle;
+
+  /// Descripción del paso de nav bar: ajustes
+  ///
+  /// In es, this message translates to:
+  /// **'Personaliza el aspecto de la app, el idioma y tus preferencias personales desde aquí.'**
+  String get tutorialNavSettingsDesc;
+
+  /// Título de la sección de ranking por alumno en estadísticas del docente
+  ///
+  /// In es, this message translates to:
+  /// **'Ranking de Alumnos'**
+  String get studentRankingTitle;
+
+  /// Mensaje cuando no hay actividad de alumnos en el período seleccionado
+  ///
+  /// In es, this message translates to:
+  /// **'Ningún alumno tiene actividad en este período'**
+  String get noStudentsActivity;
 }
 
 class _AppLocalizationsDelegate

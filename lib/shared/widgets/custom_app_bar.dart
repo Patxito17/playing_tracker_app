@@ -1,70 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../l10n/app_localizations.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/extensions/context_extensions.dart';
 
-/// AppBar personalizado con título, acciones configurables y navegación hacia atrás
+/// AppBar personalizado premium para Playing Tracker.
 ///
-/// Encapsula un AppBar de Material Design 3 con estilos consistentes y
-/// navegación automática hacia atrás cuando es posible.
-///
-/// **Ejemplo de uso:**
-/// ```dart
-/// // AppBar básico con título
-/// Scaffold(
-///   appBar: CustomAppBar(title: 'Mi Pantalla'),
-///   body: MyContent(),
-/// )
-///
-/// // AppBar con acciones
-/// Scaffold(
-///   appBar: CustomAppBar(
-///     title: 'Configuración',
-///     actions: [
-///       IconButton(
-///         icon: Icon(Icons.save),
-///         onPressed: () => saveSettings(),
-///       ),
-///     ],
-///   ),
-///   body: SettingsContent(),
-/// )
-///
-/// // AppBar con título personalizado
-/// Scaffold(
-///   appBar: CustomAppBar(
-///     customTitle: Row(
-///       children: [
-///         Icon(Icons.music_note),
-///         SizedBox(width: 8),
-///         Text('Playing Tracker'),
-///       ],
-///     ),
-///   ),
-///   body: MyContent(),
-/// )
-/// ```
+/// Soporta:
+/// - Logo corporativo o botón de retroceso automático.
+/// - Título de texto o widget personalizado.
+/// - Acciones personalizadas.
+/// - Estética Material 3 dinámica.
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  /// Título del AppBar
+  /// Título de texto del AppBar.
   final String? title;
 
-  /// Título personalizado (si se proporciona, ignora title)
+  /// Widget de título personalizado (si se proporciona, ignora [title]).
   final Widget? customTitle;
 
-  /// Acciones del AppBar (iconos o widgets adicionales)
+  /// Acciones a mostrar a la derecha.
   final List<Widget>? actions;
 
-  /// Callback personalizado para el botón de retroceso
-  final VoidCallback? onBackPressed;
+  /// Indica si debe mostrar el logo de la app a la izquierda.
+  /// Si es false, intentará mostrar el botón de retroceso si puede hacer pop.
+  final bool showLogo;
 
-  /// Indica si se debe mostrar el botón de retroceso automáticamente
-  final bool automaticallyImplyLeading;
+  /// Si es true, el título se centrará.
+  final bool centerTitle;
 
-  /// Color de fondo personalizado
+  /// Elevación del AppBar.
+  final double elevation;
+
+  /// Fondo personalizado. Si es null, usa transparente por defecto.
   final Color? backgroundColor;
-
-  /// Elevación del AppBar
-  final double? elevation;
 
   @override
   final Size preferredSize;
@@ -74,44 +42,76 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.customTitle,
     this.actions,
-    this.onBackPressed,
-    this.automaticallyImplyLeading = true,
-    this.backgroundColor,
-    this.elevation,
+    this.showLogo = false,
+    this.centerTitle = false,
+    this.elevation = 0,
+    this.backgroundColor = Colors.transparent,
   }) : preferredSize = const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
-    // Determinar si se puede hacer pop del Router (go_router)
+    final colorScheme = context.colorScheme;
     final canPop = context.canPop();
 
-    // Construir el widget de título
+    // Margen horizontal consistente de 16px (Material 3 standard)
+    const double horizontalMargin = AppSpacing.m;
+
+    // Construcción del leading (izquierda)
+    Widget? leadingWidget;
+    if (showLogo) {
+      leadingWidget = Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: colorScheme.primary.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xs),
+          child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
+        ),
+      );
+    } else if (canPop) {
+      leadingWidget = IconButton(
+        icon: const Icon(Icons.arrow_back_rounded),
+        tooltip: context.l10n.back,
+        onPressed: () => context.pop(),
+      );
+    }
+
+    // Construcción del título
     Widget? titleWidget;
     if (customTitle != null) {
       titleWidget = customTitle;
     } else if (title != null) {
-      titleWidget = Text(title!);
-    }
-
-    // Construir el leading (botón de retroceso)
-    Widget? leading;
-    if (automaticallyImplyLeading && canPop) {
-      leading = IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: onBackPressed ?? () => context.pop(),
-        tooltip: AppLocalizations.of(context)!.back,
+      titleWidget = Text(
+        title!,
+        style: context.titleLargeBold?.copyWith(color: colorScheme.onSurface),
       );
-    } else if (!automaticallyImplyLeading) {
-      leading = const SizedBox.shrink();
     }
 
     return AppBar(
+      // Aplicamos el margen a la izquierda del leading
+      leading: leadingWidget != null
+          ? Padding(
+              padding: const EdgeInsets.only(left: horizontalMargin),
+              child: leadingWidget,
+            )
+          : null,
+      // Ancho calculado: 48 (clic standard) + 16 (margen)
+      leadingWidth: 48 + horizontalMargin,
       title: titleWidget,
-      leading: leading,
-      automaticallyImplyLeading: false,
-      actions: actions,
+      // Espaciado del título respectivo al leading
+      titleSpacing: horizontalMargin,
+      // Añadimos el margen al final de todas las acciones
+      actions: actions != null
+          ? [...actions!, const SizedBox(width: horizontalMargin)]
+          : null,
+      centerTitle: centerTitle,
       backgroundColor: backgroundColor,
       elevation: elevation,
+      scrolledUnderElevation: 0,
+      automaticallyImplyLeading: false,
     );
   }
 }

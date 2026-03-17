@@ -100,6 +100,12 @@ extension BuildContextExtensions on BuildContext {
   /// Texto de ayuda/hint
   TextStyle? get textHint => AppTextStyles.hint(this);
 
+  /// Etiqueta mediana
+  TextStyle? get labelMedium => AppTextStyles.labelMedium(this);
+
+  /// Etiqueta pequeña
+  TextStyle? get labelSmall => AppTextStyles.labelSmall(this);
+
   /// Acceso rápido a las traducciones
   ///
   /// Uso: `context.l10n.miString`
