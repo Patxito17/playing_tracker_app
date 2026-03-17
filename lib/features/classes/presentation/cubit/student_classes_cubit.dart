@@ -29,6 +29,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
   List<MembershipModel> _visibleMemberships = [];
   String? _currentStudentId;
 
+  /// Caché local de clases ya resueltas para evitar llamadas Firestore redundantes
+  /// cada vez que el stream de membresías emite.
+  final Map<String, ClassModel> _classCache = {};
+
   /// Inicia o reinicia la observación de membresías para el alumno dado.
   ///
   /// Cancela cualquier suscripción previa antes de crear una nueva.
@@ -43,6 +47,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
       return;
     }
 
+    // Limpiar la caché al cambiar de usuario para no servir datos de otro alumno.
+    if (_currentStudentId != sanitizedId) {
+      _classCache.clear();
+    }
     _currentStudentId = sanitizedId;
     emit(const StudentClassesLoading());
     await _subscription?.cancel();
@@ -89,7 +97,15 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
         if (!membership.classIsActive) {
           return (membership: membership, isValid: false);
         }
-        final classModel = await _repository.getClassById(membership.classId);
+        // Usar la caché para evitar lecturas Firestore duplicadas en cada
+        // emisión del stream cuando la clase ya fue resuelto previamente.
+        ClassModel? classModel = _classCache[membership.classId];
+        if (classModel == null) {
+          classModel = await _repository.getClassById(membership.classId);
+          if (classModel != null) {
+            _classCache[membership.classId] = classModel;
+          }
+        }
         return (membership: membership, isValid: classModel != null);
       }),
     );
@@ -153,6 +169,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
   Future<void> close() async {
     await _subscription?.cancel();
     await _disposeClassWatchers();
+    _classCache.clear();
     return super.close();
   }
 
