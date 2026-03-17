@@ -10,6 +10,7 @@ class StudentTutorialKeys {
   final accomplishmentCard = GlobalKey(debugLabel: 'tut_s_streak');
   final classesCard = GlobalKey(debugLabel: 'tut_s_classes');
   final tasksCard = GlobalKey(debugLabel: 'tut_s_tasks');
+  final historyCard = GlobalKey(debugLabel: 'tut_s_history');
   final enrollCard = GlobalKey(debugLabel: 'tut_s_enroll');
 }
 
