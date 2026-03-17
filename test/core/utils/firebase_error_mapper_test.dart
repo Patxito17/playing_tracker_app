@@ -7,7 +7,6 @@
 // directamente con los códigos de error conocidos.
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 
@@ -100,15 +99,12 @@ void main() {
 
     // Entradas: code == 'network-request-failed'.
     // Salida esperada: 'errorNetworkRequestFailed'.
-    test(
-      "mapea 'network-request-failed' a 'errorNetworkRequestFailed'",
-      () {
-        expect(
-          FirebaseErrorMapper.map(authError('network-request-failed')),
-          'errorNetworkRequestFailed',
-        );
-      },
-    );
+    test("mapea 'network-request-failed' a 'errorNetworkRequestFailed'", () {
+      expect(
+        FirebaseErrorMapper.map(authError('network-request-failed')),
+        'errorNetworkRequestFailed',
+      );
+    });
 
     // Entradas: código desconocido en FirebaseAuthException.
     // Salida esperada: 'errorGeneric'.
@@ -166,7 +162,10 @@ void main() {
     // Entradas: un String (ya es clave l10n).
     // Salida esperada: se devuelve el mismo String.
     test('devuelve el String directamente cuando el error es un String', () {
-      expect(FirebaseErrorMapper.map('authErrorInvalidEmail'), 'authErrorInvalidEmail');
+      expect(
+        FirebaseErrorMapper.map('authErrorInvalidEmail'),
+        'authErrorInvalidEmail',
+      );
     });
 
     // Entradas: excepción Dart genérica (no Firebase).
