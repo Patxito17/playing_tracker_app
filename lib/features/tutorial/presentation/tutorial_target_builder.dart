@@ -216,6 +216,12 @@ class TutorialTargetBuilder {
     ];
   }
 
+  /// Construye un [TargetFocus] con forma rectangular redondeada y contenido
+  /// visual compuesto por [TutorialContentWidget].
+  ///
+  /// - [identify]: identificador único del paso, usado en `beforeFocus` para
+  ///   disparar navegación o scroll.
+  /// - [align]: posición del overlay de contenido respecto al target resaltado.
   static TargetFocus _buildTarget({
     required String identify,
     required GlobalKey key,

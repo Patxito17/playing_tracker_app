@@ -134,37 +134,37 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           if (!_tutorialTriggered) _scheduleTutorial();
         });
       },
-      child: Scaffold(
-        appBar: CustomAppBar(
-          showLogo: true,
-          title: 'Playing Tracker',
-          actions: [
-            Container(
-              decoration: BoxDecoration(
-                color: colorScheme.errorContainer.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
+      child: BlocProvider(
+        create: (context) {
+          final cubit = ProgressCubit(
+            sessionRepository: context.read<SessionRepository>(),
+            taskRepository: context.read<TaskRepository>(),
+          );
+          final authState = context.read<AuthCubit>().state;
+          if (authState is AuthAuthenticated) {
+            cubit.watchProgress(authState.userId);
+          }
+          return cubit;
+        },
+        child: Scaffold(
+          appBar: CustomAppBar(
+            showLogo: true,
+            title: 'Playing Tracker',
+            actions: [
+              Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withValues(alpha: 0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  tooltip: l10n.logout,
+                  icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+                  onPressed: () => context.read<AuthCubit>().logout(),
+                ),
               ),
-              child: IconButton(
-                tooltip: l10n.logout,
-                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
-                onPressed: () => context.read<AuthCubit>().logout(),
-              ),
-            ),
-          ],
-        ),
-        body: BlocProvider(
-          create: (context) {
-            final cubit = ProgressCubit(
-              sessionRepository: context.read<SessionRepository>(),
-              taskRepository: context.read<TaskRepository>(),
-            );
-            final authState = context.read<AuthCubit>().state;
-            if (authState is AuthAuthenticated) {
-              cubit.watchProgress(authState.userId);
-            }
-            return cubit;
-          },
-          child: SingleChildScrollView(
+            ],
+          ),
+          body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,38 +180,28 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
                 const SizedBox(height: AppSpacing.l),
 
-                // Progreso Semanal
+                // Progreso Semanal y Racha de Días Consecutivos
                 BlocBuilder<ProgressCubit, ProgressState>(
                   builder: (context, state) {
-                    if (state is ProgressLoaded) {
-                      return HomeProgressCard(
-                        key: _keys.progressCard,
-                        progress: state.weeklyPercentage / 100,
-                        weeklyData: state.dailyValues,
-                      );
-                    }
-                    return HomeProgressCard(
-                      key: _keys.progressCard,
-                      progress: 0.0,
-                      weeklyData: List.filled(7, 0.0),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Racha de Días Consecutivos
-                BlocBuilder<ProgressCubit, ProgressState>(
-                  builder: (context, state) {
-                    final streak =
-                        state is ProgressLoaded ? state.currentStreak : 0;
-                    return HomeAccomplishmentCard(
-                      key: _keys.accomplishmentCard,
-                      title: l10n.currentStreak,
-                      subtitle: streak > 0
-                          ? l10n.streakSubtitleActive(streak)
-                          : l10n.streakSubtitleInactive,
-                      icon: Icons.local_fire_department_rounded,
+                    final loaded = state is ProgressLoaded ? state : null;
+                    return Column(
+                      children: [
+                        HomeProgressCard(
+                          key: _keys.progressCard,
+                          progress:
+                              loaded != null ? loaded.weeklyPercentage / 100 : 0.0,
+                          weeklyData: loaded?.dailyValues ?? List.filled(7, 0.0),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        HomeAccomplishmentCard(
+                          key: _keys.accomplishmentCard,
+                          title: l10n.currentStreak,
+                          subtitle: (loaded?.currentStreak ?? 0) > 0
+                              ? l10n.streakSubtitleActive(loaded!.currentStreak)
+                              : l10n.streakSubtitleInactive,
+                          icon: Icons.local_fire_department_rounded,
+                        ),
+                      ],
                     );
                   },
                 ),

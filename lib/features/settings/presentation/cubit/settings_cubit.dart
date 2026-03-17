@@ -4,6 +4,17 @@ import 'package:playing_tracker/features/settings/data/services/settings_service
 
 import 'settings_state.dart';
 
+/// Cubit responsable de gestionar las preferencias persistentes del usuario.
+///
+/// Coordina las operaciones de lectura y escritura de ajustes a través de
+/// [SettingsService] (basado en `shared_preferences`) y emite un nuevo
+/// [SettingsState] con cada cambio. Se inicializa cargando automáticamente
+/// los valores guardados en disco al construirse.
+///
+/// Gestiona tres categorías de preferencias:
+/// - **Apariencia**: modo de tema ([ThemeMode]) y color semilla ([Color]).
+/// - **Idioma**: locale activo o detección automática del sistema.
+/// - **Tutorial**: estado de completado del tutorial para cada rol (alumno/docente).
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit(this._settingsService) : super(SettingsState.initial()) {
     _loadSettings();
@@ -11,6 +22,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   final SettingsService _settingsService;
 
+  /// Carga los ajustes persistidos y emite el estado inicial hidratado.
   void _loadSettings() {
     final themeMode = _settingsService.getThemeMode();
     final locale = _settingsService.getLocale(); // Puede ser null (automático)
@@ -26,6 +38,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
   }
 
+  /// Persiste y aplica el modo de tema seleccionado por el usuario.
   Future<void> updateThemeMode(ThemeMode mode) async {
     await _settingsService.setThemeMode(mode);
     emit(state.copyWith(themeMode: mode));
@@ -38,6 +51,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(locale: locale));
   }
 
+  /// Persiste y aplica el color semilla para la paleta de Material Design 3.
   Future<void> updateSeedColor(Color color) async {
     await _settingsService.setSeedColor(color);
     emit(state.copyWith(seedColor: color));
