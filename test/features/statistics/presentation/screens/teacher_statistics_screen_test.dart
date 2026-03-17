@@ -88,6 +88,7 @@ void main() {
 
       final state = TeacherStatsLoaded(
         classStats: classStats,
+        studentsStats: const [],
         timeFilter: TimeFilter.thisWeek,
       );
       when(() => mockTeacherStatsCubit.state).thenReturn(state);

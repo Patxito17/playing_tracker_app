@@ -2737,6 +2737,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.'**
   String get tutorialTeacherStatsDesc;
+
+  /// Título de la sección de ranking por alumno en estadísticas del docente
+  ///
+  /// In es, this message translates to:
+  /// **'Ranking de Alumnos'**
+  String get studentRankingTitle;
+
+  /// Mensaje cuando no hay actividad de alumnos en el período seleccionado
+  ///
+  /// In es, this message translates to:
+  /// **'Ningún alumno tiene actividad en este período'**
+  String get noStudentsActivity;
 }
 
 class _AppLocalizationsDelegate

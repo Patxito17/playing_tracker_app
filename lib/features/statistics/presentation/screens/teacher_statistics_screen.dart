@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:playing_tracker/core/constants/app_constants.dart';
 import 'package:playing_tracker/core/extensions/context_extensions.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_state.dart';
 import 'package:playing_tracker/features/statistics/presentation/widgets/stat_metric_tile.dart';
@@ -83,6 +84,11 @@ class TeacherStatisticsScreen extends StatelessWidget {
                     classId: classId,
                     teacherId: teacherId,
                     isLoading: isLoading,
+                    studentsStats: state is TeacherStatsLoaded
+                        ? state.studentsStats
+                        : (state is TeacherStatsLoading
+                              ? state.studentsStats
+                              : null),
                   ),
                 },
               ),
@@ -100,12 +106,14 @@ class _StatsContent extends StatelessWidget {
     required this.classId,
     required this.teacherId,
     required this.isLoading,
+    required this.studentsStats,
   });
 
   final ClassStatsModel? classStats;
   final String classId;
   final String teacherId;
   final bool isLoading;
+  final List<StudentClassStatsModel>? studentsStats;
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +157,8 @@ class _StatsContent extends StatelessWidget {
                           icon: Icons.trending_up_rounded,
                           value: '${classStats!.activeStudents}',
                           label: context.l10n.classStatusActive,
-                          subtitle: classStats!.activeStudentsPercentageFormatted,
+                          subtitle:
+                              classStats!.activeStudentsPercentageFormatted,
                           color: context.colorScheme.tertiary,
                         ),
                         StatMetricTile(
@@ -190,6 +199,28 @@ class _StatsContent extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.m),
+
+              // --- Ranking de alumnos ---
+              if (studentsStats != null && studentsStats!.isNotEmpty)
+                _StudentRankingSection(studentsStats: studentsStats!),
+              if (studentsStats != null && studentsStats!.isEmpty)
+                StatsSectionCard(
+                  icon: Icons.people_rounded,
+                  title: context.l10n.studentRankingTitle,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.m,
+                      ),
+                      child: Text(
+                        context.l10n.noStudentsActivity,
+                        style: context.bodyMediumOnSurfaceVariant,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
               const SizedBox(height: AppSpacing.m),
 
               // --- Desglose por tareas ---
@@ -236,8 +267,8 @@ class _StatsContent extends StatelessWidget {
                               child: Text(
                                 task.durationFormatted,
                                 style: context.textTheme.bodySmall?.copyWith(
-                                  color: context
-                                      .colorScheme.onSecondaryContainer,
+                                  color:
+                                      context.colorScheme.onSecondaryContainer,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -251,6 +282,119 @@ class _StatsContent extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StudentRankingSection extends StatelessWidget {
+  const _StudentRankingSection({required this.studentsStats});
+
+  final List<StudentClassStatsModel> studentsStats;
+
+  @override
+  Widget build(BuildContext context) {
+    return StatsSectionCard(
+      icon: Icons.leaderboard_rounded,
+      title: context.l10n.studentRankingTitle,
+      child: Column(
+        children: List.generate(studentsStats.length, (index) {
+          final student = studentsStats[index];
+          final rank = index + 1;
+          return _StudentRankRow(student: student, rank: rank);
+        }),
+      ),
+    );
+  }
+}
+
+class _StudentRankRow extends StatelessWidget {
+  const _StudentRankRow({required this.student, required this.rank});
+
+  final StudentClassStatsModel student;
+  final int rank;
+
+  String _rankLabel() {
+    if (rank == 1) return '🥇';
+    if (rank == 2) return '🥈';
+    if (rank == 3) return '🥉';
+    return '$rank.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final isActive = student.totalSessions > 0;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.s),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 32,
+            child: Text(
+              _rankLabel(),
+              style: context.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s),
+          Expanded(
+            child: Text(
+              student.studentName,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: isActive
+                    ? colorScheme.onSurface
+                    : colorScheme.onSurfaceVariant,
+                fontWeight: isActive ? FontWeight.w500 : FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s),
+          if (isActive) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(AppBorderRadius.small),
+              ),
+              child: Text(
+                student.durationFormatted,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(AppBorderRadius.small),
+              ),
+              child: Text(
+                context.l10n.sessionsLabelCount(student.totalSessions),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSecondaryContainer,
+                ),
+              ),
+            ),
+          ] else
+            Text(
+              student.durationFormatted,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+        ],
       ),
     );
   }

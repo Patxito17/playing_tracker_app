@@ -1885,5 +1885,13 @@
   "tutorialTeacherStatsDesc": "Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.",
   "@tutorialTeacherStatsDesc": {
     "description": "Descripción del paso 5 del tutorial de docente"
+  },
+  "studentRankingTitle": "Ranking de Alumnos",
+  "@studentRankingTitle": {
+    "description": "Título de la sección de ranking por alumno en estadísticas del docente"
+  },
+  "noStudentsActivity": "Ningún alumno tiene actividad en este período",
+  "@noStudentsActivity": {
+    "description": "Mensaje cuando no hay actividad de alumnos en el período seleccionado"
   }
 }
