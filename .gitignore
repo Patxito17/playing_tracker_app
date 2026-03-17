@@ -82,3 +82,21 @@ functions/.env
 
 # Builds y releases empaquetados locamente
 /releases/
+
+# ==========================================
+# Fastlane - Automatización de Stores
+# ==========================================
+
+# Claves de API (NUNCA publicar)
+fastlane/AuthKey_*.p8
+fastlane/gc_keys.json
+fastlane/.env
+fastlane/.env.*
+
+# Archivos generados por fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+
+# Screenshots generadas (binarios grandes, se regeneran antes de cada subida)
+fastlane/screenshots/
