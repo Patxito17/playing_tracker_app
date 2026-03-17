@@ -48,7 +48,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(themeMode: mode));
   }
 
-  /// Actualiza el idioma seleccionado. Pasa [null] para activar la detección
+  /// Actualiza el idioma seleccionado. Pasa `null` para activar la detección
   /// automática del idioma del sistema.
   Future<void> updateLocale(Locale? locale) async {
     await _settingsService.setLocale(locale);
@@ -65,12 +65,17 @@ class SettingsCubit extends Cubit<SettingsState> {
   // Tutorial de primera ejecución
   // ---------------------------------------------------------------------------
 
+  /// Devuelve true si el tutorial del alumno ya fue completado.
   bool isStudentTutorialDone() => state.studentTutorialDone;
+
+  /// Marca el tutorial del alumno como completado y lo persiste.
   Future<void> markStudentTutorialDone() async {
     await _settingsService.markStudentTutorialDone();
     emit(state.copyWith(studentTutorialDone: true));
   }
 
+  /// Reinicia el tutorial del alumno e incrementa `tutorialResetVersion`
+  /// para que la pantalla de inicio lo detecte y vuelva a mostrarlo.
   Future<void> resetStudentTutorial() async {
     await _settingsService.resetStudentTutorial();
     emit(
@@ -81,12 +86,17 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
   }
 
+  /// Devuelve true si el tutorial del docente ya fue completado.
   bool isTeacherTutorialDone() => state.teacherTutorialDone;
+
+  /// Marca el tutorial del docente como completado y lo persiste.
   Future<void> markTeacherTutorialDone() async {
     await _settingsService.markTeacherTutorialDone();
     emit(state.copyWith(teacherTutorialDone: true));
   }
 
+  /// Reinicia el tutorial del docente e incrementa `tutorialResetVersion`
+  /// para que la pantalla de inicio lo detecte y vuelva a mostrarlo.
   Future<void> resetTeacherTutorial() async {
     await _settingsService.resetTeacherTutorial();
     emit(

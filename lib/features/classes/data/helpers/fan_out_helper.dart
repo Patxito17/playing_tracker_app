@@ -22,7 +22,7 @@ abstract interface class FanOutHelperContract {
 /// Helper encargado de preparar y propagar el fan-out de tareas hacia
 /// la colección `assignments`.
 ///
-/// Dado un [taskId] y un [classId], obtiene los alumnos activos de la clase
+/// Dado un `taskId` y un `classId`, obtiene los alumnos activos de la clase
 /// y crea (o actualiza) un documento de asignación por alumno en Firestore.
 final class FanOutHelper implements FanOutHelperContract {
   /// Crea una instancia permitiendo inyectar dependencias para pruebas.

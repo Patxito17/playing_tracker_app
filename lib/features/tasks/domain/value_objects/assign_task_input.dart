@@ -6,10 +6,10 @@
 /// infraestructura (servicios + FanOutHelper).
 ///
 /// Campos:
-/// - [taskId]: Identificador único de la tarea a asignar.
-/// - [classId]: Identificador único de la clase destino.
-/// - [teacherId]: Identificador del docente que realiza la asignación.
-/// - [studentIds]: Lista opcional de IDs de alumnos. Si es null o vacío, se asigna a todos.
+/// - `taskId`: Identificador único de la tarea a asignar.
+/// - `classId`: Identificador único de la clase destino.
+/// - `teacherId`: Identificador del docente que realiza la asignación.
+/// - `studentIds`: Lista opcional de IDs de alumnos. Si es null o vacío, se asigna a todos.
 typedef AssignTaskInput = ({
   String taskId,
   String classId,

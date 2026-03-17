@@ -357,6 +357,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  /// Reconstruye el estado desde el JSON persistido por HydratedBloc.
+  ///
+  /// Devuelve siempre [AuthUnauthenticated] porque la rehidratación real del
+  /// perfil se delega a [checkAuthState], que valida contra Firebase en cada
+  /// reinicio. Persistir el modelo completo aquí sería redundante e inseguro.
   @override
   AuthState? fromJson(Map<String, dynamic> json) {
     try {
@@ -370,15 +375,18 @@ class AuthCubit extends HydratedCubit<AuthState> {
         return const AuthUnauthenticated();
       }
 
-      // Cargar el modelo desde Firestore al rehidratar
-      // Nota: esto es asíncrono, por lo que podría no funcionar bien con hydrated_bloc
-      // En este caso, dejaríamos que checkAuthState se encargue al iniciar
+      // La rehidratación completa del perfil ocurre en checkAuthState al arrancar.
       return const AuthUnauthenticated();
     } catch (_) {
       return const AuthUnauthenticated();
     }
   }
 
+  /// Serializa el estado para persistencia por HydratedBloc.
+  ///
+  /// Solo persiste metadatos mínimos (tipo y userId) — el modelo completo
+  /// se recarga desde Firestore en cada arranque para garantizar frescura.
+  /// Devuelve null para estados no autenticados, evitando escrituras innecesarias.
   @override
   Map<String, dynamic>? toJson(AuthState state) {
     if (state is! AuthAuthenticated) {
@@ -439,6 +447,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  /// Convierte cualquier excepción en un mensaje legible para la UI.
+  ///
+  /// Las [AuthRepositoryException] ya contienen un mensaje pre-mapeado;
+  /// el resto se mapea mediante [FirebaseErrorMapper].
   String _mapError(Object error) {
     if (error is AuthRepositoryException) {
       return error.message;

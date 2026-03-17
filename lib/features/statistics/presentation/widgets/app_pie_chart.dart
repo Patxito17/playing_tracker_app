@@ -15,7 +15,7 @@ class AppPieChart extends StatefulWidget {
   });
 
   /// Datos del gráfico: cada entrada es (label, valor, color opcional).
-  /// Por ejemplo: [('Escalas', 45, Colors.blue), ('Estudios', 30, Colors.red)]
+  /// Por ejemplo: `[('Escalas', 45, Colors.blue), ('Estudios', 30, Colors.red)]`
   final List<({String label, double value, Color? color})> data;
 
   /// Título opcional del gráfico

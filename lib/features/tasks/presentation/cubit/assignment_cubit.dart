@@ -9,8 +9,14 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
   AssignmentCubit(this._repository) : super(const AssignmentInitial());
 
   final TaskRepository _repository;
+
+  /// Suscripción activa al stream de asignaciones del alumno.
   StreamSubscription? _assignmentsSubscription;
+
+  /// ID del alumno cuyas asignaciones se están observando.
   String? _currentStudentId;
+
+  /// Filtros activos aplicados a la última suscripción.
   TaskFilters? _currentFilters;
 
   /// Observa en tiempo real las asignaciones del alumno autenticado.
@@ -76,6 +82,7 @@ final class AssignmentCubit extends Cubit<AssignmentState> {
     await watchAssignments(studentId: studentId, filters: filters);
   }
 
+  /// Cancela la suscripción al stream de asignaciones antes de cerrar el cubit.
   @override
   Future<void> close() async {
     await _assignmentsSubscription?.cancel();

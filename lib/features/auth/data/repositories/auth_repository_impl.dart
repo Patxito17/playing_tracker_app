@@ -10,6 +10,10 @@ import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 
 /// Implementación concreta del [AuthRepository] usando Firebase Auth + Firestore.
+///
+/// Accede a las colecciones `teachers` y `students` directamente para leer y
+/// escribir perfiles. Los proveedores pueden inyectarse en el constructor para
+/// facilitar las pruebas unitarias.
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
     : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
@@ -20,7 +24,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
+
+  /// Referencia a la colección `teachers` de Firestore.
   late final CollectionReference<Map<String, dynamic>> _teachersRef;
+
+  /// Referencia a la colección `students` de Firestore.
   late final CollectionReference<Map<String, dynamic>> _studentsRef;
 
   @override
@@ -157,6 +165,10 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  /// Completa el perfil de un docente autenticado vía proveedor social.
+  ///
+  /// Obtiene el UID y el email del usuario de Firebase actual y delega la
+  /// creación del documento en [createTeacher].
   @override
   Future<void> completeSocialTeacherProfile({
     required String firstName,
@@ -178,6 +190,10 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
 
+  /// Completa el perfil de un alumno autenticado vía proveedor social.
+  ///
+  /// Obtiene el UID y el email del usuario de Firebase actual y delega la
+  /// creación del documento en [createStudent].
   @override
   Future<void> completeSocialStudentProfile({
     required String firstName,
@@ -199,6 +215,12 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
 
+  /// Obtiene el rol del usuario intentando primero los Custom Claims del token.
+  ///
+  /// Si el claim `role` aún no está disponible (ventana de tiempo entre la
+  /// creación del perfil y la ejecución de la Cloud Function), realiza hasta
+  /// 3 reintentos con pausa de 2 s cada uno mientras fuerza el refresco del
+  /// token. Como último fallback consulta Firestore directamente.
   @override
   Future<UserRole> getUserRole(String userId) async {
     try {

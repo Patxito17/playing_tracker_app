@@ -34,7 +34,10 @@ final class AssignmentEmpty extends AssignmentState {
 final class AssignmentSuccess extends AssignmentState {
   const AssignmentSuccess({required this.assignments, this.filters});
 
+  /// Lista inmutable de asignaciones del alumno.
   final List<AssignmentModel> assignments;
+
+  /// Filtros activos cuando se recibió este estado.
   final TaskFilters? filters;
 
   @override
@@ -45,7 +48,10 @@ final class AssignmentSuccess extends AssignmentState {
 final class AssignmentError extends AssignmentState {
   const AssignmentError({required this.message, this.cause});
 
+  /// Mensaje legible para la UI.
   final String message;
+
+  /// Excepción original que provocó el error (para logging).
   final Object? cause;
 
   @override

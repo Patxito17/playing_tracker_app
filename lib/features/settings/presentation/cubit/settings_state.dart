@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 /// en el método [SettingsState.copyWith].
 const _kNoLocale = Object();
 
+/// Estado inmutable de ajustes de usuario gestionado por [SettingsCubit].
+///
+/// Agrupa las tres categorías de preferencias: apariencia (tema y color),
+/// idioma y estado de tutoriales. Todas las modificaciones crean una nueva
+/// instancia mediante [copyWith].
 class SettingsState extends Equatable {
   const SettingsState({
     required this.themeMode,
@@ -15,12 +20,15 @@ class SettingsState extends Equatable {
     this.teacherTutorialDone = false,
   });
 
+  /// Modo de tema activo (claro, oscuro o sistema).
   final ThemeMode themeMode;
 
   /// Idioma seleccionado por el usuario. Si es `null`, la app usa el idioma
   /// del sistema operativo de forma automática.
   final Locale? locale;
 
+  /// Color semilla para generar la paleta de Material Design 3.
+  /// Null significa usar el color semilla por defecto de la app.
   final Color? seedColor;
 
   /// Versión incrementada cada vez que se reinicia un tutorial desde Ajustes.
@@ -33,6 +41,7 @@ class SettingsState extends Equatable {
   /// Indica si el tutorial del docente ya fue completado.
   final bool teacherTutorialDone;
 
+  /// Estado inicial por defecto: tema del sistema, idioma automático y tutoriales pendientes.
   factory SettingsState.initial() {
     return const SettingsState(
       themeMode: ThemeMode.system,
@@ -46,7 +55,7 @@ class SettingsState extends Equatable {
 
   /// Permite actualizar campos de forma selectiva. Para borrar [locale]
   /// (establecer detección automática) pasa `locale: null` —se detecta
-  /// con [clearLocale: true] para distinguirlo del caso "no cambiar".
+  /// con `clearLocale: true` para distinguirlo del caso "no cambiar".
   SettingsState copyWith({
     ThemeMode? themeMode,
     Object? locale = _kNoLocale,

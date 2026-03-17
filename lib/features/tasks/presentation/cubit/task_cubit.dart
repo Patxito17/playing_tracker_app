@@ -10,8 +10,14 @@ final class TaskCubit extends Cubit<TaskState> {
   TaskCubit(this._repository) : super(const TaskInitial());
 
   final TaskRepository _repository;
+
+  /// Suscripción activa al stream de tareas del docente.
   StreamSubscription? _tasksSubscription;
+
+  /// ID del docente cuyas tareas se están observando.
   String? _currentTeacherId;
+
+  /// Filtros activos aplicados a la última suscripción.
   TaskFilters? _currentFilters;
 
   /// Observa en tiempo real las tareas del docente autenticado.
@@ -182,6 +188,7 @@ final class TaskCubit extends Cubit<TaskState> {
     );
   }
 
+  /// Cancela la suscripción al stream de tareas antes de cerrar el cubit.
   @override
   Future<void> close() async {
     await _tasksSubscription?.cancel();

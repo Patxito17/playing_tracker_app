@@ -21,6 +21,7 @@ final class StatisticsService {
 
   final FirebaseFirestore _firestore;
 
+  /// Referencia a la colección `sessions` de Firestore.
   CollectionReference<Map<String, dynamic>> get _sessionsCollection =>
       _firestore.collection(_sessionsCollectionName);
 
@@ -717,6 +718,12 @@ final class StatisticsService {
     }
   }
 
+  /// Construye y ejecuta la query de sesiones filtrada por clase, docente y periodo.
+  ///
+  /// Para [TimeFilter.thisWeek] filtra por `dateLogged` en los últimos 7 días.
+  /// Para los demás filtros, usa el campo `monthBucket` (formato "YYYY-MM")
+  /// para aprovechar los índices de Firestore y evitar rangos amplios.
+  /// El límite de [TimeFilter.allTime] es 500 documentos por seguridad.
   Future<QuerySnapshot<Map<String, dynamic>>> _buildFilteredQuery({
     required String classId,
     required String teacherId,
@@ -766,9 +773,12 @@ final class StatisticsService {
     }
   }
 
+  /// Genera una clave de agrupación diaria en formato "YYYY-MM-DD".
+  /// Se usa como clave del mapa interno para agregar sesiones por día.
   String _getDayKey(DateTime date) =>
       '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
+  /// Registra en el log el error de Firestore con método, código y stack trace.
   void _logError(
     String method,
     FirebaseException error,

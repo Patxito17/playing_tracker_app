@@ -109,9 +109,11 @@ extension BuildContextExtensions on BuildContext {
   /// Uso: `context.l10n.miString`
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 
-  /// Helper para traducir errores técnicos de Firebase usando l10n.
-  /// Mapea la clave técnica retornada por FirebaseErrorMapper
-  /// a la propiedad correspondiente en AppLocalizations.
+  /// Traduce una clave técnica de error (retornada por [FirebaseErrorMapper])
+  /// a la cadena localizada correspondiente de [AppLocalizations].
+  ///
+  /// Si la clave no tiene traducción registrada, devuelve la clave original
+  /// para facilitar la depuración sin silenciar el error.
   String translateError(String errorKey) {
     final localizations = l10n;
 
