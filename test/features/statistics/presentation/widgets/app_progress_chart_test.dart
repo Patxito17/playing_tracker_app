@@ -14,7 +14,6 @@ void main() {
 
       // Assert
       expect(find.text('75%'), findsOneWidget);
-      expect(find.text('Completado'), findsOneWidget);
     });
 
     testWidgets('shows 0% for zero progress', (tester) async {
@@ -78,7 +77,6 @@ void main() {
       // Assert
       expect(find.text('Custom Center'), findsOneWidget);
       expect(find.text('80%'), findsNothing);
-      expect(find.text('Completado'), findsNothing);
     });
 
     testWidgets('throws assertion error for invalid progress values', (

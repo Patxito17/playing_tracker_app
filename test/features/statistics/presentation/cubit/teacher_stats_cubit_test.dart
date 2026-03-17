@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/presentation/cubit/teacher_stats_cubit.dart';
@@ -50,6 +51,14 @@ void main() {
             forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tClassStats);
+        when(
+          () => repository.getStudentsClassStats(
+            classId: any(named: 'classId'),
+            teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
+        ).thenAnswer((_) async => <StudentClassStatsModel>[]);
         return cubit;
       },
       act: (cubit) =>
@@ -58,6 +67,7 @@ void main() {
         const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek),
         TeacherStatsLoaded(
           classStats: tClassStats,
+          studentsStats: const [],
           timeFilter: TimeFilter.thisWeek,
         ),
       ],
@@ -84,6 +94,14 @@ void main() {
             forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenThrow(Exception('Failed to load class stats'));
+        when(
+          () => repository.getStudentsClassStats(
+            classId: any(named: 'classId'),
+            teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
+        ).thenAnswer((_) async => <StudentClassStatsModel>[]);
         return cubit;
       },
       act: (cubit) =>
@@ -105,6 +123,14 @@ void main() {
             forceRefresh: any(named: 'forceRefresh'),
           ),
         ).thenAnswer((_) async => tClassStats);
+        when(
+          () => repository.getStudentsClassStats(
+            classId: any(named: 'classId'),
+            teacherId: any(named: 'teacherId'),
+            timeFilter: any(named: 'timeFilter'),
+            forceRefresh: any(named: 'forceRefresh'),
+          ),
+        ).thenAnswer((_) async => <StudentClassStatsModel>[]);
         return cubit;
       },
       act: (cubit) =>
@@ -113,6 +139,7 @@ void main() {
         const TeacherStatsLoading(timeFilter: TimeFilter.thisWeek),
         TeacherStatsLoaded(
           classStats: tClassStats,
+          studentsStats: const [],
           timeFilter: TimeFilter.thisWeek,
         ),
       ],

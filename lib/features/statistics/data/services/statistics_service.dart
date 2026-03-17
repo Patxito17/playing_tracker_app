@@ -5,6 +5,7 @@ import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
@@ -487,6 +488,93 @@ final class StatisticsService {
       );
     } on FirebaseException catch (error, stackTrace) {
       _logError('getClassStats', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  /// Obtiene estadísticas por alumno dentro de una clase para un periodo de tiempo.
+  Future<List<StudentClassStatsModel>> getStudentsClassStats({
+    required String classId,
+    required String teacherId,
+    TimeFilter timeFilter = TimeFilter.thisWeek,
+  }) async {
+    final sanitizedClassId = classId.trim();
+    if (sanitizedClassId.isEmpty) {
+      throw ArgumentError('El ID de la clase es obligatorio');
+    }
+    try {
+      // 1. Obtener membresías activas para nombres de alumnos
+      final membershipsSnapshot = await _firestore
+          .collection('memberships')
+          .where('classId', isEqualTo: sanitizedClassId)
+          .where('isActive', isEqualTo: true)
+          .get();
+
+      final studentNames = <String, String>{};
+      for (final doc in membershipsSnapshot.docs) {
+        final data = doc.data();
+        final studentId = data['studentId'] as String?;
+        final studentName = data['studentName'] as String?;
+        if (studentId != null && studentName != null) {
+          studentNames[studentId] = studentName;
+        }
+      }
+
+      if (studentNames.isEmpty) return [];
+
+      // 2. Consultar sesiones con el filtro de tiempo
+      final sessionsSnapshot = await _buildFilteredQuery(
+        classId: sanitizedClassId,
+        teacherId: teacherId,
+        timeFilter: timeFilter,
+      );
+
+      // 3. Agregar por alumno
+      final studentMap =
+          <String, ({int duration, int sessions, DateTime? lastSession})>{};
+      for (final doc in sessionsSnapshot.docs) {
+        final data = doc.data();
+        final studentId = data['studentId'] as String?;
+        if (studentId == null) continue;
+        final duration = (data['totalDuration'] as int?) ?? 0;
+        final dateLogged = (data['dateLogged'] as Timestamp?)?.toDate();
+        final existing = studentMap[studentId];
+        if (existing != null) {
+          final best = existing.lastSession != null && dateLogged != null
+              ? (dateLogged.isAfter(existing.lastSession!)
+                    ? dateLogged
+                    : existing.lastSession)
+              : existing.lastSession ?? dateLogged;
+          studentMap[studentId] = (
+            duration: existing.duration + duration,
+            sessions: existing.sessions + 1,
+            lastSession: best,
+          );
+        } else {
+          studentMap[studentId] = (
+            duration: duration,
+            sessions: 1,
+            lastSession: dateLogged,
+          );
+        }
+      }
+
+      // 4. Construir lista incluyendo alumnos sin actividad
+      final result = studentNames.entries.map((entry) {
+        final stats = studentMap[entry.key];
+        return StudentClassStatsModel(
+          studentId: entry.key,
+          studentName: entry.value,
+          totalDuration: stats?.duration ?? 0,
+          totalSessions: stats?.sessions ?? 0,
+          lastSessionDate: stats?.lastSession,
+        );
+      }).toList()
+        ..sort((a, b) => b.totalDuration.compareTo(a.totalDuration));
+
+      return result;
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('getStudentsClassStats', error, stackTrace);
       throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
     }
   }

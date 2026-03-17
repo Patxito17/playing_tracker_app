@@ -7,12 +7,21 @@ import 'package:playing_tracker/config/routes/app_routes.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/features/sessions/domain/models/session_model.dart';
+import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
+import 'package:playing_tracker/features/settings/data/services/settings_service.dart';
+import 'package:playing_tracker/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:playing_tracker/features/tasks/domain/models/assignment_model.dart';
+import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
 
 import '../../../helpers/mock_hydrated_storage.dart';
 import '../../../helpers/user_test_helpers.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
+class _MockSessionRepository extends Mock implements SessionRepository {}
+class _MockTaskRepository extends Mock implements TaskRepository {}
+class _MockSettingsService extends Mock implements SettingsService {}
 
 class _TestAuthCubit extends AuthCubit {
   _TestAuthCubit(super.repository) : super(shouldCheckAuthState: false);
@@ -22,6 +31,9 @@ class _TestAuthCubit extends AuthCubit {
 
 void main() {
   late _MockAuthRepository mockAuthRepository;
+  late _MockSessionRepository mockSessionRepository;
+  late _MockTaskRepository mockTaskRepository;
+  late _MockSettingsService mockSettingsService;
   late _TestAuthCubit testAuthCubit;
   late AppRoutes appRoutes;
 
@@ -29,16 +41,44 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initHydratedStorage();
     mockAuthRepository = _MockAuthRepository();
+    mockSessionRepository = _MockSessionRepository();
+    mockTaskRepository = _MockTaskRepository();
+    mockSettingsService = _MockSettingsService();
+    when(() => mockSettingsService.getThemeMode()).thenReturn(ThemeMode.system);
+    when(() => mockSettingsService.getLocale()).thenReturn(null);
+    when(() => mockSettingsService.getSeedColor()).thenReturn(null);
+    when(() => mockSettingsService.isStudentTutorialDone()).thenReturn(true);
+    when(() => mockSettingsService.isTeacherTutorialDone()).thenReturn(true);
     when(() => mockAuthRepository.currentUser).thenReturn(null);
+    when(() => mockSessionRepository.watchWeeklySessions(
+          studentId: any(named: 'studentId'),
+          startDate: any(named: 'startDate'),
+          endDate: any(named: 'endDate'),
+        )).thenAnswer((_) => Stream.value(<SessionModel>[]));
+    when(() => mockSessionRepository.watchStudentSessions(
+          studentId: any(named: 'studentId'),
+          limit: any(named: 'limit'),
+        )).thenAnswer((_) => const Stream.empty());
+    when(() => mockTaskRepository.watchStudentAssignments(any()))
+        .thenAnswer((_) => Stream.value(<AssignmentModel>[]));
     testAuthCubit = _TestAuthCubit(mockAuthRepository);
     appRoutes = AppRoutes(testAuthCubit);
   });
 
   Widget buildRouter() {
-    return RepositoryProvider<AuthRepository>.value(
-      value: mockAuthRepository,
-      child: BlocProvider<AuthCubit>.value(
-        value: testAuthCubit,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>.value(value: mockAuthRepository),
+        RepositoryProvider<SessionRepository>.value(value: mockSessionRepository),
+        RepositoryProvider<TaskRepository>.value(value: mockTaskRepository),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthCubit>.value(value: testAuthCubit),
+          BlocProvider<SettingsCubit>(
+            create: (_) => SettingsCubit(mockSettingsService),
+          ),
+        ],
         child: MaterialApp.router(
           routerConfig: appRoutes.router,
           localizationsDelegates: const [
@@ -59,7 +99,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text('Inicia sesión para continuar'), findsOneWidget);
+    expect(find.text('¿Listo para seguir tu progreso?'), findsOneWidget);
   });
 
   testWidgets('docente autenticado llega a su home', (tester) async {
@@ -70,7 +110,7 @@ void main() {
     await tester.pumpWidget(buildRouter());
     await tester.pumpAndSettle();
 
-    expect(find.text('Tus clases están listas'), findsOneWidget);
+    expect(find.text('¡Hola, Juan!'), findsOneWidget);
   });
 
   testWidgets(
@@ -83,13 +123,13 @@ void main() {
       await tester.pumpWidget(buildRouter());
       await tester.pumpAndSettle();
 
-      expect(find.text('Tu práctica continúa'), findsOneWidget);
+      expect(find.text('¡Hola, Ana!'), findsOneWidget);
 
       appRoutes.router.go(AppRoutes.teacherClassesList);
       await tester.pumpAndSettle();
 
-      expect(find.text('Tu práctica continúa'), findsOneWidget);
-      expect(find.text('Tus clases están listas'), findsNothing);
+      expect(find.text('¡Hola, Ana!'), findsOneWidget);
+      expect(find.text('¡Hola, Juan!'), findsNothing);
     },
   );
 }

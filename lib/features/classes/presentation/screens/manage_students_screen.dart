@@ -11,7 +11,9 @@ import '../../../../features/classes/domain/repositories/class_repository.dart';
 import '../../../../features/classes/presentation/cubit/membership_cubit.dart';
 import '../../../../features/classes/presentation/cubit/membership_state.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_card.dart';
+import '../widgets/class_chips.dart';
+import '../widgets/class_empty_state.dart';
+import '../widgets/class_error_state.dart';
 import '../widgets/teacher_class_overview_card.dart';
 
 /// Pantalla para gestionar alumnos de una clase conectada al [MembershipCubit].
@@ -265,15 +267,15 @@ class _StateAwareMembersContent extends StatelessWidget {
       MembershipListLoading() => const Center(
         child: CircularProgressIndicator(),
       ),
-      MembershipEmpty(:final message) => _EmptyManageStudentsState(
-        title: message?.isNotEmpty == true
-            ? message!
-            : context.l10n.noStudentsInClass,
+      MembershipEmpty(:final message) => ClassEmptyState(
+        icon: Icons.people_outline_rounded,
+        title: message?.isNotEmpty == true ? message! : context.l10n.noStudentsInClass,
         subtitle: context.l10n.studentsJoinWithCode,
         actionLabel: context.l10n.close,
+        actionIcon: Icons.close_rounded,
         onAction: () => Navigator.of(context).maybePop(),
       ),
-      MembershipListError(:final message) => _ErrorState(
+      MembershipListError(:final message) => ClassErrorState(
         message: message ?? context.l10n.loadingError,
         onRetry: onRefresh,
       ),
@@ -371,167 +373,111 @@ class _StudentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final joinedAt = DateFormat(
-      'dd/MM/yyyy - HH:mm',
-    ).format(member.joinedAt.toDate());
+    final colorScheme = context.colorScheme;
+    final joinedAt = DateFormat('dd/MM/yyyy - HH:mm').format(member.joinedAt.toDate());
     final studentName = member.studentName?.trim();
-    final title = studentName?.isNotEmpty == true
-        ? studentName!
-        : member.studentId;
+    final title = studentName?.isNotEmpty == true ? studentName! : member.studentId;
     final studentEmail = member.studentEmail?.trim();
-    final subtitle = studentEmail?.isNotEmpty == true
-        ? studentEmail
-        : 'ID: ${member.studentId}';
+    final subtitle = studentEmail?.isNotEmpty == true ? studentEmail! : 'ID: ${member.studentId}';
     final isActive = member.isActive;
+    final statusColor = isActive ? colorScheme.primary : colorScheme.outline;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.m),
       child: Opacity(
-        opacity: isActive ? 1 : 0.6,
-        child: CustomCard(
-          title: title,
-          subtitle: subtitle,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${context.l10n.joinedAtLabel} $joinedAt',
-                      style: context.bodySmallOnSurfaceVariant,
+        opacity: isActive ? 1.0 : 0.6,
+        child: Card(
+          elevation: 1,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.m),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Avatar con inicial
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: colorScheme.primaryContainer,
+                  child: Text(
+                    title.isNotEmpty ? title[0].toUpperCase() : '?',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Chip(
-                      label: Text(
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.m),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        subtitle,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.s),
+                      Wrap(
+                        spacing: AppSpacing.s,
+                        runSpacing: AppSpacing.s,
+                        children: [
+                          ClassStatusChip(
+                            label: isActive
+                                ? context.l10n.classStatusActive
+                                : context.l10n.classStatusArchived,
+                            color: statusColor,
+                          ),
+                          ClassInfoChip(
+                            icon: Icons.calendar_month_rounded,
+                            label: joinedAt,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Acciones
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: onToggleStatus,
+                      tooltip: isActive
+                          ? context.l10n.archiveClassAction
+                          : context.l10n.activateClassAction,
+                      icon: Icon(
                         isActive
-                            ? context.l10n.classStatusActive
-                            : context.l10n.classStatusArchived,
-                      ),
-                      backgroundColor: isActive
-                          ? context.colorScheme.primary.withValues(alpha: 0.12)
-                          : context.colorScheme.outline.withValues(alpha: 0.2),
-                      labelStyle: context.textTheme.bodySmall?.copyWith(
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded,
                         color: isActive
-                            ? context.colorScheme.primary
-                            : context.colorScheme.outline,
+                            ? colorScheme.secondary
+                            : colorScheme.primary,
                       ),
+                    ),
+                    IconButton(
+                      onPressed: onDelete,
+                      tooltip: context.l10n.delete,
+                      icon: const Icon(Icons.delete_forever_rounded),
+                      color: colorScheme.error,
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: AppSpacing.m),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: onToggleStatus,
-                    tooltip: isActive
-                        ? context
-                              .l10n
-                              .archiveClassAction // Deactivate
-                        : context.l10n.activateClassAction, // Activate
-                    icon: Icon(
-                      isActive ? Icons.visibility_off : Icons.visibility,
-                      color: isActive
-                          ? context.colorScheme.secondary
-                          : context.colorScheme.primary,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: onDelete,
-                    tooltip: context.l10n.delete,
-                    icon: const Icon(Icons.delete_forever_outlined),
-                    color: context.colorScheme.error,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.onRetry});
-
-  final String message;
-  final Future<void> Function() onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.l),
-      children: [
-        Icon(Icons.error_outline, size: 48, color: context.colorScheme.error),
-        const SizedBox(height: AppSpacing.m),
-        SelectableText.rich(
-          TextSpan(
-            text: message,
-            style: context.textTheme.bodyLarge?.copyWith(
-              color: context.colorScheme.error,
+              ],
             ),
           ),
-          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: AppSpacing.l),
-        FilledButton.tonal(onPressed: onRetry, child: Text(context.l10n.retry)),
-      ],
-    );
-  }
-}
-
-/// Widget para mostrar estado vacío en gestión de estudiantes.
-class _EmptyManageStudentsState extends StatelessWidget {
-  const _EmptyManageStudentsState({
-    required this.title,
-    required this.subtitle,
-    required this.actionLabel,
-    required this.onAction,
-  });
-
-  final String title;
-  final String subtitle;
-  final String actionLabel;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.xxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.person_outline,
-            size: 80,
-            color: context.colorScheme.outline,
-          ),
-          const SizedBox(height: AppSpacing.l),
-          Text(
-            title,
-            style: context.titleLargeBold,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.s),
-          Text(
-            subtitle,
-            style: context.bodyMediumOnSurfaceVariant,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          FilledButton.icon(
-            onPressed: onAction,
-            icon: const Icon(Icons.close),
-            label: Text(actionLabel),
-          ),
-        ],
       ),
     );
   }

@@ -12,7 +12,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeTab => 'Inicio';
 
   @override
-  String get classesTab => 'Clases';
+  String get classesTab => 'Mis Clases';
+
+  @override
+  String get studentsTab => 'Alumnos';
+
+  @override
+  String get profileTab => 'Perfil';
 
   @override
   String get historyTab => 'Historial';
@@ -133,7 +139,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get welcomeTitle => 'Bienvenido';
 
   @override
-  String get loginSubtitle => 'Inicia sesión para continuar';
+  String get loginSubtitle => '¿Listo para seguir tu progreso?';
 
   @override
   String get createAccountTitle => 'Crea tu cuenta';
@@ -314,7 +320,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo enviar el enlace de recuperación.';
 
   @override
-  String get continueWithGoogle => 'Continuar con Google';
+  String get continueWithGoogle => 'Google';
 
   @override
   String get googleSignInCanceled =>
@@ -325,7 +331,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ocurrió un error al iniciar sesión con Google. Intenta de nuevo.';
 
   @override
-  String get continueWithApple => 'Continuar con Apple';
+  String get continueWithApple => 'Apple';
 
   @override
   String get appleSignInCanceled =>
@@ -346,18 +352,60 @@ class AppLocalizationsEs extends AppLocalizations {
   String get completeProfileButton => 'Completar registro';
 
   @override
-  String get orDivider => 'o';
+  String get orDivider => 'O continúa con';
 
   @override
   String get teacherHomeTitle => 'Inicio docente';
 
   @override
   String welcomeUser(String name) {
-    return 'Hola, $name';
+    return '¡Hola, $name!';
   }
 
   @override
   String get studentHomeTitle => 'Inicio alumno';
+
+  @override
+  String get teacherWelcomeProfe => '¡Buen día, Profe!';
+
+  @override
+  String get musicalControlPanel => 'Panel de control musical';
+
+  @override
+  String get totalStudentsLabel => 'Total Alumnos';
+
+  @override
+  String get hoursTodayLabel => 'Horas Hoy';
+
+  @override
+  String get manageMyClasses => 'Gestionar mis clases';
+
+  @override
+  String get viewAll => 'Ver todo';
+
+  @override
+  String get myClassesLabel => 'Mis clases';
+
+  @override
+  String get tasksSectionTitle => 'Tareas';
+
+  @override
+  String get viewTasksLabel => 'Ver tareas';
+
+  @override
+  String get newTaskLabel => 'Nueva tarea';
+
+  @override
+  String get statsSectionTitle => 'Estadísticas';
+
+  @override
+  String get progressLabel => 'Progreso';
+
+  @override
+  String get historyLabel => 'Historial';
+
+  @override
+  String get notificationsTooltip => 'Notificaciones';
 
   @override
   String get quickActionsTitle => 'Acciones rápidas';
@@ -457,6 +505,30 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get studentHighlightsDescription =>
       'Muy pronto podrás ver tus próximas tareas y el tiempo total invertido.';
+
+  @override
+  String get weeklyProgressTitle => 'Progreso Semanal';
+
+  @override
+  String get virtuosoBadge => 'Virtuoso del Mes';
+
+  @override
+  String get constancyMedal => 'Nueva Medalla: Constancia';
+
+  @override
+  String get constancyDescription =>
+      'Has practicado 7 días seguidos. ¡Sigue así!';
+
+  @override
+  String streakSubtitleActive(int days) {
+    return '$days días seguidos practicando';
+  }
+
+  @override
+  String get streakSubtitleInactive => '¡Practica hoy para comenzar tu racha!';
+
+  @override
+  String get inscriptionsAction => 'Inscribirse';
 
   @override
   String get myClassesTitle => 'Mis clases';
@@ -613,9 +685,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasksTab => 'Tareas';
 
   @override
-  String get studentsTab => 'Estudiantes';
-
-  @override
   String get infoTab => 'Información';
 
   @override
@@ -710,6 +779,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noTasksInClass => 'No hay tareas en esta clase';
+
+  @override
+  String get noTasksInClassSubtitle =>
+      'Crea y asigna tareas a los alumnos de esta clase';
 
   @override
   String get confirmDeleteTaskMessage =>
@@ -986,6 +1059,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionDate => 'Fecha de la sesión';
 
   @override
+  String get practiceSession => 'Sesión de práctica';
+
+  @override
+  String get sessionNotesLabel => 'Notas';
+
+  @override
   String get noFilteredSessions => 'No hay sesiones para este filtro';
 
   @override
@@ -1226,4 +1305,209 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get timerResume => 'Reanudar';
+
+  @override
+  String get timerReset => 'Reiniciar';
+
+  @override
+  String get timerFinish => 'Finalizar';
+
+  @override
+  String get notificationsSection => 'Notificaciones';
+
+  @override
+  String get yesAnswer => 'Sí';
+
+  @override
+  String get noAnswer => 'No';
+
+  @override
+  String get taskStatusActive => 'Activa';
+
+  @override
+  String get taskStatusArchived => 'Archivada';
+
+  @override
+  String get continueStudySession => 'Continuar';
+
+  @override
+  String get myStatisticsTitle => 'Mis estadísticas';
+
+  @override
+  String get statisticsByClass => 'Estadísticas por clase';
+
+  @override
+  String get viewStatsAction => 'Ver estadísticas';
+
+  @override
+  String get noClassesForStats =>
+      'No tienes clases para ver estadísticas todavía.';
+
+  @override
+  String get generalSummaryTitle => 'Resumen general';
+
+  @override
+  String get sessionsLabel => 'Sesiones';
+
+  @override
+  String get streakLabel => 'Racha';
+
+  @override
+  String get weeklyActivityTitle => 'Actividad semanal';
+
+  @override
+  String get taskDistributionTitle => 'Distribución por tarea';
+
+  @override
+  String get errorLoadingStats => 'Error al cargar estadísticas';
+
+  @override
+  String get noTaskData => 'Sin datos de tareas';
+
+  @override
+  String ofTotalStudents(int count) {
+    return 'De un total de $count estudiantes';
+  }
+
+  @override
+  String get tutorialSkip => 'Omitir';
+
+  @override
+  String get tutorialRepeatTitle => 'Repetir tutorial';
+
+  @override
+  String get tutorialRepeatSubtitle => 'Vuelve a ver la guía de bienvenida';
+
+  @override
+  String get tutorialStudentGreetingTitle => '¡Bienvenido a Playing Tracker!';
+
+  @override
+  String get tutorialStudentGreetingDesc =>
+      'Este es tu panel de control musical. Aquí verás tu progreso y accederás a todo lo que necesitas.';
+
+  @override
+  String get tutorialStudentProgressTitle => 'Tu progreso semanal';
+
+  @override
+  String get tutorialStudentProgressDesc =>
+      'Aquí puedes ver cuánto has practicado esta semana. La barra y el gráfico se actualizan con cada sesión.';
+
+  @override
+  String get tutorialStudentStreakTitle => 'Tu racha activa';
+
+  @override
+  String get tutorialStudentStreakDesc =>
+      '¡Practica cada día para mantener tu racha! Cuanto más constante seas, más rápido avanzarás.';
+
+  @override
+  String get tutorialStudentClassesTitle => 'Mis clases';
+
+  @override
+  String get tutorialStudentClassesDesc =>
+      'Accede a todas tus clases musicales, revisa el contenido y registra tus sesiones de práctica.';
+
+  @override
+  String get tutorialStudentTasksTitle => 'Mis tareas';
+
+  @override
+  String get tutorialStudentTasksDesc =>
+      'Aquí encontrarás todas las tareas asignadas por tu profesor. Completa cada una y registra tu tiempo de práctica.';
+
+  @override
+  String get tutorialStudentEnrollTitle => 'Inscribirte en una clase';
+
+  @override
+  String get tutorialStudentEnrollDesc =>
+      '¿Tu profesor te dio un código de clase? Úsalo aquí para unirte y empezar a recibir tareas.';
+
+  @override
+  String get tutorialTeacherGreetingTitle => '¡Bienvenido, docente!';
+
+  @override
+  String get tutorialTeacherGreetingDesc =>
+      'Este es tu panel de gestión musical. Desde aquí controlas tus clases, tareas y el progreso de tus alumnos.';
+
+  @override
+  String get tutorialTeacherClassesTitle => 'Ver mis clases';
+
+  @override
+  String get tutorialTeacherClassesDesc =>
+      'Consulta todas tus clases activas, ve el listado de alumnos y gestiona el contenido de cada clase.';
+
+  @override
+  String get tutorialTeacherCreateClassTitle => 'Crear una clase nueva';
+
+  @override
+  String get tutorialTeacherCreateClassDesc =>
+      'Crea una nueva clase, asígnale un nombre y comparte el código con tus alumnos para que puedan unirse.';
+
+  @override
+  String get tutorialTeacherTasksTitle => 'Gestión de tareas';
+
+  @override
+  String get tutorialTeacherTasksDesc =>
+      'Crea y asigna tareas a tus alumnos. Desde aquí puedes ver el estado de todas las tareas activas.';
+
+  @override
+  String get tutorialTeacherStatsTitle => 'Estadísticas y progreso';
+
+  @override
+  String get tutorialTeacherStatsDesc =>
+      'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.';
+
+  @override
+  String get tutorialNavHomeTitle => 'Inicio';
+
+  @override
+  String get tutorialNavHomeDesc =>
+      'Este es tu punto de partida. Accede rápidamente a todas las secciones de la app desde aquí.';
+
+  @override
+  String get tutorialNavStudentClassesTitle => 'Mis Clases';
+
+  @override
+  String get tutorialNavStudentClassesDesc =>
+      'Aquí encontrarás todas las clases en las que estás inscrito. Accede al contenido y registra tus sesiones.';
+
+  @override
+  String get tutorialNavHistoryTitle => 'Historial de Práctica';
+
+  @override
+  String get tutorialNavHistoryDesc =>
+      'Revisa todas tus sesiones de práctica anteriores y sigue tu progreso musical a lo largo del tiempo.';
+
+  @override
+  String get tutorialNavStudentStatisticsTitle => 'Estadísticas';
+
+  @override
+  String get tutorialNavStudentStatisticsDesc =>
+      'Consulta gráficos detallados de tu tiempo de práctica, rachas y tendencias de rendimiento.';
+
+  @override
+  String get tutorialNavTeacherClassesTitle => 'Mis Clases';
+
+  @override
+  String get tutorialNavTeacherClassesDesc =>
+      'Gestiona todas tus clases activas, consulta los listados de alumnos y accede a los detalles de cada clase.';
+
+  @override
+  String get tutorialNavTeacherStatisticsTitle => 'Estadísticas';
+
+  @override
+  String get tutorialNavTeacherStatisticsDesc =>
+      'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.';
+
+  @override
+  String get tutorialNavSettingsTitle => 'Ajustes';
+
+  @override
+  String get tutorialNavSettingsDesc =>
+      'Personaliza el aspecto de la app, el idioma y tus preferencias personales desde aquí.';
+
+  @override
+  String get studentRankingTitle => 'Ranking de Alumnos';
+
+  @override
+  String get noStudentsActivity =>
+      'Ningún alumno tiene actividad en este período';
 }

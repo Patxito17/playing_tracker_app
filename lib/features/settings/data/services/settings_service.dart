@@ -66,4 +66,35 @@ class SettingsService {
   Future<void> setSeedColor(Color color) async {
     await _prefs.setInt(_seedColorKey, color.toARGB32());
   }
+
+  // ---------------------------------------------------------------------------
+  // Tutorial de primera ejecución
+  // ---------------------------------------------------------------------------
+
+  static const String _studentTutorialDoneKey = 'tutorial_student_done';
+  static const String _teacherTutorialDoneKey = 'tutorial_teacher_done';
+
+  /// Retorna `true` si el alumno ya completó (o saltó) el tutorial.
+  bool isStudentTutorialDone() =>
+      _prefs.getBool(_studentTutorialDoneKey) ?? false;
+
+  /// Marca el tutorial del alumno como completado.
+  Future<void> markStudentTutorialDone() async =>
+      _prefs.setBool(_studentTutorialDoneKey, true);
+
+  /// Resetea el flag del tutorial del alumno para que vuelva a mostrarse.
+  Future<void> resetStudentTutorial() async =>
+      _prefs.remove(_studentTutorialDoneKey);
+
+  /// Retorna `true` si el docente ya completó (o saltó) el tutorial.
+  bool isTeacherTutorialDone() =>
+      _prefs.getBool(_teacherTutorialDoneKey) ?? false;
+
+  /// Marca el tutorial del docente como completado.
+  Future<void> markTeacherTutorialDone() async =>
+      _prefs.setBool(_teacherTutorialDoneKey, true);
+
+  /// Resetea el flag del tutorial del docente para que vuelva a mostrarse.
+  Future<void> resetTeacherTutorial() async =>
+      _prefs.remove(_teacherTutorialDoneKey);
 }

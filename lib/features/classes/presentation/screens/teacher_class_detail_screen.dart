@@ -140,44 +140,56 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
         ],
         child: Scaffold(
           appBar: AppBar(
-            title: Text(context.l10n.classDetailTitle),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.pop(),
-              tooltip: context.l10n.back,
+            title: Text(
+              context.l10n.classDetailTitle,
+              style: context.titleLargeBold?.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
             ),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.m),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () => context.pop(),
+                tooltip: context.l10n.back,
+              ),
+            ),
+            leadingWidth: 48 + AppSpacing.m,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
             bottom: CustomTabBar(
               tabs: [
                 Tab(
-                  icon: const Icon(Icons.info_outline),
-                  text: context.l10n.infoTab,
-                ),
-                Tab(
-                  icon: const Icon(Icons.assignment),
+                  icon: const Icon(Icons.assignment_rounded),
                   text: context.l10n.tasksTab,
                 ),
                 Tab(
-                  icon: const Icon(Icons.people),
+                  icon: const Icon(Icons.people_rounded),
                   text: context.l10n.studentsTab,
                 ),
                 Tab(
-                  icon: const Icon(Icons.bar_chart),
+                  icon: const Icon(Icons.bar_chart_rounded),
                   text: context.l10n.statisticsTab,
+                ),
+                Tab(
+                  icon: const Icon(Icons.info_rounded),
+                  text: context.l10n.infoTab,
                 ),
               ],
             ),
           ),
           body: TabBarView(
             children: [
+              ClassTasksTab(classId: widget.classId),
+              ManageStudentsTab(classId: widget.classId),
+              ClassStatisticsTab(classId: widget.classId, isTeacher: true),
               TeacherClassInfoTab(
                 classId: widget.classId,
                 classFuture: _classFuture,
                 onRefreshRequested: _refreshClassDetails,
                 activeTasksCount: _mockActiveTasksCount,
               ),
-              ClassTasksTab(classId: widget.classId),
-              ManageStudentsTab(classId: widget.classId),
-              ClassStatisticsTab(classId: widget.classId, isTeacher: true),
             ],
           ),
         ),
@@ -458,24 +470,38 @@ class _ClassInformationSection extends StatelessWidget {
       'dd/MM/yyyy – HH:mm',
     ).format(classModel.createdAt.toDate());
     final statusLabel = classModel.canJoin
-        ? context.l10n.classStatusActive
-        : context.l10n.classStatusArchived;
+        ? context.l10n.yesAnswer
+        : context.l10n.noAnswer;
 
     return CustomCard(
-      title: context.l10n.infoTab, // O classInfo
+      leadingAction: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: context.colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(AppBorderRadius.small),
+        ),
+        child: Icon(
+          Icons.info_rounded,
+          size: 20,
+          color: context.colorScheme.onPrimaryContainer,
+        ),
+      ),
+      title: context.l10n.infoTab,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _InfoRow(label: context.l10n.classNameLabel, value: classModel.name),
+          const Divider(height: 1),
           _InfoRow(
             label: context.l10n.classDescriptionLabel,
             value: classModel.description ?? context.l10n.classDescriptionHint,
           ),
+          const Divider(height: 1),
           _InfoRow(label: context.l10n.classStatusActive, value: statusLabel),
-          _InfoRow(
-            label: context.l10n.joinedAtLabel,
-            value: createdAt,
-          ), // O created
+          const Divider(height: 1),
+          _InfoRow(label: context.l10n.joinedAtLabel, value: createdAt),
+          const Divider(height: 1),
           _InfoRow(
             label: context.l10n.accessCodeLabel,
             value: classModel.accessCode,
@@ -515,20 +541,60 @@ class _TeacherInformationSection extends StatelessWidget {
     final displayEmail = teacherEmail?.isNotEmpty == true ? teacherEmail! : '—';
 
     return CustomCard(
-      title: context.l10n.teacherHomeTitle, // O teacherInfo si estuviera
-      subtitle: displayName,
+      leadingAction: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: context.colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(AppBorderRadius.small),
+        ),
+        child: Icon(
+          Icons.person_rounded,
+          size: 20,
+          color: context.colorScheme.onSecondaryContainer,
+        ),
+      ),
+      title: context.l10n.teacherHomeTitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${context.l10n.emailLabel}: $displayEmail',
-            style: context.textTheme.bodyMedium,
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: context.colorScheme.primaryContainer,
+                child: Text(
+                  displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.m),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      displayEmail,
+                      style: context.bodySmallOnSurfaceVariant,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.s),
-          Text(
-            'ID: $teacherId', // O studentIdLabel
-            style: context.bodySmallOnSurfaceVariant,
-          ),
+          const SizedBox(height: AppSpacing.m),
+          const Divider(height: 1),
           const SizedBox(height: AppSpacing.m),
           Row(
             children: [
@@ -586,18 +652,29 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: 2,
-            child: Text(label, style: context.bodySmallOnSurfaceVariant),
+            child: Text(
+              label,
+              style: context.textTheme.labelMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           const SizedBox(width: AppSpacing.s),
           Expanded(
             flex: 3,
-            child: Text(value, style: context.textTheme.bodyMedium),
+            child: Text(
+              value,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurface,
+              ),
+            ),
           ),
         ],
       ),

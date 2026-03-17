@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 const _kNoLocale = Object();
 
 class SettingsState extends Equatable {
-  const SettingsState({required this.themeMode, this.locale, this.seedColor});
+  const SettingsState({
+    required this.themeMode,
+    this.locale,
+    this.seedColor,
+    this.tutorialResetVersion = 0,
+  });
 
   final ThemeMode themeMode;
 
@@ -16,11 +21,16 @@ class SettingsState extends Equatable {
 
   final Color? seedColor;
 
+  /// Versión incrementada cada vez que se reinicia un tutorial desde Ajustes.
+  /// Las pantallas de inicio escuchan este campo para re-disparar el tutorial.
+  final int tutorialResetVersion;
+
   factory SettingsState.initial() {
     return const SettingsState(
       themeMode: ThemeMode.system,
       locale: null, // null = detección automática del sistema
       seedColor: null,
+      tutorialResetVersion: 0,
     );
   }
 
@@ -31,14 +41,17 @@ class SettingsState extends Equatable {
     ThemeMode? themeMode,
     Object? locale = _kNoLocale,
     Color? seedColor,
+    int? tutorialResetVersion,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       locale: locale == _kNoLocale ? this.locale : locale as Locale?,
       seedColor: seedColor ?? this.seedColor,
+      tutorialResetVersion:
+          tutorialResetVersion ?? this.tutorialResetVersion,
     );
   }
 
   @override
-  List<Object?> get props => [themeMode, locale, seedColor];
+  List<Object?> get props => [themeMode, locale, seedColor, tutorialResetVersion];
 }

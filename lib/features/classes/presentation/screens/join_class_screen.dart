@@ -10,8 +10,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
-import '../../../../shared/widgets/custom_card.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/success_banner.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/value_objects/join_class_input.dart';
@@ -182,27 +182,43 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  context.l10n.joinClassAction, // O joinClassTitle si estuviera
-                  style: context.textTheme.headlineMedium,
+                  context.l10n.joinClassAction,
+                  style: context.headlineMediumBold,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.l),
-                CustomCard(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: context.colorScheme.primary,
-                      ),
-                      const SizedBox(width: AppSpacing.s),
-                      Expanded(
-                        child: Text(
-                          context.l10n.accessCodeInstructions,
-                          style: context.bodyMediumOnSurfaceVariant,
+                Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.m),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.secondaryContainer,
+                            borderRadius: BorderRadius.circular(AppBorderRadius.small),
+                          ),
+                          child: Icon(
+                            Icons.info_rounded,
+                            size: 20,
+                            color: context.colorScheme.onSecondaryContainer,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: AppSpacing.m),
+                        Expanded(
+                          child: Text(
+                            context.l10n.accessCodeInstructions,
+                            style: context.bodyMediumOnSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.l),
@@ -235,13 +251,13 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
                 ],
                 if (hasSuccess) ...[
                   const SizedBox(height: AppSpacing.l),
-                  _SuccessBanner(message: _successMessage!),
+                  SuccessBanner(message: _successMessage!),
                 ],
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
                   label: context.l10n.joinButtonLabel,
                   variant: CustomButtonVariant.filled,
-                  icon: Icons.login,
+                  icon: Icons.login_rounded,
                   onPressed: isLoading ? null : _handleJoin,
                   isLoading: isLoading,
                 ),
@@ -249,41 +265,6 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-/// Banner simple que confirma al usuario la unión exitosa antes de salir.
-class _SuccessBanner extends StatelessWidget {
-  const _SuccessBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.m),
-      decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: context.colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(width: AppSpacing.s),
-          Expanded(
-            child: Text(
-              message,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

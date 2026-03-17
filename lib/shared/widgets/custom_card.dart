@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/constants/app_constants.dart';
 import '../../core/extensions/context_extensions.dart';
 
@@ -172,7 +173,7 @@ class CustomCard extends StatelessWidget {
 
     // Construir header completo
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.m),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

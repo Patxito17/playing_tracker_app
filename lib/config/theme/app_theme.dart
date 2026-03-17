@@ -7,26 +7,45 @@ import '../../core/constants/app_constants.dart';
 ///
 /// Implementa Material Design 3 completo con tema claro y oscuro.
 /// Utiliza ColorScheme.fromSeed para generar una paleta coherente.
-///
-/// Sprint 0 - Fase 2: Implementación completa de Material Design 3
 class AppTheme {
+  /// Obtiene los gradientes según el brillo del tema
+  static AppGradients _getGradients(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return const AppGradients(
+        mainBackground: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.darkGradientStart, AppColors.darkGradientEnd],
+        ),
+      );
+    }
+    return const AppGradients(
+      mainBackground: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [AppColors.gradientStart, AppColors.gradientEnd],
+      ),
+    );
+  }
+
   /// Tema claro de la aplicación
   ///
   /// Implementa Material Design 3 con ColorScheme.fromSeed, Google Fonts
   /// y configuración completa de componentes M3.
-  static ThemeData get lightTheme {
+  static ThemeData lightTheme([Color? seedColor]) {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.seedColor,
+      seedColor: seedColor ?? AppColors.seedColor,
       brightness: Brightness.light,
     );
 
-    final baseTextTheme = GoogleFonts.robotoTextTheme();
+    final baseTextTheme = GoogleFonts.lexendTextTheme();
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       textTheme: baseTextTheme,
       scaffoldBackgroundColor: colorScheme.surface,
+      extensions: [_getGradients(Brightness.light)],
 
       // Configuración de InputDecoration para TextFields M3
       inputDecorationTheme: InputDecorationTheme(
@@ -122,13 +141,13 @@ class AppTheme {
   ///
   /// Implementa Material Design 3 con ColorScheme.fromSeed en modo oscuro,
   /// Google Fonts y configuración completa de componentes M3.
-  static ThemeData get darkTheme {
+  static ThemeData darkTheme([Color? seedColor]) {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.seedColor,
+      seedColor: seedColor ?? AppColors.seedColor,
       brightness: Brightness.dark,
     );
 
-    final baseTextTheme = GoogleFonts.robotoTextTheme(
+    final baseTextTheme = GoogleFonts.lexendTextTheme(
       ThemeData.dark().textTheme,
     );
 
@@ -137,6 +156,7 @@ class AppTheme {
       colorScheme: colorScheme,
       textTheme: baseTextTheme,
       scaffoldBackgroundColor: colorScheme.surface,
+      extensions: [_getGradients(Brightness.dark)],
 
       // Configuración de InputDecoration para TextFields M3
       inputDecorationTheme: InputDecorationTheme(
@@ -227,4 +247,36 @@ class AppTheme {
       ),
     );
   }
+}
+
+/// Extensión de tema para gestionar gradientes personalizados
+class AppGradients extends ThemeExtension<AppGradients> {
+  final LinearGradient mainBackground;
+
+  const AppGradients({required this.mainBackground});
+
+  @override
+  ThemeExtension<AppGradients> copyWith({LinearGradient? mainBackground}) {
+    return AppGradients(mainBackground: mainBackground ?? this.mainBackground);
+  }
+
+  @override
+  ThemeExtension<AppGradients> lerp(
+    ThemeExtension<AppGradients>? other,
+    double t,
+  ) {
+    if (other is! AppGradients) return this;
+    return AppGradients(
+      mainBackground: LinearGradient.lerp(
+        mainBackground,
+        other.mainBackground,
+        t,
+      )!,
+    );
+  }
+}
+
+/// Extensión para facilitar el acceso a los gradientes desde BuildContext
+extension AppThemeX on BuildContext {
+  AppGradients get gradients => Theme.of(this).extension<AppGradients>()!;
 }

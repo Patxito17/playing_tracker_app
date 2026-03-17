@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 
 /// Pantalla genérica para visualizar documentos Markdown legales (T&C, Privacidad)
@@ -63,7 +64,7 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
                     ),
                     const SizedBox(height: AppSpacing.m),
                     Text(
-                      'No se pudo cargar el documento.',
+                      context.l10n.legalTextLoadError,
                       style: textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),

@@ -7,6 +7,7 @@ import 'package:playing_tracker/features/statistics/data/services/statistics_ser
 import 'package:playing_tracker/features/statistics/domain/exceptions/statistics_exception.dart';
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
@@ -39,6 +40,10 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
   /// Caché en memoria para el progreso general del estudiante.
   final Map<String, CachedStats<StudentProgressModel>> _studentProgressCache =
       {};
+
+  /// Caché en memoria para el ranking de alumnos por clase.
+  final Map<String, CachedStats<List<StudentClassStatsModel>>>
+  _studentsClassStatsCache = {};
 
   @override
   Future<DailyStatsModel> getDailyStats({
@@ -449,6 +454,54 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
         name: 'StatisticsRepositoryImpl',
       );
       return (current: 0, longest: 0);
+    }
+  }
+
+  @override
+  Future<List<StudentClassStatsModel>> getStudentsClassStats({
+    required String classId,
+    required String teacherId,
+    TimeFilter timeFilter = TimeFilter.thisWeek,
+    bool forceRefresh = false,
+  }) async {
+    final sanitizedClassId = classId.trim();
+    final activeFilter = timeFilter;
+    final cacheKey = 'students_${sanitizedClassId}_${activeFilter.name}';
+
+    if (!forceRefresh) {
+      final cached = _studentsClassStatsCache[cacheKey];
+      if (cached != null && !cached.isExpired(_cacheTtl)) {
+        log(
+          'StatisticsRepositoryImpl: Cache HIT para $cacheKey',
+          name: 'StatisticsRepositoryImpl',
+        );
+        return cached.stats;
+      }
+    } else {
+      _studentsClassStatsCache.remove(cacheKey);
+    }
+
+    try {
+      log(
+        'StatisticsRepositoryImpl: Cache MISS para $cacheKey. Consultando Firestore…',
+        name: 'StatisticsRepositoryImpl',
+      );
+      final stats = await _statisticsService.getStudentsClassStats(
+        classId: sanitizedClassId,
+        teacherId: teacherId,
+        timeFilter: activeFilter,
+      );
+      _studentsClassStatsCache[cacheKey] = CachedStats(
+        stats: stats,
+        timestamp: DateTime.now(),
+      );
+      return stats;
+    } catch (error, stackTrace) {
+      _throwRepositoryException(
+        method: 'getStudentsClassStats',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

@@ -81,6 +81,18 @@ class AppColors {
   /// Material Design 3 genera automáticamente colores primarios, secundarios,
   /// de superficie, error, etc., garantizando contraste y accesibilidad.
   static const Color seedColor = Color(0xFF1E88E5);
+
+  /// Gradiente sutil para fondos premium - Inicio
+  static const Color gradientStart = Color(0xFFF8F9FA);
+
+  /// Gradiente sutil para fondos premium - Fin
+  static const Color gradientEnd = Color(0xFFE9ECEF);
+
+  /// Gradiente oscuro para fondos premium - Inicio
+  static const Color darkGradientStart = Color(0xFF121212);
+
+  /// Gradiente oscuro para fondos premium - Fin
+  static const Color darkGradientEnd = Color(0xFF1E1E1E);
 }
 
 /// Estilos de texto centralizados de la aplicación

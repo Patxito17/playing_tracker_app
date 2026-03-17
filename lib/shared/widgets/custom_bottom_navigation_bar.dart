@@ -6,6 +6,7 @@ import '../../core/extensions/context_extensions.dart';
 import '../../features/auth/domain/enums/user_role.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
+import '../../features/tutorial/domain/tutorial_keys.dart';
 
 /// BottomNavigationBar personalizado con Material Design 3
 ///
@@ -49,32 +50,48 @@ class CustomBottomNavigationBar extends StatelessWidget {
       },
       destinations: [
         NavigationDestination(
+          key: isTeacher ? TeacherNavBarKeys.home : StudentNavBarKeys.home,
           icon: const Icon(Icons.home_outlined),
           selectedIcon: const Icon(Icons.home),
           label: context.l10n.homeTab,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.class_outlined),
-          selectedIcon: const Icon(Icons.class_),
+          key: isTeacher
+              ? TeacherNavBarKeys.classes
+              : StudentNavBarKeys.classes,
+          icon: const Icon(Icons.library_music_outlined),
+          selectedIcon: const Icon(Icons.library_music),
           label: context.l10n.classesTab,
         ),
-        // Solo mostrar Historial para alumnos, para coincidir con el
-        // número de branches en StatefulShellRoute (4 para docente, 5 para alumno)
-        if (!isTeacher)
+        if (isTeacher)
           NavigationDestination(
+            key: TeacherNavBarKeys.statistics,
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: context.l10n.statisticsTab,
+          ),
+        // Solo mostrar Historial para alumnos
+        if (!isTeacher) ...[
+          NavigationDestination(
+            key: StudentNavBarKeys.history,
             icon: const Icon(Icons.history_outlined),
             selectedIcon: const Icon(Icons.history),
             label: context.l10n.historyTab,
           ),
+          NavigationDestination(
+            key: StudentNavBarKeys.statistics,
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: context.l10n.statisticsTab,
+          ),
+        ],
         NavigationDestination(
-          icon: const Icon(Icons.bar_chart_outlined),
-          selectedIcon: const Icon(Icons.bar_chart),
-          label: context.l10n.statisticsTab,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.settings_outlined),
-          selectedIcon: const Icon(Icons.settings),
-          label: context.l10n.settingsTab,
+          key: isTeacher
+              ? TeacherNavBarKeys.settings
+              : StudentNavBarKeys.settings,
+          icon: const Icon(Icons.person_outline_rounded),
+          selectedIcon: const Icon(Icons.person_rounded),
+          label: context.l10n.profileTab,
         ),
       ],
     );
