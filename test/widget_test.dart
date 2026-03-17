@@ -1,71 +1,59 @@
-// This is a basic Flutter widget test.
+// Smoke test de la aplicación Playing Tracker.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Mecanismo: renderiza la LoginScreen directamente con un AuthCubit
+// mockeado, sin inicializar Firebase, para verificar que la pantalla de
+// bienvenida se muestra correctamente.
+//
+// Se utiliza LoginScreen en lugar de PlayingTrackerApp porque
+// PlayingTrackerApp instancia StatisticsRepositoryImpl de forma interna,
+// lo que requiere Firebase inicializado (no disponible en tests unitarios).
 
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:playing_tracker/features/classes/domain/repositories/class_repository.dart';
-import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
-import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
-import 'package:playing_tracker/main.dart';
+import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
+import 'package:playing_tracker/features/auth/presentation/screens/login_screen.dart';
+import 'package:playing_tracker/l10n/app_localizations.dart';
+import 'package:playing_tracker/l10n/l10n.dart';
 
 import 'helpers/mock_hydrated_storage.dart';
 
-import 'package:playing_tracker/features/settings/data/services/settings_service.dart';
-
-class _MockAuthRepository extends Mock implements AuthRepository {}
-
-class _MockClassRepository extends Mock implements ClassRepository {}
-
-class _MockTaskRepository extends Mock implements TaskRepository {}
-
-class _MockSessionRepository extends Mock implements SessionRepository {}
-
-class _MockSettingsService extends Mock implements SettingsService {}
+class _MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 void main() {
-  late _MockAuthRepository mockAuthRepository;
-  late _MockClassRepository mockClassRepository;
-  late _MockTaskRepository mockTaskRepository;
-  late _MockSessionRepository mockSessionRepository;
-  late _MockSettingsService mockSettingsService;
+  late _MockAuthCubit mockAuthCubit;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initHydratedStorage();
-    mockAuthRepository = _MockAuthRepository();
-    mockClassRepository = _MockClassRepository();
-    mockTaskRepository = _MockTaskRepository();
-    mockSessionRepository = _MockSessionRepository();
-    mockSettingsService = _MockSettingsService();
+    mockAuthCubit = _MockAuthCubit();
 
-    when(() => mockAuthRepository.currentUser).thenReturn(null);
-    when(() => mockSettingsService.getThemeMode()).thenReturn(ThemeMode.system);
-    when(() => mockSettingsService.getLocale()).thenReturn(const Locale('es'));
-    when(() => mockSettingsService.getSeedColor()).thenReturn(null);
+    when(() => mockAuthCubit.state).thenReturn(const AuthInitial());
   });
 
-  testWidgets('Playing Tracker app smoke test', (WidgetTester tester) async {
+  // Mecanismo: renderiza LoginScreen con localización española configurada.
+  // Entradas: AuthCubit en estado inicial (no autenticado).
+  // Salida esperada: se muestra el texto de bienvenida "Bienvenido".
+  testWidgets('Playing Tracker app smoke test — muestra pantalla de bienvenida', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
-      PlayingTrackerApp(
-        settingsService: mockSettingsService,
-        authRepository: mockAuthRepository,
-        authCubitBuilder: AuthCubit.new,
-        classRepository: mockClassRepository,
-        taskRepository: mockTaskRepository,
-        sessionRepository: mockSessionRepository,
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: L10n.all,
+        locale: const Locale('es'),
+        home: BlocProvider<AuthCubit>.value(
+          value: mockAuthCubit,
+          child: const LoginScreen(),
+        ),
       ),
     );
 
-    for (var i = 0; i < 5; i++) {
-      await tester.pump(const Duration(milliseconds: 100));
-    }
+    await tester.pump();
+
     expect(find.text('Bienvenido'), findsOneWidget);
   });
 }
