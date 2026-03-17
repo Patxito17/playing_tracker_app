@@ -439,5 +439,7 @@
   "tutorialTeacherTasksTitle": "Task management",
   "tutorialTeacherTasksDesc": "Create and assign tasks to your students. From here you can see the status of all active tasks.",
   "tutorialTeacherStatsTitle": "Statistics and progress",
-  "tutorialTeacherStatsDesc": "Review your students' progress, practice times, and the overall performance of each class."
+  "tutorialTeacherStatsDesc": "Review your students' progress, practice times, and the overall performance of each class.",
+  "studentRankingTitle": "Student Rankings",
+  "noStudentsActivity": "No students have activity in this period"
 }

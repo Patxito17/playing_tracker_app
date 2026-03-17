@@ -1454,4 +1454,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tutorialTeacherStatsDesc =>
       'Revisa el progreso de tus alumnos, sus tiempos de práctica y el rendimiento general de cada clase.';
+
+  @override
+  String get studentRankingTitle => 'Ranking de Alumnos';
+
+  @override
+  String get noStudentsActivity =>
+      'Ningún alumno tiene actividad en este período';
 }

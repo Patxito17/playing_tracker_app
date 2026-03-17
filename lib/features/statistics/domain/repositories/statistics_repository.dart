@@ -1,5 +1,6 @@
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
@@ -56,6 +57,14 @@ abstract interface class StatisticsRepository {
   /// Obtiene el progreso individual de un estudiante.
   Future<StudentProgressModel> getStudentProgress({
     required String studentId,
+    bool forceRefresh = false,
+  });
+
+  /// Obtiene estadísticas individuales por alumno dentro de una clase.
+  Future<List<StudentClassStatsModel>> getStudentsClassStats({
+    required String classId,
+    required String teacherId,
+    TimeFilter timeFilter = TimeFilter.thisWeek,
     bool forceRefresh = false,
   });
 }
