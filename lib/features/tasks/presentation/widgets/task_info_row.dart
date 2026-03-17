@@ -12,7 +12,7 @@ class TaskInfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  /// Color opcional para el valor. Si no se proporciona usa [onSurface].
+  /// Color opcional para el valor. Si no se proporciona usa `onSurface`.
   final Color? valueColor;
 
   const TaskInfoRow({

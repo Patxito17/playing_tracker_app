@@ -5,9 +5,9 @@
 /// repositorio o servicio correspondiente.
 ///
 /// Campos:
-/// - [name]: Nombre visible de la clase. Debe tener al menos 3 caracteres.
-/// - [description]: Descripción opcional mostrada en la UI.
-/// - [ownerId]: Identificador único del docente que crea la clase.
+/// - `name`: Nombre visible de la clase. Debe tener al menos 3 caracteres.
+/// - `description`: Descripción opcional mostrada en la UI.
+/// - `ownerId`: Identificador único del docente que crea la clase.
 ///
 /// Ejemplo de uso:
 /// ```dart

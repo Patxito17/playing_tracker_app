@@ -19,9 +19,18 @@ class MembershipCubit extends Cubit<MembershipState> {
   MembershipCubit(this._repository) : super(const MembershipInitial());
 
   final ClassRepository _repository;
+
+  /// Caché en memoria con los miembros cargados de la clase activa.
   final List<MembershipModel> _membersCache = [];
+
+  /// ID de la clase cuyos alumnos se están consultando actualmente.
   String? _currentClassId;
+
+  /// Cursor de paginación: ID del último documento devuelto por Firestore.
+  /// Null indica que la siguiente consulta comenzará desde el principio.
   String? _lastMemberDocumentId;
+
+  /// Indica si existen más páginas por cargar para la clase activa.
   bool _hasMoreMembers = true;
 
   /// Invita o agrega manualmente un alumno a una clase específica.
@@ -263,6 +272,8 @@ class MembershipCubit extends Cubit<MembershipState> {
     emit(const MembershipEmpty());
   }
 
+  /// Fuerza la recarga de la lista de miembros tras una mutación exitosa.
+  /// Si no hay clase activa, restaura el último estado conocido.
   Future<void> _refreshMembersAfterMutation() async {
     final classId = _currentClassId;
     if (classId != null) {
@@ -272,12 +283,16 @@ class MembershipCubit extends Cubit<MembershipState> {
     }
   }
 
+  /// Restaura el último estado emitido de la lista de miembros.
+  /// Se usa para recuperar la UI después de una operación fallida.
   Future<void> _restoreMembersAfterOperation() async {
     if (_lastMembersState != null) {
       emit(_lastMembersState!);
     }
   }
 
+  /// Agrega al caché solo los miembros que no estén ya presentes,
+  /// evitando duplicados al paginar hacia adelante.
   void _mergeMembers(List<MembershipModel> newMembers) {
     final existingIds = _membersCache.map((member) => member.id).toSet();
     for (final member in newMembers) {
@@ -287,11 +302,13 @@ class MembershipCubit extends Cubit<MembershipState> {
     }
   }
 
+  /// Emite un estado y lo guarda como último estado conocido de la lista.
   void _emitMembersState(MembershipState state) {
     _lastMembersState = state;
     emit(state);
   }
 
+  /// Último estado de lista de miembros emitido; usado para restaurar la UI tras errores.
   MembershipState? _lastMembersState;
 }
 

@@ -68,6 +68,10 @@ final class StatisticsRepositoryImpl implements StatisticsRepository {
     }
   }
 
+  /// Obtiene estadísticas de la semana actual delegando en [getStudentStats].
+  ///
+  /// El parámetro [weekStart] no se usa directamente; se aplica siempre
+  /// [TimeFilter.thisWeek] por compatibilidad con la interfaz heredada.
   @override
   Future<WeeklyStatsModel> getWeeklyStats({
     required String studentId,

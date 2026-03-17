@@ -5,15 +5,15 @@
 /// campo modificable.
 ///
 /// Campos:
-/// - [taskId]: Identificador único de la tarea a actualizar (obligatorio).
-/// - [title]: Nuevo título opcional (mínimo 3 caracteres si se proporciona).
-/// - [description]: Nueva descripción opcional.
-/// - [durationSuggested]: Nueva duración sugerida en segundos (> 0 si se
+/// - `taskId`: Identificador único de la tarea a actualizar (obligatorio).
+/// - `title`: Nuevo título opcional (mínimo 3 caracteres si se proporciona).
+/// - `description`: Nueva descripción opcional.
+/// - `durationSuggested`: Nueva duración sugerida en segundos (> 0 si se
 ///   proporciona).
-/// - [attachmentUrl]: Nueva URL de material de referencia opcional. Pasar
+/// - `attachmentUrl`: Nueva URL de material de referencia opcional. Pasar
 ///   cadena vacía para eliminar la URL existente.
-/// - [dueDate]: Nueva fecha de vencimiento opcional.
-/// - [isActive]: Permite archivar/activar la tarea.
+/// - `dueDate`: Nueva fecha de vencimiento opcional.
+/// - `isActive`: Permite archivar/activar la tarea.
 typedef UpdateTaskInput = ({
   String taskId,
   String? title,
@@ -27,7 +27,7 @@ typedef UpdateTaskInput = ({
 /// Valida de forma sincrónica los campos requeridos para actualizar una tarea.
 ///
 /// Lanza [ArgumentError] cuando:
-/// - El [taskId] está vacío.
+/// - El `taskId` está vacío.
 /// - No se proporciona ningún campo modificable.
 /// - Algún campo proporcionado no cumple las reglas mínimas.
 void validateUpdateTaskInput(UpdateTaskInput input) {

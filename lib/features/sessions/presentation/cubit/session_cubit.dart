@@ -52,10 +52,10 @@ final class SessionCubit extends Cubit<SessionState>
 
   /// Inicia una nueva sesión de práctica.
   ///
-  /// [taskId] es el identificador de la tarea a practicar.
-  /// [studentId] es el identificador del estudiante.
-  /// [teacherId] es el identificador del docente dueño de la tarea.
-  /// [notes] son notas opcionales para la sesión.
+  /// `taskId` es el identificador de la tarea a practicar.
+  /// `studentId` es el identificador del estudiante.
+  /// `teacherId` es el identificador del docente dueño de la tarea.
+  /// `notes` son notas opcionales para la sesión.
   ///
   /// Si ya hay una sesión activa, no hace nada.
   Future<void> startSession({
@@ -187,9 +187,9 @@ final class SessionCubit extends Cubit<SessionState>
 
   /// Guarda la sesión actual en Firebase.
   ///
-  /// [notes] son notas opcionales a agregar/actualizar en la sesión.
-  /// [taskTitle] es el título de la tarea (campo denormalizado).
-  /// [className] es el nombre de la clase (campo denormalizado).
+  /// `notes` son notas opcionales a agregar/actualizar en la sesión.
+  /// `taskTitle` es el título de la tarea (campo denormalizado).
+  /// `className` es el nombre de la clase (campo denormalizado).
   ///
   /// Detiene el cronómetro, crea un [SessionModel] y lo persiste
   /// usando el [SessionRepository].
