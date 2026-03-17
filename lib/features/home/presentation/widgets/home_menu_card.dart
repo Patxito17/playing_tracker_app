@@ -12,6 +12,8 @@ class HomeMenuCard extends StatelessWidget {
   final Color? iconBackgroundColor;
   final Widget? customIcon;
 
+  final bool fullWidth;
+
   const HomeMenuCard({
     super.key,
     required this.icon,
@@ -20,11 +22,70 @@ class HomeMenuCard extends StatelessWidget {
     this.iconColor,
     this.iconBackgroundColor,
     this.customIcon,
+    this.fullWidth = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
+
+    final iconWidget = Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        color: iconBackgroundColor ?? colorScheme.primary.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: customIcon ??
+            Icon(
+              icon,
+              size: 32,
+              color: iconColor ?? colorScheme.primary,
+            ),
+      ),
+    );
+
+    final decoration = BoxDecoration(
+      color: colorScheme.surface,
+      borderRadius: BorderRadius.circular(AppBorderRadius.large),
+      border: Border.all(
+        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.05),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
+
+    if (fullWidth) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        child: Container(
+          decoration: decoration,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xl,
+            vertical: AppSpacing.l,
+          ),
+          child: Row(
+            children: [
+              iconWidget,
+              const SizedBox(width: AppSpacing.l),
+              Text(
+                label,
+                style: context.titleMediumBold?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return AspectRatio(
       aspectRatio: 1,
@@ -32,43 +93,12 @@ class HomeMenuCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppBorderRadius.large),
         child: Container(
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(AppBorderRadius.large),
-            border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
+          decoration: decoration,
           padding: const EdgeInsets.all(AppSpacing.l),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color:
-                      iconBackgroundColor ??
-                      colorScheme.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child:
-                      customIcon ??
-                      Icon(
-                        icon,
-                        size: 32,
-                        color: iconColor ?? colorScheme.primary,
-                      ),
-                ),
-              ),
+              iconWidget,
               const SizedBox(height: AppSpacing.m),
               Text(
                 label,

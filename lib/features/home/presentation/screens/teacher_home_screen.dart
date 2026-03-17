@@ -199,33 +199,14 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
             // Sección Estadísticas
             _buildSectionHeader(context, l10n.statsSectionTitle),
             const SizedBox(height: AppSpacing.m),
-            GridView.count(
+            HomeMenuCard(
               key: _keys.statsGrid,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: AppSpacing.m,
-              crossAxisSpacing: AppSpacing.m,
-              children: [
-                HomeMenuCard(
-                  icon: Icons.analytics_rounded,
-                  label: l10n.progressLabel,
-                  iconColor: colorScheme.tertiary,
-                  iconBackgroundColor: colorScheme.tertiary.withValues(
-                    alpha: 0.12,
-                  ),
-                  onTap: () => context.go(AppRoutes.teacherStatistics),
-                ),
-                HomeMenuCard(
-                  icon: Icons.history_rounded,
-                  label: l10n.historyLabel,
-                  iconColor: colorScheme.onSurfaceVariant,
-                  iconBackgroundColor: colorScheme.surfaceContainerHighest,
-                  onTap: () {
-                    // Historial funcional próximamente para docentes
-                  },
-                ),
-              ],
+              icon: Icons.analytics_rounded,
+              label: l10n.progressLabel,
+              iconColor: colorScheme.tertiary,
+              iconBackgroundColor: colorScheme.tertiary.withValues(alpha: 0.12),
+              fullWidth: true,
+              onTap: () => context.go(AppRoutes.teacherStatistics),
             ),
 
             const SizedBox(height: AppSpacing.xxl),
