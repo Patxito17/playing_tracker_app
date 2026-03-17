@@ -62,6 +62,14 @@ class TutorialTargetBuilder {
         icon: Icons.menu_book_rounded,
       ),
       _buildTarget(
+        identify: 'student_history',
+        key: keys.historyCard,
+        align: ContentAlign.top,
+        title: l10n.tutorialNavHistoryTitle,
+        description: l10n.tutorialNavHistoryDesc,
+        icon: Icons.history_rounded,
+      ),
+      _buildTarget(
         identify: 'student_enroll',
         key: keys.enrollCard,
         align: ContentAlign.top,

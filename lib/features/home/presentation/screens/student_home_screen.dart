@@ -241,6 +241,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       onTap: () => context.push(AppRoutes.assignmentList),
                     ),
                     HomeMenuCard(
+                      key: _keys.historyCard,
                       icon: Icons.history_rounded,
                       label: l10n.historyTab,
                       onTap: () => context.go(AppRoutes.studentHistory),
