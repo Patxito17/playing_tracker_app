@@ -138,69 +138,6 @@ class _StatsContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // --- Resumen de la clase ---
-              StatsSectionCard(
-                icon: Icons.school_rounded,
-                title: classStats!.className,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        StatMetricTile(
-                          icon: Icons.people_rounded,
-                          value: '${classStats!.totalStudents}',
-                          label: context.l10n.studentsLabel,
-                          color: context.colorScheme.primary,
-                        ),
-                        StatMetricTile(
-                          icon: Icons.trending_up_rounded,
-                          value: '${classStats!.activeStudents}',
-                          label: context.l10n.classStatusActive,
-                          subtitle:
-                              classStats!.activeStudentsPercentageFormatted,
-                          color: context.colorScheme.tertiary,
-                        ),
-                        StatMetricTile(
-                          icon: Icons.event_note_rounded,
-                          value: '${classStats!.totalSessions}',
-                          label: context.l10n.sessionsLabel,
-                          color: context.colorScheme.secondary,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.m),
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.m),
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(
-                          AppBorderRadius.medium,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.timer_outlined,
-                            color: context.colorScheme.onPrimaryContainer,
-                            size: 20,
-                          ),
-                          const SizedBox(width: AppSpacing.s),
-                          Text(
-                            '${context.l10n.totalTime}: ${classStats!.durationFormatted}',
-                            style: context.titleMediumBold?.copyWith(
-                              color: context.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-
               // --- Ranking de alumnos ---
               if (studentsStats != null && studentsStats!.isNotEmpty)
                 _StudentRankingSection(studentsStats: studentsStats!),
@@ -279,6 +216,70 @@ class _StatsContent extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
+
+              const SizedBox(height: AppSpacing.m),
+
+              // --- Resumen de la clase ---
+              StatsSectionCard(
+                icon: Icons.school_rounded,
+                title: classStats!.className,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        StatMetricTile(
+                          icon: Icons.people_rounded,
+                          value: '${classStats!.totalStudents}',
+                          label: context.l10n.studentsLabel,
+                          color: context.colorScheme.primary,
+                        ),
+                        StatMetricTile(
+                          icon: Icons.trending_up_rounded,
+                          value: '${classStats!.activeStudents}',
+                          label: context.l10n.classStatusActive,
+                          subtitle:
+                              classStats!.activeStudentsPercentageFormatted,
+                          color: context.colorScheme.tertiary,
+                        ),
+                        StatMetricTile(
+                          icon: Icons.event_note_rounded,
+                          value: '${classStats!.totalSessions}',
+                          label: context.l10n.sessionsLabel,
+                          color: context.colorScheme.secondary,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.m),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(
+                          AppBorderRadius.medium,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.timer_outlined,
+                            color: context.colorScheme.onPrimaryContainer,
+                            size: 20,
+                          ),
+                          const SizedBox(width: AppSpacing.s),
+                          Text(
+                            '${context.l10n.totalTime}: ${classStats!.durationFormatted}',
+                            style: context.titleMediumBold?.copyWith(
+                              color: context.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
