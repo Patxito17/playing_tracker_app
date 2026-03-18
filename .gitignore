@@ -107,6 +107,9 @@ devtools_options.yaml
 # ==========================================
 
 
+# Private Project Documentation
+/docs/
+
 # Carpeta de metadatos de stores (vacía en repo)
 /metadata/
 
