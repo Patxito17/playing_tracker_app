@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the validateTaskFilters function from the task_filters library, for the Dart programming language.">
+  <title>validateTaskFilters function - task_filters library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">playing_tracker</a></li>
+    <li><a href="../features_tasks_domain_value_objects_task_filters/">features&#47;tasks&#47;domain&#47;value_objects&#47;task_filters.dart</a></li>
+    <li class="self-crumb">validateTaskFilters function</li>
+  </ol>
+  <div class="self-name">validateTaskFilters</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="features_tasks_domain_value_objects_task_filters&#47;features_tasks_domain_value_objects_task_filters-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">validateTaskFilters</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype">void</span>
+<span class="name ">validateTaskFilters</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="validateTaskFilters-param-filters"><span class="type-annotation"><a href="../features_tasks_domain_value_objects_task_filters/TaskFilters.html">TaskFilters</a></span> <span class="parameter-name">filters</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Valida combinaciones básicas de filtros compatibles con Firestore.</p>
+<p>Esta validación NO aplica la query, solo garantiza que no se creen
+combinaciones imposibles (por ejemplo, mezclar rangos de <code>createdAt</code> y
+<code>dueDate</code> en la misma consulta).</p>
+<p>Lanza <a href="https://api.flutter.dev/flutter/dart-core/ArgumentError-class.html">ArgumentError</a> cuando se detectan combinaciones no soportadas.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">void validateTaskFilters(TaskFilters filters) {
+  final usesCreatedRange =
+      filters.createdFrom != null || filters.createdTo != null;
+  final usesDueRange = filters.dueFrom != null || filters.dueTo != null;
+
+  &#47;&#47; No permitir combinar rangos de createdAt y dueDate en la misma consulta.
+  if (usesCreatedRange &amp;&amp; usesDueRange) {
+    throw ArgumentError(
+      &#39;No es posible combinar rangos de creación y vencimiento en la misma &#39;
+      &#39;consulta. Usa solo createdAt o solo dueDate.&#39;,
+    );
+  }
+
+  &#47;&#47; Validaciones simples de coherencia de rangos.
+  if (filters.createdFrom != null &amp;&amp;
+      filters.createdTo != null &amp;&amp;
+      filters.createdFrom!.isAfter(filters.createdTo!)) {
+    throw ArgumentError(
+      &#39;El rango de fechas de creación es inválido: createdFrom es posterior &#39;
+      &#39;a createdTo.&#39;,
+    );
+  }
+
+  if (filters.dueFrom != null &amp;&amp;
+      filters.dueTo != null &amp;&amp;
+      filters.dueFrom!.isAfter(filters.dueTo!)) {
+    throw ArgumentError(
+      &#39;El rango de fechas de vencimiento es inválido: dueFrom es posterior &#39;
+      &#39;a dueTo.&#39;,
+    );
+  }
+
+  if (filters.assignedFrom != null &amp;&amp;
+      filters.assignedTo != null &amp;&amp;
+      filters.assignedFrom!.isAfter(filters.assignedTo!)) {
+    throw ArgumentError(
+      &#39;El rango de fechas de asignación es inválido: assignedFrom es &#39;
+      &#39;posterior a assignedTo.&#39;,
+    );
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">playing_tracker</a></li>
+    <li><a href="../features_tasks_domain_value_objects_task_filters/">task_filters</a></li>
+    <li class="self-crumb">validateTaskFilters function</li>
+</ol>
+
+    <h5>task_filters library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    playing_tracker
+      1.0.1+2
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
