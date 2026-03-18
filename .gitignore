@@ -100,3 +100,7 @@ fastlane/test_output/
 
 # Screenshots generadas (binarios grandes, se regeneran antes de cada subida)
 fastlane/screenshots/
+
+# Gems instaladas localmente por Bundler (no necesitan ser versionadas)
+fastlane/vendor/
+fastlane/.bundle/
