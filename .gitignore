@@ -106,13 +106,11 @@ devtools_options.yaml
 # Archivos generados / no esenciales
 # ==========================================
 
-
 # Private Project Documentation
 /docs/
 
 # Carpeta de metadatos de stores (vacía en repo)
 /metadata/
-
 
 # Lock de Node.js (de dependencias fastlane)
 package-lock.json
