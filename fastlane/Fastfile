@@ -1,0 +1,86 @@
+# fastlane/Fastfile
+default_platform(:ios)
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+# Carga la App Store Connect API Key desde variables de entorno.
+# Las variables se definen en fastlane/.env (no en git):
+#   APP_STORE_CONNECT_API_KEY_KEY_ID
+#   APP_STORE_CONNECT_API_KEY_ISSUER_ID
+#   APP_STORE_CONNECT_API_KEY_KEY_FILEPATH
+def load_asc_api_key
+  app_store_connect_api_key(
+    key_id:       ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_ID",       nil),
+    issuer_id:    ENV.fetch("APP_STORE_CONNECT_API_KEY_ISSUER_ID",    nil),
+    key_filepath: ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_FILEPATH", nil),
+    in_house:     false,
+  )
+end
+
+# ---------------------------------------------------------------------------
+# iOS
+# ---------------------------------------------------------------------------
+platform :ios do
+
+  desc "Genera screenshots en el simulador iOS y los organiza para Fastlane"
+  lane :screenshots do
+    sh("cd .. && bash scripts/screenshots_ios.sh")
+  end
+
+  desc "Sube metadatos y screenshots a App Store Connect (sin binario)"
+  lane :upload_metadata do
+    api_key = load_asc_api_key
+    deliver(
+      api_key:             api_key,
+      skip_binary_upload:  true,
+      submit_for_review:   false,
+      automatic_release:   false,
+      force:               true,
+      languages:           ["en-US", "es-ES"],
+      metadata_path:       "./metadata",
+      screenshots_path:    "./screenshots",
+    )
+  end
+
+  desc "Pipeline completo iOS: genera screenshots y sube a App Store Connect"
+  lane :release_metadata do
+    screenshots
+    upload_metadata
+    UI.success("✅ Metadatos y screenshots de iOS subidos correctamente.")
+  end
+
+end
+
+# ---------------------------------------------------------------------------
+# Android
+# ---------------------------------------------------------------------------
+platform :android do
+
+  desc "Genera screenshots en el emulador Android y los organiza para Fastlane"
+  lane :screenshots do
+    sh("cd .. && bash scripts/screenshots_android.sh")
+  end
+
+  desc "Sube metadatos y screenshots a Google Play Console (sin AAB)"
+  lane :upload_metadata do
+    supply(
+      track:                   "production",
+      skip_upload_apk:         true,
+      skip_upload_aab:         true,
+      skip_upload_metadata:    false,
+      skip_upload_screenshots: false,
+      metadata_path:           "./metadata/android",
+      screenshots_path:        "./screenshots",
+    )
+  end
+
+  desc "Pipeline completo Android: genera screenshots y sube a Google Play"
+  lane :release_metadata do
+    screenshots
+    upload_metadata
+    UI.success("✅ Metadatos y screenshots de Android subidos correctamente.")
+  end
+
+end

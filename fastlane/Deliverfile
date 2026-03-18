@@ -1,0 +1,19 @@
+# fastlane/Deliverfile
+app_identifier "com.gabriom.playingtrackerapp"
+
+# No subir binario en esta lane — solo metadatos y screenshots
+skip_binary_upload true
+
+# No enviar a revisión automáticamente
+submit_for_review false
+automatic_release false
+
+# Forzar subida sin confirmación interactiva
+force true
+
+# Idiomas soportados
+languages ["en-US", "es-ES"]
+
+# Rutas de assets (relativas al directorio fastlane/)
+screenshots_path "./screenshots"
+metadata_path "./metadata"
