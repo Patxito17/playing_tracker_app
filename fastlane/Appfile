@@ -1,6 +1,0 @@
-app_identifier("com.gabriom.playingtrackerapp")
-apple_id("gortegam7@icloud.com")
-
-# Android
-json_key_file("fastlane/gc_keys.json")
-package_name("com.gabriom.playingtrackerapp")
