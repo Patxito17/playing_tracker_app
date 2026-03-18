@@ -28,28 +28,46 @@ if [ "$BOOTED" -eq 0 ]; then
   sleep 5
 fi
 
-# Ejecutar integration test
-echo "🧪 Ejecutando integration test de screenshots..."
-flutter test integration_test/screenshots_test.dart -d "$DEVICE_NAME"
+# Obtener UDID antes de lanzar el test
+DEVICE_UDID=$(xcrun simctl list devices | grep "$DEVICE_NAME" | grep "Booted" | grep -Eo '[0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12}' | head -1)
+SIM_DATA="$HOME/Library/Developer/CoreSimulator/Devices/$DEVICE_UDID/data"
 
-echo "📂 Extrayendo screenshots del simulador..."
-APP_CONTAINER=$(xcrun simctl get_app_container booted "$BUNDLE_ID" data 2>/dev/null || echo "")
+# Limpiar screenshots previos del simulador para no confundirnos
+find "$SIM_DATA/Containers/Data/Application" -path "*/Documents/screenshots/*.png" -delete 2>/dev/null || true
 
-if [ -z "$APP_CONTAINER" ]; then
-  echo "❌ No se encontró el contenedor de la app (Bundle ID: $BUNDLE_ID)."
-  echo "   Asegúrate de que la app se instaló correctamente durante el test."
-  exit 1
-fi
+# Ejecutar integration test en segundo plano
+# flutter test desinstala la app al terminar y borra el contenedor de datos.
+# Por eso copiamos los PNGs mientras el test todavía está corriendo.
+echo "🧪 Ejecutando integration test de screenshots (en segundo plano)..."
+flutter test integration_test/screenshots_test.dart -d "$DEVICE_NAME" &
+TEST_PID=$!
 
-SCREENSHOTS_DIR="$APP_CONTAINER/Documents/screenshots"
+echo "📂 Esperando screenshots del simulador..."
+TIMEOUT=180
+ELAPSED=0
+EXPECTED=8
 
-if [ ! -d "$SCREENSHOTS_DIR" ]; then
-  echo "❌ No se encontró el directorio de screenshots: $SCREENSHOTS_DIR"
+while [ $ELAPSED -lt $TIMEOUT ]; do
+  COUNT=$(find "$SIM_DATA/Containers/Data/Application" -path "*/Documents/screenshots/*.png" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$COUNT" -ge "$EXPECTED" ]; then
+    echo "   ✅ $COUNT screenshots encontrados"
+    break
+  fi
+  sleep 3
+  ELAPSED=$((ELAPSED + 3))
+done
+
+SCREENSHOTS_FOUND=$(find "$SIM_DATA/Containers/Data/Application" -path "*/Documents/screenshots/*.png" 2>/dev/null)
+
+if [ -z "$SCREENSHOTS_FOUND" ]; then
+  echo "❌ No se encontraron screenshots en el simulador (timeout ${TIMEOUT}s)."
+  echo "   Buscado en: $SIM_DATA/Containers/Data/Application/*/Documents/screenshots/"
+  kill $TEST_PID 2>/dev/null || true
   exit 1
 fi
 
 # Organizar por locale para Fastlane: fastlane/screenshots/<locale>/<device>/
-for FILE in "$SCREENSHOTS_DIR"/*.png; do
+for FILE in $SCREENSHOTS_FOUND; do
   [ -f "$FILE" ] || continue
   FILENAME=$(basename "$FILE")
   if [[ "$FILENAME" == *_en.png ]]; then
@@ -64,6 +82,13 @@ for FILE in "$SCREENSHOTS_DIR"/*.png; do
   cp "$FILE" "$DEST_DIR/$FILENAME"
   echo "   ✅ $FILENAME → $DEST_DIR/"
 done
+
+# Esperar a que el test termine antes de salir
+wait $TEST_PID
+TEST_EXIT=$?
+if [ $TEST_EXIT -ne 0 ]; then
+  echo "⚠️  El test terminó con código $TEST_EXIT, pero los screenshots ya fueron copiados."
+fi
 
 echo ""
 echo "✅ Screenshots guardados en $OUTPUT_DIR:"

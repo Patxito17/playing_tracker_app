@@ -216,7 +216,7 @@ Los archivos de credenciales no están en git. Si cambias de Mac o los pierdes:
 ```
 APP_STORE_CONNECT_API_KEY_KEY_ID=XPCURJHGMJ
 APP_STORE_CONNECT_API_KEY_ISSUER_ID=8a777dde-2292-4fc7-a57b-9fe17c1e83a0
-APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=./AuthKey_XPCURJHGMJ.p8
+APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=/ruta/absoluta/al/proyecto/fastlane/AuthKey_XPCURJHGMJ.p8
 ```
 
 ### Android
