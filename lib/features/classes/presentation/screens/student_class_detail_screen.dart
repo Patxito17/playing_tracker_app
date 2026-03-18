@@ -12,7 +12,7 @@ import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../../../auth/domain/enums/user_role.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
-import '../../../statistics/data/repositories/statistics_repository_impl.dart';
+import '../../../statistics/domain/repositories/statistics_repository.dart';
 import '../../../statistics/presentation/cubit/student_stats_cubit.dart';
 import '../../domain/models/class_model.dart';
 import '../../domain/models/membership_model.dart';
@@ -171,7 +171,7 @@ class _StudentClassDetailScreenState extends State<StudentClassDetailScreen> {
 
     return BlocProvider(
       create: (context) =>
-          StudentStatsCubit(StatisticsRepositoryImpl())
+          StudentStatsCubit(context.read<StatisticsRepository>())
             ..loadStats(studentId: studentId, classId: widget.classId),
       child: DefaultTabController(
         length: 3,

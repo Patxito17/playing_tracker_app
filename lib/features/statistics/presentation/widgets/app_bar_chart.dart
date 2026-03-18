@@ -15,7 +15,7 @@ class AppBarChart extends StatelessWidget {
   });
 
   /// Datos del gráfico: cada entrada es (label, valor).
-  /// Por ejemplo: [('Lun', 30), ('Mar', 45), ('Mie', 60)]
+  /// Por ejemplo: `[('Lun', 30), ('Mar', 45), ('Mie', 60)]`
   final List<({String label, double value})> data;
 
   /// Título opcional del gráfico

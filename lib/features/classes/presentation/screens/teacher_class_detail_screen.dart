@@ -13,7 +13,7 @@ import '../../../../features/auth/domain/models/teacher_model.dart';
 import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../../../../features/classes/domain/models/class_model.dart';
 import '../../../../features/classes/domain/repositories/class_repository.dart';
-import '../../../../features/statistics/data/repositories/statistics_repository_impl.dart';
+import '../../../../features/statistics/domain/repositories/statistics_repository.dart';
 import '../../../../features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
@@ -127,7 +127,9 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen> {
               final teacherId = authState is AuthAuthenticated
                   ? authState.userId
                   : '';
-              final cubit = TeacherStatsCubit(StatisticsRepositoryImpl());
+              final cubit = TeacherStatsCubit(
+                context.read<StatisticsRepository>(),
+              );
               if (teacherId.isNotEmpty) {
                 cubit.loadClassStats(
                   classId: widget.classId,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -443,8 +445,21 @@ class SettingsScreen extends StatelessWidget {
                       newName: '$firstName $lastName',
                       isTeacher: updatedState.role == UserRole.teacher,
                     );
-                  } catch (e) {
-                    debugPrint('Error propagando nombre: $e');
+                  } catch (e, stackTrace) {
+                    log(
+                      'Error propagando nombre tras actualización de perfil',
+                      error: e,
+                      stackTrace: stackTrace,
+                      name: 'SettingsScreen',
+                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(context.l10n.classGenericError),
+                          backgroundColor: context.colorScheme.error,
+                        ),
+                      );
+                    }
                   }
                 }
               }

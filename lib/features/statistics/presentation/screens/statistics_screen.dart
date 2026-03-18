@@ -12,7 +12,7 @@ import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../classes/domain/repositories/class_repository.dart';
 import '../../../classes/presentation/cubit/class_cubit.dart';
 import '../../../classes/presentation/cubit/class_state.dart';
-import '../../data/repositories/statistics_repository_impl.dart';
+import '../../domain/repositories/statistics_repository.dart';
 import '../cubit/student_stats_cubit.dart';
 import 'student_statistics_screen.dart';
 
@@ -29,7 +29,7 @@ class StatisticsScreen extends StatelessWidget {
       if (authState.role == UserRole.student) {
         return BlocProvider(
           create: (context) =>
-              StudentStatsCubit(StatisticsRepositoryImpl())
+              StudentStatsCubit(context.read<StatisticsRepository>())
                 ..loadStats(studentId: authState.userId),
           child: StudentStatisticsScreen(studentId: authState.userId),
         );

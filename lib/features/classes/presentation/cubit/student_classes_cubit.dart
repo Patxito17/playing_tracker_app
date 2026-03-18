@@ -7,15 +7,41 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 
 import 'student_classes_state.dart';
 
+/// Cubit responsable de observar y gestionar las clases activas de un alumno.
+///
+/// Suscribe un stream de [MembershipModel] desde [ClassRepository] y filtra
+/// automáticamente las membresías de clases eliminadas o desactivadas.
+/// Adicionalmente mantiene watchers individuales por clase para detectar
+/// cambios en tiempo real (p.ej. si la clase es archivada o borrada).
+///
+/// Ciclo de vida:
+/// 1. [watchStudentClasses] inicia la suscripción al stream de membresías.
+/// 2. Al recibir un nuevo lote, [_processMemberships] filtra y sincroniza.
+/// 3. [close] cancela todas las suscripciones activas para evitar memory leaks.
 final class StudentClassesCubit extends Cubit<StudentClassesState> {
   StudentClassesCubit(this._repository) : super(const StudentClassesInitial());
 
   final ClassRepository _repository;
+
+  /// Suscripción activa al stream de membresías del alumno.
   StreamSubscription<List<MembershipModel>>? _subscription;
+
+  /// Watchers individuales por clase para detectar eliminaciones en tiempo real.
   final Map<String, StreamSubscription<ClassModel?>> _classWatchers = {};
+
+  /// Membresías visibles actualmente emitidas en el último estado de éxito.
   List<MembershipModel> _visibleMemberships = [];
+
+  /// ID del alumno cuyas membresías se están observando actualmente.
   String? _currentStudentId;
 
+  /// Caché local de clases ya resueltas para evitar llamadas Firestore redundantes
+  /// cada vez que el stream de membresías emite.
+  final Map<String, ClassModel> _classCache = {};
+
+  /// Inicia o reinicia la observación de membresías para el alumno dado.
+  ///
+  /// Cancela cualquier suscripción previa antes de crear una nueva.
   Future<void> watchStudentClasses({required String studentId}) async {
     final sanitizedId = studentId.trim();
     if (sanitizedId.isEmpty) {
@@ -27,6 +53,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
       return;
     }
 
+    // Limpiar la caché al cambiar de usuario para no servir datos de otro alumno.
+    if (_currentStudentId != sanitizedId) {
+      _classCache.clear();
+    }
     _currentStudentId = sanitizedId;
     emit(const StudentClassesLoading());
     await _subscription?.cancel();
@@ -35,6 +65,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
         .listen(_handleMemberships, onError: _handleError);
   }
 
+  /// Fuerza una recarga de las clases del alumno actual.
   Future<void> refresh() async {
     final studentId = _currentStudentId;
     if (studentId == null) {
@@ -44,10 +75,12 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     await watchStudentClasses(studentId: studentId);
   }
 
+  /// Punto de entrada del stream; delega el procesamiento asíncrono a [_processMemberships].
   void _handleMemberships(List<MembershipModel> memberships) {
     unawaited(_processMemberships(memberships));
   }
 
+  /// Filtra, sincroniza watchers y emite el nuevo estado a partir de las membresías recibidas.
   Future<void> _processMemberships(List<MembershipModel> memberships) async {
     try {
       if (memberships.isEmpty) {
@@ -64,6 +97,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     }
   }
 
+  /// Filtra las membresías cuya clase existe y está activa.
+  ///
+  /// Utiliza [_classCache] para evitar lecturas Firestore duplicadas; solo
+  /// consulta Firestore si la clase aún no ha sido resuelta anteriormente.
   Future<List<MembershipModel>> _filterMemberships(
     List<MembershipModel> memberships,
   ) async {
@@ -72,7 +109,15 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
         if (!membership.classIsActive) {
           return (membership: membership, isValid: false);
         }
-        final classModel = await _repository.getClassById(membership.classId);
+        // Usar la caché para evitar lecturas Firestore duplicadas en cada
+        // emisión del stream cuando la clase ya fue resuelto previamente.
+        ClassModel? classModel = _classCache[membership.classId];
+        if (classModel == null) {
+          classModel = await _repository.getClassById(membership.classId);
+          if (classModel != null) {
+            _classCache[membership.classId] = classModel;
+          }
+        }
         return (membership: membership, isValid: classModel != null);
       }),
     );
@@ -82,6 +127,7 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     ];
   }
 
+  /// Emite [StudentClassesSuccess] o [StudentClassesEmpty] según si hay membresías.
   void _emitMemberships(List<MembershipModel> memberships) {
     _visibleMemberships = memberships;
     if (memberships.isEmpty) {
@@ -95,6 +141,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     );
   }
 
+  /// Sincroniza los watchers individuales de clase con las membresías visibles.
+  ///
+  /// Cancela los watchers de clases que ya no están en la lista y crea
+  /// nuevos para las clases recién detectadas.
   Future<void> _syncClassWatchers(List<MembershipModel> memberships) async {
     final targetClassIds = memberships.map((m) => m.classId).toSet();
     final toRemove = _classWatchers.keys
@@ -117,6 +167,10 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     }
   }
 
+  /// Reacciona a cambios en una clase individual.
+  ///
+  /// Si la clase fue eliminada (classModel == null), la elimina de la lista
+  /// visible y cancela su watcher para liberar recursos.
   void _handleClassSnapshot(String classId, ClassModel? classModel) {
     if (classModel == null) {
       final updated = _visibleMemberships
@@ -127,18 +181,22 @@ final class StudentClassesCubit extends Cubit<StudentClassesState> {
     }
   }
 
+  /// Mapea el error a un mensaje legible y emite [StudentClassesError].
   void _handleError(Object error, StackTrace stackTrace) {
     final message = error is ClassRepositoryException ? error.message : null;
     emit(StudentClassesError(message: message, cause: error));
   }
 
+  /// Cancela todas las suscripciones activas y limpia la caché antes de cerrar el cubit.
   @override
   Future<void> close() async {
     await _subscription?.cancel();
     await _disposeClassWatchers();
+    _classCache.clear();
     return super.close();
   }
 
+  /// Cancela todos los watchers individuales de clase y limpia el mapa.
   Future<void> _disposeClassWatchers() async {
     for (final subscription in _classWatchers.values) {
       await subscription.cancel();

@@ -26,21 +26,20 @@ import '../../features/classes/presentation/screens/teacher_class_detail_screen.
 import '../../features/classes/presentation/screens/teacher_classes_list_screen.dart';
 import '../../features/home/presentation/screens/student_home_screen.dart';
 import '../../features/home/presentation/screens/teacher_home_screen.dart';
-import '../../features/sessions/data/repositories/session_repository_impl.dart';
-import '../../features/sessions/data/services/session_service.dart';
+import '../../features/sessions/domain/repositories/session_repository.dart';
 import '../../features/sessions/presentation/cubit/history_cubit.dart';
 import '../../features/sessions/presentation/cubit/session_cubit.dart';
 import '../../features/sessions/presentation/screens/session_history_screen.dart';
 import '../../features/sessions/presentation/screens/timer_screen.dart';
 import '../../features/settings/presentation/screens/legal_document_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
-import '../../features/statistics/data/repositories/statistics_repository_impl.dart';
+import '../../features/statistics/domain/repositories/statistics_repository.dart';
 import '../../features/statistics/presentation/cubit/student_stats_cubit.dart';
 import '../../features/statistics/presentation/cubit/teacher_stats_cubit.dart';
 import '../../features/statistics/presentation/screens/statistics_screen.dart';
 import '../../features/statistics/presentation/screens/student_statistics_screen.dart';
 import '../../features/statistics/presentation/screens/teacher_statistics_screen.dart';
-import '../../features/tasks/data/repositories/task_repository_impl.dart';
+import '../../features/tasks/domain/repositories/task_repository.dart';
 import '../../features/tasks/presentation/cubit/assignment_cubit.dart';
 import '../../features/tasks/presentation/cubit/task_cubit.dart';
 import '../../features/tasks/presentation/screens/assignment_list_screen.dart';
@@ -277,8 +276,9 @@ class AppRoutes {
 
                       return BlocProvider(
                         create: (context) {
-                          final repository = StatisticsRepositoryImpl();
-                          final cubit = TeacherStatsCubit(repository);
+                          final cubit = TeacherStatsCubit(
+                            context.read<StatisticsRepository>(),
+                          );
                           cubit.loadClassStats(
                             classId: classId,
                             teacherId: teacherId,
@@ -375,14 +375,9 @@ class AppRoutes {
                       ? authState.userId
                       : '';
 
-                  // Crear las dependencias necesarias
-                  final sessionService = SessionService();
-                  final sessionRepository = SessionRepositoryImpl(
-                    sessionService: sessionService,
-                  );
-
                   return BlocProvider(
-                    create: (context) => HistoryCubit(sessionRepository),
+                    create: (context) =>
+                        HistoryCubit(context.read<SessionRepository>()),
                     child: SessionHistoryScreen(studentId: studentId),
                   );
                 },
@@ -402,8 +397,9 @@ class AppRoutes {
 
                   return BlocProvider(
                     create: (context) {
-                      final repository = StatisticsRepositoryImpl();
-                      final cubit = StudentStatsCubit(repository);
+                      final cubit = StudentStatsCubit(
+                        context.read<StatisticsRepository>(),
+                      );
                       cubit.loadStats(studentId: studentId);
                       return cubit;
                     },
@@ -493,7 +489,8 @@ class AppRoutes {
             );
           }
           return BlocProvider(
-            create: (context) => TaskCubit(TaskRepositoryImpl()),
+            create: (context) =>
+                TaskCubit(context.read<TaskRepository>()),
             child: const TaskListScreen(),
           );
         },
@@ -509,7 +506,8 @@ class AppRoutes {
                 BlocProvider<TaskCubit>.value(value: extraCubit)
               else
                 BlocProvider(
-                  create: (context) => TaskCubit(TaskRepositoryImpl()),
+                  create: (context) =>
+                      TaskCubit(context.read<TaskRepository>()),
                 ),
               BlocProvider(
                 create: (context) =>
@@ -544,7 +542,8 @@ class AppRoutes {
             );
           }
           return BlocProvider(
-            create: (context) => TaskCubit(TaskRepositoryImpl()),
+            create: (context) =>
+                TaskCubit(context.read<TaskRepository>()),
             child: TaskDetailScreen(taskId: taskId),
           );
         },
@@ -564,7 +563,8 @@ class AppRoutes {
             );
           }
           return BlocProvider(
-            create: (context) => AssignmentCubit(TaskRepositoryImpl()),
+            create: (context) =>
+                AssignmentCubit(context.read<TaskRepository>()),
             child: const AssignmentListScreen(),
           );
         },
@@ -578,14 +578,9 @@ class AppRoutes {
           final taskId = state.pathParameters['taskId'] ?? '';
           final extra = state.extra as Map<String, String?>?;
 
-          // Crear las dependencias necesarias
-          final sessionService = SessionService();
-          final sessionRepository = SessionRepositoryImpl(
-            sessionService: sessionService,
-          );
-
           return BlocProvider(
-            create: (context) => SessionCubit(sessionRepository),
+            create: (context) =>
+                SessionCubit(context.read<SessionRepository>()),
             child: TimerScreen(
               taskId: taskId,
               studentId: extra?['studentId'] ?? '',
@@ -606,14 +601,9 @@ class AppRoutes {
               ? authState.userId
               : '';
 
-          // Crear las dependencias necesarias
-          final sessionService = SessionService();
-          final sessionRepository = SessionRepositoryImpl(
-            sessionService: sessionService,
-          );
-
           return BlocProvider(
-            create: (context) => HistoryCubit(sessionRepository),
+            create: (context) =>
+                HistoryCubit(context.read<SessionRepository>()),
             child: SessionHistoryScreen(studentId: studentId),
           );
         },

@@ -19,6 +19,7 @@ class FirebaseErrorMapper {
     return 'errorGeneric';
   }
 
+  /// Mapea códigos de [FirebaseAuthException] a claves de localización.
   static String _mapAuthError(FirebaseAuthException error) {
     switch (error.code) {
       case 'invalid-email':
@@ -46,6 +47,8 @@ class FirebaseErrorMapper {
     }
   }
 
+  /// Mapea códigos de [FirebaseException] genérica (Firestore, Storage, etc.)
+  /// a claves de localización.
   static String _mapGenericFirebaseError(FirebaseException error) {
     switch (error.code) {
       case 'permission-denied':
@@ -60,10 +63,14 @@ class FirebaseErrorMapper {
   }
 }
 
-/// Excepción interna para mantener consistencia en los mensajes.
+/// Excepción interna que envuelve un mensaje ya mapeado desde un error de Firebase.
+///
+/// Usada por los servicios de datos para propagar el mensaje a la capa de
+/// repositorio, donde se convierte en la excepción de dominio correspondiente.
 class FirebaseErrorMapperException implements Exception {
   FirebaseErrorMapperException(this.message);
 
+  /// Mensaje pre-mapeado (clave l10n o descripción en español).
   final String message;
 
   @override

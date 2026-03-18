@@ -23,8 +23,8 @@ abstract interface class SessionRepository {
 
   /// Observa en tiempo real las sesiones de un estudiante.
   ///
-  /// [studentId] es el identificador del estudiante.
-  /// [limit] es el número máximo de sesiones a retornar (0 = sin límite).
+  /// `studentId` es el identificador del estudiante.
+  /// `limit` es el número máximo de sesiones a retornar (0 = sin límite).
   ///
   /// Las sesiones se retornan ordenadas por fecha de finalización descendente
   /// (más recientes primero).
@@ -35,9 +35,9 @@ abstract interface class SessionRepository {
 
   /// Observa en tiempo real las sesiones de una tarea específica para un estudiante.
   ///
-  /// [taskId] es el identificador de la tarea.
-  /// [studentId] es el identificador del estudiante.
-  /// [limit] es el número máximo de sesiones a retornar (0 = sin límite).
+  /// `taskId` es el identificador de la tarea.
+  /// `studentId` es el identificador del estudiante.
+  /// `limit` es el número máximo de sesiones a retornar (0 = sin límite).
   ///
   /// Las sesiones se retornan ordenadas por fecha de finalización descendente
   /// (más recientes primero).

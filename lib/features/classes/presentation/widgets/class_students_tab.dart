@@ -5,10 +5,10 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../shared/widgets/custom_card.dart';
 
-/// Tab de estudiantes de la clase (para docente)
+/// Tab de estudiantes de la clase (para docente).
 ///
-/// Muestra todos los estudiantes de la clase con sus estadísticas y acciones.
-/// Sprint 0 - Fase 7: UI completa con Material Design 3
+/// Muestra la lista de alumnos inscritos en la clase con sus estadísticas
+/// de actividad y las acciones disponibles para cada uno (activar, eliminar).
 class ClassStudentsTab extends StatelessWidget {
   final String classId;
 

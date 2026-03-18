@@ -18,12 +18,11 @@ import '../cubit/auth_state.dart';
 import '../widgets/legal_consent_dialog.dart';
 import '../widgets/role_selector.dart';
 
-/// Pantalla de registro
+/// Pantalla de registro de nuevos usuarios.
 ///
-/// Implementa un formulario completo de registro con validación visual básica,
-/// selector de rol (docente/alumno) y diseño Material Design 3.
-///
-/// Sprint 0 - Fase 5: UI completa implementada (sin lógica de autenticación real)
+/// Implementa un formulario completo con validación en tiempo real,
+/// selector de rol (docente/alumno), aceptación de términos legales
+/// y soporte para registro con email/contraseña.
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 

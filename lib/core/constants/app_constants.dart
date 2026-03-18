@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 /// Constantes globales de la aplicación Playing Tracker
 ///
-/// Este archivo contiene todas las constantes utilizadas en la aplicación
-/// para mantener consistencia en el diseño y comportamiento.
-///
-/// Sprint 0 - Fase 2: Constantes implementadas
+/// Este archivo centraliza todas las constantes de diseño (espaciado, radios,
+/// duraciones y colores) para garantizar consistencia visual en toda la app.
+/// Se alinean con la escala de Material Design 3.
 
 /// Constantes de espaciado
 ///
@@ -108,7 +107,8 @@ class AppColors {
 /// )
 /// ```
 ///
-/// Sprint 0 - Mejora: Centralización de estilos de texto
+/// Provee métodos estáticos para construir [TextStyle] consistentes en toda
+/// la app, aplicando los tokens tipográficos y de color de Material Design 3.
 class AppTextStyles {
   AppTextStyles._(); // Constructor privado para evitar instanciación
 

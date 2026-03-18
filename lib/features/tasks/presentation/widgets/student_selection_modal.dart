@@ -68,7 +68,7 @@ class _StudentSelectionModalState extends State<StudentSelectionModal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Seleccionar alumnos', style: context.textTheme.titleLarge),
+              Text(context.l10n.selectStudentsTitle, style: context.textTheme.titleLarge),
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () => Navigator.pop(context),
@@ -85,8 +85,8 @@ class _StudentSelectionModalState extends State<StudentSelectionModal> {
                 }
 
                 if (state is MembershipEmpty) {
-                  return const Center(
-                    child: Text('No hay alumnos activos en esta clase.'),
+                  return Center(
+                    child: Text(context.l10n.noActiveStudentsInClass),
                   );
                 }
 
@@ -111,8 +111,8 @@ class _StudentSelectionModalState extends State<StudentSelectionModal> {
                           ),
                           child: Text(
                             _selectedIds.length == students.length
-                                ? 'Deseleccionar todos'
-                                : 'Seleccionar todos',
+                                ? context.l10n.deselectAllStudents
+                                : context.l10n.selectAllStudents,
                           ),
                         ),
                       ),
@@ -148,15 +148,15 @@ class _StudentSelectionModalState extends State<StudentSelectionModal> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.orange),
+                        Icon(Icons.error_outline, color: context.colorScheme.error),
                         const SizedBox(height: AppSpacing.s),
-                        const Text('Error al cargar alumnos'),
+                        Text(context.l10n.errorLoadingStudents),
                         TextButton(
                           onPressed: () => _membershipCubit.loadMembers(
                             classId: widget.classId,
                             refresh: true,
                           ),
-                          child: const Text('Reintentar'),
+                          child: Text(context.l10n.retry),
                         ),
                       ],
                     ),
@@ -173,7 +173,7 @@ class _StudentSelectionModalState extends State<StudentSelectionModal> {
               widget.onSelectionChanged(_selectedIds);
               Navigator.pop(context);
             },
-            child: const Text('Confirmar selección'),
+            child: Text(context.l10n.confirmSelectionButton),
           ),
         ],
       ),

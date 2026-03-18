@@ -14,6 +14,10 @@ void main() {
   late StatisticsRepository repository;
   late TeacherStatsCubit cubit;
 
+  setUpAll(() {
+    registerFallbackValue(TimeFilter.thisWeek);
+  });
+
   const classId = 'class_123';
   const teacherId = 'teacher_456';
 

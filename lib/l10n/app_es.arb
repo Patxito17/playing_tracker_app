@@ -1949,5 +1949,75 @@
   "noStudentsActivity": "Ningún alumno tiene actividad en este período",
   "@noStudentsActivity": {
     "description": "Mensaje cuando no hay actividad de alumnos en el período seleccionado"
+  },
+  "selectStudentsTitle": "Seleccionar alumnos",
+  "@selectStudentsTitle": {
+    "description": "Título del modal de selección de alumnos"
+  },
+  "noActiveStudentsInClass": "No hay alumnos activos en esta clase.",
+  "@noActiveStudentsInClass": {
+    "description": "Mensaje cuando no hay alumnos activos en la clase"
+  },
+  "errorLoadingStudents": "Error al cargar alumnos",
+  "@errorLoadingStudents": {
+    "description": "Mensaje de error al cargar la lista de alumnos"
+  },
+  "confirmSelectionButton": "Confirmar selección",
+  "@confirmSelectionButton": {
+    "description": "Botón para confirmar la selección de alumnos en el modal"
+  },
+  "estimatedTimeInvalidError": "El tiempo estimado debe ser un número entero mayor que 0",
+  "@estimatedTimeInvalidError": {
+    "description": "Error de validación del campo tiempo estimado"
+  },
+  "loadingOrNoClasses": "Cargando o sin clases...",
+  "@loadingOrNoClasses": {
+    "description": "Texto de subtítulo mientras se cargan las clases o no hay ninguna"
+  },
+  "atLeastOneClassSubtitle": "Obligatorio seleccionar al menos una clase",
+  "@atLeastOneClassSubtitle": {
+    "description": "Subtítulo del selector de clases cuando no hay ninguna seleccionada"
+  },
+  "classesSelectedCount": "{count} seleccionadas",
+  "@classesSelectedCount": {
+    "description": "Subtítulo del selector de clases con el número de clases seleccionadas",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignToLabel": "Asignar a:",
+  "@assignToLabel": {
+    "description": "Etiqueta del bloque de asignación de clases en la pantalla de creación de tarea"
+  },
+  "noActiveClassesFound": "No se encontraron clases activas.",
+  "@noActiveClassesFound": {
+    "description": "Mensaje cuando no hay clases activas disponibles para asignar"
+  },
+  "recipientStudentsTitle": "Alumnos destinatarios",
+  "@recipientStudentsTitle": {
+    "description": "Título de la card de selección de alumnos destinatarios en creación de tarea"
+  },
+  "allStudentsInClass": "Todos los alumnos de la clase",
+  "@allStudentsInClass": {
+    "description": "Subtítulo cuando todos los alumnos de la clase son destinatarios"
+  },
+  "studentsSelectedCount": "{count} alumnos seleccionados",
+  "@studentsSelectedCount": {
+    "description": "Subtítulo con el número de alumnos seleccionados como destinatarios",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignToAllLabel": "Asignar a todos",
+  "@assignToAllLabel": {
+    "description": "Texto cuando la tarea se asigna a todos los alumnos de la clase"
+  },
+  "customAssignmentLabel": "Asignación personalizada",
+  "@customAssignmentLabel": {
+    "description": "Texto cuando la tarea tiene una selección personalizada de alumnos"
   }
 }

@@ -6,6 +6,7 @@ import 'package:playing_tracker/features/sessions/domain/models/session_model.da
 import 'package:playing_tracker/features/statistics/domain/models/class_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/daily_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/student_class_stats_model.dart';
+import 'package:playing_tracker/features/statistics/domain/models/student_progress_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/task_stats_model.dart';
 import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/models/weekly_stats_model.dart';
@@ -20,6 +21,7 @@ final class StatisticsService {
 
   final FirebaseFirestore _firestore;
 
+  /// Referencia a la colección `sessions` de Firestore.
   CollectionReference<Map<String, dynamic>> get _sessionsCollection =>
       _firestore.collection(_sessionsCollectionName);
 
@@ -169,6 +171,7 @@ final class StatisticsService {
 
       final querySnapshot = await query
           .orderBy('dateLogged', descending: true)
+          .limit(500)
           .get();
 
       int totalDuration = 0;
@@ -579,6 +582,148 @@ final class StatisticsService {
     }
   }
 
+  /// Obtiene el progreso individual de un estudiante consultando las
+  /// colecciones `students`, `assignments` y `sessions` de Firestore.
+  Future<StudentProgressModel> getStudentProgress({
+    required String studentId,
+  }) async {
+    final sanitizedId = studentId.trim();
+
+    try {
+      // 1. Datos del estudiante
+      final studentDoc = await _firestore
+          .collection('students')
+          .doc(sanitizedId)
+          .get();
+
+      if (!studentDoc.exists) {
+        throw FirebaseException(
+          plugin: 'cloud_firestore',
+          code: 'not-found',
+          message: 'El estudiante no existe',
+        );
+      }
+
+      final studentData = studentDoc.data()!;
+      final firstName = studentData['firstName'] as String? ?? '';
+      final lastName = studentData['lastName'] as String? ?? '';
+      final studentName = '$firstName $lastName';
+
+      final totalDurationLogged =
+          studentData['totalDurationLogged'] as int? ?? 0;
+      final totalSessionsCount = studentData['totalSessionsCount'] as int? ?? 0;
+      final lastSessionTimestamp =
+          studentData['lastSessionDate'] as Timestamp?;
+
+      // 2. Asignaciones del estudiante
+      final assignmentsSnapshot = await _firestore
+          .collection('assignments')
+          .where('studentId', isEqualTo: sanitizedId)
+          .get();
+
+      final totalTasks = assignmentsSnapshot.docs.length;
+      final completedTasks = assignmentsSnapshot.docs
+          .where((doc) => (doc.data()['status'] as String?) == 'completed')
+          .length;
+
+      // 3. Rachas (cálculo en lote)
+      final streakMetrics = await _getStreakMetrics(sanitizedId);
+      final currentStreak = streakMetrics.current;
+      final longestStreak = streakMetrics.longest;
+
+      // 4. Promedio por sesión
+      final averageSessionDuration = totalSessionsCount > 0
+          ? (totalDurationLogged / totalSessionsCount).round()
+          : 0;
+
+      return StudentProgressModel(
+        studentId: sanitizedId,
+        studentName: studentName,
+        totalDuration: totalDurationLogged,
+        totalSessions: totalSessionsCount,
+        currentStreak: currentStreak,
+        longestStreak: longestStreak,
+        lastSessionDate: lastSessionTimestamp,
+        totalTasks: totalTasks,
+        completedTasks: completedTasks,
+        averageSessionDuration: averageSessionDuration,
+      );
+    } on FirebaseException catch (error, stackTrace) {
+      _logError('getStudentProgress', error, stackTrace);
+      throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+    }
+  }
+
+  /// Calcula las métricas de racha (actual y máxima) para un estudiante.
+  Future<({int current, int longest})> _getStreakMetrics(
+    String studentId,
+  ) async {
+    try {
+      final sessionsSnapshot = await _firestore
+          .collection('sessions')
+          .where('studentId', isEqualTo: studentId)
+          .orderBy('dateLogged', descending: true)
+          .limit(200)
+          .get();
+
+      if (sessionsSnapshot.docs.isEmpty) return (current: 0, longest: 0);
+
+      final practiceDates =
+          sessionsSnapshot.docs
+              .map((doc) => (doc.data()['dateLogged'] as Timestamp).toDate())
+              .map((date) => DateTime(date.year, date.month, date.day))
+              .toSet()
+              .toList()
+            ..sort((a, b) => b.compareTo(a));
+
+      if (practiceDates.isEmpty) return (current: 0, longest: 0);
+
+      int currentStreak = 0;
+      int maxStreak = 0;
+      int tempStreak = 1;
+
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final yesterday = today.subtract(const Duration(days: 1));
+
+      if (!practiceDates.first.isBefore(yesterday)) {
+        currentStreak = 1;
+        for (int i = 0; i < practiceDates.length - 1; i++) {
+          if (practiceDates[i].difference(practiceDates[i + 1]).inDays == 1) {
+            currentStreak++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      maxStreak = 1;
+      for (int i = 0; i < practiceDates.length - 1; i++) {
+        if (practiceDates[i].difference(practiceDates[i + 1]).inDays == 1) {
+          tempStreak++;
+        } else {
+          if (tempStreak > maxStreak) maxStreak = tempStreak;
+          tempStreak = 1;
+        }
+      }
+      if (tempStreak > maxStreak) maxStreak = tempStreak;
+
+      return (current: currentStreak, longest: maxStreak);
+    } catch (e) {
+      log(
+        'Error calculating streak metrics: $e',
+        name: 'StatisticsService',
+      );
+      return (current: 0, longest: 0);
+    }
+  }
+
+  /// Construye y ejecuta la query de sesiones filtrada por clase, docente y periodo.
+  ///
+  /// Para [TimeFilter.thisWeek] filtra por `dateLogged` en los últimos 7 días.
+  /// Para los demás filtros, usa el campo `monthBucket` (formato "YYYY-MM")
+  /// para aprovechar los índices de Firestore y evitar rangos amplios.
+  /// El límite de [TimeFilter.allTime] es 500 documentos por seguridad.
   Future<QuerySnapshot<Map<String, dynamic>>> _buildFilteredQuery({
     required String classId,
     required String teacherId,
@@ -624,13 +769,16 @@ final class StatisticsService {
             .orderBy('dateLogged', descending: true)
             .get();
       case TimeFilter.allTime:
-        return query.orderBy('dateLogged', descending: true).get();
+        return query.orderBy('dateLogged', descending: true).limit(500).get();
     }
   }
 
+  /// Genera una clave de agrupación diaria en formato "YYYY-MM-DD".
+  /// Se usa como clave del mapa interno para agregar sesiones por día.
   String _getDayKey(DateTime date) =>
       '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
+  /// Registra en el log el error de Firestore con método, código y stack trace.
   void _logError(
     String method,
     FirebaseException error,

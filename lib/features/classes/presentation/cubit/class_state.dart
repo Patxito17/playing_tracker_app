@@ -36,7 +36,10 @@ final class ClassSuccess extends ClassState {
     this.source = ClassStateSource.stream,
   });
 
+  /// Lista inmutable de clases del docente.
   final List<ClassModel> classes;
+
+  /// Indica si los datos provienen de una actualización del stream o de un refresco manual.
   final ClassStateSource source;
 
   @override
@@ -47,7 +50,10 @@ final class ClassSuccess extends ClassState {
 final class ClassActionSuccess extends ClassState {
   const ClassActionSuccess({required this.action, this.message});
 
+  /// Tipo de acción que se completó exitosamente.
   final ClassAction action;
+
+  /// Mensaje opcional de confirmación para la UI.
   final String? message;
 
   @override
@@ -58,8 +64,13 @@ final class ClassActionSuccess extends ClassState {
 final class ClassError extends ClassState {
   const ClassError({this.message, this.cause, this.errorType});
 
+  /// Mensaje legible para la UI. Null cuando se usa [errorType] en su lugar.
   final String? message;
+
+  /// Excepción original que provocó el error (para logging).
   final Object? cause;
+
+  /// Tipo de error estructurado para que la UI pueda personalizar el mensaje.
   final ClassErrorType? errorType;
 
   @override

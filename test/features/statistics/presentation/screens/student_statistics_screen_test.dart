@@ -154,8 +154,8 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump(); // Necesario para que el BlocBuilder reaccione
 
-      expect(find.text('Resumen General'), findsOneWidget);
-      expect(find.text('Actividad Semanal'), findsOneWidget);
+      expect(find.text('Resumen general'), findsOneWidget);
+      expect(find.text('Actividad semanal'), findsOneWidget);
 
       expect(find.byType(AppProgressChart), findsOneWidget);
       expect(find.byType(AppBarChart), findsOneWidget);
@@ -203,7 +203,7 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
-      expect(find.text('Distribución por Tarea'), findsOneWidget);
+      expect(find.text('Distribución por tarea'), findsOneWidget);
       expect(find.byType(AppPieChart), findsOneWidget);
     });
   });

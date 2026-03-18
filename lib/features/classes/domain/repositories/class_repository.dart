@@ -95,10 +95,10 @@ abstract interface class ClassRepository {
     bool includeInactive = false,
   });
 
-  /// Hook para preparar el fan-out de tareas hacia asignaciones.
+  /// Prepara el fan-out de una tarea hacia la colección `assignments`.
   ///
-  /// La implementación de Sprint 3 únicamente debe dejar logs y TODOs,
-  /// delegando la lógica real al helper de la Fase 4.
+  /// Delega la lógica de distribución al [FanOutHelper], que crea un
+  /// documento de asignación por alumno activo en la clase indicada.
   Future<void> fanOutTask({required String taskId, required String classId});
 
   /// Observa las clases activas en las que está inscrito un alumno.

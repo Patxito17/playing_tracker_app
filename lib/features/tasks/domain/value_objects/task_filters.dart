@@ -13,11 +13,11 @@ import 'package:playing_tracker/features/tasks/domain/enums/task_status.dart';
 /// - Alumno: `studentId + status + assignedAt`.
 ///
 /// Campos:
-/// - [isActive]: Filtra por estado activo/archivado de la tarea.
-/// - [createdFrom]/[createdTo]: Rango por fecha de creación.
-/// - [dueFrom]/[dueTo]: Rango por fecha de vencimiento.
-/// - [status]: Estado de la asignación (solo para alumnos).
-/// - [assignedFrom]/[assignedTo]: Rango por fecha de asignación
+/// - `isActive`: Filtra por estado activo/archivado de la tarea.
+/// - `createdFrom`/`createdTo`: Rango por fecha de creación.
+/// - `dueFrom`/`dueTo`: Rango por fecha de vencimiento.
+/// - `status`: Estado de la asignación (solo para alumnos).
+/// - `assignedFrom`/`assignedTo`: Rango por fecha de asignación
 ///   (solo para alumnos).
 typedef TaskFilters = ({
   bool? isActive,
