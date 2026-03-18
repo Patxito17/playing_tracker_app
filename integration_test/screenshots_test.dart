@@ -37,6 +37,7 @@ import 'package:playing_tracker/features/classes/domain/repositories/class_repos
 import 'package:playing_tracker/features/sessions/domain/repositories/session_repository.dart';
 import 'package:playing_tracker/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:playing_tracker/features/settings/presentation/cubit/settings_state.dart';
+import 'package:playing_tracker/features/statistics/domain/models/time_filter_enum.dart';
 import 'package:playing_tracker/features/statistics/domain/repositories/statistics_repository.dart';
 import 'package:playing_tracker/features/tasks/domain/repositories/task_repository.dart';
 import 'package:playing_tracker/l10n/app_localizations.dart';
@@ -253,6 +254,13 @@ void main() {
   late _MockTaskRepository mockTaskRepository;
   late _MockSessionRepository mockSessionRepository;
   late _MockStatisticsRepository mockStatisticsRepository;
+
+  setUpAll(() {
+    // Registrar fallback values para tipos personalizados usados con any().
+    // Mocktail los necesita antes de que cualquier stub use esos tipos.
+    registerFallbackValue(TimeFilter.thisWeek);
+    registerFallbackValue(DateTime(2026));
+  });
 
   setUp(() {
     // HydratedBloc requiere un storage incluso cuando el Cubit es mock.
