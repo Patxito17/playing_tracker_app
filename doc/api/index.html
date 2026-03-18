@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="playing_tracker API docs, for the Dart programming language.">
+  <title>playing_tracker - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">playing_tracker package</li>
+  </ol>
+  <div class="self-name">playing_tracker</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="-playing-tracker">🎵 Playing Tracker</h1>
+<p><strong>Sistema de Seguimiento de Estudio Musical</strong></p>
+<p><img src="https://img.shields.io/badge/Estado-Sprint%205%20Completado-success" alt="Project Status">
+<img src="https://img.shields.io/badge/Flutter-3.x-blue" alt="Flutter Version">
+<img src="https://img.shields.io/badge/Dart-3.x-blue" alt="Dart Version"></p>
+<p><strong>Playing Tracker</strong> es una aplicación móvil multiplataforma desarrollada con Flutter y Firebase, diseñada para digitalizar y objetivar el seguimiento del estudio instrumental fuera del aula. Permite a los docentes asignar tareas específicas y a los alumnos registrar el tiempo dedicado a cada una de ellas de forma precisa y honesta.</p>
+<hr>
+<h2 id="-caractersticas-principales">🚀 Características Principales</h2>
+<h3 id="-mdulo-de-estudiante">👨‍🎓 Módulo de Estudiante</h3>
+<ul>
+<li><strong>Gestión de Clases:</strong> Unirse a clases mediante códigos de acceso únicos generados por el docente.</li>
+<li><strong>Tareas Asignadas:</strong> Visualización de todas las tareas pendientes y sus objetivos de práctica.</li>
+<li><strong>Cronómetro Inteligente:</strong>
+<ul>
+<li>Registro de tiempo de práctica en tiempo real.</li>
+<li><strong>Auto-Pausa en Background:</strong> Si el alumno sale de la app, el cronómetro se pausa automáticamente para mayor seguridad y precisión.</li>
+<li>Reanudación manual al volver a la app.</li>
+</ul>
+</li>
+<li><strong>Historial de Práctica:</strong> Registro detallado de todas las sesiones realizadas, incluyendo fechas, duraciones y notas.</li>
+</ul>
+<h3 id="-mdulo-de-docente">👩‍🏫 Módulo de Docente</h3>
+<ul>
+<li><strong>Gestión de Clases:</strong> Crear, editar y archivar clases grupales.</li>
+<li><strong>Gestión de Alumnos:</strong> Administración de miembros, códigos de invitación y monitoreo de actividad.</li>
+<li><strong>Asignación de Tareas:</strong> Creación de tareas con títulos, descripciones y tiempos sugeridos.</li>
+<li><strong>Seguimiento:</strong> (En desarrollo) Visualización del tiempo total de estudio por alumno y clase.</li>
+</ul>
+<h3 id="-seguridad-y-tecnologa">🔐 Seguridad y Tecnología</h3>
+<ul>
+<li><strong>Autenticación Robusta:</strong> Login/Registro con Email y Contraseña mediante Firebase Auth.</li>
+<li><strong>Roles Definidos:</strong> Interfaces y permisos granulares separados para Docentes y Alumnos.</li>
+<li><strong>Diseño Moderno:</strong> Interfaz basada enteramente en <strong>Material Design 3</strong> con soporte para tema claro y oscuro.</li>
+<li><strong>Arquitectura Feature-First:</strong> Código organizado, testeado y escalable.</li>
+</ul>
+<hr>
+<h2 id="-estado-del-proyecto">📊 Estado del Proyecto</h2>
+<p><strong>Estado Actual:</strong> Sprint 5 Completado (Core Loop Operativo) ✅
+<strong>Última actualización:</strong> 24 de Enero 2026</p>
+<h3 id="roadmap-de-desarrollo">Roadmap de Desarrollo</h3>
+<pre class="language-text"><code class="language-text">Sprint 0: ████████████████████ 100% ✅ Diseño UI/UX
+Sprint 1: ████████████████████ 100% ✅ Modelos y Arquitectura
+Sprint 2: ████████████████████ 100% ✅ Autenticación
+Sprint 3: ████████████████████ 100% ✅ Clases y Membresías
+Sprint 4: ████████████████████ 100% ✅ Tareas y Asignaciones
+Sprint 5: ████████████████████ 100% ✅ Cronómetro y Sesiones
+Sprint 6: ░░░░░░░░░░░░░░░░░░░░ 0%  📅 Estadísticas (Planificación)
+Sprint 7: ░░░░░░░░░░░░░░░░░░░░ 0%  📅 Testing y Optimización
+</code></pre>
+<hr>
+<h2 id="-documentacin">📚 Documentación</h2>
+<ul>
+<li>📄 <strong><a href="docs/Guia_Proyecto_PlayingTracker.md">Guía Maestra del Proyecto</a></strong> - Roadmap y Visión General.</li>
+<li>🎨 <strong><a href="docs/components/COMPONENTS_GUIDE.md">Guía de Componentes UI</a></strong> - Documentación de widgets reutilizables.</li>
+<li>📙 <strong><a href=".cursor/rules/flutter_style_rules.mdc">Reglas de Estilo</a></strong> - Convenciones de código.</li>
+</ul>
+<h3 id="implementacin-por-sprints">Implementación por Sprints</h3>
+<ul>
+<li><a href="docs/sprints/SPRINT_0_IMPLEMENTACION.md">Sprint 0: Diseño UI/UX</a></li>
+<li><a href="docs/sprints/SPRINT_1_IMPLEMENTACION.md">Sprint 1: Datos y Modelos</a></li>
+<li><a href="docs/sprints/SPRINT_2_IMPLEMENTACION.md">Sprint 2: Autenticación</a></li>
+<li><a href="docs/sprints/SPRINT_3_IMPLEMENTACION.md">Sprint 3: Clases y Miembros</a></li>
+<li><a href="docs/sprints/SPRINT_4_IMPLEMENTACION.md">Sprint 4: Tareas y Asignaciones</a></li>
+<li><a href="docs/sprints/SPRINT_5_IMPLEMENTACION.md">Sprint 5: Cronómetro y Sesiones</a></li>
+<li><a href="docs/sprints/SPRINT_6_IMPLEMENTACION.md">Sprint 6: Estadísticas y Dashboards (Draft)</a></li>
+</ul>
+<hr>
+<h2 id="-stack-tecnolgico">🛠️ Stack Tecnológico</h2>
+<ul>
+<li><strong>Frontend:</strong> Flutter 3.x / Dart 3.x.</li>
+<li><strong>Backend:</strong> Firebase (Authentication, Cloud Firestore).</li>
+<li><strong>Gestión de Estado:</strong> flutter_bloc (Cubit Pattern).</li>
+<li><strong>Navegación:</strong> go_router (Guardas reactivas por rol).</li>
+<li><strong>Testing:</strong> flutter_test, mocktail, fake_cloud_firestore.</li>
+</ul>
+<hr>
+<h2 id="-instalacin-y-ejecucin">🔧 Instalación y Ejecución</h2>
+<ol>
+<li>
+<p><strong>Clonar el repositorio:</strong></p>
+<pre class="language-bash"><code class="language-bash">git clone &lt;repository-url&gt;
+cd playing_tracker
+</code></pre>
+</li>
+<li>
+<p><strong>Obtener dependencias:</strong></p>
+<pre class="language-bash"><code class="language-bash">flutter pub get
+</code></pre>
+</li>
+<li>
+<p><strong>Generar código (JSON serialization):</strong></p>
+<pre class="language-bash"><code class="language-bash">dart run build_runner build --delete-conflicting-outputs
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar tests:</strong></p>
+<pre class="language-bash"><code class="language-bash">flutter test
+</code></pre>
+</li>
+<li>
+<p><strong>Lanzar la app:</strong></p>
+<pre class="language-bash"><code class="language-bash">flutter run
+</code></pre>
+</li>
+</ol>
+<blockquote>
+<p><strong>Nota:</strong> Se requieren los archivos de configuración de Firebase (<code>google-services.json</code> / <code>GoogleService-Info.plist</code>) para la conexión con el backend.</p>
+</blockquote>
+<hr>
+<h2 id="-estructura-del-proyecto">📁 Estructura del Proyecto</h2>
+<pre class="language-text"><code class="language-text">lib/
+├── config/                 # Temas y Rutas
+├── core/                   # Constantes, Utils y Extensions
+├── features/               # Funcionalidades por módulos
+│   ├── auth/              # Login y Registro
+│   ├── classes/           # Clases y Membresías
+│   ├── tasks/             # Gestión de Tareas
+│   ├── sessions/          # Cronómetro e Historial
+│   ├── statistics/        # (Próximamente)
+│   └── settings/          # Ajustes de la App
+└── shared/                 # Widgets y componentes comunes
+</code></pre>
+<hr>
+<h2 id="-licencia">📝 Licencia</h2>
+<p>Este proyecto es privado y para fines educativos. Todos los derechos reservados.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="app_routes">
+  <span class="name"><a href="config_routes_app_routes/">config/routes/app_routes</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_theme">
+  <span class="name"><a href="config_theme_app_theme/">config/theme/app_theme</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_bloc_observer">
+  <span class="name"><a href="core_config_bloc_app_bloc_observer/">core/config/bloc/app_bloc_observer</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="go_router_refresh_stream">
+  <span class="name"><a href="core_config_router_go_router_refresh_stream/">core/config/router/go_router_refresh_stream</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_constants">
+  <span class="name"><a href="core_constants_app_constants/">core/constants/app_constants</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="legal_constants">
+  <span class="name"><a href="core_constants_legal_constants/">core/constants/legal_constants</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="context_extensions">
+  <span class="name"><a href="core_extensions_context_extensions/">core/extensions/context_extensions</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="access_code_generator">
+  <span class="name"><a href="core_utils_access_code_generator/">core/utils/access_code_generator</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="domain_validators">
+  <span class="name"><a href="core_utils_domain_validators/">core/utils/domain_validators</a></span> 
+
+</dt>
+<dd>Utilidades de validación para el dominio de Playing Tracker.
+</dd>
+
+          <dt id="firebase_error_mapper">
+  <span class="name"><a href="core_utils_firebase_error_mapper/">core/utils/firebase_error_mapper</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="timestamp_converter">
+  <span class="name"><a href="core_utils_timestamp_converter/">core/utils/timestamp_converter</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="validators">
+  <span class="name"><a href="core_utils_validators/">core/utils/validators</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_repository_impl">
+  <span class="name"><a href="features_auth_data_repositories_auth_repository_impl/">features/auth/data/repositories/auth_repository_impl</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_role">
+  <span class="name"><a href="features_auth_domain_enums_user_role/">features/auth/domain/enums/user_role</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_model">
+  <span class="name"><a href="features_auth_domain_models_student_model/">features/auth/domain/models/student_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_model">
+  <span class="name"><a href="features_auth_domain_models_teacher_model/">features/auth/domain/models/teacher_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_profile">
+  <span class="name"><a href="features_auth_domain_models_user_profile/">features/auth/domain/models/user_profile</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_repository">
+  <span class="name"><a href="features_auth_domain_repositories_auth_repository/">features/auth/domain/repositories/auth_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_cubit">
+  <span class="name"><a href="features_auth_presentation_cubit_auth_cubit/">features/auth/presentation/cubit/auth_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_state">
+  <span class="name"><a href="features_auth_presentation_cubit_auth_state/">features/auth/presentation/cubit/auth_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="forgot_password_cubit">
+  <span class="name"><a href="features_auth_presentation_cubit_forgot_password_cubit/">features/auth/presentation/cubit/forgot_password_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="forgot_password_state">
+  <span class="name"><a href="features_auth_presentation_cubit_forgot_password_state/">features/auth/presentation/cubit/forgot_password_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="complete_profile_screen">
+  <span class="name"><a href="features_auth_presentation_screens_complete_profile_screen/">features/auth/presentation/screens/complete_profile_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="forgot_password_screen">
+  <span class="name"><a href="features_auth_presentation_screens_forgot_password_screen/">features/auth/presentation/screens/forgot_password_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="login_screen">
+  <span class="name"><a href="features_auth_presentation_screens_login_screen/">features/auth/presentation/screens/login_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="register_screen">
+  <span class="name"><a href="features_auth_presentation_screens_register_screen/">features/auth/presentation/screens/register_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="legal_consent_dialog">
+  <span class="name"><a href="features_auth_presentation_widgets_legal_consent_dialog/">features/auth/presentation/widgets/legal_consent_dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="role_selector">
+  <span class="name"><a href="features_auth_presentation_widgets_role_selector/">features/auth/presentation/widgets/role_selector</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="fan_out_helper">
+  <span class="name"><a href="features_classes_data_helpers_fan_out_helper/">features/classes/data/helpers/fan_out_helper</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_repository_impl">
+  <span class="name"><a href="features_classes_data_repositories_class_repository_impl/">features/classes/data/repositories/class_repository_impl</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_service">
+  <span class="name"><a href="features_classes_data_services_class_service/">features/classes/data/services/class_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="membership_service">
+  <span class="name"><a href="features_classes_data_services_membership_service/">features/classes/data/services/membership_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_status">
+  <span class="name"><a href="features_classes_domain_enums_class_status/">features/classes/domain/enums/class_status</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_model">
+  <span class="name"><a href="features_classes_domain_models_class_model/">features/classes/domain/models/class_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="membership_model">
+  <span class="name"><a href="features_classes_domain_models_membership_model/">features/classes/domain/models/membership_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_repository">
+  <span class="name"><a href="features_classes_domain_repositories_class_repository/">features/classes/domain/repositories/class_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="create_class_input">
+  <span class="name"><a href="features_classes_domain_value_objects_create_class_input/">features/classes/domain/value_objects/create_class_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="invite_student_input">
+  <span class="name"><a href="features_classes_domain_value_objects_invite_student_input/">features/classes/domain/value_objects/invite_student_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="join_class_input">
+  <span class="name"><a href="features_classes_domain_value_objects_join_class_input/">features/classes/domain/value_objects/join_class_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="membership_page">
+  <span class="name"><a href="features_classes_domain_value_objects_membership_page/">features/classes/domain/value_objects/membership_page</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_cubit">
+  <span class="name"><a href="features_classes_presentation_cubit_class_cubit/">features/classes/presentation/cubit/class_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_state">
+  <span class="name"><a href="features_classes_presentation_cubit_class_state/">features/classes/presentation/cubit/class_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="membership_cubit">
+  <span class="name"><a href="features_classes_presentation_cubit_membership_cubit/">features/classes/presentation/cubit/membership_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="membership_state">
+  <span class="name"><a href="features_classes_presentation_cubit_membership_state/">features/classes/presentation/cubit/membership_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_classes_cubit">
+  <span class="name"><a href="features_classes_presentation_cubit_student_classes_cubit/">features/classes/presentation/cubit/student_classes_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_classes_state">
+  <span class="name"><a href="features_classes_presentation_cubit_student_classes_state/">features/classes/presentation/cubit/student_classes_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="create_class_screen">
+  <span class="name"><a href="features_classes_presentation_screens_create_class_screen/">features/classes/presentation/screens/create_class_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="join_class_screen">
+  <span class="name"><a href="features_classes_presentation_screens_join_class_screen/">features/classes/presentation/screens/join_class_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="manage_students_screen">
+  <span class="name"><a href="features_classes_presentation_screens_manage_students_screen/">features/classes/presentation/screens/manage_students_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_class_detail_screen">
+  <span class="name"><a href="features_classes_presentation_screens_student_class_detail_screen/">features/classes/presentation/screens/student_class_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_classes_list_screen">
+  <span class="name"><a href="features_classes_presentation_screens_student_classes_list_screen/">features/classes/presentation/screens/student_classes_list_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_class_detail_screen">
+  <span class="name"><a href="features_classes_presentation_screens_teacher_class_detail_screen/">features/classes/presentation/screens/teacher_class_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_classes_list_screen">
+  <span class="name"><a href="features_classes_presentation_screens_teacher_classes_list_screen/">features/classes/presentation/screens/teacher_classes_list_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_validators">
+  <span class="name"><a href="features_classes_presentation_utils_class_validators/">features/classes/presentation/utils/class_validators</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_chips">
+  <span class="name"><a href="features_classes_presentation_widgets_class_chips/">features/classes/presentation/widgets/class_chips</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_empty_state">
+  <span class="name"><a href="features_classes_presentation_widgets_class_empty_state/">features/classes/presentation/widgets/class_empty_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_error_state">
+  <span class="name"><a href="features_classes_presentation_widgets_class_error_state/">features/classes/presentation/widgets/class_error_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_info_tab">
+  <span class="name"><a href="features_classes_presentation_widgets_class_info_tab/">features/classes/presentation/widgets/class_info_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_statistics_tab">
+  <span class="name"><a href="features_classes_presentation_widgets_class_statistics_tab/">features/classes/presentation/widgets/class_statistics_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_students_tab">
+  <span class="name"><a href="features_classes_presentation_widgets_class_students_tab/">features/classes/presentation/widgets/class_students_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_tasks_tab">
+  <span class="name"><a href="features_classes_presentation_widgets_class_tasks_tab/">features/classes/presentation/widgets/class_tasks_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_class_tasks_tab">
+  <span class="name"><a href="features_classes_presentation_widgets_student_class_tasks_tab/">features/classes/presentation/widgets/student_class_tasks_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_class_overview_card">
+  <span class="name"><a href="features_classes_presentation_widgets_teacher_class_overview_card/">features/classes/presentation/widgets/teacher_class_overview_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="progress_cubit">
+  <span class="name"><a href="features_home_presentation_cubit_progress_cubit/">features/home/presentation/cubit/progress_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="progress_state">
+  <span class="name"><a href="features_home_presentation_cubit_progress_state/">features/home/presentation/cubit/progress_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_home_screen">
+  <span class="name"><a href="features_home_presentation_screens_student_home_screen/">features/home/presentation/screens/student_home_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_home_screen">
+  <span class="name"><a href="features_home_presentation_screens_teacher_home_screen/">features/home/presentation/screens/teacher_home_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_accomplishment_card">
+  <span class="name"><a href="features_home_presentation_widgets_home_accomplishment_card/">features/home/presentation/widgets/home_accomplishment_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_class_card_compact">
+  <span class="name"><a href="features_home_presentation_widgets_home_class_card_compact/">features/home/presentation/widgets/home_class_card_compact</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_dashboard_header">
+  <span class="name"><a href="features_home_presentation_widgets_home_dashboard_header/">features/home/presentation/widgets/home_dashboard_header</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_greeting_hero">
+  <span class="name"><a href="features_home_presentation_widgets_home_greeting_hero/">features/home/presentation/widgets/home_greeting_hero</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_menu_card">
+  <span class="name"><a href="features_home_presentation_widgets_home_menu_card/">features/home/presentation/widgets/home_menu_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_progress_card">
+  <span class="name"><a href="features_home_presentation_widgets_home_progress_card/">features/home/presentation/widgets/home_progress_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_quick_action_card">
+  <span class="name"><a href="features_home_presentation_widgets_home_quick_action_card/">features/home/presentation/widgets/home_quick_action_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_sections">
+  <span class="name"><a href="features_home_presentation_widgets_home_sections/">features/home/presentation/widgets/home_sections</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_repository_impl">
+  <span class="name"><a href="features_sessions_data_repositories_session_repository_impl/">features/sessions/data/repositories/session_repository_impl</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_service">
+  <span class="name"><a href="features_sessions_data_services_session_service/">features/sessions/data/services/session_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_status">
+  <span class="name"><a href="features_sessions_domain_enums_session_status/">features/sessions/domain/enums/session_status</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_model">
+  <span class="name"><a href="features_sessions_domain_models_session_model/">features/sessions/domain/models/session_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_repository">
+  <span class="name"><a href="features_sessions_domain_repositories_session_repository/">features/sessions/domain/repositories/session_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="timer_ticker">
+  <span class="name"><a href="features_sessions_domain_utils_timer_ticker/">features/sessions/domain/utils/timer_ticker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="history_cubit">
+  <span class="name"><a href="features_sessions_presentation_cubit_history_cubit/">features/sessions/presentation/cubit/history_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="history_state">
+  <span class="name"><a href="features_sessions_presentation_cubit_history_state/">features/sessions/presentation/cubit/history_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_cubit">
+  <span class="name"><a href="features_sessions_presentation_cubit_session_cubit/">features/sessions/presentation/cubit/session_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_state">
+  <span class="name"><a href="features_sessions_presentation_cubit_session_state/">features/sessions/presentation/cubit/session_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="session_history_screen">
+  <span class="name"><a href="features_sessions_presentation_screens_session_history_screen/">features/sessions/presentation/screens/session_history_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="timer_screen">
+  <span class="name"><a href="features_sessions_presentation_screens_timer_screen/">features/sessions/presentation/screens/timer_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings_service">
+  <span class="name"><a href="features_settings_data_services_settings_service/">features/settings/data/services/settings_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings_cubit">
+  <span class="name"><a href="features_settings_presentation_cubit_settings_cubit/">features/settings/presentation/cubit/settings_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings_state">
+  <span class="name"><a href="features_settings_presentation_cubit_settings_state/">features/settings/presentation/cubit/settings_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="legal_document_screen">
+  <span class="name"><a href="features_settings_presentation_screens_legal_document_screen/">features/settings/presentation/screens/legal_document_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings_screen">
+  <span class="name"><a href="features_settings_presentation_screens_settings_screen/">features/settings/presentation/screens/settings_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="cached_stats">
+  <span class="name"><a href="features_statistics_data_repositories_cached_stats/">features/statistics/data/repositories/cached_stats</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="statistics_repository_impl">
+  <span class="name"><a href="features_statistics_data_repositories_statistics_repository_impl/">features/statistics/data/repositories/statistics_repository_impl</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="statistics_service">
+  <span class="name"><a href="features_statistics_data_services_statistics_service/">features/statistics/data/services/statistics_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="statistics_exception">
+  <span class="name"><a href="features_statistics_domain_exceptions_statistics_exception/">features/statistics/domain/exceptions/statistics_exception</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="class_stats_model">
+  <span class="name"><a href="features_statistics_domain_models_class_stats_model/">features/statistics/domain/models/class_stats_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="daily_stats_model">
+  <span class="name"><a href="features_statistics_domain_models_daily_stats_model/">features/statistics/domain/models/daily_stats_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_class_stats_model">
+  <span class="name"><a href="features_statistics_domain_models_student_class_stats_model/">features/statistics/domain/models/student_class_stats_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_progress_model">
+  <span class="name"><a href="features_statistics_domain_models_student_progress_model/">features/statistics/domain/models/student_progress_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_stats_model">
+  <span class="name"><a href="features_statistics_domain_models_task_stats_model/">features/statistics/domain/models/task_stats_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="time_filter_enum">
+  <span class="name"><a href="features_statistics_domain_models_time_filter_enum/">features/statistics/domain/models/time_filter_enum</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="weekly_stats_model">
+  <span class="name"><a href="features_statistics_domain_models_weekly_stats_model/">features/statistics/domain/models/weekly_stats_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="statistics_repository">
+  <span class="name"><a href="features_statistics_domain_repositories_statistics_repository/">features/statistics/domain/repositories/statistics_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_stats_cubit">
+  <span class="name"><a href="features_statistics_presentation_cubit_student_stats_cubit/">features/statistics/presentation/cubit/student_stats_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_stats_state">
+  <span class="name"><a href="features_statistics_presentation_cubit_student_stats_state/">features/statistics/presentation/cubit/student_stats_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_stats_cubit">
+  <span class="name"><a href="features_statistics_presentation_cubit_teacher_stats_cubit/">features/statistics/presentation/cubit/teacher_stats_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_stats_state">
+  <span class="name"><a href="features_statistics_presentation_cubit_teacher_stats_state/">features/statistics/presentation/cubit/teacher_stats_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="statistics_screen">
+  <span class="name"><a href="features_statistics_presentation_screens_statistics_screen/">features/statistics/presentation/screens/statistics_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_statistics_screen">
+  <span class="name"><a href="features_statistics_presentation_screens_student_statistics_screen/">features/statistics/presentation/screens/student_statistics_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="teacher_statistics_screen">
+  <span class="name"><a href="features_statistics_presentation_screens_teacher_statistics_screen/">features/statistics/presentation/screens/teacher_statistics_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_bar_chart">
+  <span class="name"><a href="features_statistics_presentation_widgets_app_bar_chart/">features/statistics/presentation/widgets/app_bar_chart</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_pie_chart">
+  <span class="name"><a href="features_statistics_presentation_widgets_app_pie_chart/">features/statistics/presentation/widgets/app_pie_chart</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_progress_chart">
+  <span class="name"><a href="features_statistics_presentation_widgets_app_progress_chart/">features/statistics/presentation/widgets/app_progress_chart</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stat_metric_tile">
+  <span class="name"><a href="features_statistics_presentation_widgets_stat_metric_tile/">features/statistics/presentation/widgets/stat_metric_tile</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stats_section_card">
+  <span class="name"><a href="features_statistics_presentation_widgets_stats_section_card/">features/statistics/presentation/widgets/stats_section_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="time_filter_selector">
+  <span class="name"><a href="features_statistics_presentation_widgets_time_filter_selector/">features/statistics/presentation/widgets/time_filter_selector</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_repository_impl">
+  <span class="name"><a href="features_tasks_data_repositories_task_repository_impl/">features/tasks/data/repositories/task_repository_impl</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_service">
+  <span class="name"><a href="features_tasks_data_services_assignment_service/">features/tasks/data/services/assignment_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_service">
+  <span class="name"><a href="features_tasks_data_services_task_service/">features/tasks/data/services/task_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="attachment_type">
+  <span class="name"><a href="features_tasks_domain_enums_attachment_type/">features/tasks/domain/enums/attachment_type</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_status">
+  <span class="name"><a href="features_tasks_domain_enums_task_status/">features/tasks/domain/enums/task_status</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_model">
+  <span class="name"><a href="features_tasks_domain_models_assignment_model/">features/tasks/domain/models/assignment_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="attachment_model">
+  <span class="name"><a href="features_tasks_domain_models_attachment_model/">features/tasks/domain/models/attachment_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_model">
+  <span class="name"><a href="features_tasks_domain_models_task_model/">features/tasks/domain/models/task_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_repository">
+  <span class="name"><a href="features_tasks_domain_repositories_task_repository/">features/tasks/domain/repositories/task_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assign_task_input">
+  <span class="name"><a href="features_tasks_domain_value_objects_assign_task_input/">features/tasks/domain/value_objects/assign_task_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="create_task_input">
+  <span class="name"><a href="features_tasks_domain_value_objects_create_task_input/">features/tasks/domain/value_objects/create_task_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_filters">
+  <span class="name"><a href="features_tasks_domain_value_objects_task_filters/">features/tasks/domain/value_objects/task_filters</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="update_task_input">
+  <span class="name"><a href="features_tasks_domain_value_objects_update_task_input/">features/tasks/domain/value_objects/update_task_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_cubit">
+  <span class="name"><a href="features_tasks_presentation_cubit_assignment_cubit/">features/tasks/presentation/cubit/assignment_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_state">
+  <span class="name"><a href="features_tasks_presentation_cubit_assignment_state/">features/tasks/presentation/cubit/assignment_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_cubit">
+  <span class="name"><a href="features_tasks_presentation_cubit_task_cubit/">features/tasks/presentation/cubit/task_cubit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_state">
+  <span class="name"><a href="features_tasks_presentation_cubit_task_state/">features/tasks/presentation/cubit/task_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_list_screen">
+  <span class="name"><a href="features_tasks_presentation_screens_assignment_list_screen/">features/tasks/presentation/screens/assignment_list_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="create_task_screen">
+  <span class="name"><a href="features_tasks_presentation_screens_create_task_screen/">features/tasks/presentation/screens/create_task_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_detail_screen">
+  <span class="name"><a href="features_tasks_presentation_screens_task_detail_screen/">features/tasks/presentation/screens/task_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_list_screen">
+  <span class="name"><a href="features_tasks_presentation_screens_task_list_screen/">features/tasks/presentation/screens/task_list_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assign_task_dialog">
+  <span class="name"><a href="features_tasks_presentation_widgets_assign_task_dialog/">features/tasks/presentation/widgets/assign_task_dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_card">
+  <span class="name"><a href="features_tasks_presentation_widgets_assignment_card/">features/tasks/presentation/widgets/assignment_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="assignment_filters_bottom_sheet">
+  <span class="name"><a href="features_tasks_presentation_widgets_assignment_filters_bottom_sheet/">features/tasks/presentation/widgets/assignment_filters_bottom_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="student_selection_modal">
+  <span class="name"><a href="features_tasks_presentation_widgets_student_selection_modal/">features/tasks/presentation/widgets/student_selection_modal</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_filters_bottom_sheet">
+  <span class="name"><a href="features_tasks_presentation_widgets_task_filters_bottom_sheet/">features/tasks/presentation/widgets/task_filters_bottom_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_info_row">
+  <span class="name"><a href="features_tasks_presentation_widgets_task_info_row/">features/tasks/presentation/widgets/task_info_row</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="task_status_badge">
+  <span class="name"><a href="features_tasks_presentation_widgets_task_status_badge/">features/tasks/presentation/widgets/task_status_badge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="tutorial_keys">
+  <span class="name"><a href="features_tutorial_domain_tutorial_keys/">features/tutorial/domain/tutorial_keys</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="tutorial_target_builder">
+  <span class="name"><a href="features_tutorial_presentation_tutorial_target_builder/">features/tutorial/presentation/tutorial_target_builder</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="tutorial_content_widget">
+  <span class="name"><a href="features_tutorial_presentation_widgets_tutorial_content_widget/">features/tutorial/presentation/widgets/tutorial_content_widget</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="firebase_options">
+  <span class="name"><a href="firebase_options/">firebase_options</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations">
+  <span class="name"><a href="l10n_app_localizations/">l10n/app_localizations</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations_en">
+  <span class="name"><a href="l10n_app_localizations_en/">l10n/app_localizations_en</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations_es">
+  <span class="name"><a href="l10n_app_localizations_es/">l10n/app_localizations_es</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="l10n">
+  <span class="name"><a href="l10n_l10n/">l10n/l10n</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="main">
+  <span class="name"><a href="main/">main</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_app_bar">
+  <span class="name"><a href="shared_widgets_custom_app_bar/">shared/widgets/custom_app_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_bottom_navigation_bar">
+  <span class="name"><a href="shared_widgets_custom_bottom_navigation_bar/">shared/widgets/custom_bottom_navigation_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_button">
+  <span class="name"><a href="shared_widgets_custom_button/">shared/widgets/custom_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_card">
+  <span class="name"><a href="shared_widgets_custom_card/">shared/widgets/custom_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_tab_bar">
+  <span class="name"><a href="shared_widgets_custom_tab_bar/">shared/widgets/custom_tab_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_text_field">
+  <span class="name"><a href="shared_widgets_custom_text_field/">shared/widgets/custom_text_field</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="error_screen">
+  <span class="name"><a href="shared_widgets_error_screen/">shared/widgets/error_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="loading_overlay">
+  <span class="name"><a href="shared_widgets_loading_overlay/">shared/widgets/loading_overlay</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="success_banner">
+  <span class="name"><a href="shared_widgets_success_banner/">shared/widgets/success_banner</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">playing_tracker package</li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">playing_tracker</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="config_routes_app_routes/">config/routes/app_routes</a></li>
+      <li><a href="config_theme_app_theme/">config/theme/app_theme</a></li>
+      <li><a href="core_config_bloc_app_bloc_observer/">core/config/bloc/app_bloc_observer</a></li>
+      <li><a href="core_config_router_go_router_refresh_stream/">core/config/router/go_router_refresh_stream</a></li>
+      <li><a href="core_constants_app_constants/">core/constants/app_constants</a></li>
+      <li><a href="core_constants_legal_constants/">core/constants/legal_constants</a></li>
+      <li><a href="core_extensions_context_extensions/">core/extensions/context_extensions</a></li>
+      <li><a href="core_utils_access_code_generator/">core/utils/access_code_generator</a></li>
+      <li><a href="core_utils_domain_validators/">core/utils/domain_validators</a></li>
+      <li><a href="core_utils_firebase_error_mapper/">core/utils/firebase_error_mapper</a></li>
+      <li><a href="core_utils_timestamp_converter/">core/utils/timestamp_converter</a></li>
+      <li><a href="core_utils_validators/">core/utils/validators</a></li>
+      <li><a href="features_auth_data_repositories_auth_repository_impl/">features/auth/data/repositories/auth_repository_impl</a></li>
+      <li><a href="features_auth_domain_enums_user_role/">features/auth/domain/enums/user_role</a></li>
+      <li><a href="features_auth_domain_models_student_model/">features/auth/domain/models/student_model</a></li>
+      <li><a href="features_auth_domain_models_teacher_model/">features/auth/domain/models/teacher_model</a></li>
+      <li><a href="features_auth_domain_models_user_profile/">features/auth/domain/models/user_profile</a></li>
+      <li><a href="features_auth_domain_repositories_auth_repository/">features/auth/domain/repositories/auth_repository</a></li>
+      <li><a href="features_auth_presentation_cubit_auth_cubit/">features/auth/presentation/cubit/auth_cubit</a></li>
+      <li><a href="features_auth_presentation_cubit_auth_state/">features/auth/presentation/cubit/auth_state</a></li>
+      <li><a href="features_auth_presentation_cubit_forgot_password_cubit/">features/auth/presentation/cubit/forgot_password_cubit</a></li>
+      <li><a href="features_auth_presentation_cubit_forgot_password_state/">features/auth/presentation/cubit/forgot_password_state</a></li>
+      <li><a href="features_auth_presentation_screens_complete_profile_screen/">features/auth/presentation/screens/complete_profile_screen</a></li>
+      <li><a href="features_auth_presentation_screens_forgot_password_screen/">features/auth/presentation/screens/forgot_password_screen</a></li>
+      <li><a href="features_auth_presentation_screens_login_screen/">features/auth/presentation/screens/login_screen</a></li>
+      <li><a href="features_auth_presentation_screens_register_screen/">features/auth/presentation/screens/register_screen</a></li>
+      <li><a href="features_auth_presentation_widgets_legal_consent_dialog/">features/auth/presentation/widgets/legal_consent_dialog</a></li>
+      <li><a href="features_auth_presentation_widgets_role_selector/">features/auth/presentation/widgets/role_selector</a></li>
+      <li><a href="features_classes_data_helpers_fan_out_helper/">features/classes/data/helpers/fan_out_helper</a></li>
+      <li><a href="features_classes_data_repositories_class_repository_impl/">features/classes/data/repositories/class_repository_impl</a></li>
+      <li><a href="features_classes_data_services_class_service/">features/classes/data/services/class_service</a></li>
+      <li><a href="features_classes_data_services_membership_service/">features/classes/data/services/membership_service</a></li>
+      <li><a href="features_classes_domain_enums_class_status/">features/classes/domain/enums/class_status</a></li>
+      <li><a href="features_classes_domain_models_class_model/">features/classes/domain/models/class_model</a></li>
+      <li><a href="features_classes_domain_models_membership_model/">features/classes/domain/models/membership_model</a></li>
+      <li><a href="features_classes_domain_repositories_class_repository/">features/classes/domain/repositories/class_repository</a></li>
+      <li><a href="features_classes_domain_value_objects_create_class_input/">features/classes/domain/value_objects/create_class_input</a></li>
+      <li><a href="features_classes_domain_value_objects_invite_student_input/">features/classes/domain/value_objects/invite_student_input</a></li>
+      <li><a href="features_classes_domain_value_objects_join_class_input/">features/classes/domain/value_objects/join_class_input</a></li>
+      <li><a href="features_classes_domain_value_objects_membership_page/">features/classes/domain/value_objects/membership_page</a></li>
+      <li><a href="features_classes_presentation_cubit_class_cubit/">features/classes/presentation/cubit/class_cubit</a></li>
+      <li><a href="features_classes_presentation_cubit_class_state/">features/classes/presentation/cubit/class_state</a></li>
+      <li><a href="features_classes_presentation_cubit_membership_cubit/">features/classes/presentation/cubit/membership_cubit</a></li>
+      <li><a href="features_classes_presentation_cubit_membership_state/">features/classes/presentation/cubit/membership_state</a></li>
+      <li><a href="features_classes_presentation_cubit_student_classes_cubit/">features/classes/presentation/cubit/student_classes_cubit</a></li>
+      <li><a href="features_classes_presentation_cubit_student_classes_state/">features/classes/presentation/cubit/student_classes_state</a></li>
+      <li><a href="features_classes_presentation_screens_create_class_screen/">features/classes/presentation/screens/create_class_screen</a></li>
+      <li><a href="features_classes_presentation_screens_join_class_screen/">features/classes/presentation/screens/join_class_screen</a></li>
+      <li><a href="features_classes_presentation_screens_manage_students_screen/">features/classes/presentation/screens/manage_students_screen</a></li>
+      <li><a href="features_classes_presentation_screens_student_class_detail_screen/">features/classes/presentation/screens/student_class_detail_screen</a></li>
+      <li><a href="features_classes_presentation_screens_student_classes_list_screen/">features/classes/presentation/screens/student_classes_list_screen</a></li>
+      <li><a href="features_classes_presentation_screens_teacher_class_detail_screen/">features/classes/presentation/screens/teacher_class_detail_screen</a></li>
+      <li><a href="features_classes_presentation_screens_teacher_classes_list_screen/">features/classes/presentation/screens/teacher_classes_list_screen</a></li>
+      <li><a href="features_classes_presentation_utils_class_validators/">features/classes/presentation/utils/class_validators</a></li>
+      <li><a href="features_classes_presentation_widgets_class_chips/">features/classes/presentation/widgets/class_chips</a></li>
+      <li><a href="features_classes_presentation_widgets_class_empty_state/">features/classes/presentation/widgets/class_empty_state</a></li>
+      <li><a href="features_classes_presentation_widgets_class_error_state/">features/classes/presentation/widgets/class_error_state</a></li>
+      <li><a href="features_classes_presentation_widgets_class_info_tab/">features/classes/presentation/widgets/class_info_tab</a></li>
+      <li><a href="features_classes_presentation_widgets_class_statistics_tab/">features/classes/presentation/widgets/class_statistics_tab</a></li>
+      <li><a href="features_classes_presentation_widgets_class_students_tab/">features/classes/presentation/widgets/class_students_tab</a></li>
+      <li><a href="features_classes_presentation_widgets_class_tasks_tab/">features/classes/presentation/widgets/class_tasks_tab</a></li>
+      <li><a href="features_classes_presentation_widgets_student_class_tasks_tab/">features/classes/presentation/widgets/student_class_tasks_tab</a></li>
+      <li><a href="features_classes_presentation_widgets_teacher_class_overview_card/">features/classes/presentation/widgets/teacher_class_overview_card</a></li>
+      <li><a href="features_home_presentation_cubit_progress_cubit/">features/home/presentation/cubit/progress_cubit</a></li>
+      <li><a href="features_home_presentation_cubit_progress_state/">features/home/presentation/cubit/progress_state</a></li>
+      <li><a href="features_home_presentation_screens_student_home_screen/">features/home/presentation/screens/student_home_screen</a></li>
+      <li><a href="features_home_presentation_screens_teacher_home_screen/">features/home/presentation/screens/teacher_home_screen</a></li>
+      <li><a href="features_home_presentation_widgets_home_accomplishment_card/">features/home/presentation/widgets/home_accomplishment_card</a></li>
+      <li><a href="features_home_presentation_widgets_home_class_card_compact/">features/home/presentation/widgets/home_class_card_compact</a></li>
+      <li><a href="features_home_presentation_widgets_home_dashboard_header/">features/home/presentation/widgets/home_dashboard_header</a></li>
+      <li><a href="features_home_presentation_widgets_home_greeting_hero/">features/home/presentation/widgets/home_greeting_hero</a></li>
+      <li><a href="features_home_presentation_widgets_home_menu_card/">features/home/presentation/widgets/home_menu_card</a></li>
+      <li><a href="features_home_presentation_widgets_home_progress_card/">features/home/presentation/widgets/home_progress_card</a></li>
+      <li><a href="features_home_presentation_widgets_home_quick_action_card/">features/home/presentation/widgets/home_quick_action_card</a></li>
+      <li><a href="features_home_presentation_widgets_home_sections/">features/home/presentation/widgets/home_sections</a></li>
+      <li><a href="features_sessions_data_repositories_session_repository_impl/">features/sessions/data/repositories/session_repository_impl</a></li>
+      <li><a href="features_sessions_data_services_session_service/">features/sessions/data/services/session_service</a></li>
+      <li><a href="features_sessions_domain_enums_session_status/">features/sessions/domain/enums/session_status</a></li>
+      <li><a href="features_sessions_domain_models_session_model/">features/sessions/domain/models/session_model</a></li>
+      <li><a href="features_sessions_domain_repositories_session_repository/">features/sessions/domain/repositories/session_repository</a></li>
+      <li><a href="features_sessions_domain_utils_timer_ticker/">features/sessions/domain/utils/timer_ticker</a></li>
+      <li><a href="features_sessions_presentation_cubit_history_cubit/">features/sessions/presentation/cubit/history_cubit</a></li>
+      <li><a href="features_sessions_presentation_cubit_history_state/">features/sessions/presentation/cubit/history_state</a></li>
+      <li><a href="features_sessions_presentation_cubit_session_cubit/">features/sessions/presentation/cubit/session_cubit</a></li>
+      <li><a href="features_sessions_presentation_cubit_session_state/">features/sessions/presentation/cubit/session_state</a></li>
+      <li><a href="features_sessions_presentation_screens_session_history_screen/">features/sessions/presentation/screens/session_history_screen</a></li>
+      <li><a href="features_sessions_presentation_screens_timer_screen/">features/sessions/presentation/screens/timer_screen</a></li>
+      <li><a href="features_settings_data_services_settings_service/">features/settings/data/services/settings_service</a></li>
+      <li><a href="features_settings_presentation_cubit_settings_cubit/">features/settings/presentation/cubit/settings_cubit</a></li>
+      <li><a href="features_settings_presentation_cubit_settings_state/">features/settings/presentation/cubit/settings_state</a></li>
+      <li><a href="features_settings_presentation_screens_legal_document_screen/">features/settings/presentation/screens/legal_document_screen</a></li>
+      <li><a href="features_settings_presentation_screens_settings_screen/">features/settings/presentation/screens/settings_screen</a></li>
+      <li><a href="features_statistics_data_repositories_cached_stats/">features/statistics/data/repositories/cached_stats</a></li>
+      <li><a href="features_statistics_data_repositories_statistics_repository_impl/">features/statistics/data/repositories/statistics_repository_impl</a></li>
+      <li><a href="features_statistics_data_services_statistics_service/">features/statistics/data/services/statistics_service</a></li>
+      <li><a href="features_statistics_domain_exceptions_statistics_exception/">features/statistics/domain/exceptions/statistics_exception</a></li>
+      <li><a href="features_statistics_domain_models_class_stats_model/">features/statistics/domain/models/class_stats_model</a></li>
+      <li><a href="features_statistics_domain_models_daily_stats_model/">features/statistics/domain/models/daily_stats_model</a></li>
+      <li><a href="features_statistics_domain_models_student_class_stats_model/">features/statistics/domain/models/student_class_stats_model</a></li>
+      <li><a href="features_statistics_domain_models_student_progress_model/">features/statistics/domain/models/student_progress_model</a></li>
+      <li><a href="features_statistics_domain_models_task_stats_model/">features/statistics/domain/models/task_stats_model</a></li>
+      <li><a href="features_statistics_domain_models_time_filter_enum/">features/statistics/domain/models/time_filter_enum</a></li>
+      <li><a href="features_statistics_domain_models_weekly_stats_model/">features/statistics/domain/models/weekly_stats_model</a></li>
+      <li><a href="features_statistics_domain_repositories_statistics_repository/">features/statistics/domain/repositories/statistics_repository</a></li>
+      <li><a href="features_statistics_presentation_cubit_student_stats_cubit/">features/statistics/presentation/cubit/student_stats_cubit</a></li>
+      <li><a href="features_statistics_presentation_cubit_student_stats_state/">features/statistics/presentation/cubit/student_stats_state</a></li>
+      <li><a href="features_statistics_presentation_cubit_teacher_stats_cubit/">features/statistics/presentation/cubit/teacher_stats_cubit</a></li>
+      <li><a href="features_statistics_presentation_cubit_teacher_stats_state/">features/statistics/presentation/cubit/teacher_stats_state</a></li>
+      <li><a href="features_statistics_presentation_screens_statistics_screen/">features/statistics/presentation/screens/statistics_screen</a></li>
+      <li><a href="features_statistics_presentation_screens_student_statistics_screen/">features/statistics/presentation/screens/student_statistics_screen</a></li>
+      <li><a href="features_statistics_presentation_screens_teacher_statistics_screen/">features/statistics/presentation/screens/teacher_statistics_screen</a></li>
+      <li><a href="features_statistics_presentation_widgets_app_bar_chart/">features/statistics/presentation/widgets/app_bar_chart</a></li>
+      <li><a href="features_statistics_presentation_widgets_app_pie_chart/">features/statistics/presentation/widgets/app_pie_chart</a></li>
+      <li><a href="features_statistics_presentation_widgets_app_progress_chart/">features/statistics/presentation/widgets/app_progress_chart</a></li>
+      <li><a href="features_statistics_presentation_widgets_stat_metric_tile/">features/statistics/presentation/widgets/stat_metric_tile</a></li>
+      <li><a href="features_statistics_presentation_widgets_stats_section_card/">features/statistics/presentation/widgets/stats_section_card</a></li>
+      <li><a href="features_statistics_presentation_widgets_time_filter_selector/">features/statistics/presentation/widgets/time_filter_selector</a></li>
+      <li><a href="features_tasks_data_repositories_task_repository_impl/">features/tasks/data/repositories/task_repository_impl</a></li>
+      <li><a href="features_tasks_data_services_assignment_service/">features/tasks/data/services/assignment_service</a></li>
+      <li><a href="features_tasks_data_services_task_service/">features/tasks/data/services/task_service</a></li>
+      <li><a href="features_tasks_domain_enums_attachment_type/">features/tasks/domain/enums/attachment_type</a></li>
+      <li><a href="features_tasks_domain_enums_task_status/">features/tasks/domain/enums/task_status</a></li>
+      <li><a href="features_tasks_domain_models_assignment_model/">features/tasks/domain/models/assignment_model</a></li>
+      <li><a href="features_tasks_domain_models_attachment_model/">features/tasks/domain/models/attachment_model</a></li>
+      <li><a href="features_tasks_domain_models_task_model/">features/tasks/domain/models/task_model</a></li>
+      <li><a href="features_tasks_domain_repositories_task_repository/">features/tasks/domain/repositories/task_repository</a></li>
+      <li><a href="features_tasks_domain_value_objects_assign_task_input/">features/tasks/domain/value_objects/assign_task_input</a></li>
+      <li><a href="features_tasks_domain_value_objects_create_task_input/">features/tasks/domain/value_objects/create_task_input</a></li>
+      <li><a href="features_tasks_domain_value_objects_task_filters/">features/tasks/domain/value_objects/task_filters</a></li>
+      <li><a href="features_tasks_domain_value_objects_update_task_input/">features/tasks/domain/value_objects/update_task_input</a></li>
+      <li><a href="features_tasks_presentation_cubit_assignment_cubit/">features/tasks/presentation/cubit/assignment_cubit</a></li>
+      <li><a href="features_tasks_presentation_cubit_assignment_state/">features/tasks/presentation/cubit/assignment_state</a></li>
+      <li><a href="features_tasks_presentation_cubit_task_cubit/">features/tasks/presentation/cubit/task_cubit</a></li>
+      <li><a href="features_tasks_presentation_cubit_task_state/">features/tasks/presentation/cubit/task_state</a></li>
+      <li><a href="features_tasks_presentation_screens_assignment_list_screen/">features/tasks/presentation/screens/assignment_list_screen</a></li>
+      <li><a href="features_tasks_presentation_screens_create_task_screen/">features/tasks/presentation/screens/create_task_screen</a></li>
+      <li><a href="features_tasks_presentation_screens_task_detail_screen/">features/tasks/presentation/screens/task_detail_screen</a></li>
+      <li><a href="features_tasks_presentation_screens_task_list_screen/">features/tasks/presentation/screens/task_list_screen</a></li>
+      <li><a href="features_tasks_presentation_widgets_assign_task_dialog/">features/tasks/presentation/widgets/assign_task_dialog</a></li>
+      <li><a href="features_tasks_presentation_widgets_assignment_card/">features/tasks/presentation/widgets/assignment_card</a></li>
+      <li><a href="features_tasks_presentation_widgets_assignment_filters_bottom_sheet/">features/tasks/presentation/widgets/assignment_filters_bottom_sheet</a></li>
+      <li><a href="features_tasks_presentation_widgets_student_selection_modal/">features/tasks/presentation/widgets/student_selection_modal</a></li>
+      <li><a href="features_tasks_presentation_widgets_task_filters_bottom_sheet/">features/tasks/presentation/widgets/task_filters_bottom_sheet</a></li>
+      <li><a href="features_tasks_presentation_widgets_task_info_row/">features/tasks/presentation/widgets/task_info_row</a></li>
+      <li><a href="features_tasks_presentation_widgets_task_status_badge/">features/tasks/presentation/widgets/task_status_badge</a></li>
+      <li><a href="features_tutorial_domain_tutorial_keys/">features/tutorial/domain/tutorial_keys</a></li>
+      <li><a href="features_tutorial_presentation_tutorial_target_builder/">features/tutorial/presentation/tutorial_target_builder</a></li>
+      <li><a href="features_tutorial_presentation_widgets_tutorial_content_widget/">features/tutorial/presentation/widgets/tutorial_content_widget</a></li>
+      <li><a href="firebase_options/">firebase_options</a></li>
+      <li><a href="l10n_app_localizations/">l10n/app_localizations</a></li>
+      <li><a href="l10n_app_localizations_en/">l10n/app_localizations_en</a></li>
+      <li><a href="l10n_app_localizations_es/">l10n/app_localizations_es</a></li>
+      <li><a href="l10n_l10n/">l10n/l10n</a></li>
+      <li><a href="main/">main</a></li>
+      <li><a href="shared_widgets_custom_app_bar/">shared/widgets/custom_app_bar</a></li>
+      <li><a href="shared_widgets_custom_bottom_navigation_bar/">shared/widgets/custom_bottom_navigation_bar</a></li>
+      <li><a href="shared_widgets_custom_button/">shared/widgets/custom_button</a></li>
+      <li><a href="shared_widgets_custom_card/">shared/widgets/custom_card</a></li>
+      <li><a href="shared_widgets_custom_tab_bar/">shared/widgets/custom_tab_bar</a></li>
+      <li><a href="shared_widgets_custom_text_field/">shared/widgets/custom_text_field</a></li>
+      <li><a href="shared_widgets_error_screen/">shared/widgets/error_screen</a></li>
+      <li><a href="shared_widgets_loading_overlay/">shared/widgets/loading_overlay</a></li>
+      <li><a href="shared_widgets_success_banner/">shared/widgets/success_banner</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    playing_tracker
+      1.0.1+2
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

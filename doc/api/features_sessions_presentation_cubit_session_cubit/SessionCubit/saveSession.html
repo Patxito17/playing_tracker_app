@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the saveSession method from the SessionCubit class, for the Dart programming language.">
+  <title>saveSession method - SessionCubit class - session_cubit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">playing_tracker</a></li>
+    <li><a href="../../features_sessions_presentation_cubit_session_cubit/">features&#47;sessions&#47;presentation&#47;cubit&#47;session_cubit.dart</a></li>
+    <li><a href="../../features_sessions_presentation_cubit_session_cubit/SessionCubit-class.html">SessionCubit</a></li>
+    <li class="self-crumb">saveSession method</li>
+  </ol>
+  <div class="self-name">saveSession</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="features_sessions_presentation_cubit_session_cubit&#47;SessionCubit-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">saveSession</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">saveSession</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="saveSession-param-notes"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">notes</span>, </span></li>
+<li><span class="parameter" id="saveSession-param-taskTitle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskTitle</span>, </span></li>
+<li><span class="parameter" id="saveSession-param-className"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">className</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Guarda la sesión actual en Firebase.</p>
+<p><code>notes</code> son notas opcionales a agregar/actualizar en la sesión.
+<code>taskTitle</code> es el título de la tarea (campo denormalizado).
+<code>className</code> es el nombre de la clase (campo denormalizado).</p>
+<p>Detiene el cronómetro, crea un <a href="../../features_sessions_domain_models_session_model/SessionModel-class.html">SessionModel</a> y lo persiste
+usando el <a href="../../features_sessions_domain_repositories_session_repository/SessionRepository-class.html">SessionRepository</a>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; saveSession({
+  String? notes,
+  String? taskTitle,
+  String? className,
+}) async {
+  final currentState = state;
+
+  &#47;&#47; Solo se puede guardar desde Running o Paused
+  if (currentState is! SessionRunning &amp;&amp; currentState is! SessionPaused) {
+    emit(
+      const SessionError(message: &#39;No hay una sesión activa para guardar&#39;),
+    );
+    return;
+  }
+
+  &#47;&#47; Obtener datos del estado actual
+  final String taskId;
+  final String studentId;
+  final String teacherId;
+  final String? classId;
+  final int duration;
+  String? sessionNotes;
+
+  if (currentState is SessionRunning) {
+    taskId = currentState.taskId;
+    studentId = currentState.studentId;
+    teacherId = currentState.teacherId;
+    classId = currentState.classId;
+    duration = currentState.duration;
+    sessionNotes = notes ?? currentState.notes;
+  } else if (currentState is SessionPaused) {
+    taskId = currentState.taskId;
+    studentId = currentState.studentId;
+    teacherId = currentState.teacherId;
+    classId = currentState.classId;
+    duration = currentState.duration;
+    sessionNotes = notes ?? currentState.notes;
+  } else {
+    emit(const SessionError(message: &#39;Estado inválido&#39;));
+    return;
+  }
+
+  &#47;&#47; Validar que haya al menos 1 segundo de duración
+  if (duration &lt; 1) {
+    emit(
+      const SessionError(
+        message: &#39;La sesión debe durar al menos 1 segundo para guardarse&#39;,
+      ),
+    );
+    return;
+  }
+
+  emit(SessionSaving(duration: duration));
+
+  try {
+    &#47;&#47; Detener el ticker
+    _ticker.stop();
+    await _tickerSubscription?.cancel();
+    _tickerSubscription = null;
+
+    &#47;&#47; Crear el modelo de sesión
+    final now = Timestamp.now();
+    final startTime = Timestamp.fromDate(
+      DateTime.now().subtract(Duration(seconds: duration)),
+    );
+
+    final session = SessionModel(
+      id: &#39;${studentId}_${taskId}_${now.millisecondsSinceEpoch}&#39;,
+      studentId: studentId,
+      taskId: taskId,
+      teacherId: teacherId,
+      classId: classId,
+      startTime: startTime,
+      endTime: now,
+      totalDuration: duration,
+      pausedDuration: 0, &#47;&#47; Por ahora no manejamos pausa interna
+      dateLogged: now,
+      monthBucket: SessionModel.generateMonthBucket(now),
+      notes: sessionNotes,
+      taskTitle: taskTitle,
+      className: className,
+      status: SessionStatus.completed,
+      createdAt: now,
+    );
+
+    &#47;&#47; Guardar en el repositorio
+    await _repository.createSession(session);
+
+    &#47;&#47; Emitir éxito
+    emit(
+      SessionSuccess(
+        duration: duration,
+        message: &#39;Sesión guardada exitosamente&#39;,
+      ),
+    );
+
+    log(&#39;SessionCubit: Sesión guardada exitosamente - ${duration}s&#39;);
+  } on SessionRepositoryException catch (error) {
+    log(&#39;SessionCubit: Error del repositorio al guardar&#39;, error: error);
+    emit(SessionError(message: error.message, cause: error));
+  } catch (error, stackTrace) {
+    log(
+      &#39;SessionCubit: Error inesperado al guardar&#39;,
+      error: error,
+      stackTrace: stackTrace,
+    );
+    emit(
+      SessionError(message: &#39;No fue posible guardar la sesión&#39;, cause: error),
+    );
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">playing_tracker</a></li>
+    <li><a href="../../features_sessions_presentation_cubit_session_cubit/">session_cubit</a></li>
+    <li><a href="../../features_sessions_presentation_cubit_session_cubit/SessionCubit-class.html">SessionCubit</a></li>
+    <li class="self-crumb">saveSession method</li>
+</ol>
+
+    <h5>SessionCubit class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    playing_tracker
+      1.0.1+2
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
