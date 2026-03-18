@@ -5,12 +5,12 @@
 # en la estructura que espera Fastlane deliver.
 #
 # Uso: ./scripts/screenshots_ios.sh
-# Prerequisitos: Xcode, Flutter, simulador "iPhone 15 Pro Max"
+# Prerequisitos: Xcode, Flutter, simulador "iPhone 17 Pro Max"
 
 set -e
 
 BUNDLE_ID="com.gabriom.playingtrackerapp"
-DEVICE_NAME="iPhone 15 Pro Max"
+DEVICE_NAME="iPhone 17 Pro Max"
 OUTPUT_DIR="fastlane/screenshots"
 
 echo "📱 Generando screenshots para iOS ($DEVICE_NAME)..."
