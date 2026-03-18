@@ -181,7 +181,7 @@ Los screenshots **no se guardan en git** y deben regenerarse antes de subirlos s
 | Primera publicación | Sí (obligatorio) |
 
 ```bash
-# iOS — necesita simulador "iPhone 15 Pro Max" arrancado
+# iOS — necesita simulador "iPhone 17 Pro Max" arrancado
 make screenshots-ios
 
 # Android — necesita emulador corriendo
@@ -194,8 +194,8 @@ make screenshots
 Los screenshots se organizan automáticamente en:
 ```
 fastlane/screenshots/
-├── en-US/iPhone 15 Pro Max/    ← App Store EN
-├── es-ES/iPhone 15 Pro Max/    ← App Store ES
+├── en-US/iPhone 17 Pro Max/    ← App Store EN
+├── es-ES/iPhone 17 Pro Max/    ← App Store ES
 ├── en-US/Pixel 7 Pro/          ← Play Store EN
 └── es-ES/Pixel 7 Pro/          ← Play Store ES
 ```
@@ -251,7 +251,7 @@ La app no quedó instalada en el simulador tras el test.
 xcrun simctl list devices | grep "iPhone 15 Pro Max"
 
 # Ejecuta el test directamente para ver el error
-flutter test integration_test/screenshots_test.dart -d "iPhone 15 Pro Max"
+flutter test integration_test/screenshots_test.dart -d "iPhone 17 Pro Max"
 ```
 
 ### Screenshots Android: "No hay emulador corriendo"
