@@ -87,20 +87,32 @@ functions/.env
 # Fastlane - Automatización de Stores
 # ==========================================
 
-# Claves de API (NUNCA publicar)
-fastlane/AuthKey_*.p8
-fastlane/gc_keys.json
-fastlane/.env
-fastlane/.env.*
+# Directorio completo (no requerido para replicar/evaluar el proyecto)
+/fastlane/
 
-# Archivos generados por fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/test_output/
+# ==========================================
+# Herramientas de desarrollo y AI
+# ==========================================
 
-# Screenshots generadas (binarios grandes, se regeneran antes de cada subida)
-fastlane/screenshots/
+# Instrucciones para AI assistants (Claude, Cursor, etc.)
+CLAUDE.md
+.mcp.json
 
-# Gems instaladas localmente por Bundler (no necesitan ser versionadas)
-fastlane/vendor/
-fastlane/.bundle/
+# Preferencias personales de DevTools
+devtools_options.yaml
+
+# ==========================================
+# Archivos generados / no esenciales
+# ==========================================
+
+# Documentación generada por dartdoc
+/doc/
+
+# Carpeta de metadatos de stores (vacía en repo)
+/metadata/
+
+# Screenshots para stores (se generan con fastlane)
+/screenshots/
+
+# Lock de Node.js (de dependencias fastlane)
+package-lock.json
