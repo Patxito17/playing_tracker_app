@@ -109,8 +109,6 @@ devtools_options.yaml
 # Carpeta de metadatos de stores (vacía en repo)
 /metadata/
 
-# Screenshots para stores (se generan con fastlane)
-/screenshots/
 
 # Lock de Node.js (de dependencias fastlane)
 package-lock.json
