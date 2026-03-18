@@ -162,7 +162,7 @@ Esperado: `fastlane 2.x.x`
 ```ruby
 # fastlane/Appfile
 app_identifier("com.gabriom.playingtrackerapp")
-apple_id("TU_APPLE_ID@email.com")  # Reemplazar con el Apple ID real
+apple_id("gortegam7@icloud.com")  # Reemplazar con el Apple ID real
 
 # Android
 json_key_file("fastlane/gc_keys.json")
@@ -252,13 +252,21 @@ music practice,practice tracker,music student,music teacher,instrument practice
 
 - [ ] **Paso 3.7: `fastlane/metadata/en-US/privacy_url.txt`**
 
+Términos y condiciones
 ```
-https://TU_DOMINIO.com/privacy
+https://playing-tracker-app.web.app/terms-en.html
+```
+
+Política de privacidad
+```
+https://playing-tracker-app.web.app/privacy-en.html
 ```
 
 > **ACCIÓN REQUERIDA:** Reemplazar con la URL real de la política de privacidad.
 
 - [ ] **Paso 3.8: `fastlane/metadata/en-US/support_url.txt`**
+
+Esto no lo tengo hecho, hay que crearlo en /hosting en inglés y español y desplegarlo en Firebase utilizando Firebase CLI.
 
 ```
 https://TU_DOMINIO.com/support
@@ -365,7 +373,7 @@ práctica musical,seguimiento música,estudiante música,profesor música,instru
 
 - [ ] **Paso 4.7: `fastlane/metadata/es-ES/privacy_url.txt` y `support_url.txt`**
 
-Iguales que en en-US (misma URL para ambos idiomas).
+Revisar en Firebase, son igual que antes en en-US pero en es-ES.
 
 - [ ] **Paso 4.8: Metadatos Android en español**
 
