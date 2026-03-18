@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the AssignmentModel class from the assignment_model library, for the Dart programming language.">
+  <title>AssignmentModel class - assignment_model library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">playing_tracker</a></li>
+    <li><a href="../features_tasks_domain_models_assignment_model/">features&#47;tasks&#47;domain&#47;models&#47;assignment_model.dart</a></li>
+    <li class="self-crumb">AssignmentModel class</li>
+  </ol>
+  <div class="self-name">AssignmentModel</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="features_tasks_domain_models_assignment_model&#47;features_tasks_domain_models_assignment_model-library-sidebar.html"
+    data-below-sidebar="features_tasks_domain_models_assignment_model&#47;AssignmentModel-class-sidebar.html">
+    <div>
+<h1><span class="kind-class">AssignmentModel</span> class 
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Modelo que representa la asignación de una tarea a un alumno específico.</p>
+<p>Este modelo actúa como el vínculo entre una tarea (TaskModel) y un alumno,
+rastreando el progreso individual de cada alumno en cada tarea asignada.</p>
+<p>Características principales:</p>
+<ul>
+<li>ID compuesto: <code>${taskId}_${studentId}</code> para garantizar unicidad</li>
+<li>Estado de progreso (pending, inProgress, completed)</li>
+<li>Contadores de sesiones y duración total registrada</li>
+<li>Campos denormalizados para optimizar consultas</li>
+</ul>
+<p>Los contadores se actualizan automáticamente cuando el alumno registra
+sesiones de estudio para esta tarea.</p>
+<p>Se almacena en la colección <code>assignments</code> de Firestore.</p>
+<p>Ejemplo de uso:</p>
+<pre class="language-dart"><code class="language-dart">final assignment = AssignmentModel(
+  id: 'task_123_student_456', // Clave compuesta
+  taskId: 'task_123',
+  studentId: 'student_456',
+  teacherId: 'teacher_789',
+  status: TaskStatus.inProgress,
+  assignedAt: Timestamp.now(),
+  completedAt: null,
+  sessionsCount: 3,
+  totalDurationLogged: 5400, // 1.5 horas en segundos
+  lastSessionDate: Timestamp.now(),
+);
+
+// Serializar a JSON para Firestore
+final json = assignment.toJson();
+
+// Deserializar desde JSON
+final assignmentFromJson = AssignmentModel.fromJson(json);
+</code></pre>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+
+        
+        
+
+
+        
+        
+  <dt>Annotations</dt>
+  <dd>
+    <ul class="annotation-list clazz-relationships">
+        <li>@<a href="https://pub.dev/documentation/json_annotation/4.11.0/json_annotation/JsonSerializable/JsonSerializable.html">JsonSerializable</a>()</li>
+    </ul>
+  </dd>
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+    <dl class="constructor-summary-list">
+        <dt id="AssignmentModel.new" class="callable">
+          <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/AssignmentModel.html">AssignmentModel</a></span><span class="signature">({<span class="parameter" id="-param-id"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">id</span>, </span><span class="parameter" id="-param-taskId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">taskId</span>, </span><span class="parameter" id="-param-studentId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">studentId</span>, </span><span class="parameter" id="-param-classId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">classId</span>, </span><span class="parameter" id="-param-className"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">className</span>, </span><span class="parameter" id="-param-teacherId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">teacherId</span>, </span><span class="parameter" id="-param-taskTitle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskTitle</span>, </span><span class="parameter" id="-param-taskDescription"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskDescription</span>, </span><span class="parameter" id="-param-durationSuggested"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">durationSuggested</span>, </span><span class="parameter" id="-param-status"><span>required</span> <span class="type-annotation"><a href="../features_tasks_domain_enums_task_status/TaskStatus.html">TaskStatus</a></span> <span class="parameter-name">status</span>, </span><span class="parameter" id="-param-assignedAt"><span>required</span> <span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a></span> <span class="parameter-name">assignedAt</span>, </span><span class="parameter" id="-param-completedAt"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">completedAt</span>, </span><span class="parameter" id="-param-sessionsCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">sessionsCount</span> = <span class="default-value">0</span>, </span><span class="parameter" id="-param-totalDurationLogged"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">totalDurationLogged</span> = <span class="default-value">0</span>, </span><span class="parameter" id="-param-lastSessionDate"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">lastSessionDate</span>, </span><span class="parameter" id="-param-isActive"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isActive</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-dueDate"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">dueDate</span></span>})</span>
+        </dt>
+        <dd>
+          Constructor del modelo de asignación
+            <div class="constructor-modifier features">const</div>
+        </dd>
+        <dt id="AssignmentModel.fromJson" class="callable">
+          <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/AssignmentModel.fromJson.html">AssignmentModel.fromJson</a></span><span class="signature">(<span class="parameter" id="fromJson-param-json"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">json</span></span>)</span>
+        </dt>
+        <dd>
+          Crea una instancia desde un mapa JSON
+            <div class="constructor-modifier features">factory</div>
+        </dd>
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="assignedAt" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/assignedAt.html">assignedAt</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a></span>
+  
+
+</dt>
+<dd>
+  Fecha y hora en que se asignó la tarea al alumno
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="classId" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/classId.html">classId</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  ID de la clase a la que pertenece la asignación (denormalizado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="className" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/className.html">className</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  Nombre de la clase (denormalizado para eficiencia)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="completedAt" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/completedAt.html">completedAt</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span>
+  
+
+</dt>
+<dd>
+  Fecha y hora en que el alumno completó la tarea (nullable)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="daysRemaining" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/daysRemaining.html">daysRemaining</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span>
+  
+
+</dt>
+<dd>
+  Calcula los días restantes hasta la fecha límite
+Retorna null si no hay fecha límite definida
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="dueDate" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/dueDate.html">dueDate</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span>
+  
+
+</dt>
+<dd>
+  Fecha límite de la tarea (denormalizado desde TaskModel)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="durationFormatted" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/durationFormatted.html">durationFormatted</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  Retorna la duración total formateada en formato legible
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="durationSuggested" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/durationSuggested.html">durationSuggested</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span>
+  
+
+</dt>
+<dd>
+  Duración sugerida de la tarea (denormalizado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="hasExtraStudyTime" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/hasExtraStudyTime.html">hasExtraStudyTime</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Indica si el alumno ha estudiado más del tiempo sugerido
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="id" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/id.html">id</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  Identificador único compuesto: ${taskId}_${studentId}
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="isActive" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/isActive.html">isActive</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Indica si la tarea está activa (denormalizado desde TaskModel)
+Cuando false, la tarea está archivada y no debe mostrarse al estudiante
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="isCompleted" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/isCompleted.html">isCompleted</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Indica si la asignación ha sido completada
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="isInProgress" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/isInProgress.html">isInProgress</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Indica si la asignación está en progreso
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="isPending" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/isPending.html">isPending</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Indica si la asignación está pendiente de iniciar
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="lastSessionDate" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/lastSessionDate.html">lastSessionDate</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span>
+  
+
+</dt>
+<dd>
+  Fecha y hora de la última sesión registrada (agregado, nullable)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="sessionsCount" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/sessionsCount.html">sessionsCount</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  Número total de sesiones de estudio registradas para esta tarea (agregado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="status" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/status.html">status</a></span>
+  <span class="signature">&#8594; <a href="../features_tasks_domain_enums_task_status/TaskStatus.html">TaskStatus</a></span>
+  
+
+</dt>
+<dd>
+  Estado actual de la asignación (pending, inProgress, completed)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="studentId" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/studentId.html">studentId</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  ID del alumno al que se asignó la tarea
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="studyTimeRemaining" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/studyTimeRemaining.html">studyTimeRemaining</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  Calcula el tiempo de estudio restante en segundos
+Puede ser negativo si el alumno ha estudiado más del tiempo sugerido
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="taskDescription" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/taskDescription.html">taskDescription</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  Descripción de la tarea (denormalizado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="taskId" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/taskId.html">taskId</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  ID de la tarea asignada
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="taskTitle" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/taskTitle.html">taskTitle</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  Título de la tarea (denormalizado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="teacherId" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/teacherId.html">teacherId</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd>
+  ID del docente que creó/asignó la tarea (campo denormalizado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="totalDurationLogged" class="property">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/totalDurationLogged.html">totalDurationLogged</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  Tiempo total de estudio registrado en segundos (agregado)
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="copyWith" class="callable">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/copyWith.html">copyWith</a></span><span class="signature">(<wbr>{<span class="parameter" id="copyWith-param-id"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">id</span>, </span><span class="parameter" id="copyWith-param-taskId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskId</span>, </span><span class="parameter" id="copyWith-param-studentId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">studentId</span>, </span><span class="parameter" id="copyWith-param-classId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">classId</span>, </span><span class="parameter" id="copyWith-param-className"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">className</span>, </span><span class="parameter" id="copyWith-param-teacherId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">teacherId</span>, </span><span class="parameter" id="copyWith-param-taskTitle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskTitle</span>, </span><span class="parameter" id="copyWith-param-taskDescription"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">taskDescription</span>, </span><span class="parameter" id="copyWith-param-durationSuggested"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">durationSuggested</span>, </span><span class="parameter" id="copyWith-param-status"><span class="type-annotation"><a href="../features_tasks_domain_enums_task_status/TaskStatus.html">TaskStatus</a>?</span> <span class="parameter-name">status</span>, </span><span class="parameter" id="copyWith-param-assignedAt"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">assignedAt</span>, </span><span class="parameter" id="copyWith-param-completedAt"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">completedAt</span>, </span><span class="parameter" id="copyWith-param-sessionsCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">sessionsCount</span>, </span><span class="parameter" id="copyWith-param-totalDurationLogged"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">totalDurationLogged</span>, </span><span class="parameter" id="copyWith-param-lastSessionDate"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">lastSessionDate</span>, </span><span class="parameter" id="copyWith-param-isActive"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">isActive</span>, </span><span class="parameter" id="copyWith-param-dueDate"><span class="type-annotation"><a href="https://pub.dev/documentation/cloud_firestore_platform_interface/7.0.7/cloud_firestore_platform_interface/Timestamp-class.html">Timestamp</a>?</span> <span class="parameter-name">dueDate</span></span>})
+    <span class="returntype parameter">&#8594; <a href="../features_tasks_domain_models_assignment_model/AssignmentModel-class.html">AssignmentModel</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Crea una copia del modelo con los campos especificados modificados
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toJson" class="callable">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/toJson.html">toJson</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Convierte la instancia a un mapa JSON
+  
+
+</dd>
+
+        <dt id="toString" class="callable">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  A string representation of this object.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  The equality operator.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+  <section class="summary offset-anchor" id="static-methods">
+    <h2>Static Methods</h2>
+    <dl class="callables">
+        <dt id="generateId" class="callable">
+  <span class="name"><a href="../features_tasks_domain_models_assignment_model/AssignmentModel/generateId.html">generateId</a></span><span class="signature">(<wbr><span class="parameter" id="generateId-param-taskId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">taskId</span>, </span><span class="parameter" id="generateId-param-studentId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">studentId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Genera un ID compuesto a partir del taskId y studentId
+  
+
+</dd>
+
+    </dl>
+  </section>
+    
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">playing_tracker</a></li>
+    <li><a href="../features_tasks_domain_models_assignment_model/">assignment_model</a></li>
+    <li class="self-crumb">AssignmentModel class</li>
+</ol>
+
+    <h5>assignment_model library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    playing_tracker
+      1.0.1+2
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

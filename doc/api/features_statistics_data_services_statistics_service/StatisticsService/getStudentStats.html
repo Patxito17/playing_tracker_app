@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getStudentStats method from the StatisticsService class, for the Dart programming language.">
+  <title>getStudentStats method - StatisticsService class - statistics_service library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">playing_tracker</a></li>
+    <li><a href="../../features_statistics_data_services_statistics_service/">features&#47;statistics&#47;data&#47;services&#47;statistics_service.dart</a></li>
+    <li><a href="../../features_statistics_data_services_statistics_service/StatisticsService-class.html">StatisticsService</a></li>
+    <li class="self-crumb">getStudentStats method</li>
+  </ol>
+  <div class="self-name">getStudentStats</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="features_statistics_data_services_statistics_service&#47;StatisticsService-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">getStudentStats</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../features_statistics_domain_models_weekly_stats_model/WeeklyStatsModel-class.html">WeeklyStatsModel</a></span>&gt;</span></span>
+<span class="name ">getStudentStats</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getStudentStats-param-studentId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">studentId</span>, </span></li>
+<li><span class="parameter" id="getStudentStats-param-timeFilter"><span>required</span> <span class="type-annotation"><a href="../../features_statistics_domain_models_time_filter_enum/TimeFilter.html">TimeFilter</a></span> <span class="parameter-name">timeFilter</span>, </span></li>
+<li><span class="parameter" id="getStudentStats-param-classId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">classId</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Obtiene estadísticas detalladas de un estudiante con filtro de tiempo.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;WeeklyStatsModel&gt; getStudentStats({
+  required String studentId,
+  required TimeFilter timeFilter,
+  String? classId,
+}) async {
+  final sanitizedId = studentId.trim();
+  if (sanitizedId.isEmpty) {
+    throw ArgumentError(&#39;El ID del estudiante es obligatorio&#39;);
+  }
+
+  try {
+    log(
+      &#39;StatisticsService: Consultando estadísticas para $sanitizedId con filtro $timeFilter&#39;,
+      name: &#39;StatisticsService&#39;,
+    );
+
+    var query = _sessionsCollection.where(
+      &#39;studentId&#39;,
+      isEqualTo: sanitizedId,
+    );
+    if (classId != null &amp;&amp; classId.isNotEmpty) {
+      query = query.where(&#39;classId&#39;, isEqualTo: classId);
+    }
+
+    final now = DateTime.now();
+    DateTime startDate;
+    DateTime endDate = now;
+
+    switch (timeFilter) {
+      case TimeFilter.thisWeek:
+        startDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: now.weekday - 1));
+        endDate = startDate.add(const Duration(days: 7));
+        query = query
+            .where(
+              &#39;dateLogged&#39;,
+              isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+            )
+            .where(&#39;dateLogged&#39;, isLessThan: Timestamp.fromDate(endDate));
+        break;
+      case TimeFilter.thisMonth:
+        final monthBucket =
+            &#39;${now.year}-${now.month.toString().padLeft(2, &#39;0&#39;)}&#39;;
+        query = query.where(&#39;monthBucket&#39;, isEqualTo: monthBucket);
+        startDate = DateTime(now.year, now.month, 1);
+        break;
+      case TimeFilter.last3Months:
+        final buckets = List.generate(3, (i) {
+          final d = DateTime(now.year, now.month - i, 1);
+          return &#39;${d.year}-${d.month.toString().padLeft(2, &#39;0&#39;)}&#39;;
+        });
+        query = query.where(&#39;monthBucket&#39;, whereIn: buckets);
+        startDate = DateTime(now.year, now.month - 2, 1);
+        break;
+      case TimeFilter.last9Months:
+        final buckets = List.generate(9, (i) {
+          final d = DateTime(now.year, now.month - i, 1);
+          return &#39;${d.year}-${d.month.toString().padLeft(2, &#39;0&#39;)}&#39;;
+        });
+        query = query.where(&#39;monthBucket&#39;, whereIn: buckets);
+        startDate = DateTime(now.year, now.month - 8, 1);
+        break;
+      case TimeFilter.allTime:
+        startDate = DateTime(2000);
+        break;
+    }
+
+    final querySnapshot = await query
+        .orderBy(&#39;dateLogged&#39;, descending: true)
+        .limit(500)
+        .get();
+
+    int totalDuration = 0;
+    final uniqueTasks = &lt;String&gt;{};
+    final dailyMap = &lt;String, List&lt;SessionModel&gt;&gt;{};
+    final taskMap = &lt;String, ({String title, int duration, int sessions})&gt;{};
+
+    for (final doc in querySnapshot.docs) {
+      final data = doc.data();
+      data[&#39;id&#39;] = doc.id;
+      final session = SessionModel.fromJson(data);
+
+      totalDuration += session.totalDuration;
+      uniqueTasks.add(session.taskId);
+
+      final dayKey = _getDayKey(session.dateLogged.toDate());
+      dailyMap.putIfAbsent(dayKey, () =&gt; []).add(session);
+
+      final existing = taskMap[session.taskId];
+      if (existing != null) {
+        taskMap[session.taskId] = (
+          title: existing.title,
+          duration: existing.duration + session.totalDuration,
+          sessions: existing.sessions + 1,
+        );
+      } else {
+        taskMap[session.taskId] = (
+          title: session.taskTitle ?? &#39;Tarea desconocida&#39;,
+          duration: session.totalDuration,
+          sessions: 1,
+        );
+      }
+    }
+
+    final dailyBreakdown = &lt;DailyStatsModel&gt;[];
+    if (timeFilter == TimeFilter.thisWeek) {
+      final weekStart = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
+      for (int i = 0; i &lt; 7; i++) {
+        final currentDay = weekStart.add(Duration(days: i));
+        final dayKey = _getDayKey(currentDay);
+        final daySessions = dailyMap[dayKey] ?? [];
+        dailyBreakdown.add(
+          DailyStatsModel(
+            date: Timestamp.fromDate(currentDay),
+            totalDuration: daySessions.fold(
+              0,
+              (acc, s) =&gt; acc + s.totalDuration,
+            ),
+            totalSessions: daySessions.length,
+            uniqueTasks: daySessions.map((s) =&gt; s.taskId).toSet().length,
+          ),
+        );
+      }
+    } else {
+      for (int i = 6; i &gt;= 0; i--) {
+        final currentDay = now.subtract(Duration(days: i));
+        final dayKey = _getDayKey(currentDay);
+        final daySessions = dailyMap[dayKey] ?? [];
+        dailyBreakdown.add(
+          DailyStatsModel(
+            date: Timestamp.fromDate(currentDay),
+            totalDuration: daySessions.fold(
+              0,
+              (acc, s) =&gt; acc + s.totalDuration,
+            ),
+            totalSessions: daySessions.length,
+            uniqueTasks: daySessions.map((s) =&gt; s.taskId).toSet().length,
+          ),
+        );
+      }
+    }
+
+    final taskBreakdown = taskMap.entries
+        .map(
+          (entry) =&gt; TaskStatsModel(
+            taskId: entry.key,
+            taskTitle: entry.value.title,
+            totalDuration: entry.value.duration,
+            totalSessions: entry.value.sessions,
+          ),
+        )
+        .toList();
+
+    return WeeklyStatsModel(
+      weekStart: Timestamp.fromDate(startDate),
+      weekEnd: Timestamp.fromDate(endDate),
+      totalDuration: totalDuration,
+      totalSessions: querySnapshot.docs.length,
+      uniqueTasks: uniqueTasks.length,
+      dailyBreakdown: dailyBreakdown,
+      taskBreakdown: taskBreakdown,
+    );
+  } on FirebaseException catch (error, stackTrace) {
+    _logError(&#39;getStudentStats&#39;, error, stackTrace);
+    throw FirebaseErrorMapperException(FirebaseErrorMapper.map(error));
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">playing_tracker</a></li>
+    <li><a href="../../features_statistics_data_services_statistics_service/">statistics_service</a></li>
+    <li><a href="../../features_statistics_data_services_statistics_service/StatisticsService-class.html">StatisticsService</a></li>
+    <li class="self-crumb">getStudentStats method</li>
+</ol>
+
+    <h5>StatisticsService class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    playing_tracker
+      1.0.1+2
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

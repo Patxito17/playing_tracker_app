@@ -24,13 +24,13 @@ migrate_working_dir/
 #.vscode/
 
 # Agents and IDEs
-.agents
-.claude
-.cursor
+.agents/
+.claude/
+.cursor/
 .vscode
 
 # Flutter/Dart/Pub related
-**/doc/api/
+# **/doc/api/  ← desactivado: la documentación dartdoc sí se publica
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins-dependencies
@@ -80,8 +80,8 @@ functions/.env
 # Firebase CLI cache
 .firebase/
 
-# Builds y releases empaquetados locamente
-/releases/
+# Builds y releases — solo se ignoran los artefactos de debug y metadatos
+# (los binarios de release sí se publican, ver releases/.gitignore)
 
 # ==========================================
 # Fastlane - Automatización de Stores
@@ -105,8 +105,6 @@ devtools_options.yaml
 # Archivos generados / no esenciales
 # ==========================================
 
-# Documentación generada por dartdoc
-/doc/
 
 # Carpeta de metadatos de stores (vacía en repo)
 /metadata/
