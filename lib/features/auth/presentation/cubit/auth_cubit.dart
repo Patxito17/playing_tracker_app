@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:playing_tracker/core/utils/firebase_error_mapper.dart';
 import 'package:playing_tracker/features/auth/domain/enums/user_role.dart';
+import 'package:playing_tracker/features/auth/domain/models/user_profile.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 import 'package:playing_tracker/features/auth/presentation/cubit/auth_state.dart';
 
@@ -42,7 +43,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final role = await _authRepository.getUserRole(currentUser.uid);
 
       // Cargar el modelo completo del usuario
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(currentUser.uid);
       } else {
@@ -74,7 +75,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final role = await _authRepository.getUserRole(userId);
 
       // Cargar el modelo completo del usuario
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -209,7 +210,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       final role = await _authRepository.getUserRole(userId);
 
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -257,7 +258,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       final role = await _authRepository.getUserRole(userId);
 
-      dynamic userModel;
+      UserProfile? userModel;
       if (role == UserRole.teacher) {
         userModel = await _authRepository.getTeacherProfile(userId);
       } else {
@@ -356,6 +357,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  /// Reconstruye el estado desde el JSON persistido por HydratedBloc.
+  ///
+  /// Devuelve siempre [AuthUnauthenticated] porque la rehidratación real del
+  /// perfil se delega a [checkAuthState], que valida contra Firebase en cada
+  /// reinicio. Persistir el modelo completo aquí sería redundante e inseguro.
   @override
   AuthState? fromJson(Map<String, dynamic> json) {
     try {
@@ -369,15 +375,18 @@ class AuthCubit extends HydratedCubit<AuthState> {
         return const AuthUnauthenticated();
       }
 
-      // Cargar el modelo desde Firestore al rehidratar
-      // Nota: esto es asíncrono, por lo que podría no funcionar bien con hydrated_bloc
-      // En este caso, dejaríamos que checkAuthState se encargue al iniciar
+      // La rehidratación completa del perfil ocurre en checkAuthState al arrancar.
       return const AuthUnauthenticated();
     } catch (_) {
       return const AuthUnauthenticated();
     }
   }
 
+  /// Serializa el estado para persistencia por HydratedBloc.
+  ///
+  /// Solo persiste metadatos mínimos (tipo y userId) — el modelo completo
+  /// se recarga desde Firestore en cada arranque para garantizar frescura.
+  /// Devuelve null para estados no autenticados, evitando escrituras innecesarias.
   @override
   Map<String, dynamic>? toJson(AuthState state) {
     if (state is! AuthAuthenticated) {
@@ -409,11 +418,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
         userId: currentState.userId,
         firstName: firstName,
         lastName: lastName,
+        role: currentState.role,
       );
 
       // Recargar el modelo actualizado
       final role = currentState.role;
-      dynamic updatedModel;
+      UserProfile? updatedModel;
       if (role == UserRole.teacher) {
         updatedModel = await _authRepository.getTeacherProfile(
           currentState.userId,
@@ -437,6 +447,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  /// Convierte cualquier excepción en un mensaje legible para la UI.
+  ///
+  /// Las [AuthRepositoryException] ya contienen un mensaje pre-mapeado;
+  /// el resto se mapea mediante [FirebaseErrorMapper].
   String _mapError(Object error) {
     if (error is AuthRepositoryException) {
       return error.message;

@@ -10,6 +10,10 @@ import 'package:playing_tracker/features/auth/domain/models/teacher_model.dart';
 import 'package:playing_tracker/features/auth/domain/repositories/auth_repository.dart';
 
 /// Implementación concreta del [AuthRepository] usando Firebase Auth + Firestore.
+///
+/// Accede a las colecciones `teachers` y `students` directamente para leer y
+/// escribir perfiles. Los proveedores pueden inyectarse en el constructor para
+/// facilitar las pruebas unitarias.
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
     : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
@@ -20,7 +24,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
+
+  /// Referencia a la colección `teachers` de Firestore.
   late final CollectionReference<Map<String, dynamic>> _teachersRef;
+
+  /// Referencia a la colección `students` de Firestore.
   late final CollectionReference<Map<String, dynamic>> _studentsRef;
 
   @override
@@ -157,6 +165,10 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  /// Completa el perfil de un docente autenticado vía proveedor social.
+  ///
+  /// Obtiene el UID y el email del usuario de Firebase actual y delega la
+  /// creación del documento en [createTeacher].
   @override
   Future<void> completeSocialTeacherProfile({
     required String firstName,
@@ -178,6 +190,10 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
 
+  /// Completa el perfil de un alumno autenticado vía proveedor social.
+  ///
+  /// Obtiene el UID y el email del usuario de Firebase actual y delega la
+  /// creación del documento en [createStudent].
   @override
   Future<void> completeSocialStudentProfile({
     required String firstName,
@@ -199,6 +215,12 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
 
+  /// Obtiene el rol del usuario intentando primero los Custom Claims del token.
+  ///
+  /// Si el claim `role` aún no está disponible (ventana de tiempo entre la
+  /// creación del perfil y la ejecución de la Cloud Function), realiza hasta
+  /// 3 reintentos con pausa de 2 s cada uno mientras fuerza el refresco del
+  /// token. Como último fallback consulta Firestore directamente.
   @override
   Future<UserRole> getUserRole(String userId) async {
     try {
@@ -214,31 +236,31 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // Fallback a Firestore si el claim aún no está disponible
       // (ventana de tiempo entre creación del perfil y la ejecución de la Function).
+      const maxRetries = 3;
+      const retryDelay = Duration(seconds: 2);
+
       final teacherDoc = await _teachersRef.doc(userId).get();
       if (teacherDoc.exists) {
-        // Aumentamos los reintentos y el tiempo de espera ya que las Functions
-        // pueden tardar varios segundos en ejecutarse en entornos de producción.
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < maxRetries; i++) {
           final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
             true, // Forzar refresco
           );
           final role = tokenResult?.claims?['role'] as String?;
           if (role == 'teacher') return UserRole.teacher;
-          // Esperar un poco antes del siguiente reintento (1s, 2s, 3s, 4s, 5s)
-          await Future.delayed(Duration(seconds: i + 1));
+          await Future.delayed(retryDelay);
         }
         return UserRole.teacher;
       }
 
       final studentDoc = await _studentsRef.doc(userId).get();
       if (studentDoc.exists) {
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < maxRetries; i++) {
           final tokenResult = await _firebaseAuth.currentUser?.getIdTokenResult(
             true,
           );
           final role = tokenResult?.claims?['role'] as String?;
           if (role == 'student') return UserRole.student;
-          await Future.delayed(Duration(seconds: i + 1));
+          await Future.delayed(retryDelay);
         }
         return UserRole.student;
       }
@@ -357,6 +379,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String userId,
     required String firstName,
     required String lastName,
+    required UserRole role,
   }) async {
     try {
       final now = Timestamp.now();
@@ -366,21 +389,11 @@ class AuthRepositoryImpl implements AuthRepository {
         'updatedAt': now,
       };
 
-      // Intentar actualizar en teachers
-      final teacherDoc = await _teachersRef.doc(userId).get();
-      if (teacherDoc.exists) {
-        await _teachersRef.doc(userId).update(updateData);
-        return;
-      }
-
-      // Si no es teacher, actualizar en students
-      final studentDoc = await _studentsRef.doc(userId).get();
-      if (studentDoc.exists) {
-        await _studentsRef.doc(userId).update(updateData);
-        return;
-      }
-
-      throw AuthRepositoryException('Usuario no encontrado.');
+      // Ir directamente a la colección correcta según el rol recibido.
+      // Evita las 2 lecturas Firestore previas para determinar el tipo de usuario.
+      final ref =
+          role == UserRole.teacher ? _teachersRef : _studentsRef;
+      await ref.doc(userId).update(updateData);
     } catch (error) {
       if (error is AuthRepositoryException) {
         rethrow;

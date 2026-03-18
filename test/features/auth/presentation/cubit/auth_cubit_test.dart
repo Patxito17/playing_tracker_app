@@ -303,6 +303,7 @@ void main() {
         userId: any(named: 'userId'),
         firstName: any(named: 'firstName'),
         lastName: any(named: 'lastName'),
+        role: any(named: 'role'),
       ),
     ).thenAnswer((_) async {});
 

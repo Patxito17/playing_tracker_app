@@ -23,6 +23,8 @@ import 'features/classes/data/repositories/class_repository_impl.dart';
 import 'features/classes/domain/repositories/class_repository.dart';
 import 'features/sessions/data/repositories/session_repository_impl.dart';
 import 'features/sessions/domain/repositories/session_repository.dart';
+import 'features/statistics/data/repositories/statistics_repository_impl.dart';
+import 'features/statistics/domain/repositories/statistics_repository.dart';
 import 'features/tasks/data/repositories/task_repository_impl.dart';
 import 'features/tasks/domain/repositories/task_repository.dart';
 import 'firebase_options.dart';
@@ -99,6 +101,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
   late final ClassRepository _classRepository;
   late final TaskRepository _taskRepository;
   late final SessionRepository _sessionRepository;
+  late final StatisticsRepository _statisticsRepository;
   late final AuthCubit _authCubit;
   late final SettingsCubit _settingsCubit;
   late final AppRoutes _appRoutes;
@@ -110,6 +113,7 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
     _classRepository = widget.classRepository ?? ClassRepositoryImpl();
     _taskRepository = widget.taskRepository ?? TaskRepositoryImpl();
     _sessionRepository = widget.sessionRepository ?? SessionRepositoryImpl();
+    _statisticsRepository = StatisticsRepositoryImpl();
 
     _authCubit =
         widget.authCubitBuilder?.call(_authRepository) ??
@@ -133,6 +137,9 @@ class _PlayingTrackerAppState extends State<PlayingTrackerApp> {
         RepositoryProvider.value(value: _classRepository),
         RepositoryProvider.value(value: _taskRepository),
         RepositoryProvider.value(value: _sessionRepository),
+        RepositoryProvider<StatisticsRepository>.value(
+          value: _statisticsRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [

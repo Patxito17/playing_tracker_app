@@ -93,7 +93,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     final minutes = int.tryParse(_estimatedTimeController.text.trim());
     if (minutes == null || minutes <= 0) {
       setState(() {
-        _formError = 'El tiempo estimado debe ser un número entero mayor que 0';
+        _formError = context.l10n.estimatedTimeInvalidError;
       });
       return;
     }
@@ -418,7 +418,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         }
                         final minutes = int.tryParse(text);
                         if (minutes == null || minutes <= 0) {
-                          return 'El tiempo estimado debe ser un número entero mayor que 0';
+                          return context.l10n.estimatedTimeInvalidError;
                         }
                         return null;
                       },
@@ -454,10 +454,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         return CustomCard(
                           title: context.l10n.selectClassToAssign,
                           subtitle: classes.isEmpty
-                              ? 'Cargando o sin clases...'
+                              ? context.l10n.loadingOrNoClasses
                               : _selectedClasses.isEmpty
-                              ? 'Obligatorio seleccionar al menos una clase'
-                              : '${_selectedClasses.length} seleccionadas',
+                              ? context.l10n.atLeastOneClassSubtitle
+                              : context.l10n.classesSelectedCount(_selectedClasses.length),
                           margin: EdgeInsets.zero,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -469,7 +469,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Asignar a:',
+                                      context.l10n.assignToLabel,
                                       style: context.bodySmallOnSurfaceVariant,
                                     ),
                                   ),
@@ -496,10 +496,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                   ),
                                 )
                               else if (classes.isEmpty)
-                                const Padding(
-                                  padding: EdgeInsets.all(AppSpacing.s),
+                                Padding(
+                                  padding: const EdgeInsets.all(AppSpacing.s),
                                   child: Text(
-                                    'No se encontraron clases activas.',
+                                    context.l10n.noActiveClassesFound,
                                   ),
                                 )
                               else
@@ -529,10 +529,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     if (_selectedClasses.length == 1) ...[
                       const SizedBox(height: AppSpacing.m),
                       CustomCard(
-                        title: 'Alumnos destinatarios',
+                        title: context.l10n.recipientStudentsTitle,
                         subtitle: _selectedStudentIds.isEmpty
-                            ? 'Todos los alumnos de la clase'
-                            : '${_selectedStudentIds.length} alumnos seleccionados',
+                            ? context.l10n.allStudentsInClass
+                            : context.l10n.studentsSelectedCount(_selectedStudentIds.length),
                         margin: EdgeInsets.zero,
                         onTap: () => _showStudentSelectionModal(
                           context,
@@ -548,8 +548,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                             Expanded(
                               child: Text(
                                 _selectedStudentIds.isEmpty
-                                    ? 'Asignar a todos'
-                                    : 'Asignación personalizada',
+                                    ? context.l10n.assignToAllLabel
+                                    : context.l10n.customAssignmentLabel,
                                 style: context.textTheme.bodyMedium,
                               ),
                             ),

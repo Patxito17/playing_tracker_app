@@ -253,3 +253,25 @@ build-all: bump-build ipa-prod apk-prod aab-prod
 	@echo "   📦 AABs → releases/aab/"
 	@echo "   🍏 IPAs → releases/ipa/"
 	@echo ""
+
+
+# ──────────────────────────────────────────
+# App Store / Google Play — Automatización
+# ──────────────────────────────────────────
+screenshots-ios:
+	bash scripts/screenshots_ios.sh
+
+screenshots-android:
+	bash scripts/screenshots_android.sh
+
+screenshots: screenshots-ios screenshots-android
+
+store-upload-ios:
+	cd fastlane && bundle exec fastlane ios upload_metadata
+
+store-upload-android:
+	cd fastlane && bundle exec fastlane android upload_metadata
+
+store-release:
+	cd fastlane && bundle exec fastlane ios release_metadata
+	cd fastlane && bundle exec fastlane android release_metadata

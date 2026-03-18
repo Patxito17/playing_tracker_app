@@ -175,6 +175,7 @@ class SessionModel {
     return '$seconds s';
   }
 
+  /// Crea una copia del modelo con los campos especificados modificados.
   SessionModel copyWith({
     String? id,
     String? studentId,

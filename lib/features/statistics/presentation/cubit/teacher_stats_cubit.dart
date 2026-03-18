@@ -20,8 +20,8 @@ class TeacherStatsCubit extends Cubit<TeacherStatsState> {
   /// Carga las estadísticas de una clase con filtros opcionales.
   ///
   /// Realiza en paralelo:
-  /// - Estadísticas agregadas de la clase ([getClassStats])
-  /// - Ranking individual de alumnos ([getStudentsClassStats])
+  /// - Estadísticas agregadas de la clase (`getClassStats`)
+  /// - Ranking individual de alumnos (`getStudentsClassStats`)
   Future<void> loadClassStats({
     required String classId,
     required String teacherId,

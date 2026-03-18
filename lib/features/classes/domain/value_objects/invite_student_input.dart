@@ -2,10 +2,10 @@
 /// manualmente un alumno a una clase existente.
 ///
 /// Campos:
-/// - [classId]: Identificador único de la clase de destino.
-/// - [studentId]: UID del alumno en Firebase Auth.
-/// - [teacherId]: UID del docente propietario (denormalizado para permisos).
-/// - [className]: Nombre de la clase (denormalizado para notificaciones/UI).
+/// - `classId`: Identificador único de la clase de destino.
+/// - `studentId`: UID del alumno en Firebase Auth.
+/// - `teacherId`: UID del docente propietario (denormalizado para permisos).
+/// - `className`: Nombre de la clase (denormalizado para notificaciones/UI).
 ///
 /// Ejemplo de uso:
 /// ```dart

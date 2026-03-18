@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:playing_tracker/core/utils/timestamp_converter.dart';
+import 'package:playing_tracker/features/auth/domain/models/user_profile.dart';
 
 part 'teacher_model.g.dart';
 
@@ -34,17 +35,21 @@ part 'teacher_model.g.dart';
 /// final teacherFromJson = TeacherModel.fromJson(json);
 /// ```
 @JsonSerializable()
-class TeacherModel {
+class TeacherModel implements UserProfile {
   /// Identificador único del docente (UID de Firebase Authentication)
+  @override
   final String id;
 
   /// Nombre(s) del docente
+  @override
   final String firstName;
 
   /// Apellido(s) del docente
+  @override
   final String lastName;
 
   /// Correo electrónico del docente (usado para autenticación)
+  @override
   final String email;
 
   /// Fecha y hora de creación del perfil
@@ -87,6 +92,7 @@ class TeacherModel {
   Map<String, dynamic> toJson() => _$TeacherModelToJson(this);
 
   /// Retorna el nombre completo del docente
+  @override
   String get fullName => '$firstName $lastName';
 
   /// Crea una copia del modelo con los campos especificados modificados

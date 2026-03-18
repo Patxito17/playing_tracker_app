@@ -2833,6 +2833,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ningún alumno tiene actividad en este período'**
   String get noStudentsActivity;
+
+  /// Título del modal de selección de alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar alumnos'**
+  String get selectStudentsTitle;
+
+  /// Mensaje cuando no hay alumnos activos en la clase
+  ///
+  /// In es, this message translates to:
+  /// **'No hay alumnos activos en esta clase.'**
+  String get noActiveStudentsInClass;
+
+  /// Mensaje de error al cargar la lista de alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar alumnos'**
+  String get errorLoadingStudents;
+
+  /// Botón para confirmar la selección de alumnos en el modal
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar selección'**
+  String get confirmSelectionButton;
+
+  /// Error de validación del campo tiempo estimado
+  ///
+  /// In es, this message translates to:
+  /// **'El tiempo estimado debe ser un número entero mayor que 0'**
+  String get estimatedTimeInvalidError;
+
+  /// Texto de subtítulo mientras se cargan las clases o no hay ninguna
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando o sin clases...'**
+  String get loadingOrNoClasses;
+
+  /// Subtítulo del selector de clases cuando no hay ninguna seleccionada
+  ///
+  /// In es, this message translates to:
+  /// **'Obligatorio seleccionar al menos una clase'**
+  String get atLeastOneClassSubtitle;
+
+  /// Subtítulo del selector de clases con el número de clases seleccionadas
+  ///
+  /// In es, this message translates to:
+  /// **'{count} seleccionadas'**
+  String classesSelectedCount(int count);
+
+  /// Etiqueta del bloque de asignación de clases en la pantalla de creación de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Asignar a:'**
+  String get assignToLabel;
+
+  /// Mensaje cuando no hay clases activas disponibles para asignar
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron clases activas.'**
+  String get noActiveClassesFound;
+
+  /// Título de la card de selección de alumnos destinatarios en creación de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos destinatarios'**
+  String get recipientStudentsTitle;
+
+  /// Subtítulo cuando todos los alumnos de la clase son destinatarios
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los alumnos de la clase'**
+  String get allStudentsInClass;
+
+  /// Subtítulo con el número de alumnos seleccionados como destinatarios
+  ///
+  /// In es, this message translates to:
+  /// **'{count} alumnos seleccionados'**
+  String studentsSelectedCount(int count);
+
+  /// Texto cuando la tarea se asigna a todos los alumnos de la clase
+  ///
+  /// In es, this message translates to:
+  /// **'Asignar a todos'**
+  String get assignToAllLabel;
+
+  /// Texto cuando la tarea tiene una selección personalizada de alumnos
+  ///
+  /// In es, this message translates to:
+  /// **'Asignación personalizada'**
+  String get customAssignmentLabel;
 }
 
 class _AppLocalizationsDelegate

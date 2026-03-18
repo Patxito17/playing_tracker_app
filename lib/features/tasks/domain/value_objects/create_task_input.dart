@@ -5,12 +5,12 @@
 /// servicio correspondiente.
 ///
 /// Campos:
-/// - [title]: Título visible de la tarea. Debe tener al menos 3 caracteres.
-/// - [description]: Descripción opcional mostrada en la UI.
-/// - [createdBy]: Identificador único del docente que crea la tarea.
-/// - [durationSuggested]: Duración sugerida de práctica en segundos (> 0).
-/// - [attachmentUrl]: URL opcional de material de referencia (video, enlace web).
-/// - [dueDate]: Fecha de vencimiento opcional (nivel dominio, DateTime).
+/// - `title`: Título visible de la tarea. Debe tener al menos 3 caracteres.
+/// - `description`: Descripción opcional mostrada en la UI.
+/// - `createdBy`: Identificador único del docente que crea la tarea.
+/// - `durationSuggested`: Duración sugerida de práctica en segundos (> 0).
+/// - `attachmentUrl`: URL opcional de material de referencia (video, enlace web).
+/// - `dueDate`: Fecha de vencimiento opcional (nivel dominio, DateTime).
 ///
 /// Ejemplo de uso:
 /// ```dart

@@ -8,13 +8,25 @@ import 'package:playing_tracker/features/classes/presentation/cubit/class_state.
 
 /// Cubit encargado de gestionar la lógica de clases para docentes.
 ///
+/// Expone operaciones de creación, actualización de estado y observación
+/// reactiva de la lista de clases. Utiliza un stream de Firestore para
+/// mantener la UI sincronizada en tiempo real.
 class ClassCubit extends Cubit<ClassState> {
   ClassCubit(this._repository) : super(const ClassInitial());
 
   final ClassRepository _repository;
+
+  /// Suscripción activa al stream de clases del docente.
   StreamSubscription<List<ClassModel>>? _classesSubscription;
+
+  /// ID del docente cuyas clases se están observando.
   String? _currentTeacherId;
+
+  /// Límite de paginación activo (número máximo de clases a observar).
   int _currentLimit = _defaultPaginationLimit;
+
+  /// Indica que el próximo evento del stream proviene de un refresco manual.
+  /// Se usa para distinguir la fuente en [ClassStateSource].
   bool _manualRefreshPending = false;
 
   /// Crea una nueva clase y delega la persistencia al repositorio.
@@ -100,6 +112,7 @@ class ClassCubit extends Cubit<ClassState> {
     }
   }
 
+  /// Cancela la suscripción al stream de clases antes de cerrar el cubit.
   @override
   Future<void> close() async {
     await _classesSubscription?.cancel();

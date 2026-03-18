@@ -4,8 +4,8 @@ import 'package:playing_tracker/core/utils/access_code_generator.dart';
 /// a una clase utilizando un código de acceso.
 ///
 /// Campos:
-/// - [studentId]: UID del alumno autenticado en Firebase.
-/// - [accessCode]: Código alfanumérico de 6 caracteres generado por el docente.
+/// - `studentId`: UID del alumno autenticado en Firebase.
+/// - `accessCode`: Código alfanumérico de 6 caracteres generado por el docente.
 ///
 /// Ejemplo de uso:
 /// ```dart

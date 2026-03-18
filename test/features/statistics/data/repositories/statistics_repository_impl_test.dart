@@ -49,13 +49,9 @@ void main() {
 
   setUp(() {
     fakeFirestore = FakeFirebaseFirestore();
-    // Pasamos el Firestore falso tanto al servicio como al repositorio
-    // (el repositorio usa _firestore directamente en getStudentProgress)
+    // Pasamos el Firestore falso al servicio; el repositorio delega a él.
     final service = StatisticsService(firestore: fakeFirestore);
-    repository = StatisticsRepositoryImpl(
-      statisticsService: service,
-      firestore: fakeFirestore,
-    );
+    repository = StatisticsRepositoryImpl(statisticsService: service);
   });
 
   // ---------------------------------------------------------------------------

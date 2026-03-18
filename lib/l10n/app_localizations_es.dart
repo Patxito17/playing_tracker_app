@@ -1510,4 +1510,55 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get noStudentsActivity =>
       'Ningún alumno tiene actividad en este período';
+
+  @override
+  String get selectStudentsTitle => 'Seleccionar alumnos';
+
+  @override
+  String get noActiveStudentsInClass => 'No hay alumnos activos en esta clase.';
+
+  @override
+  String get errorLoadingStudents => 'Error al cargar alumnos';
+
+  @override
+  String get confirmSelectionButton => 'Confirmar selección';
+
+  @override
+  String get estimatedTimeInvalidError =>
+      'El tiempo estimado debe ser un número entero mayor que 0';
+
+  @override
+  String get loadingOrNoClasses => 'Cargando o sin clases...';
+
+  @override
+  String get atLeastOneClassSubtitle =>
+      'Obligatorio seleccionar al menos una clase';
+
+  @override
+  String classesSelectedCount(int count) {
+    return '$count seleccionadas';
+  }
+
+  @override
+  String get assignToLabel => 'Asignar a:';
+
+  @override
+  String get noActiveClassesFound => 'No se encontraron clases activas.';
+
+  @override
+  String get recipientStudentsTitle => 'Alumnos destinatarios';
+
+  @override
+  String get allStudentsInClass => 'Todos los alumnos de la clase';
+
+  @override
+  String studentsSelectedCount(int count) {
+    return '$count alumnos seleccionados';
+  }
+
+  @override
+  String get assignToAllLabel => 'Asignar a todos';
+
+  @override
+  String get customAssignmentLabel => 'Asignación personalizada';
 }

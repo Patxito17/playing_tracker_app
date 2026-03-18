@@ -33,7 +33,9 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
     super.didChangeDependencies();
     // Detecta si el flag fue reseteado desde Ajustes (p.ej. "Repetir tutorial").
     // Se ejecuta cada vez que el widget vuelve a ser visible en el IndexedStack.
-    final done = context.read<SettingsCubit>().isTeacherTutorialDone();
+    // Leemos desde el estado reactivo del cubit para garantizar consistencia.
+    final done =
+        context.read<SettingsCubit>().state.teacherTutorialDone;
     if (!done) _tutorialTriggered = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_tutorialTriggered) _scheduleTutorial();
@@ -43,7 +45,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   Future<void> _scheduleTutorial() async {
     if (!mounted) return;
     final cubit = context.read<SettingsCubit>();
-    if (cubit.isTeacherTutorialDone()) return;
+    if (cubit.state.teacherTutorialDone) return;
     _tutorialTriggered = true;
     await cubit.markTeacherTutorialDone();
     if (!mounted) return;

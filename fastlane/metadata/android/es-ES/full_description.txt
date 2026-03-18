@@ -1,0 +1,15 @@
+Playing Tracker es el compañero de práctica musical para estudiantes y profesores.
+
+PARA ESTUDIANTES:
+• Registra y sigue tus sesiones de práctica diaria con facilidad
+• Consulta tu progreso semanal de un vistazo con estadísticas visuales
+• Gestiona las tareas asignadas por tu profesor
+• Mantén la motivación con gráficas de progreso
+
+PARA PROFESORES:
+• Gestiona varios estudiantes y clases desde un solo lugar
+• Asigna tareas de práctica y controla su cumplimiento
+• Supervisa las horas de práctica y el progreso de cada estudiante
+• Mantén a tus alumnos encaminados con seguimiento detallado
+
+Simple, limpio y construido para músicos.

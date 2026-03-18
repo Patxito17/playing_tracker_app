@@ -34,7 +34,10 @@ final class TaskEmpty extends TaskState {
 final class TaskSuccess extends TaskState {
   const TaskSuccess({required this.tasks, this.filters});
 
+  /// Lista inmutable de tareas del docente.
   final List<TaskModel> tasks;
+
+  /// Filtros activos cuando se recibió este estado.
   final TaskFilters? filters;
 
   @override
@@ -48,8 +51,13 @@ enum TaskAction { created, updated, deleted, assigned }
 final class TaskActionSuccess extends TaskState {
   const TaskActionSuccess({required this.action, this.message, this.taskId});
 
+  /// Tipo de acción que se completó exitosamente.
   final TaskAction action;
+
+  /// Mensaje opcional de confirmación para la UI.
   final String? message;
+
+  /// ID de la tarea afectada (presente solo para [TaskAction.created]).
   final String? taskId;
 
   @override
@@ -60,7 +68,10 @@ final class TaskActionSuccess extends TaskState {
 final class TaskError extends TaskState {
   const TaskError({this.message, this.cause});
 
+  /// Mensaje legible para la UI.
   final String? message;
+
+  /// Excepción original que provocó el error (para logging).
   final Object? cause;
 
   @override
