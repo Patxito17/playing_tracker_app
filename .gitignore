@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+/entrega_final
 
 # IntelliJ related
 *.iml
@@ -23,7 +24,7 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Agents and IDEs
+# IDEs y herramientas locales
 .agents/
 .claude/
 .cursor/
@@ -92,10 +93,10 @@ functions/.env
 /fastlane/
 
 # ==========================================
-# Herramientas de desarrollo y AI
+# Herramientas de desarrollo
 # ==========================================
 
-# Instrucciones para AI assistants (Claude, Cursor, etc.)
+# Configuración de herramientas de desarrollo (local)
 CLAUDE.md
 .mcp.json
 
