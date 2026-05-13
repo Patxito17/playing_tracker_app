@@ -24,10 +24,7 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# IDEs y herramientas locales
-.agents/
-.claude/
-.cursor/
+# IDEs
 .vscode
 
 # Flutter/Dart/Pub related
@@ -91,17 +88,6 @@ functions/.env
 
 # Directorio completo (no requerido para replicar/evaluar el proyecto)
 /fastlane/
-
-# ==========================================
-# Herramientas de desarrollo
-# ==========================================
-
-# Configuración de herramientas de desarrollo (local)
-CLAUDE.md
-.mcp.json
-
-# Preferencias personales de DevTools
-devtools_options.yaml
 
 # ==========================================
 # Archivos generados / no esenciales
